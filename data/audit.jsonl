@@ -1,1 +1,23 @@
 {"timestamp": "2026-02-15T09:52:26.080746", "event_type": "mission_created", "mission_id": "bb907729", "details": {"goal": "Optimize lead conversion", "category": "coin"}, "visibility": "visible"}
+{"timestamp": "2026-02-15T10:59:22.573687+00:00", "event_type": "golden_run_recorded", "details": {"run_id": "red_dup_2"}}
+{"timestamp": "2026-02-15T10:59:22.573946+00:00", "event_type": "golden_run_recorded", "details": {"run_id": "red_dup_1"}}
+{"timestamp": "2026-02-15T10:59:22.574055+00:00", "event_type": "nondeterminism_detected", "details": {"run_id": "red_dup_1", "deterministic": false, "outputs_match": false, "state_match": true, "golden_state_hash": "f9457cce356d89a8", "replay_state_hash": "f9457cce356d89a8"}}
+{"timestamp": "2026-02-15T10:59:22.575586+00:00", "event_type": "patch_submitted", "details": {"patch_id": "b56cce7e", "description": "red team test"}}
+{"timestamp": "2026-02-15T10:59:22.576105+00:00", "event_type": "quarantine_entered", "details": {"reason": "red team test"}}
+{"timestamp": "2026-02-15T10:59:22.576366+00:00", "event_type": "quarantine_exited", "details": {"by": "operator"}}
+{"timestamp": "2026-02-15T10:59:22.578521+00:00", "event_type": "strategy_registered", "details": {"strategy_id": "red_test_strat", "scope": "test"}}
+{"timestamp": "2026-02-15T10:59:22.578753+00:00", "event_type": "strategy_killed", "details": {"strategy_id": "red_test_strat", "reason": "Auto-kill: error_rate=0.5 > 0.1"}}
+{"timestamp": "2026-02-15T10:59:22.579104+00:00", "event_type": "lever_declared", "details": {"mission_id": "red_lever_m1", "lever": "pricing", "diff_summary": "changed pricing by +5%", "timestamp": "2026-02-15T10:59:22.579040+00:00"}}
+{"timestamp": "2026-02-15T10:59:22.579428+00:00", "event_type": "input_brittle", "details": {"input_id": "brittle_test", "stable": false, "variance": 1.0, "n_perturbations": 3, "mismatches": 3, "timestamp": "2026-02-15T10:59:22.579352+00:00"}}
+{"timestamp": "2026-02-15T10:59:22.579971+00:00", "event_type": "entropy_over_cap", "details": {"points": 51, "label": "red_team_overload", "remaining": 50}}
+{"timestamp": "2026-02-15T10:59:28.080685+00:00", "event_type": "golden_run_recorded", "details": {"run_id": "red_dup_2"}}
+{"timestamp": "2026-02-15T10:59:28.080946+00:00", "event_type": "golden_run_recorded", "details": {"run_id": "red_dup_1"}}
+{"timestamp": "2026-02-15T10:59:28.081062+00:00", "event_type": "nondeterminism_detected", "details": {"run_id": "red_dup_1", "deterministic": false, "outputs_match": false, "state_match": true, "golden_state_hash": "f9457cce356d89a8", "replay_state_hash": "f9457cce356d89a8"}}
+{"timestamp": "2026-02-15T10:59:28.082563+00:00", "event_type": "patch_submitted", "details": {"patch_id": "c8cdb741", "description": "red team test"}}
+{"timestamp": "2026-02-15T10:59:28.083081+00:00", "event_type": "quarantine_entered", "details": {"reason": "red team test"}}
+{"timestamp": "2026-02-15T10:59:28.083479+00:00", "event_type": "quarantine_exited", "details": {"by": "operator"}}
+{"timestamp": "2026-02-15T10:59:28.085694+00:00", "event_type": "strategy_registered", "details": {"strategy_id": "red_test_strat", "scope": "test"}}
+{"timestamp": "2026-02-15T10:59:28.085936+00:00", "event_type": "strategy_killed", "details": {"strategy_id": "red_test_strat", "reason": "Auto-kill: error_rate=0.5 > 0.1"}}
+{"timestamp": "2026-02-15T10:59:28.086293+00:00", "event_type": "lever_declared", "details": {"mission_id": "red_lever_m1", "lever": "pricing", "diff_summary": "changed pricing by +5%", "timestamp": "2026-02-15T10:59:28.086238+00:00"}}
+{"timestamp": "2026-02-15T10:59:28.086614+00:00", "event_type": "input_brittle", "details": {"input_id": "brittle_test", "stable": false, "variance": 1.0, "n_perturbations": 3, "mismatches": 3, "timestamp": "2026-02-15T10:59:28.086537+00:00"}}
+{"timestamp": "2026-02-15T10:59:28.087176+00:00", "event_type": "entropy_over_cap", "details": {"points": 51, "label": "red_team_overload", "remaining": 50}}
