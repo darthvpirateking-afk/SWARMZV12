@@ -1,1 +1,5 @@
-{"active_missions": 0, "pattern_counters": {}}
+{
+  "active_missions": 0,
+  "pattern_counters": {},
+  "schema_version": 1
+}
