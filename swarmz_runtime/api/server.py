@@ -1,8 +1,10 @@
+import os
+
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, Response
 from swarmz_runtime.core.engine import SwarmzEngine
-from swarmz_runtime.api import missions, system, admin
+from swarmz_runtime.api import missions, system, admin, ecosystem
 
 app = FastAPI(
     title="SWARMZ Runtime",
@@ -29,10 +31,12 @@ def get_engine() -> SwarmzEngine:
 missions.get_engine = get_engine
 system.get_engine = get_engine
 admin.get_engine = get_engine
+ecosystem.set_engine_provider(get_engine)
 
 app.include_router(missions.router, prefix="/v1/missions", tags=["missions"])
 app.include_router(system.router, prefix="/v1/system", tags=["system"])
 app.include_router(admin.router, prefix="/v1/admin", tags=["admin"])
+app.include_router(ecosystem.router, prefix="/v1/ecosystem", tags=["ecosystem"])
 
 # ---------------------------------------------------------------------------
 # PWA app-shell served at /
@@ -173,3 +177,18 @@ def status():
 @app.get("/health")
 def health_check():
     return get_engine().get_health()
+
+@app.get("/v1/health")
+def health_check_v1():
+    return get_engine().get_health()
+
+
+# ---------------------------------------------------------------------------
+# Auto-start loop when AUTO=1 environment variable is set
+# ---------------------------------------------------------------------------
+@app.on_event("startup")
+async def _maybe_auto_start():
+    if os.environ.get("AUTO", "0") == "1":
+        interval = int(os.environ.get("TICK_INTERVAL", "30"))
+        from swarmz_runtime.api.ecosystem import _get_loop
+        _get_loop().start(interval)

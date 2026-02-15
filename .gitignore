@@ -52,3 +52,12 @@ htmlcov/
 *.tmp
 /tmp/
 companion_memory.json
+
+# Runtime data (generated at runtime)
+data/audit.jsonl
+data/missions.jsonl
+data/runes.json
+data/system_state.json
+data/state.json
+data/scoreboard.json
+data/KILL
