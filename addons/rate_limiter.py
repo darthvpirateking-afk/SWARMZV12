@@ -38,13 +38,13 @@ class _TokenBucket:
 class RateLimitMiddleware(BaseHTTPMiddleware):
     def __init__(self, app, **kwargs):
         super().__init__(app, **kwargs)
-        self._buckets: Dict[str, _TokenBucket] = defaultdict(
-            lambda: _TokenBucket(capacity=self._cap, refill_rate=self._rate)
-        )
         cfg = get_config()
         rpm = cfg.get("rate_limit_per_minute", 120)
         self._cap = float(rpm)
         self._rate = float(rpm) / 60.0
+        self._buckets: Dict[str, _TokenBucket] = defaultdict(
+            lambda: _TokenBucket(capacity=self._cap, refill_rate=self._rate)
+        )
 
     async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
         client = request.client.host if request.client else "unknown"

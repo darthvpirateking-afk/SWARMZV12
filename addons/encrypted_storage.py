@@ -1,8 +1,13 @@
 """
 Encrypted-at-rest storage for JSONL/event logs.
 
-Uses AES-GCM (via Python stdlib + hashlib/os) when SWARMZ_ENCRYPTION_KEY
-is set.  Falls back to plaintext when no key is configured.
+Uses HMAC-SHA256 authenticated XOR cipher when SWARMZ_ENCRYPTION_KEY is set.
+Falls back to plaintext when no key is configured.
+
+WARNING: The XOR+HMAC scheme here uses only Python stdlib and is NOT
+a production-grade cipher.  For real deployments with sensitive data,
+replace with the ``cryptography`` library's Fernet or AES-GCM.
+This module is suitable for local-first / low-threat environments only.
 """
 
 import base64
