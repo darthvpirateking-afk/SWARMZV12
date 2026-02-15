@@ -1,0 +1,54 @@
+/*
+ * SWARMZ Design Tokens — CSS Custom Properties
+ * Style Canon v1.0
+ *
+ * Import this file to consume all SWARMZ design tokens in any web context.
+ */
+
+:root {
+  /* ── Base colors ─────────────────────────────────── */
+  --swarmz-void:             #05070C;
+  --swarmz-deep-slate:       #0B1017;
+  --swarmz-panel-shadow:     rgba(0, 0, 0, 0.55);
+  --swarmz-glass-fill:       rgba(18, 24, 32, 0.55);
+  --swarmz-glass-fill-2:     rgba(10, 14, 20, 0.35);
+
+  /* ── Accent colors ──────────────────────────────── */
+  --swarmz-neon-violet:      #A855F7;
+  --swarmz-electric-purple:  #7C3AED;
+  --swarmz-plasma-magenta:   #D946EF;
+  --swarmz-neon-cyan:        #22D3EE;
+  --swarmz-teal-scan:        #14B8A6;
+  --swarmz-mint-status:      #86EFAC;
+  --swarmz-warning-amber:    #F59E0B;
+  --swarmz-error-red:        #EF4444;
+
+  /* ── Typography ─────────────────────────────────── */
+  --swarmz-font-title:       'Orbitron', 'Rajdhani', 'Oxanium', sans-serif;
+  --swarmz-font-body:        'Inter', 'IBM Plex Sans', sans-serif;
+  --swarmz-font-mono:        'IBM Plex Mono', 'JetBrains Mono', monospace;
+  --swarmz-title-spacing:    0.08em;
+  --swarmz-label-size-min:   10px;
+  --swarmz-label-size-max:   12px;
+  --swarmz-label-opacity:    0.75;
+
+  /* ── Layout ─────────────────────────────────────── */
+  --swarmz-grid-unit:        8px;
+  --swarmz-spacing-sm:       16px;
+  --swarmz-spacing-md:       24px;
+  --swarmz-spacing-lg:       32px;
+  --swarmz-radius-min:       14px;
+  --swarmz-radius-max:       18px;
+
+  /* ── Glow + stroke ──────────────────────────────── */
+  --swarmz-border-min:       1px;
+  --swarmz-border-max:       2px;
+  --swarmz-glow-outer-blur:  12px;
+  --swarmz-glow-inner-blur:  6px;
+
+  /* ── Glass panel ────────────────────────────────── */
+  --swarmz-panel-bg:         rgba(18, 24, 32, 0.55);
+  --swarmz-panel-blur:       16px;
+  --swarmz-panel-border-cyan:   1px solid rgba(34, 211, 238, 0.25);
+  --swarmz-panel-border-violet: 1px solid rgba(168, 85, 247, 0.22);
+}

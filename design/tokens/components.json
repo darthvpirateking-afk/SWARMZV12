@@ -1,0 +1,45 @@
+{
+  "swarmz": {
+    "components": {
+      "glass-panel": {
+        "background": "rgba(18,24,32,0.55)",
+        "backdrop-blur": { "min": "12px", "max": "18px" },
+        "border-options": [
+          "1px solid rgba(34,211,238,0.25)",
+          "1px solid rgba(168,85,247,0.22)"
+        ],
+        "inner-highlight": "1px at top, 10–15% opacity",
+        "noise-overlay-opacity": { "min": "0.02", "max": "0.04" }
+      },
+      "hud-button": {
+        "states": {
+          "idle": {
+            "background": "dark glass",
+            "border": "faint"
+          },
+          "hover": {
+            "border": "brightened",
+            "inner-glow": "slight"
+          },
+          "active": {
+            "fill": "neon gradient violet→cyan",
+            "glow": "stronger"
+          }
+        },
+        "text-transform": "uppercase",
+        "text-style": "compact"
+      },
+      "graph-radar-lattice": {
+        "grid-line-opacity": { "min": "0.05", "max": "0.10" },
+        "trace-colors": ["neon-cyan", "neon-violet"],
+        "node-glow": "on-focus-only",
+        "labels": "tick marks + small numeric"
+      },
+      "background-space-data": {
+        "star-field": "subtle",
+        "matrix-rain": "extremely faint, vertical",
+        "lens-specks": "occasional, behind center content"
+      }
+    }
+  }
+}

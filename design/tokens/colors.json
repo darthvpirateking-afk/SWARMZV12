@@ -1,0 +1,23 @@
+{
+  "swarmz": {
+    "colors": {
+      "base": {
+        "void": { "value": "#05070C", "description": "Primary background — deep black" },
+        "deep-slate": { "value": "#0B1017", "description": "Secondary background" },
+        "panel-shadow": { "value": "rgba(0,0,0,0.55)", "description": "Panel drop-shadow fill" },
+        "glass-fill": { "value": "rgba(18,24,32,0.55)", "description": "Primary frosted-glass background" },
+        "glass-fill-2": { "value": "rgba(10,14,20,0.35)", "description": "Secondary frosted-glass background" }
+      },
+      "accent": {
+        "neon-violet": { "value": "#A855F7", "description": "Core energy accent" },
+        "electric-purple": { "value": "#7C3AED", "description": "Deep violet accent" },
+        "plasma-magenta": { "value": "#D946EF", "description": "Hot magenta highlight" },
+        "neon-cyan": { "value": "#22D3EE", "description": "Primary diagnostic cyan" },
+        "teal-scan": { "value": "#14B8A6", "description": "Scanning/sweep teal" },
+        "mint-status": { "value": "#86EFAC", "description": "Healthy/active status" },
+        "warning-amber": { "value": "#F59E0B", "description": "Warning state" },
+        "error-red": { "value": "#EF4444", "description": "Error/critical state" }
+      }
+    }
+  }
+}
