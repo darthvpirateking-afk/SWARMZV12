@@ -17,6 +17,7 @@
 ## Features
 
 - 🎯 **Task Execution Engine** - Execute any registered task with full control
+- 🤖 **SWARMZ Companion** - Personal AI companion with dual-mode cognition (NEW!)
 - 🔌 **Plugin System** - Extend capabilities dynamically
 - 📝 **Audit Logging** - Complete transparency of all operations
 - 🛡️ **Operator Sovereignty** - You're always in control
@@ -25,6 +26,27 @@
 - 📦 **Easy Configuration** - JSON-based configuration
 
 ## Quick Start
+
+### SWARMZ Companion (NEW!)
+
+```bash
+# Start the companion in interactive mode
+python3 companion_cli.py --interactive
+
+# Process a question (Companion Mode)
+python3 companion_cli.py --input "What is SWARMZ?"
+
+# Execute a command (Operator Mode)
+python3 companion_cli.py --input "Create a backup file"
+
+# Use with full SWARMZ Core
+python3 companion_cli.py --use-core --interactive
+
+# Show metrics
+python3 companion_cli.py --metrics
+```
+
+See [COMPANION_GUIDE.md](COMPANION_GUIDE.md) for complete documentation.
 
 ### Basic Usage
 
@@ -227,6 +249,54 @@ The "do anything" capability comes from:
 - Built-in arbitrary code execution for trusted operators
 - No artificial restrictions on capabilities
 - Complete operator sovereignty over all operations
+
+## SWARMZ Companion
+
+**SWARMZ Companion** is a personal AI companion with dual-mode cognition:
+
+### Dual-Mode System
+
+1. **Companion Mode 🗨️** - Conversation, explanations, personality
+   - Free natural conversation
+   - Questions and clarifications
+   - No task execution
+
+2. **Operator Mode ⚙️** - Real-world execution with worker swarms
+   - Spawns controlled worker agents
+   - Follows execution loop: INTAKE → STRUCTURE → DECIDE → COMMIT → EXECUTE → VERIFY → LOG → EVOLVE
+   - Never stops at planning
+   - Produces real artifacts
+
+### Key Features
+
+- **Automatic Mode Detection** - Questions → Companion, Commands → Operator
+- **Worker Swarms** - Max 3 workers per task (Scout, Builder, Verify)
+- **Commit Engine** - Prevents stalling with states: ACTION_READY, NEEDS_CONFIRM, BLOCKED
+- **Intelligence Layer** - Predicts outcomes and learns from execution
+- **Evolution Mechanism** - Generates human-approved patchpacks for improvement
+- **Memory Persistence** - Remembers preferences, caps, and ongoing projects
+
+### Quick Example
+
+```python
+from companion import SwarmzCompanion
+
+companion = SwarmzCompanion()
+
+# Companion mode (conversation)
+response = companion.interact("What is SWARMZ?")
+# Returns: conversational response + [CONVERSATION]
+
+# Operator mode (execution)
+response = companion.interact("Create a file", {"name": "test.txt"})
+# Returns: SITUATION → DECISION → EXECUTION → VERIFY → LOG + [ACTION_READY]
+
+# Check metrics
+metrics = companion.get_metrics()
+print(f"Actions/day: {metrics['completed_verified_actions_per_day']}")
+```
+
+See **[COMPANION_GUIDE.md](COMPANION_GUIDE.md)** for complete documentation.
 
 ## Requirements
 
