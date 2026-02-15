@@ -51,6 +51,15 @@ htmlcov/
 # Temporary files
 *.tmp
 /tmp/
+
+# Addon runtime data (generated at runtime)
+addons/data/backups/
+addons/data/guardrails/
+addons/data/memory/
+addons/data/contracts/
+addons/data/packs/
+addons/data/*.json
+addons/data/*.jsonl
 companion_memory.json
 
 # Runtime data (generated at runtime)
