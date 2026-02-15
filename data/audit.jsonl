@@ -1,1 +1,6 @@
-{"timestamp": "2026-02-15T09:52:26.080746", "event_type": "mission_created", "mission_id": "bb907729", "details": {"goal": "Optimize lead conversion", "category": "coin"}, "visibility": "visible"}
+{"timestamp": "2026-02-15T12:54:16.731096", "event_type": "mission_created", "mission_id": "8d9567e1", "details": {"goal": "make money", "category": "coin"}, "visibility": "visible"}
+{"timestamp": "2026-02-15T12:54:16.732761", "event_type": "mission_completed", "mission_id": "8d9567e1", "details": {"roi": 1.5, "next_run": "2026-02-15T18:54:16.732750"}, "visibility": "visible"}
+{"timestamp": "2026-02-15T12:54:16.732862", "event_type": "ecosystem_tick", "mission_id": "8d9567e1", "details": {"tick_count": 1, "operator_goal": "make money", "run_result_status": "completed", "ts": "2026-02-15T12:54:16.730613+00:00"}, "visibility": "visible"}
+{"timestamp": "2026-02-15T12:54:21.734241", "event_type": "mission_created", "mission_id": "39ad054a", "details": {"goal": "make money", "category": "coin"}, "visibility": "visible"}
+{"timestamp": "2026-02-15T12:54:21.735343", "event_type": "mission_completed", "mission_id": "39ad054a", "details": {"roi": 1.5, "next_run": "2026-02-15T18:54:21.735330"}, "visibility": "visible"}
+{"timestamp": "2026-02-15T12:54:21.735471", "event_type": "ecosystem_tick", "mission_id": "39ad054a", "details": {"tick_count": 2, "operator_goal": "make money", "run_result_status": "completed", "ts": "2026-02-15T12:54:21.733841+00:00"}, "visibility": "visible"}

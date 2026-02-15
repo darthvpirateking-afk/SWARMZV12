@@ -15,5 +15,55 @@
   "security": {
     "allow_code_execution": true,
     "require_operator_approval": false
+  },
+  "brain_mapping": {
+    "auto_mode": false,
+    "brains": {
+      "commander": {
+        "model": "claude-opus-4.6",
+        "provider": "anthropic",
+        "purpose": "thinking, companion, reasoning, planning",
+        "description": "Largest context stability + coherent long reasoning"
+      },
+      "builder": {
+        "model": "gpt-5.3-codex",
+        "provider": "openai",
+        "purpose": "coding, refactoring, writing files",
+        "description": "Strongest structured code generation + patch accuracy"
+      },
+      "utility": {
+        "model": "claude-sonnet-4.5",
+        "provider": "anthropic",
+        "purpose": "small tasks, classification, routing, intent detection",
+        "description": "Cheap + fast + reliable classification"
+      },
+      "safety": {
+        "model": "gpt-5.1-codex-max",
+        "provider": "openai",
+        "purpose": "diff inspection, bug spotting, edge-case checking, verification",
+        "description": "Best at diff inspection and edge-case checking"
+      }
+    },
+    "task_routing": {
+      "thinking": "commander",
+      "companion": "commander",
+      "reasoning": "commander",
+      "planning": "commander",
+      "conversation": "commander",
+      "coding": "builder",
+      "refactoring": "builder",
+      "writing_files": "builder",
+      "code_generation": "builder",
+      "patching": "builder",
+      "classification": "utility",
+      "routing": "utility",
+      "intent_detection": "utility",
+      "quick_decision": "utility",
+      "verification": "safety",
+      "diff_inspection": "safety",
+      "bug_check": "safety",
+      "pre_commit": "safety",
+      "edge_case_check": "safety"
+    }
   }
 }

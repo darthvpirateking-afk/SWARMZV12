@@ -1,0 +1,19 @@
+{
+  "user_preferences": {
+    "auto_execute_safe_tasks": true,
+    "confirmation_timeout_seconds": 5,
+    "preferred_mode": "companion",
+    "verbose_output": false
+  },
+  "system_preferences": {
+    "max_workers": 10,
+    "default_worker_timeout_ms": 30000,
+    "enable_metrics": true,
+    "enable_evolution": false
+  },
+  "ui_preferences": {
+    "theme": "dark",
+    "show_countdowns": true,
+    "show_worker_status": true
+  }
+}

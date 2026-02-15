@@ -192,6 +192,104 @@ class TestPlugins(unittest.TestCase):
             self.assertIn("test", result)
 
 
+class TestBrainMapping(unittest.TestCase):
+    """Test brain mapping and routing."""
+
+    def setUp(self):
+        from swarmz_runtime.core.brain import BrainMapping, BrainRole
+        self.BrainMapping = BrainMapping
+        self.BrainRole = BrainRole
+        self.mapping = BrainMapping()
+
+    def test_default_brains(self):
+        """All four brain roles are present by default."""
+        brains = self.mapping.get_all_brains()
+        self.assertEqual(set(brains.keys()), {"commander", "builder", "utility", "safety"})
+
+    def test_commander_model(self):
+        """Commander brain uses Claude Opus 4.6."""
+        brain = self.mapping.get_brain(self.BrainRole.COMMANDER)
+        self.assertEqual(brain["model"], "claude-opus-4.6")
+        self.assertEqual(brain["provider"], "anthropic")
+
+    def test_builder_model(self):
+        """Builder brain uses GPT-5.3-Codex."""
+        brain = self.mapping.get_brain(self.BrainRole.BUILDER)
+        self.assertEqual(brain["model"], "gpt-5.3-codex")
+        self.assertEqual(brain["provider"], "openai")
+
+    def test_utility_model(self):
+        """Utility brain uses Claude Sonnet 4.5."""
+        brain = self.mapping.get_brain(self.BrainRole.UTILITY)
+        self.assertEqual(brain["model"], "claude-sonnet-4.5")
+        self.assertEqual(brain["provider"], "anthropic")
+
+    def test_safety_model(self):
+        """Safety brain uses GPT-5.1-Codex-Max."""
+        brain = self.mapping.get_brain(self.BrainRole.SAFETY)
+        self.assertEqual(brain["model"], "gpt-5.1-codex-max")
+        self.assertEqual(brain["provider"], "openai")
+
+    def test_route_thinking(self):
+        """Thinking tasks route to commander brain."""
+        result = self.mapping.route("thinking")
+        self.assertEqual(result["role"], "commander")
+        self.assertEqual(result["model"], "claude-opus-4.6")
+
+    def test_route_coding(self):
+        """Coding tasks route to builder brain."""
+        result = self.mapping.route("coding")
+        self.assertEqual(result["role"], "builder")
+        self.assertEqual(result["model"], "gpt-5.3-codex")
+
+    def test_route_classification(self):
+        """Classification tasks route to utility brain."""
+        result = self.mapping.route("classification")
+        self.assertEqual(result["role"], "utility")
+        self.assertEqual(result["model"], "claude-sonnet-4.5")
+
+    def test_route_verification(self):
+        """Verification tasks route to safety brain."""
+        result = self.mapping.route("verification")
+        self.assertEqual(result["role"], "safety")
+        self.assertEqual(result["model"], "gpt-5.1-codex-max")
+
+    def test_unknown_task_falls_back_to_utility(self):
+        """Unknown task types default to the utility brain."""
+        result = self.mapping.route("unknown_task_xyz")
+        self.assertEqual(result["role"], "utility")
+
+    def test_auto_mode_always_disabled(self):
+        """Auto mode is always False."""
+        self.assertFalse(self.mapping.auto_mode)
+
+    def test_auto_mode_config_rejected(self):
+        """Enabling auto_mode via config raises ValueError."""
+        with self.assertRaises(ValueError):
+            self.BrainMapping({"auto_mode": True})
+
+    def test_routing_table(self):
+        """Routing table includes all default task types."""
+        table = self.mapping.get_routing_table()
+        self.assertEqual(table["planning"], "commander")
+        self.assertEqual(table["refactoring"], "builder")
+        self.assertEqual(table["intent_detection"], "utility")
+        self.assertEqual(table["pre_commit"], "safety")
+
+    def test_config_override_model(self):
+        """Operator can override a brain model via config."""
+        cfg = {"brains": {"builder": {"model": "custom-codex-7"}}}
+        mapping = self.BrainMapping(cfg)
+        brain = mapping.get_brain(self.BrainRole.BUILDER)
+        self.assertEqual(brain["model"], "custom-codex-7")
+
+    def test_deterministic_routing(self):
+        """Same task type always returns the same result."""
+        first = self.mapping.route("reasoning")
+        second = self.mapping.route("reasoning")
+        self.assertEqual(first, second)
+
+
 def run_tests():
     """Run all tests."""
     print("=" * 60)
@@ -208,6 +306,7 @@ def run_tests():
     suite.addTests(loader.loadTestsFromTestCase(TestTaskExecutor))
     suite.addTests(loader.loadTestsFromTestCase(TestSwarmzCore))
     suite.addTests(loader.loadTestsFromTestCase(TestPlugins))
+    suite.addTests(loader.loadTestsFromTestCase(TestBrainMapping))
     
     # Run tests
     runner = unittest.TextTestRunner(verbosity=2)

@@ -122,16 +122,7 @@ case $MODE in
     api)
         echo -e "${CYAN}Starting API server...${NC}"
         echo -e "${CYAN}============================================${NC}"
-        if [ -f "swarmz_api.py" ]; then
-            echo -e "${GREEN}API will be available at: http://127.0.0.1:8000${NC}"
-            echo -e "${GREEN}API docs at: http://127.0.0.1:8000/docs${NC}"
-            echo ""
-            $PYTHON_EXE -m uvicorn swarmz_api:app --host 127.0.0.1 --port 8000
-        else
-            echo -e "  ${RED}✗ swarmz_api.py not found${NC}"
-            echo -e "  ${YELLOW}Run installer.py to create API components${NC}"
-            exit 1
-        fi
+        $PYTHON_EXE run_swarmz.py
         ;;
     *)
         echo -e "${CYAN}Starting interactive CLI...${NC}"

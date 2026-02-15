@@ -1,0 +1,5 @@
+# SWARMZ development / packaging dependencies
+# Install on top of the base requirements:
+#   pip install -r requirements.txt -r requirements-dev.txt
+
+pyinstaller>=6.0.0

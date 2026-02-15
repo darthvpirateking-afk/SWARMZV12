@@ -6,7 +6,6 @@ __pycache__/
 .Python
 build/
 develop-eggs/
-dist/
 downloads/
 eggs/
 .eggs/
@@ -19,6 +18,10 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+
+# Node.js
+node_modules/
+dist/
 
 # Virtual environments
 venv/
@@ -57,3 +60,13 @@ addons/data/contracts/
 addons/data/packs/
 addons/data/*.json
 addons/data/*.jsonl
+companion_memory.json
+
+# Runtime data (generated at runtime)
+data/audit.jsonl
+data/missions.jsonl
+data/runes.json
+data/system_state.json
+data/state.json
+data/scoreboard.json
+data/KILL

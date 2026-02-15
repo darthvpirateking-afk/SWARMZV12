@@ -1,0 +1,103 @@
+============================================================
+ SWARMZ — Quick-Start Examples
+============================================================
+
+------------------------------------------------------------
+ 1. INSTALL & RUN  (any OS with Python 3.6+)
+------------------------------------------------------------
+
+  # Clone the repo
+  git clone https://github.com/darthvpirateking-afk/swarmz.git
+  cd swarmz
+
+  # Create a virtual-env and install dependencies
+  python3 -m venv venv
+  source venv/bin/activate        # Windows: venv\Scripts\activate
+  pip install -r requirements.txt
+
+  # Start the server (binds to 0.0.0.0:8012)
+  python run_swarmz.py
+
+  The console will print:
+    Local:   http://localhost:8012
+    LAN:     http://<your-lan-ip>:8012
+
+
+------------------------------------------------------------
+ 2. WINDOWS ONE-LINER
+------------------------------------------------------------
+
+  RUN.cmd api          — Batch file (cmd.exe)
+  .\RUN.ps1 -api       — PowerShell
+
+
+------------------------------------------------------------
+ 3. TERMUX (Android)
+------------------------------------------------------------
+
+  pkg install git python -y
+  git clone https://github.com/darthvpirateking-afk/swarmz.git
+  cd swarmz
+  bash termux_setup.sh      # one-time
+  bash termux_run.sh        # start server
+
+
+------------------------------------------------------------
+ 4. LAN ACCESS  (phone / tablet / second PC)
+------------------------------------------------------------
+
+  Open a browser on any device connected to the same Wi-Fi
+  and navigate to the LAN URL printed at startup, e.g.:
+
+    http://192.168.1.42:8012
+
+
+------------------------------------------------------------
+ 5. ADD TO HOME SCREEN / INSTALL APP  (PWA)
+------------------------------------------------------------
+
+  Open http://<lan-ip>:8012 in Chrome or Safari on your
+  phone, then:
+
+  Android (Chrome):
+    Menu ⋮ → "Add to Home screen" → tap Add
+
+  iOS (Safari):
+    Share ↑ → "Add to Home Screen" → tap Add
+
+  Desktop (Chrome / Edge):
+    Click the install icon in the address bar, or
+    Menu → "Install SWARMZ"
+
+
+------------------------------------------------------------
+ 6. SAMPLE curl REQUESTS
+------------------------------------------------------------
+
+  # Health check
+  curl http://localhost:8012/health
+
+  # JSON status endpoint
+  curl http://localhost:8012/status
+
+  # Create a mission
+  curl -X POST http://localhost:8012/v1/missions/create \
+    -H "Content-Type: application/json" \
+    -d '{"goal":"Optimize conversion","category":"coin","constraints":{"max_time_seconds":60,"max_steps":3}}'
+
+  # List missions
+  curl http://localhost:8012/v1/missions/list
+
+  # System omens
+  curl http://localhost:8012/v1/system/omens
+
+  # Predictions
+  curl http://localhost:8012/v1/system/predictions
+
+  # Templates
+  curl http://localhost:8012/v1/system/templates
+
+  # Schedule maintenance
+  curl -X POST http://localhost:8012/v1/admin/maintenance
+
+============================================================
