@@ -1,0 +1,18 @@
+{
+  "id": "module_fastapi_router",
+  "title": "FastAPI Router Module",
+  "description": "Generates a FastAPI router module with __init__.py, router file, and test file.",
+  "version": 1,
+  "variables": [
+    {
+      "key": "name",
+      "prompt": "Module name (e.g. userAuth or user-auth)",
+      "default": "myModule"
+    }
+  ],
+  "output": {
+    "root": ".",
+    "path": "{{kebabName}}",
+    "conflict": "fail"
+  }
+}
