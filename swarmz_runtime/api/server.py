@@ -8,6 +8,7 @@ from swarmz_runtime.api import missions, system, admin
 from addons.api.addons_router import router as addons_router
 from addons.api.guardrails_router import router as guardrails_router
 from addons.api.dashboard_router import router as dashboard_router
+from addons.api.ui_router import router as ui_router
 from addons.auth_gate import LANAuthMiddleware
 from addons.rate_limiter import RateLimitMiddleware
 from swarmz_runtime.api import missions, system, admin, ecosystem
@@ -47,6 +48,7 @@ app.include_router(admin.router, prefix="/v1/admin", tags=["admin"])
 app.include_router(addons_router, prefix="/v1/addons", tags=["addons"])
 app.include_router(guardrails_router, prefix="/v1/guardrails", tags=["guardrails"])
 app.include_router(dashboard_router, tags=["dashboard"])
+app.include_router(ui_router, tags=["ui"])
 app.include_router(ecosystem.router, prefix="/v1/ecosystem", tags=["ecosystem"])
 
 # ---------------------------------------------------------------------------
@@ -83,6 +85,8 @@ footer{margin-top:2rem;font-size:.75rem;color:#484f58}
 <h1>&#x1F41D; SWARMZ</h1>
 <p class="tag">Operator-Sovereign Mission Engine &middot; v1.0.0</p>
 <div class="cards">
+ <a class="card" href="/ui"><h2>Operator Console</h2><p>Interactive UI &mdash; execute tasks, browse capabilities</p></a>
+ <a class="card" href="/dashboard"><h2>Dashboard</h2><p>Mission monitoring &amp; status</p></a>
  <a class="card" href="/docs"><h2>API Docs</h2><p>Interactive Swagger UI</p></a>
  <a class="card" href="/health"><h2>Health</h2><p>Service health check</p></a>
  <a class="card" href="/v1/missions/list"><h2>Missions</h2><p>List active missions</p></a>
