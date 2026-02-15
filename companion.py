@@ -525,7 +525,8 @@ class ModeManager:
             return {
                 "completed_verified_actions_per_day": 0,
                 "error_rate": 0.0,
-                "total_actions": 0
+                "total_actions": 0,
+                "success_rate": 0.0
             }
         
         total = len(logs)
