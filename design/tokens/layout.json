@@ -1,0 +1,40 @@
+{
+  "swarmz": {
+    "layout": {
+      "grid": {
+        "base-unit": { "value": "8px", "description": "All panels align to 8px grid" }
+      },
+      "spacing": {
+        "sm": { "value": "16px", "description": "Small spacing rhythm" },
+        "md": { "value": "24px", "description": "Medium spacing rhythm" },
+        "lg": { "value": "32px", "description": "Large spacing rhythm" }
+      },
+      "corner-radius": {
+        "min": { "value": "14px", "description": "Minimum corner radius" },
+        "max": { "value": "18px", "description": "Maximum corner radius" }
+      },
+      "frame": {
+        "description": "Primary HUD frame: top title bar + left nav + central scene + right diagnostics"
+      }
+    },
+    "glow": {
+      "border-stroke": {
+        "min": { "value": "1px", "description": "Minimum border width" },
+        "max": { "value": "2px", "description": "Maximum border width — never thick" }
+      },
+      "outer": {
+        "blur-min": { "value": "8px" },
+        "blur-max": { "value": "16px" },
+        "opacity-min": { "value": "0.20" },
+        "opacity-max": { "value": "0.40" }
+      },
+      "inner": {
+        "blur-min": { "value": "4px" },
+        "blur-max": { "value": "10px" },
+        "opacity-min": { "value": "0.15" },
+        "opacity-max": { "value": "0.30" }
+      },
+      "usage": "Use glow only on key affordances: buttons, active graph lines, core nodes"
+    }
+  }
+}
