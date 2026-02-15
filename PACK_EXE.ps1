@@ -14,7 +14,7 @@ Write-Host ""
 
 # Ensure PyInstaller is available
 try {
-    $piVer = & python -m PyInstaller --version 2>&1
+    $piVer = & python -m pyinstaller --version 2>&1
     Write-Host "  PyInstaller version: $piVer" -ForegroundColor Green
 } catch {
     Write-Host "  PyInstaller not found. Install it first:" -ForegroundColor Red
