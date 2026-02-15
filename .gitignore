@@ -21,6 +21,7 @@ wheels/
 
 # Node.js
 node_modules/
+dist/
 
 # Virtual environments
 venv/
