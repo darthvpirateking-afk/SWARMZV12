@@ -48,3 +48,6 @@ htmlcov/
 # Temporary files
 *.tmp
 /tmp/
+
+# PyInstaller
+*.spec

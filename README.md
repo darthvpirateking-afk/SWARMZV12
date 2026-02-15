@@ -22,11 +22,28 @@
 - 🛡️ **Operator Sovereignty** - You're always in control
 - 🔧 **Built-in Tasks** - Core functionality out of the box
 - 💻 **CLI Interface** - Command-line and interactive modes
+- 🌐 **Web Server & REST API** - FastAPI-based API with OpenAPI docs
+- 📱 **Progressive Web App** - Mobile-friendly PWA with offline support
+- 🚀 **Cross-Platform** - Windows, Linux, macOS, and Android (Termux)
 - 📦 **Easy Configuration** - JSON-based configuration
 
 ## Quick Start
 
-### Basic Usage
+### Web Server (Recommended)
+
+```bash
+# Windows: Double-click RUN.cmd or RUN.ps1
+# Or manually:
+pip install -r requirements.txt
+python3 swarmz_server.py
+
+# Access at:
+# Local:  http://localhost:8000
+# LAN:    http://192.168.x.x:8000 (shown on startup)
+# API Docs: http://localhost:8000/docs
+```
+
+### CLI Usage
 
 ```bash
 # Run the demo
@@ -230,9 +247,49 @@ The "do anything" capability comes from:
 
 ## Requirements
 
+### Core System
 - Python 3.6+
-- No external dependencies for core functionality
-- Plugins may have their own dependencies
+- No external dependencies for core functionality (swarmz.py, swarmz_cli.py)
+
+### Web Server & PWA
+- FastAPI and Uvicorn (install with: `pip install -r requirements.txt`)
+- Modern web browser for PWA features
+
+### Development
+- PyInstaller for building executables
+- pytest for testing (install with: `pip install -r requirements-dev.txt`)
+
+## Deployment Options
+
+### Windows
+- **RUN.cmd** - Double-click to auto-setup and start (Command Prompt)
+- **RUN.ps1** - Double-click to auto-setup and start (PowerShell)
+- **PACK_EXE.ps1** - Build standalone .exe with PyInstaller
+
+### Linux / macOS
+```bash
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+python swarmz_server.py
+```
+
+### Android (Termux)
+```bash
+# One-time setup
+./termux_setup.sh
+
+# Start server
+./termux_run.sh
+```
+
+### Progressive Web App (PWA)
+1. Start the server (any method above)
+2. Open the LAN URL on your mobile device
+3. Tap "Install" or "Add to Home Screen"
+4. Access SWARMZ like a native app!
+
+For detailed examples and usage, see **EXAMPLES.txt**.
 
 ## Contributing
 
