@@ -323,3 +323,63 @@ SWARMZ is an operator-sovereign system designed for maximum flexibility and cont
 ---
 
 **Remember: With SWARMZ, the operator maintains complete sovereignty. You're in control.**
+
+
+
+
+
+
+
+
+
+SWARMZ — FOUNDER RECORD
+Creator:
+Regan Stewart Harris
+Date of Creation:
+16/02/2026
+Project Name:
+SWARMZ
+Declaration of Authorship:
+I declare that I am the original creator and author of the software system known as “SWARMZ”.
+All architecture, terminology, structure, and system behavior definitions described in this document originate from my work and development process.
+System Description:
+SWARMZ is a local-first governed software system that converts goals into structured missions, executes small safe actions, measures outcomes, and adapts behavior using deterministic rules while preserving operator control.
+Core Purpose:
+Prevent random work and unstable automation by enforcing a continuous operational loop:
+detect → evaluate → execute → measure → learn → adapt
+Operating Principles:
+• Deterministic operation
+• Operator-controlled execution
+• Reversible actions
+• Evidence-based adaptation
+• Local-first storage
+• Audit-logged behavior
+Core Components:
+Mission Ledger
+Stores structured tasks and outcomes.
+Decision Engine
+Evaluates actions across defined constraints before execution.
+Execution Layer
+Performs bounded, safe operations only.
+Measurement Layer
+Records measurable outcomes from every action.
+Adaptation Layer
+Updates strategies based on verified results.
+Audit Log
+Immutable record of all system actions and state changes.
+Key Terminology:
+Mission:
+A structured objective converted into executable steps.
+State:
+Current measurable condition of the system.
+Signal:
+Measured performance outcome used for decision making.
+Constraint:
+A rule preventing unstable or unsafe behavior.
+Adaptation:
+A change in strategy caused by evidence.
+Ownership Statement:
+The name “SWARMZ” and the system described herein are claimed as an original software project created by the author listed above.
+Signature:
+Regan Stewart Harris
+©2026 Regan S Harris. All rights reserved.
