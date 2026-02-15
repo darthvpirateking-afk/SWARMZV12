@@ -14,5 +14,9 @@
     "declaration": true
   },
   "include": ["src/**/*"],
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true
+  },
   "exclude": ["node_modules", "dist"]
 }
