@@ -11,10 +11,11 @@ from swarmz_runtime.core.resonance import ResonanceDetector
 from swarmz_runtime.core.cadence import CadenceEngine
 from swarmz_runtime.core.maintenance import MaintenanceScheduler
 from swarmz_runtime.core.visibility import VisibilityManager
+from swarmz_runtime.core.brain import BrainMapping
 
 
 class SwarmzEngine:
-    def __init__(self, data_dir: str = "data"):
+    def __init__(self, data_dir: str = "data", brain_config: Optional[Dict[str, Any]] = None):
         self.db = Database(data_dir)
         self.learning = LearningEngine()
         self.prophet = ProphetEngine(self.db)
@@ -22,6 +23,7 @@ class SwarmzEngine:
         self.cadence = CadenceEngine()
         self.maintenance = MaintenanceScheduler()
         self.visibility = VisibilityManager()
+        self.brain = BrainMapping(brain_config)
         
         self.max_active_missions = 3
         self.operator_key = "swarmz_sovereign_key"
@@ -201,4 +203,16 @@ class SwarmzEngine:
         return {
             "scheduled_tasks": len(tasks),
             "tasks": tasks
+        }
+    
+    def route_task(self, task_type: str) -> Dict[str, Any]:
+        """Route a task type to the appropriate brain/model."""
+        return self.brain.route(task_type)
+    
+    def get_brain_status(self) -> Dict[str, Any]:
+        """Return current brain mapping and auto_mode status."""
+        return {
+            "auto_mode": self.brain.auto_mode,
+            "brains": self.brain.get_all_brains(),
+            "routing_table": self.brain.get_routing_table(),
         }
