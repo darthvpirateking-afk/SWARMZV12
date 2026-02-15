@@ -8,7 +8,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 
 from fastapi.testclient import TestClient
-from addons.api.ui_router import router, _get_core
+from addons.api.ui_router import router
 
 # Build a minimal FastAPI app that only contains the UI router.
 from fastapi import FastAPI

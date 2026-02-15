@@ -15,8 +15,7 @@ HTML UI:
 
 from __future__ import annotations
 
-import json
-import traceback
+import logging
 from typing import Any, Dict
 
 from fastapi import APIRouter
@@ -24,6 +23,8 @@ from fastapi.responses import HTMLResponse, JSONResponse
 from pydantic import BaseModel
 
 from swarmz import SwarmzCore
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
@@ -47,7 +48,7 @@ def _get_core() -> SwarmzCore:
             try:
                 _core.load_plugin(str(plugin_file))
             except Exception:
-                pass  # best-effort
+                logger.warning("Failed to load plugin %s", plugin_file.name, exc_info=True)
     return _core
 
 
@@ -169,7 +170,7 @@ footer{margin-top:2rem;font-size:.72rem;color:#484f58;text-align:center}
   <textarea id="exec-params" placeholder='{"message": "Hello"}'></textarea>
   <button class="btn btn-primary" id="exec-btn">&#x25B6; Execute</button>
   <button class="btn btn-secondary" id="clear-btn">Clear</button>
-  <div id="exec-result"></div>
+  <div id="exec-result" aria-live="polite"></div>
 </div>
 
 <!-- Audit Log -->
@@ -232,18 +233,18 @@ function selectTask(name,meta){
 /* --- Execute --- */
 document.getElementById('exec-btn').onclick=async()=>{
   const task=document.getElementById('exec-task').value.trim();
-  if(!task){alert('Enter a task name');return;}
+  if(!task){showResult({ok:false,error:'Please enter a task name'});return;}
   let params={};
   const raw=document.getElementById('exec-params').value.trim();
   if(raw){try{params=JSON.parse(raw);}catch(e){showResult({ok:false,error:'Invalid JSON: '+e.message});return;}}
   const btn=document.getElementById('exec-btn');
-  btn.disabled=true;btn.textContent='Running\u2026';
+  btn.disabled=true;btn.setAttribute('aria-busy','true');btn.textContent='Running\u2026';
   try{
     const d=await jpost('/ui/api/execute',{task,params});
     showResult(d);
     loadAudit();
   }catch(e){showResult({ok:false,error:String(e)});}
-  btn.disabled=false;btn.textContent='\u25B6 Execute';
+  btn.disabled=false;btn.removeAttribute('aria-busy');btn.textContent='\u25B6 Execute';
 };
 
 document.getElementById('clear-btn').onclick=()=>{
