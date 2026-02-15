@@ -1,0 +1,19 @@
+{
+  "system_name": "SWARMZ",
+  "version": "1.0.0",
+  "operator_sovereignty": {
+    "enabled": true,
+    "auto_approve": true,
+    "audit_enabled": true
+  },
+  "plugins": {
+    "auto_load": [
+      "plugins/filesystem.py",
+      "plugins/dataprocessing.py"
+    ]
+  },
+  "security": {
+    "allow_code_execution": true,
+    "require_operator_approval": false
+  }
+}
