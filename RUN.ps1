@@ -110,16 +110,7 @@ if ($test) {
 } elseif ($api) {
     Write-Host "Starting API server..." -ForegroundColor Cyan
     Write-Host "============================================" -ForegroundColor Cyan
-    if (Test-Path "swarmz_api.py") {
-        Write-Host "API will be available at: http://127.0.0.1:8000" -ForegroundColor Green
-        Write-Host "API docs at: http://127.0.0.1:8000/docs" -ForegroundColor Green
-        Write-Host ""
-        & $pythonExe -m uvicorn swarmz_api:app --host 127.0.0.1 --port 8000
-    } else {
-        Write-Host "  ✗ swarmz_api.py not found" -ForegroundColor Red
-        Write-Host "  Run installer.py to create API components" -ForegroundColor Yellow
-        exit 1
-    }
+    & $pythonExe run_swarmz.py
 } else {
     Write-Host "Starting interactive CLI..." -ForegroundColor Cyan
     Write-Host "============================================" -ForegroundColor Cyan

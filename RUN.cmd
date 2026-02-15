@@ -121,16 +121,7 @@ if "%MODE%"=="test" (
 ) else if "%MODE%"=="api" (
     echo Starting API server...
     echo ============================================
-    if exist "swarmz_api.py" (
-        echo API will be available at: http://127.0.0.1:8000
-        echo API docs at: http://127.0.0.1:8000/docs
-        echo.
-        %PYTHON_EXE% -m uvicorn swarmz_api:app --host 127.0.0.1 --port 8000
-    ) else (
-        echo   [ERROR] swarmz_api.py not found
-        echo   Run installer.py to create API components
-        exit /b 1
-    )
+    %PYTHON_EXE% run_swarmz.py
 ) else (
     echo Starting interactive CLI...
     echo ============================================
