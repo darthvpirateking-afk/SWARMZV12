@@ -1,0 +1,24 @@
+{
+  "whitelisted_actions": [
+    "read",
+    "list",
+    "query",
+    "search",
+    "analyze",
+    "scout"
+  ],
+  "whitelisted_paths": [
+    "/tmp",
+    "/var/tmp",
+    "./workspace"
+  ],
+  "whitelisted_apis": [
+    "https://api.example.com/safe/*"
+  ],
+  "safe_operations": [
+    "preview",
+    "validate",
+    "check",
+    "test"
+  ]
+}
