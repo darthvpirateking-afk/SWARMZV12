@@ -94,3 +94,4 @@ swarmz_runtime/api/v1/
 swarmz_runtime/extensions/
 test_api/
 test_ws/
+env[*
