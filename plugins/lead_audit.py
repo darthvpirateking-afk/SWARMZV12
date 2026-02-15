@@ -8,6 +8,7 @@ Provides deterministic lead scoring and prioritization.
 import csv
 import io
 import hashlib
+import math
 from typing import Dict, Any, List
 from datetime import datetime, timedelta
 
@@ -34,7 +35,7 @@ def calculate_recency_score(last_contact: str) -> float:
         
         # Exponential decay: score = 100 * e^(-days/30)
         # 0 days = 100, 30 days = 36.8, 60 days = 13.5, 90 days = 5.0
-        score = 100 * (2.71828 ** (-days_ago / 30))
+        score = 100 * math.exp(-days_ago / 30)
         return min(100, max(0, score))
     except:
         # If can't parse, assume very old

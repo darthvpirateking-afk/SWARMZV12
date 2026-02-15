@@ -1,10 +1,11 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, Callable
 from swarmz_runtime.core.engine import SwarmzEngine
 
 router = APIRouter()
-engine = SwarmzEngine()
+
+get_engine: Callable[[], SwarmzEngine] = lambda: SwarmzEngine()
 
 
 class CreateMissionRequest(BaseModel):
@@ -25,7 +26,7 @@ class ApproveMissionRequest(BaseModel):
 
 @router.post("/create")
 def create_mission(request: CreateMissionRequest):
-    result = engine.create_mission(
+    result = get_engine().create_mission(
         goal=request.goal,
         category=request.category,
         constraints=request.constraints
@@ -37,7 +38,7 @@ def create_mission(request: CreateMissionRequest):
 
 @router.post("/run")
 def run_mission(request: RunMissionRequest):
-    result = engine.run_mission(
+    result = get_engine().run_mission(
         mission_id=request.mission_id,
         operator_key=request.operator_key
     )
@@ -48,13 +49,13 @@ def run_mission(request: RunMissionRequest):
 
 @router.get("/list")
 def list_missions(status: Optional[str] = None):
-    missions = engine.list_missions(status=status)
+    missions = get_engine().list_missions(status=status)
     return {"missions": missions, "count": len(missions)}
 
 
 @router.post("/approve")
 def approve_mission(request: ApproveMissionRequest):
-    result = engine.approve_mission(
+    result = get_engine().approve_mission(
         mission_id=request.mission_id,
         operator_key=request.operator_key
     )
