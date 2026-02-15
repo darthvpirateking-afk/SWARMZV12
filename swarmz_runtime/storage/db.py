@@ -94,8 +94,14 @@ class Database:
     
     def load_state(self) -> Dict[str, Any]:
         if self.state_file.exists():
-            with open(self.state_file, "r") as f:
-                return json.load(f)
+            try:
+                with open(self.state_file, "r") as f:
+                    return json.load(f)
+            except (json.JSONDecodeError, ValueError):
+                # Recover from corrupted state file
+                default = {"active_missions": 0, "pattern_counters": {}}
+                self.save_state(default)
+                return default
         return {"active_missions": 0, "pattern_counters": {}}
     
     def save_state(self, state: Dict[str, Any]):

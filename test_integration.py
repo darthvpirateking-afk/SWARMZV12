@@ -5,127 +5,86 @@ Tests that the companion can execute real tasks through the core system.
 """
 
 import sys
+import unittest
 from pathlib import Path
 
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
 
-from companion import SwarmzCompanion
+from companion import SwarmzCompanion, TaskContext, WorkerSwarm, CommitEngine, CommitState
 from swarmz import SwarmzCore
 
 
-def test_integration():
+class TestCompanionCoreIntegration(unittest.TestCase):
     """Test full integration between Companion and Core."""
-    print("=" * 70)
-    print("SWARMZ Companion + Core Integration Test")
-    print("=" * 70)
-    print()
-    
-    # Initialize core with plugins
-    print("1. Initializing SWARMZ Core...")
-    core = SwarmzCore()
-    core.load_plugin("plugins/filesystem.py")
-    core.load_plugin("plugins/dataprocessing.py")
-    print(f"   ✓ Core initialized with {len(core.list_capabilities())} capabilities")
-    print()
-    
-    # Initialize companion with core
-    print("2. Initializing SWARMZ Companion with Core integration...")
-    companion = SwarmzCompanion(swarmz_core=core)
-    print("   ✓ Companion initialized")
-    print()
-    
-    # Test 1: Companion mode (conversation)
-    print("3. Testing Companion Mode (conversation):")
-    response = companion.interact("What is SWARMZ?")
-    print(f"   Input: 'What is SWARMZ?'")
-    print(f"   Mode: {companion.get_current_mode().value}")
-    print(f"   Response preview: {response[:100]}...")
-    assert "[CONVERSATION]" in response
-    print("   ✓ Companion mode working")
-    print()
-    
-    # Test 2: Operator mode (execution)
-    print("4. Testing Operator Mode (task execution):")
-    response = companion.interact("Run echo task", {"message": "Integration test"})
-    print(f"   Input: 'Run echo task'")
-    print(f"   Mode: {companion.get_current_mode().value}")
-    print(f"   Response:")
-    for line in response.split('\n'):
-        print(f"     {line}")
-    assert any(tag in response for tag in ["[ACTION_READY]", "[NEEDS_CONFIRM]", "[BLOCKED]"])
-    print("   ✓ Operator mode working")
-    print()
-    
-    # Test 3: Check metrics
-    print("5. Checking System Metrics:")
-    metrics = companion.get_metrics()
-    print(f"   Actions per day: {metrics['completed_verified_actions_per_day']:.2f}")
-    print(f"   Error rate: {metrics['error_rate']:.1%}")
-    print(f"   Total actions: {metrics['total_actions']}")
-    print(f"   Success rate: {metrics['success_rate']:.1%}")
-    print("   ✓ Metrics tracking working")
-    print()
-    
-    # Test 4: Memory persistence
-    print("6. Testing Memory Persistence:")
-    companion.mode_manager.update_memory({
-        "preferences": {"test_pref": "value"},
-        "caps": {"test_cap": 100}
-    })
-    memory = companion.mode_manager.get_memory()
-    assert memory.preferences.get("test_pref") == "value"
-    assert memory.caps.get("test_cap") == 100
-    print("   ✓ Memory persistence working")
-    print()
-    
-    # Test 5: Worker swarm
-    print("7. Testing Worker Swarm System:")
-    from companion import TaskContext, WorkerSwarm
-    swarm = WorkerSwarm()
-    task_context = TaskContext(task_id="test", intent="integration test")
-    results = swarm.execute_workflow(task_context)
-    print(f"   Workers executed: {len(results)}")
-    print(f"   Worker types: {[r.worker_type.value for r in results]}")
-    assert len(results) == 3
-    print("   ✓ Worker swarm working")
-    print()
-    
-    # Test 6: Commit engine
-    print("8. Testing Commit Engine:")
-    from companion import CommitEngine, CommitState
-    engine = CommitEngine()
-    state = engine.evaluate(task_context)
-    print(f"   Commit state: {state.value}")
-    assert state in [CommitState.ACTION_READY, CommitState.NEEDS_CONFIRM, CommitState.BLOCKED]
-    print("   ✓ Commit engine working")
-    print()
-    
-    # Test 7: Intelligence layer
-    print("9. Testing Intelligence Layer:")
-    intelligence = companion.mode_manager.operator_mode.intelligence
-    logs = intelligence.execution_logs
-    print(f"   Execution logs: {len(logs)}")
-    if logs:
-        print(f"   Last log: {logs[-1].task_name} - Success: {logs[-1].success}")
-    print("   ✓ Intelligence layer working")
-    print()
-    
-    print("=" * 70)
-    print("✓ ALL INTEGRATION TESTS PASSED")
-    print("=" * 70)
-    print()
-    print("SWARMZ Companion is fully integrated with SWARMZ Core!")
-    print()
-    
-    return 0
+
+    @classmethod
+    def setUpClass(cls):
+        cls.core = SwarmzCore()
+        cls.core.load_plugin("plugins/filesystem.py")
+        cls.core.load_plugin("plugins/dataprocessing.py")
+        cls.companion = SwarmzCompanion(swarmz_core=cls.core)
+
+    def test_core_initialization(self):
+        """Core initializes with expected capabilities."""
+        self.assertGreaterEqual(len(self.core.list_capabilities()), 3)
+
+    def test_companion_mode_conversation(self):
+        """Companion mode handles conversation input."""
+        response = self.companion.interact("What is SWARMZ?")
+        self.assertIn("[CONVERSATION]", response)
+
+    def test_operator_mode_execution(self):
+        """Operator mode executes tasks."""
+        response = self.companion.interact("Run echo task", {"message": "Integration test"})
+        self.assertTrue(
+            any(tag in response for tag in ["[ACTION_READY]", "[NEEDS_CONFIRM]", "[BLOCKED]"])
+        )
+
+    def test_metrics_tracking(self):
+        """Metrics are tracked after task execution."""
+        # Ensure at least one action has run
+        self.companion.interact("Run echo task", {"message": "test"})
+        metrics = self.companion.get_metrics()
+        self.assertIn("total_actions", metrics)
+        self.assertIn("success_rate", metrics)
+        self.assertGreaterEqual(metrics["total_actions"], 1)
+
+    def test_memory_persistence(self):
+        """Memory can be updated and retrieved."""
+        self.companion.mode_manager.update_memory({
+            "preferences": {"test_pref": "value"},
+            "caps": {"test_cap": 100}
+        })
+        memory = self.companion.mode_manager.get_memory()
+        self.assertEqual(memory.preferences.get("test_pref"), "value")
+        self.assertEqual(memory.caps.get("test_cap"), 100)
+
+    def test_worker_swarm(self):
+        """Worker swarm executes Scout -> Builder -> Verify workflow."""
+        swarm = WorkerSwarm()
+        task_context = TaskContext(task_id="test", intent="integration test")
+        results = swarm.execute_workflow(task_context)
+        self.assertEqual(len(results), 3)
+        self.assertEqual(
+            [r.worker_type.value for r in results],
+            ["scout", "builder", "verify"]
+        )
+
+    def test_commit_engine(self):
+        """Commit engine evaluates task context."""
+        task_context = TaskContext(task_id="test", intent="integration test")
+        engine = CommitEngine()
+        state = engine.evaluate(task_context)
+        self.assertIn(state, [CommitState.ACTION_READY, CommitState.NEEDS_CONFIRM, CommitState.BLOCKED])
+
+    def test_intelligence_layer(self):
+        """Intelligence layer records execution logs."""
+        # Run a task to generate logs
+        self.companion.interact("Run echo task", {"message": "test"})
+        intelligence = self.companion.mode_manager.operator_mode.intelligence
+        self.assertIsInstance(intelligence.execution_logs, list)
 
 
 if __name__ == "__main__":
-    try:
-        sys.exit(test_integration())
-    except Exception as e:
-        print(f"\n❌ Integration test failed: {e}")
-        import traceback
-        traceback.print_exc()
-        sys.exit(1)
+    unittest.main()
