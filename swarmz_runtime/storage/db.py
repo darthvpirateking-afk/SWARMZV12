@@ -97,7 +97,7 @@ class Database:
             try:
                 with open(self.state_file, "r") as f:
                     return json.load(f)
-            except (json.JSONDecodeError, ValueError):
+            except json.JSONDecodeError:
                 # Recover from corrupted state file
                 default = {"active_missions": 0, "pattern_counters": {}}
                 self.save_state(default)
