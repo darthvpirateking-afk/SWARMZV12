@@ -1,0 +1,17 @@
+{
+  "projects": [
+    {
+      "id": "example_project_1",
+      "name": "Example Project",
+      "path": "/workspace/example",
+      "created_at": 1234567890000,
+      "last_active": 1234567890000,
+      "status": "active",
+      "metadata": {
+        "language": "typescript",
+        "framework": "none"
+      }
+    }
+  ],
+  "active_project_id": null
+}
