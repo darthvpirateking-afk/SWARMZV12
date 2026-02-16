@@ -191,7 +191,7 @@ export class ArtifactFactory {
     cycleStart: number
   ): ArtifactPack {
     return {
-      id: `pack_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      id: `pack_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`,
       task_id: task.id,
       intent: task.intent,
       artifacts,
@@ -212,7 +212,7 @@ export class ArtifactFactory {
     if (buildResult.status === 'success') score += 25;
     if (verifyResult.status === 'success') score += 25;
 
-    // Penalise slow builds
+    // Penalize slow builds
     if (buildResult.cost.time_ms > 5000) score -= 10;
 
     return Math.max(0, Math.min(100, score));
