@@ -6,7 +6,7 @@
   "properties": {
     "layer": { "type": "string" },
     "variable": { "type": "string" },
-    "value": {},
+    "value": { "oneOf": [{"type": "number"}, {"type": "string"}, {"type": "boolean"}] },
     "units": { "type": "string" },
     "time": { "type": "string", "format": "date-time" },
     "confidence": { "type": "number", "minimum": 0, "maximum": 1 },

@@ -174,10 +174,6 @@ class VerificationRunner:
             rb_action_id = rb.get("action_id")
             rb_action = self._actions_by_id.get(rb_action_id)
             if rb_action:
-                # Import here to avoid circular at module level
-                from .swarmz_adapter import InProcessSwarmzBus
-                # We can't easily get the adapter here, so we emit an event
-                # that the weaver or adapter can pick up
                 self._bus.publish_immediate("ROLLBACK_TRIGGERED", {
                     "original_action_id": action["id"],
                     "rollback_action_id": rb_action_id,

@@ -77,5 +77,6 @@ class StateStore:
                     pass  # skip bad lines
 
     def _write(self, record: dict):
+        os.makedirs(os.path.dirname(self._path), exist_ok=True)
         with open(self._path, "a") as fh:
             fh.write(json.dumps(record, default=str) + "\n")
