@@ -1,0 +1,43 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ACTION",
+  "type": "object",
+  "required": ["action_id", "name", "layer", "expected_effects", "irreversibility_cost", "rollback", "verification"],
+  "properties": {
+    "action_id": { "type": "string" },
+    "name": { "type": "string" },
+    "layer": { "type": "string" },
+    "description": { "type": "string" },
+    "expected_effects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["variable", "delta"],
+        "properties": {
+          "variable": { "type": "string" },
+          "delta": { "type": "number" }
+        }
+      }
+    },
+    "irreversibility_cost": { "type": "number", "minimum": 0, "maximum": 1 },
+    "rollback": {
+      "type": "object",
+      "required": ["action_id"],
+      "properties": {
+        "action_id": { "type": "string" },
+        "description": { "type": "string" }
+      }
+    },
+    "verification": {
+      "type": "object",
+      "required": ["metric", "operator", "threshold", "deadline_seconds"],
+      "properties": {
+        "metric": { "type": "string" },
+        "operator": { "type": "string", "enum": [">=", "<=", ">", "<", "==", "!="] },
+        "threshold": { "type": "number" },
+        "deadline_seconds": { "type": "number", "minimum": 0 }
+      }
+    }
+  },
+  "additionalProperties": false
+}

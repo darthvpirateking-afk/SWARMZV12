@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "OBJECTIVE",
+  "type": "object",
+  "required": ["objective_id", "regime", "goal_variable", "target", "operator", "min_duration_active", "cooldown_after_exit"],
+  "properties": {
+    "objective_id": { "type": "string" },
+    "regime": { "type": "string" },
+    "goal_variable": { "type": "string" },
+    "target": { "type": "number" },
+    "operator": { "type": "string", "enum": [">=", "<=", ">", "<", "==", "!="] },
+    "min_duration_active": { "type": "number", "minimum": 0 },
+    "cooldown_after_exit": { "type": "number", "minimum": 0 },
+    "priority": { "type": "number", "minimum": 0 }
+  },
+  "additionalProperties": false
+}

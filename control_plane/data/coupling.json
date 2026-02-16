@@ -1,0 +1,34 @@
+[
+  {
+    "from_variable": "money.budget_remaining",
+    "to_variable": "build.pass_rate",
+    "sign": 1,
+    "strength": 0.4,
+    "lag": "medium",
+    "confidence": 0.7
+  },
+  {
+    "from_variable": "health.system_health",
+    "to_variable": "swarm_health.node_availability",
+    "sign": 1,
+    "strength": 0.6,
+    "lag": "fast",
+    "confidence": 0.8
+  },
+  {
+    "from_variable": "build.pass_rate",
+    "to_variable": "health.system_health",
+    "sign": 1,
+    "strength": 0.5,
+    "lag": "medium",
+    "confidence": 0.75
+  },
+  {
+    "from_variable": "permissions.access_scope",
+    "to_variable": "health.system_health",
+    "sign": -1,
+    "strength": 0.3,
+    "lag": "slow",
+    "confidence": 0.6
+  }
+]
