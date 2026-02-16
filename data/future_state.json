@@ -1,0 +1,12 @@
+{
+  "north_star_description": "Reliable, adaptive operator companion",
+  "time_horizon_days": 90,
+  "priority_axes": {
+    "stability": 0.7,
+    "growth": 0.6,
+    "optionality": 0.5,
+    "recovery_capacity": 0.7
+  },
+  "drift_tolerance": 0.1,
+  "last_updated": "2026-02-16T10:48:37.368980Z"
+}

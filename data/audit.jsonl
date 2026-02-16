@@ -1,1 +1,5 @@
 {"timestamp": "2026-02-16T06:36:32.594777+00:00", "event_type": "schema_migration", "details": {"from": 0, "to": 1, "label": "v0_to_v1"}}
+{"timestamp":"2026-02-16T21:50:05.586266","event_type":"mission_created","mission_id":"a4b8bd8f","details":{"goal":"status check","category":"coin"},"visibility":"visible"}
+{"timestamp":"2026-02-16T21:50:05.607898","event_type":"mission_completed","mission_id":"a4b8bd8f","details":{"roi":1.5,"next_run":"2026-02-17T03:50:05.607880","strategy":"baseline"},"visibility":"visible"}
+{"timestamp":"2026-02-16T21:58:14.005332","event_type":"mission_created","mission_id":"16e318aa","details":{"goal":"status check","category":"coin"},"visibility":"visible"}
+{"timestamp":"2026-02-16T21:58:14.026117","event_type":"mission_completed","mission_id":"16e318aa","details":{"roi":1.5,"next_run":"2026-02-17T03:58:14.026101","strategy":"baseline"},"visibility":"visible"}

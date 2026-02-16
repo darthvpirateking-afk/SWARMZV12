@@ -27,7 +27,6 @@ DATA_DIR = ROOT_DIR / "data"
 UI_DIR = ROOT_DIR / "web_ui"
 DATA_DIR.mkdir(exist_ok=True, parents=True)
 START_TIME = datetime.utcnow()
-OFFLINE_MODE = os.getenv("OFFLINE_MODE", "0") not in {"0", "false", "False", None, ""}
 
 
 def _load_runtime_config() -> Dict[str, Any]:
@@ -35,9 +34,27 @@ def _load_runtime_config() -> Dict[str, Any]:
     if not cfg_path.exists():
         return {}
     try:
-        return json.loads(cfg_path.read_text())
+        raw = json.loads(cfg_path.read_text())
     except Exception:
         return {}
+
+    # Normalize legacy keys to the requested schema without breaking older config
+    cfg: Dict[str, Any] = {}
+    if isinstance(raw, dict):
+        cfg.update(raw)
+        api_base = raw.get("apiBaseUrl") or raw.get("api_base") or raw.get("api_base_url")
+        ui_base = raw.get("uiBaseUrl") or raw.get("ui_base") or raw.get("ui_base_url")
+        if api_base:
+            cfg["apiBaseUrl"] = api_base
+        if ui_base:
+            cfg["uiBaseUrl"] = ui_base
+        if "bind" not in cfg and raw.get("host"):
+            cfg["bind"] = raw.get("host")
+        if "port" not in cfg and raw.get("api_port"):
+            cfg["port"] = raw.get("api_port")
+        if "offlineMode" not in cfg and "offline_mode" in raw:
+            cfg["offlineMode"] = raw.get("offline_mode")
+    return cfg
 
 
 def _lan_ip() -> str:
@@ -49,6 +66,15 @@ def _lan_ip() -> str:
         return ip
     except Exception:
         return "127.0.0.1"
+
+
+def _resolve_offline_mode(cfg: Dict[str, Any]) -> bool:
+    env_val = os.getenv("OFFLINE_MODE")
+    if env_val is not None and env_val not in {"", "0", "false", "False"}:
+        return True
+    if env_val is not None and env_val in {"0", "false", "False"}:
+        return False
+    return bool(cfg.get("offlineMode"))
 
 
 def _load_operator_pin() -> Dict[str, Any]:
@@ -85,6 +111,9 @@ def _load_operator_pin() -> Dict[str, Any]:
     return {"pin": pin, "source": pin_source, "file": pin_file, "generated": generated}
 
 
+_runtime_cfg = _load_runtime_config()
+OFFLINE_MODE = _resolve_offline_mode(_runtime_cfg)
+
 _pin_info = _load_operator_pin()
 OPERATOR_PIN = _pin_info["pin"]
 app.state.operator_pin_source = _pin_info
@@ -112,16 +141,17 @@ def health():
 @app.get("/v1/health")
 def v1_health(request: Request):
     cfg = _load_runtime_config()
+    offline = _resolve_offline_mode(cfg)
     uptime = (datetime.utcnow() - START_TIME).total_seconds()
     base_url = str(request.base_url).rstrip("/")
-    ui_expected = cfg.get("ui_base") or f"{base_url}"
+    ui_expected = cfg.get("uiBaseUrl") or cfg.get("ui_base") or f"{base_url}"
     return {
         "ok": True,
         "version": app.version,
         "uptime_seconds": round(uptime, 2),
         "data_dir": str(DATA_DIR),
         "ui_expected": ui_expected,
-        "offline_mode": OFFLINE_MODE,
+        "offline_mode": offline,
     }
 
 
@@ -379,6 +409,26 @@ def _tail_jsonl(path: Path, limit: int = 10) -> list:
     except Exception:
         return []
     return rows[-limit:]
+
+
+@app.get("/config/runtime.json")
+def runtime_config_file(request: Request):
+    cfg = _load_runtime_config()
+    if not cfg:
+        cfg = {}
+    base_url = cfg.get("apiBaseUrl") or cfg.get("api_base") or str(request.base_url).rstrip("/")
+    ui_url = cfg.get("uiBaseUrl") or cfg.get("ui_base") or f"{base_url}/app"
+    bind = cfg.get("bind") or "0.0.0.0"
+    port = cfg.get("port") or 8012
+    offline = _resolve_offline_mode(cfg)
+    merged = {
+        "apiBaseUrl": base_url,
+        "uiBaseUrl": ui_url,
+        "bind": bind,
+        "port": port,
+        "offlineMode": offline,
+    }
+    return merged
 
 
 @app.get("/manifest.json")

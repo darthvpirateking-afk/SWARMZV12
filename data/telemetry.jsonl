@@ -7,3 +7,17 @@
 {"ts":"2026-02-16T08:57:34.135087Z","type":"http_request","payload":{"path":"/app.js","method":"GET"}}
 {"ts":"2026-02-16T08:57:58.991843Z","type":"http_request","payload":{"path":"/","method":"GET"}}
 {"ts":"2026-02-16T08:58:18.439584Z","type":"http_request","payload":{"path":"/app.js","method":"HEAD"}}
+{"ts":"2026-02-16T10:49:05.335527Z","type":"http_request","payload":{"path":"/v1/health","method":"GET"}}
+{"ts":"2026-02-16T10:49:17.288152Z","type":"http_request","payload":{"path":"/v1/dispatch","method":"POST"}}
+{"ts":"2026-02-16T10:49:24.420937Z","type":"http_request","payload":{"path":"/v1/dispatch","method":"POST"}}
+{"ts":"2026-02-16T10:49:31.198873Z","type":"http_request","payload":{"path":"/v1/dispatch","method":"POST"}}
+{"ts":"2026-02-16T10:49:51.586946Z","type":"http_request","payload":{"path":"/v1/dispatch","method":"POST"}}
+{"ts":"2026-02-16T10:49:51.588773Z","type":"unhandled_exception","error":"1 validation error for Mission\ncategory\n  Input should be 'coin', 'forge', 'library' or 'sanctuary' [type=enum, input_value='demo', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.12/v/enum","context":{"path":"/v1/dispatch"}}
+{"ts":"2026-02-16T10:50:05.584061Z","type":"http_request","payload":{"path":"/v1/dispatch","method":"POST"}}
+{"ts":"2026-02-16T10:50:05.585858Z","type":"mission_created","payload":{"mission_id":"a4b8bd8f","goal":"status check","category":"coin"}}
+{"ts":"2026-02-16T10:50:05.684780Z","type":"dispatch","payload":{"mission_id":"a4b8bd8f","goal":"status check"}}
+{"ts":"2026-02-16T10:58:01.281524Z","type":"http_request","payload":{"path":"/v1/health","method":"GET"}}
+{"ts":"2026-02-16T10:58:07.861679Z","type":"http_request","payload":{"path":"/v1/health","method":"GET"}}
+{"ts":"2026-02-16T10:58:14.002369Z","type":"http_request","payload":{"path":"/v1/dispatch","method":"POST"}}
+{"ts":"2026-02-16T10:58:14.004915Z","type":"mission_created","payload":{"mission_id":"16e318aa","goal":"status check","category":"coin"}}
+{"ts":"2026-02-16T10:58:14.060136Z","type":"dispatch","payload":{"mission_id":"16e318aa","goal":"status check"}}

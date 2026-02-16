@@ -1,0 +1,14 @@
+{
+  "last_active_mission": "16e318aa",
+  "preferred_strategies": {
+    "baseline": {
+      "avg_score": 0.9979,
+      "count": 2,
+      "reinforced": true,
+      "priority": 1.2000000000000002,
+      "last_score": 0.998
+    }
+  },
+  "recent_failures": [],
+  "confidence_level": 1.0
+}

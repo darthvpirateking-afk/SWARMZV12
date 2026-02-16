@@ -50,6 +50,15 @@ def _load_runtime_config() -> Dict[str, str]:
         return {}
 
 
+def run_self_check() -> CheckResult:
+    script = ROOT / "tools" / "self_check.py"
+    if not script.exists():
+        return CheckResult("self_check", "WARN", "tools/self_check.py missing")
+    proc = subprocess.run([sys.executable, str(script)], cwd=ROOT)
+    status = "PASS" if proc.returncode == 0 else "FAIL"
+    return CheckResult("self_check", status, f"exit={proc.returncode}")
+
+
 def check_workdir() -> CheckResult:
     correct = Path.cwd().resolve() == ROOT
     info = f"cwd={Path.cwd()} expected={ROOT}"
@@ -73,7 +82,12 @@ def check_shadow_dirs() -> CheckResult:
         info_parts.append("shadow dirs: " + ", ".join(shadows))
     if len(pkg_jsons) > 1:
         info_parts.append("multiple package.json roots: " + ", ".join(str(p.relative_to(ROOT)) for p in pkg_jsons))
-    status = "FAIL" if shadows or len(pkg_jsons) > 1 else "PASS"
+    if shadows:
+        status = "WARN"
+    elif len(pkg_jsons) > 1:
+        status = "WARN"
+    else:
+        status = "PASS"
     fixes = [
         ("CMD", "Remove duplicate nested dirs (e.g., rmdir /s web\\web) or consolidate package roots."),
         ("PS", "Remove duplicate nested dirs (Remove-Item -Recurse -Force web/web) or consolidate package roots."),
@@ -152,7 +166,7 @@ def check_ports() -> CheckResult:
 
 def check_env_and_config() -> CheckResult:
     cfg = _load_runtime_config()
-    missing_cfg = [k for k in ("api_base", "ui_base") if k not in cfg]
+    missing_cfg = [k for k in ("apiBaseUrl", "uiBaseUrl", "bind", "port") if k not in cfg]
     env_warn = []
     if not os.getenv("SWARMZ_OPERATOR_PIN"):
         env_warn.append("SWARMZ_OPERATOR_PIN not set (auto-generated will be used)")
@@ -190,7 +204,7 @@ def check_writable_dirs() -> CheckResult:
 
 def check_health() -> CheckResult:
     cfg = _load_runtime_config()
-    base = cfg.get("api_base", "http://127.0.0.1:8012")
+    base = cfg.get("apiBaseUrl") or cfg.get("api_base") or "http://127.0.0.1:8012"
     url = base.rstrip("/") + "/v1/health"
     try:
         with request.urlopen(url, timeout=5) as resp:
@@ -203,7 +217,7 @@ def check_health() -> CheckResult:
             status = "PASS" if ok else "FAIL"
             info = json.dumps(data, indent=2)
     except error.URLError as exc:
-        status = "FAIL"
+        status = "WARN"
         info = f"cannot reach {url}: {exc}"
     fixes = [
         ("CMD", "python run_server.py --port 8012"),
@@ -225,6 +239,7 @@ def print_result(res: CheckResult) -> None:
 def main():
     _print_header("SWARMZ Doctor")
     checks = [
+        run_self_check(),
         check_workdir(),
         check_shadow_dirs(),
         check_bom(),

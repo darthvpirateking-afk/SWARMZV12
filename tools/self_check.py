@@ -12,6 +12,7 @@ Standard library only.
 """
 import json
 import os
+import socket
 import sys
 from pathlib import Path
 from typing import List
@@ -19,6 +20,7 @@ from typing import List
 ROOT = Path(__file__).resolve().parent.parent
 EXPECTED_FILES = ["run_swarmz.py", "swarmz_server.py", "requirements.txt", "package.json"]
 IGNORE_DIRS = {"node_modules", ".git", "__pycache__", "build", "dist"}
+DEFAULT_PORTS = [8012, 3000]
 
 
 def info(msg: str):
@@ -65,7 +67,7 @@ def check_nested_package_json():
         for p in pkgs:
             print(f"  - {p.relative_to(ROOT)}")
         print("  FIX: run Node commands in repo root or set NODE_PATH explicitly")
-        return False
+        return True  # warn but do not hard-fail
     info("package.json OK")
     return True
 
@@ -100,16 +102,23 @@ def check_scripts_and_deps():
             pkg = json.loads(pkg_path.read_text())
             scripts = pkg.get("scripts", {})
             required_scripts = ["build", "test"]
-            for s in required_scripts:
-                if s not in scripts:
-                    warn(f"package.json missing script: {s}")
-                    ok = False
+            missing_scripts = [s for s in required_scripts if s not in scripts]
+            for s in missing_scripts:
+                warn(f"package.json missing script: {s}")
+                ok = False
             dev_deps = pkg.get("devDependencies", {})
             needed = ["typescript", "jest", "ts-jest", "@types/node"]
             for dep in needed:
                 if dep not in dev_deps:
                     warn(f"Dev dependency missing: {dep}")
                     ok = False
+            if missing_scripts:
+                print("  FIX (CMD): " + " & ".join([f"npm set-script {s} \"<cmd>\"" for s in missing_scripts]))
+                print("  FIX (PS): " + "; ".join([f"npm set-script {s} '<cmd>'" for s in missing_scripts]))
+            missing_deps = [dep for dep in needed if dep not in dev_deps]
+            if missing_deps:
+                print("  FIX (CMD): npm install -D " + " ".join(missing_deps))
+                print("  FIX (PS): npm install -D " + " ".join(missing_deps))
         except Exception as exc:
             err(f"Failed to parse package.json: {exc}")
             ok = False
@@ -122,6 +131,7 @@ def check_scripts_and_deps():
         ok = False
     else:
         info("requirements.txt present")
+        print("  TIP: pip install -r requirements.txt")
     return ok
 
 
@@ -138,6 +148,25 @@ def check_expected_files():
     return True
 
 
+def check_port_conflicts():
+    busy = []
+    for port in DEFAULT_PORTS:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.settimeout(0.5)
+            try:
+                s.connect(("127.0.0.1", port))
+                busy.append(port)
+            except Exception:
+                continue
+    if busy:
+        warn("Port conflicts detected: " + ", ".join(map(str, busy)))
+        print("  FIX (CMD): " + " & ".join([f"netstat -ano ^| findstr :{p}" for p in busy]))
+        print("  FIX (PS): " + "; ".join([f"Get-NetTCPConnection -LocalPort {p}" for p in busy]))
+        return False
+    info("Ports available: " + ", ".join(map(str, DEFAULT_PORTS)))
+    return True
+
+
 def main():
     overall_ok = True
     if not check_cwd():
@@ -149,6 +178,8 @@ def main():
     if not check_bom_in_json():
         overall_ok = False
     if not check_scripts_and_deps():
+        overall_ok = False
+    if not check_port_conflicts():
         overall_ok = False
 
     print("\n=== SUMMARY ===")

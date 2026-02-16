@@ -1,4 +1,7 @@
 {
-  "api_base": "http://localhost:8012",
-  "ui_base": "http://localhost:8012/app"
+  "apiBaseUrl": "http://localhost:8012",
+  "uiBaseUrl": "http://localhost:8012/app",
+  "bind": "0.0.0.0",
+  "port": 8012,
+  "offlineMode": false
 }

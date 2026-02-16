@@ -1,0 +1,2 @@
+{"timestamp":"2026-02-16T10:50:05.672217Z","mission_id":"a4b8bd8f","inputs_hash":"15d4e9e8d490a6ab54c08e9da84bfc68e74d464f9b6184fd4adbec24436f5038","strategy":"baseline","score":0.9978,"success":true,"runtime_ms":21.62289999978384,"usefulness":2.0376,"tier":"hot"}
+{"timestamp":"2026-02-16T10:58:14.048752Z","mission_id":"16e318aa","inputs_hash":"15d4e9e8d490a6ab54c08e9da84bfc68e74d464f9b6184fd4adbec24436f5038","strategy":"baseline","score":0.998,"success":true,"runtime_ms":20.36949999819626,"usefulness":2.077,"tier":"hot"}

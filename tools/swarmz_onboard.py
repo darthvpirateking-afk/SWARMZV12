@@ -11,6 +11,7 @@ Guides first-time setup:
 from __future__ import annotations
 
 import json
+import os
 import socket
 import subprocess
 import sys
@@ -54,11 +55,25 @@ def prompt_port() -> int:
         print("Enter a valid port between 1-65535.")
 
 
-def write_runtime_config(host: str, port: int) -> None:
+def prompt_offline() -> bool:
+    choice = (input("Offline mode? [y/N]: ") or "n").strip().lower()
+    return choice.startswith("y")
+
+
+def write_runtime_config(bind: str, port: int, offline: bool) -> None:
     CONFIG_PATH.parent.mkdir(parents=True, exist_ok=True)
-    api_base = f"http://{host}:{port}"
-    ui_base = f"{api_base}/"
-    CONFIG_PATH.write_text(json.dumps({"api_base": api_base, "ui_base": ui_base}, indent=2))
+    base_host = "127.0.0.1" if bind == "0.0.0.0" else bind
+    api_base = f"http://{base_host}:{port}"
+    ui_base = f"{api_base}/app"
+    cfg = {
+        "apiBaseUrl": api_base,
+        "uiBaseUrl": ui_base,
+        "bind": bind,
+        "port": port,
+        "uiPort": port,
+        "offlineMode": bool(offline),
+    }
+    CONFIG_PATH.write_text(json.dumps(cfg, indent=2))
     print(f"Wrote {CONFIG_PATH}")
 
 
@@ -100,10 +115,13 @@ def wait_for_health(port: int, host: str, timeout: float = 20.0) -> bool:
     return False
 
 
-def start_server_once(host: str, port: int) -> bool:
+def start_server_once(host: str, port: int, offline: bool) -> bool:
     cmd = [sys.executable, str(ROOT / "run_server.py"), "--port", str(port), "--host", host]
     print(f"Starting server once: {' '.join(cmd)}")
-    proc = subprocess.Popen(cmd, cwd=ROOT, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+    env = os.environ.copy()
+    if offline:
+        env["OFFLINE_MODE"] = "1"
+    proc = subprocess.Popen(cmd, cwd=ROOT, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, env=env)
     ok = False
     try:
         ok = wait_for_health(port, host)
@@ -130,14 +148,15 @@ def main():
     host = prompt_bind()
     port = prompt_port()
 
-    write_runtime_config(host if host != "0.0.0.0" else "127.0.0.1", port)
+    offline = prompt_offline()
+    write_runtime_config(host, port, offline)
     ensure_anchor()
 
     rc = run_doctor()
     if rc != 0:
         print("Doctor reported issues; you can rerun after fixing.")
 
-    ok = start_server_once(host, port)
+    ok = start_server_once(host, port, offline)
     lan = _lan_ip()
     print("\nLocal URL:", f"http://127.0.0.1:{port}/")
     print("LAN URL:", f"http://{lan}:{port}/")

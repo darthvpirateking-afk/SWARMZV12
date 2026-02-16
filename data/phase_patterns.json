@@ -1,0 +1,30 @@
+{
+  "failure_clusters": {
+    "count": 0,
+    "confidence": 0.05,
+    "recent": []
+  },
+  "abandoned": {
+    "count": 0,
+    "confidence": 0.05,
+    "recent": []
+  },
+  "slowdowns": {
+    "count": 0,
+    "confidence": 0.05,
+    "recent": []
+  },
+  "recoveries": {
+    "count": 2,
+    "confidence": 0.25,
+    "recent": [
+      "stabilizing",
+      "stabilizing"
+    ]
+  },
+  "bursts": {
+    "count": 0,
+    "confidence": 0.05,
+    "recent": []
+  }
+}

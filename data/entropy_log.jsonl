@@ -1,0 +1,2 @@
+{"timestamp":"2026-02-16T10:50:05.651905Z","mode":"EXPAND","error_rate":0.0,"task_switch_frequency":0.0,"abandoned_actions":0,"completion_latency":21.62289999978384,"retry_counts":0}
+{"timestamp":"2026-02-16T10:58:14.037858Z","mode":"CONSOLIDATE","error_rate":0.0,"task_switch_frequency":7.370732009411717,"abandoned_actions":0,"completion_latency":20.99619999899005,"retry_counts":0}

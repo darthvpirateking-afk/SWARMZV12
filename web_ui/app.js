@@ -3,6 +3,7 @@ const state = {
   token: localStorage.getItem("swarmz_token") || "",
   runs: [],
   currentRunId: null,
+  offlineMode: false,
 };
 
 let deferredPrompt = null;
@@ -43,6 +44,24 @@ function setPill(id, text, ok) {
 }
 
 function setHint(text) { setText("pairHint", text); }
+
+async function loadRuntimeConfig() {
+  try {
+    const res = await fetch("/config/runtime.json", { cache: "no-store" });
+    if (!res.ok) return;
+    const cfg = await res.json();
+    if (cfg && cfg.apiBaseUrl) {
+      state.baseUrl = normalizeBaseUrl(cfg.apiBaseUrl);
+      const baseUrlEl = $("baseUrl");
+      if (baseUrlEl) baseUrlEl.value = state.baseUrl;
+    }
+    if (cfg && typeof cfg.offlineMode === "boolean") {
+      state.offlineMode = cfg.offlineMode;
+    }
+  } catch (e) {
+    // best-effort; fall back to window origin
+  }
+}
 
 function normalizeBaseUrl(u) {
   try { return new URL(u).origin; } catch { return window.location.origin; }
@@ -353,8 +372,10 @@ function boot() {
   wirePwaInstall();
   registerServiceWorker();
 
-  refreshPairingInfo().catch(() => {});
-  refreshAll().catch(() => {});
+  loadRuntimeConfig()
+    .then(() => refreshPairingInfo())
+    .catch(() => refreshPairingInfo())
+    .finally(() => refreshAll().catch(() => {}));
 }
 
 document.addEventListener("DOMContentLoaded", boot);

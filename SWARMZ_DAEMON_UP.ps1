@@ -29,11 +29,16 @@ $configPath = Join-Path $Root "config\runtime.json"
 if (Test-Path $configPath) {
     try {
         $cfg = Get-Content $configPath | ConvertFrom-Json
-        if ($cfg.api_base) {
-            $uri = [uri]$cfg.api_base
+        $apiUrl = $cfg.apiBaseUrl
+        if (-not $apiUrl -and $cfg.api_base) { $apiUrl = $cfg.api_base }
+        if ($cfg.bind) { $Host = $cfg.bind }
+        if ($cfg.port) { $Port = [int]$cfg.port }
+        if ($apiUrl) {
+            $uri = [uri]$apiUrl
             if ($uri.Port) { $Port = $uri.Port }
             if ($uri.Host) { $Host = $uri.Host }
         }
+        if ($cfg.offlineMode) { $env:OFFLINE_MODE = "1" }
     } catch {
         Write-Log "Could not parse runtime.json: $_"
     }
