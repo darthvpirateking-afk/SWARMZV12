@@ -1,0 +1,100 @@
+[
+  {
+    "action_id": "act_allocate_budget",
+    "name": "Allocate additional budget",
+    "layer": "money",
+    "description": "Increase budget allocation for resource provisioning",
+    "expected_effects": [
+      { "variable": "money.budget_remaining", "delta": 500 }
+    ],
+    "irreversibility_cost": 0.2,
+    "rollback": {
+      "action_id": "act_deallocate_budget",
+      "description": "Return allocated budget"
+    },
+    "verification": {
+      "metric": "money.budget_remaining",
+      "operator": ">=",
+      "threshold": 500,
+      "deadline_seconds": 10
+    }
+  },
+  {
+    "action_id": "act_deallocate_budget",
+    "name": "Return allocated budget",
+    "layer": "money",
+    "description": "Rollback of budget allocation",
+    "expected_effects": [
+      { "variable": "money.budget_remaining", "delta": -500 }
+    ],
+    "irreversibility_cost": 0.1,
+    "rollback": {
+      "action_id": "act_allocate_budget",
+      "description": "Re-allocate budget"
+    },
+    "verification": {
+      "metric": "money.budget_remaining",
+      "operator": "<=",
+      "threshold": 0,
+      "deadline_seconds": 10
+    }
+  },
+  {
+    "action_id": "act_restart_unhealthy",
+    "name": "Restart unhealthy nodes",
+    "layer": "health",
+    "description": "Restart nodes reporting degraded health",
+    "expected_effects": [
+      { "variable": "health.system_health", "delta": 15 }
+    ],
+    "irreversibility_cost": 0.4,
+    "rollback": {
+      "action_id": "act_noop",
+      "description": "No automated rollback; manual intervention required"
+    },
+    "verification": {
+      "metric": "health.system_health",
+      "operator": ">=",
+      "threshold": 80,
+      "deadline_seconds": 30
+    }
+  },
+  {
+    "action_id": "act_trigger_build",
+    "name": "Trigger a new build",
+    "layer": "build",
+    "description": "Start a fresh CI build to improve pass rate",
+    "expected_effects": [
+      { "variable": "build.pass_rate", "delta": 5 }
+    ],
+    "irreversibility_cost": 0.1,
+    "rollback": {
+      "action_id": "act_noop",
+      "description": "Cannot un-build; just note the attempt"
+    },
+    "verification": {
+      "metric": "build.pass_rate",
+      "operator": ">=",
+      "threshold": 95,
+      "deadline_seconds": 120
+    }
+  },
+  {
+    "action_id": "act_noop",
+    "name": "No operation",
+    "layer": "health",
+    "description": "Placeholder no-op for rollback chains that cannot be undone",
+    "expected_effects": [],
+    "irreversibility_cost": 0.0,
+    "rollback": {
+      "action_id": "act_noop",
+      "description": "No-op rollback"
+    },
+    "verification": {
+      "metric": "health.system_health",
+      "operator": ">=",
+      "threshold": 0,
+      "deadline_seconds": 5
+    }
+  }
+]

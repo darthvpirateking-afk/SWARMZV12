@@ -1,0 +1,32 @@
+[
+  {
+    "objective_id": "obj_budget_positive",
+    "regime": "normal",
+    "goal_variable": "money.budget_remaining",
+    "target": 0,
+    "operator": ">=",
+    "min_duration_active": 60,
+    "cooldown_after_exit": 30,
+    "priority": 1
+  },
+  {
+    "objective_id": "obj_health_above_80",
+    "regime": "normal",
+    "goal_variable": "health.system_health",
+    "target": 80,
+    "operator": ">=",
+    "min_duration_active": 120,
+    "cooldown_after_exit": 60,
+    "priority": 2
+  },
+  {
+    "objective_id": "obj_build_passing",
+    "regime": "critical",
+    "goal_variable": "build.pass_rate",
+    "target": 95,
+    "operator": ">=",
+    "min_duration_active": 30,
+    "cooldown_after_exit": 15,
+    "priority": 3
+  }
+]
