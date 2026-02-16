@@ -24,7 +24,7 @@
     "decision_id":      { "type": "string" },
     "action_id":        { "type": "string" },
     "action_type":      { "type": "string" },
-    "outcome":          { "type": "string", "enum": ["VERIFY_PASSED", "VERIFY_FAILED", "EXPIRED"] },
+    "outcome":          { "type": "string", "enum": ["PASSED", "FAILED", "EXPIRED"] },
     "verify_spec_hash": { "type": "string" },
     "config_hash":      { "type": "string" },
     "baseline":         {},

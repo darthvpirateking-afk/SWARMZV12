@@ -586,7 +586,7 @@ class VerificationRunner:
         self._lease_seconds = lease_seconds
         self._decision_logger = decision_logger or DecisionLogger()
         self._evaluator = DeltaEvaluator(
-            state_path=store._path if hasattr(store, '_path') else _STATE_JSONL
+            state_path=store.path if hasattr(store, 'path') else _STATE_JSONL
         )
 
         # Metrics counters
