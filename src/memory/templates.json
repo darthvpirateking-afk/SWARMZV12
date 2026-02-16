@@ -1,0 +1,36 @@
+{
+  "task_templates": {
+    "file_operation": {
+      "action": "file_write",
+      "parameters": {
+        "path": "{{path}}",
+        "content": "{{content}}",
+        "mode": "create"
+      },
+      "safety_level": "needs_confirm"
+    },
+    "api_request": {
+      "action": "api_call",
+      "parameters": {
+        "url": "{{url}}",
+        "method": "{{method}}",
+        "headers": {}
+      },
+      "safety_level": "needs_confirm"
+    },
+    "code_execution": {
+      "action": "code_run",
+      "parameters": {
+        "code": "{{code}}",
+        "language": "{{language}}",
+        "timeout_ms": 30000
+      },
+      "safety_level": "needs_confirm"
+    }
+  },
+  "response_templates": {
+    "success": "✓ {{action}} completed successfully",
+    "error": "✗ {{action}} failed: {{error}}",
+    "confirmation": "⚠ Confirm: {{action}}?"
+  }
+}

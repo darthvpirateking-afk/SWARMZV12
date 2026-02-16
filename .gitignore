@@ -55,3 +55,7 @@ htmlcov/
 # local mobile workspace
 swarmz-mobile/
 
+
+# Windows reserved junk
+nul
+

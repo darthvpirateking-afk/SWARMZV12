@@ -1,0 +1,120 @@
+{
+  "name": "vscode-scaffold-bot",
+  "displayName": "Scaffold Bot",
+  "description": "Scaffold folders and files from templates with placeholder substitution.",
+  "version": "0.1.0",
+  "publisher": "swarmz",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "scaffoldBot.scaffoldHere",
+        "title": "Scaffold: New Module Here"
+      },
+      {
+        "command": "scaffoldBot.scaffold",
+        "title": "Scaffold: New Module"
+      },
+      {
+        "command": "scaffoldBot.manageTemplates",
+        "title": "Scaffold: Manage Templates"
+      },
+      {
+        "command": "scaffoldBot.selfCheck",
+        "title": "Scaffold: Self-Check"
+      }
+  "displayName": "Scaffold Bot (SWARMZ)",
+  "description": "Local-first template scaffolder with placeholder substitution + audit.",
+  "version": "0.1.0",
+  "publisher": "swarmz",
+  "engines": { "vscode": "^1.85.0" },
+  "categories": ["Productivity", "Other"],
+  "main": "./dist/extension.js",
+  "activationEvents": [
+    "onCommand:scaffoldBot.scaffold",
+    "onCommand:scaffoldBot.scaffoldHere",
+    "onCommand:scaffoldBot.manageTemplates",
+    "onCommand:scaffoldBot.selfCheck"
+  ],
+  "contributes": {
+    "commands": [
+      { "command": "scaffoldBot.scaffoldHere", "title": "Scaffold: New Module Here" },
+      { "command": "scaffoldBot.scaffold", "title": "Scaffold: New Module (Choose Folder)" },
+      { "command": "scaffoldBot.manageTemplates", "title": "Scaffold: Manage Templates" },
+      { "command": "scaffoldBot.selfCheck", "title": "Scaffold: Self Check" }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "when": "explorerResourceIsFolder",
+          "command": "scaffoldBot.scaffoldHere",
+          "group": "navigation"
+          "command": "scaffoldBot.scaffoldHere",
+          "when": "explorerResourceIsFolder",
+          "group": "navigation@2"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Scaffold Bot",
+      "properties": {
+        "scaffoldBot.templatesPath": {
+          "type": "string",
+          "default": ".swarmz/templates",
+          "description": "Path to repo-level templates directory (relative to workspace root)."
+        },
+        "scaffoldBot.auditPath": {
+          "type": "string",
+          "default": ".swarmz/audit/scaffold_audit.jsonl",
+          "description": "Path to the audit log file (relative to workspace root)."
+        },
+        "scaffoldBot.confirmBeforeWrite": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show a preview confirmation before writing files."
+        },
+        "scaffoldBot.allowOverwrite": {
+          "type": "boolean",
+          "default": false,
+          "description": "Allow overwriting existing files during merge conflict resolution."
+        },
+        "scaffoldBot.preferRepoTemplates": {
+          "type": "boolean",
+          "default": true,
+          "description": "Prefer repo-level templates over bundled fallback templates."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "lint": "echo 'No linter configured'",
+    "test": "node ./dist/selfCheck.js 2>/dev/null || echo 'Run tests inside VS Code'"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.80.0",
+    "@types/node": "^18.0.0",
+    "typescript": "^5.3.0"
+        "scaffoldBot.templatesPath": { "type": "string", "default": ".swarmz/templates" },
+        "scaffoldBot.auditPath": { "type": "string", "default": ".swarmz/audit/scaffold_audit.jsonl" },
+        "scaffoldBot.confirmBeforeWrite": { "type": "boolean", "default": true },
+        "scaffoldBot.allowOverwrite": { "type": "boolean", "default": false },
+        "scaffoldBot.preferRepoTemplates": { "type": "boolean", "default": true }
+      }
+    }
+  },
+  "scripts": { "compile": "tsc -p ." },
+  "devDependencies": {
+    "@types/node": "^20.11.30",
+    "@types/vscode": "^1.85.0",
+    "typescript": "^5.4.5"
+  }
+}

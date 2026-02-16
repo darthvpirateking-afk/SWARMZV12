@@ -1,0 +1,20 @@
+{
+  "resource_limits": {
+    "max_total_workers": 10,
+    "max_workers_per_type": 5,
+    "max_execution_time_ms": 60000,
+    "max_memory_mb": 512,
+    "max_cost_per_task": 100
+  },
+  "rate_limits": {
+    "max_tasks_per_minute": 60,
+    "max_api_calls_per_minute": 100,
+    "max_file_operations_per_minute": 50
+  },
+  "safety_limits": {
+    "max_file_size_mb": 10,
+    "max_api_response_mb": 5,
+    "max_code_execution_time_ms": 30000,
+    "require_confirmation_for_destructive": true
+  }
+}
