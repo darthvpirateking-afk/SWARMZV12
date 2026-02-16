@@ -2,7 +2,8 @@
 verification_store.py – Append-only verification log backed by
 data/verification_log.jsonl.
 
-Stores baseline snapshots and verification outcomes.
+Stores baseline snapshots and verification outcomes.  Also supports
+querying outcomes by job_id or decision_id.
 """
 
 import json
@@ -40,3 +41,16 @@ class VerificationStore:
                 if line:
                     entries.append(json.loads(line))
         return entries
+
+    def find_by_job_id(self, job_id: str) -> list[dict]:
+        """Return all entries matching *job_id*."""
+        return [e for e in self.read_all() if e.get("job_id") == job_id]
+
+    def find_by_decision_id(self, decision_id: str) -> list[dict]:
+        """Return all entries matching *decision_id*."""
+        return [e for e in self.read_all()
+                if e.get("decision_id") == decision_id]
+
+    def find_by_outcome(self, outcome: str) -> list[dict]:
+        """Return all entries with a given outcome status."""
+        return [e for e in self.read_all() if e.get("outcome") == outcome]

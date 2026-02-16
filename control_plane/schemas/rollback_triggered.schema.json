@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ROLLBACK_TRIGGERED",
+  "description": "Schema for ROLLBACK_TRIGGERED events emitted when a verification failure triggers automatic rollback.",
+  "type": "object",
+  "required": [
+    "job_id",
+    "decision_id",
+    "action_id",
+    "rollback_action_id",
+    "rollback_action_type",
+    "triggered_at"
+  ],
+  "properties": {
+    "job_id":               { "type": "string", "format": "uuid" },
+    "decision_id":          { "type": "string" },
+    "action_id":            { "type": "string" },
+    "rollback_action_id":   { "type": "string" },
+    "rollback_action_type": { "type": "string" },
+    "rollback_params":      { "type": "object" },
+    "triggered_at":         { "type": "string", "format": "date-time" },
+    "config_hash":          { "type": "string" },
+    "trace_id":             { "type": ["string", "null"] }
+  },
+  "additionalProperties": false
+}
