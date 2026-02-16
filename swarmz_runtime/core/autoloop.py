@@ -20,6 +20,7 @@ from pathlib import Path
 from typing import Any, Dict, Optional
 
 from swarmz_runtime.storage.schema import AuditEntry, VisibilityLevel
+from swarmz_runtime.core import telemetry
 
 
 class AutoLoopManager:
@@ -107,15 +108,18 @@ class AutoLoopManager:
                 continue
 
             try:
+                t_start = time.perf_counter()
                 self._tick("make money", {}, {})
+                telemetry.record_duration("autoloop_tick", (time.perf_counter() - t_start) * 1000.0)
             except Exception as exc:
                 self._log_audit("tick_error", details={"error": str(exc)})
+                telemetry.record_failure("autoloop_tick_error", str(exc))
 
             # sleep in small increments so stop() is responsive
-            for _ in range(self._tick_interval):
-                if not self._running:
-                    break
-                time.sleep(1)
+            remaining = self._tick_interval
+            while remaining > 0 and self._running:
+                time.sleep(min(1, remaining))
+                remaining -= 1
 
     def _tick(
         self,

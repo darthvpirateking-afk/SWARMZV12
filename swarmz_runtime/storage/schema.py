@@ -37,6 +37,7 @@ class Mission(BaseModel):
     updated_at: datetime = Field(default_factory=datetime.now)
     leverage_score: float = 0.0
     revisit_interval: int = 3600
+    operator_public_key: Optional[str] = None
 
 
 class CrossLayerScores(BaseModel):

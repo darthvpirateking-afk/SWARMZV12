@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SWARMZ Control</title>
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="stylesheet" href="/styles.css" />
+  <meta name="theme-color" content="#0f172a" />
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <div class="dot"></div>
+      <div>
+        <div class="title">SWARMZ Control</div>
+        <div class="subtitle">LAN runtime · PWA</div>
+      </div>
+    </div>
+    <button id="installBtn" class="ghost">Install</button>
+  </header>
+
+  <main>
+    <section class="status-row">
+      <div class="pill" id="healthPill">Health: pending</div>
+      <div class="pill" id="offlinePill">Mode: checking…</div>
+      <div class="pill" id="lanPill">LAN URL: …</div>
+    </section>
+
+    <section id="pairSection" class="card">
+      <div class="card-header">
+        <div>
+          <div class="eyebrow">Pairing</div>
+          <div class="card-title">Connect to runtime</div>
+        </div>
+        <div class="pill" id="pairStatus">Not paired</div>
+      </div>
+      <div class="field">
+        <label for="baseUrl">Base URL</label>
+        <input id="baseUrl" type="text" autocomplete="url" />
+      </div>
+      <div class="field">
+        <label for="pinInput">Operator PIN</label>
+        <input id="pinInput" type="tel" inputmode="numeric" pattern="[0-9]*" placeholder="••••••" />
+      </div>
+      <div class="actions">
+        <button class="primary" id="pairBtn">Pair</button>
+        <button class="ghost" id="refreshInfoBtn">Refresh info</button>
+      </div>
+      <div class="hint" id="pairHint">Enter the PIN from the host console. Base URL defaults to this page.</div>
+    </section>
+
+    <section class="grid">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="eyebrow">Runs</div>
+            <div class="card-title">Recent missions</div>
+          </div>
+          <button class="ghost" id="refreshRunsBtn">Refresh</button>
+        </div>
+        <ul id="runsList" class="list"></ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="eyebrow">Run detail</div>
+            <div class="card-title" id="detailTitle">Select a run</div>
+          </div>
+          <div class="pill" id="detailStatus"></div>
+        </div>
+        <div id="detailBody" class="detail-body">No run selected.</div>
+        <div class="actions">
+          <button class="primary" id="dispatchBtn">Dispatch</button>
+          <button class="ghost" id="refreshDetailBtn">Refresh</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="eyebrow">Audit</div>
+            <div class="card-title">Last 50 events</div>
+          </div>
+          <button class="ghost" id="refreshAuditBtn">Refresh</button>
+        </div>
+        <div id="auditList" class="log"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="/app.js"></script>
+</body>
+</html>

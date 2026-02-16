@@ -1,0 +1,9 @@
+{"ts":"2026-02-16T08:52:05.190124Z","type":"http_request","payload":{"path":"/openapi.json","method":"GET"}}
+{"ts":"2026-02-16T08:52:35.673466Z","type":"http_request","payload":{"path":"/","method":"GET"}}
+{"ts":"2026-02-16T08:57:27.509708Z","type":"http_request","payload":{"path":"/styles.css","method":"HEAD"}}
+{"ts":"2026-02-16T08:57:27.675878Z","type":"http_request","payload":{"path":"/app.js","method":"HEAD"}}
+{"ts":"2026-02-16T08:57:27.833942Z","type":"http_request","payload":{"path":"/manifest.json","method":"HEAD"}}
+{"ts":"2026-02-16T08:57:28.006626Z","type":"http_request","payload":{"path":"/sw.js","method":"HEAD"}}
+{"ts":"2026-02-16T08:57:34.135087Z","type":"http_request","payload":{"path":"/app.js","method":"GET"}}
+{"ts":"2026-02-16T08:57:58.991843Z","type":"http_request","payload":{"path":"/","method":"GET"}}
+{"ts":"2026-02-16T08:58:18.439584Z","type":"http_request","payload":{"path":"/app.js","method":"HEAD"}}

@@ -1,216 +1,479 @@
 import os
+import json
+import socket
+import secrets
+import traceback
+from datetime import datetime
+from pathlib import Path
+from typing import Dict, Any
 
-from fastapi import FastAPI, Depends
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse, Response
+from fastapi import FastAPI, Request, HTTPException
+from fastapi.responses import JSONResponse, FileResponse
+from fastapi.staticfiles import StaticFiles
+from pydantic import BaseModel, Field
+
 from swarmz_runtime.core.engine import SwarmzEngine
-from swarmz_runtime.api import missions, system, admin
-from addons.api.addons_router import router as addons_router
-from addons.api.guardrails_router import router as guardrails_router
-from addons.api.dashboard_router import router as dashboard_router
-from addons.api.ui_router import router as ui_router
-from addons.auth_gate import LANAuthMiddleware
-from addons.rate_limiter import RateLimitMiddleware
-from swarmz_runtime.api import missions, system, admin, ecosystem
+from swarmz_runtime.api import missions, ecosystem, admin
+from swarmz_runtime.core import telemetry
 
+# SWARMZ must export `app` for run_swarmz.py
 app = FastAPI(
-    title="SWARMZ Runtime",
-    description="Operator-Sovereign Mission Engine",
-    version="1.0.0"
+    title="SWARMZ",
+    version=os.getenv("SWARMZ_VERSION", "0.0.0"),
 )
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-app.add_middleware(LANAuthMiddleware)
-app.add_middleware(RateLimitMiddleware)
+ROOT_DIR = Path(__file__).resolve().parent.parent.parent
+DATA_DIR = ROOT_DIR / "data"
+UI_DIR = ROOT_DIR / "web_ui"
+DATA_DIR.mkdir(exist_ok=True, parents=True)
+START_TIME = datetime.utcnow()
+OFFLINE_MODE = os.getenv("OFFLINE_MODE", "0") not in {"0", "false", "False", None, ""}
 
-_engine_instance = None
+
+def _load_runtime_config() -> Dict[str, Any]:
+    cfg_path = ROOT_DIR / "config" / "runtime.json"
+    if not cfg_path.exists():
+        return {}
+    try:
+        return json.loads(cfg_path.read_text())
+    except Exception:
+        return {}
+
+
+def _lan_ip() -> str:
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))
+        ip = s.getsockname()[0]
+        s.close()
+        return ip
+    except Exception:
+        return "127.0.0.1"
+
+
+def _load_operator_pin() -> Dict[str, Any]:
+    """Resolve operator PIN, preferring env, then config, otherwise generate."""
+    pin_source = "env"
+    pin = os.getenv("SWARMZ_OPERATOR_PIN")
+    config_path = DATA_DIR / "config.json"
+    pin_file = DATA_DIR / "operator_pin.txt"
+
+    if not pin and config_path.exists():
+        try:
+            cfg = json.loads(config_path.read_text())
+            if cfg.get("operator_pin"):
+                pin = str(cfg.get("operator_pin")).strip()
+                pin_source = "config"
+        except Exception:
+            pin = None
+
+    if not pin and pin_file.exists():
+        try:
+            pin = pin_file.read_text().strip()
+            pin_source = "file"
+        except Exception:
+            pin = None
+
+    generated = False
+    if not pin:
+        pin = "".join(secrets.choice("0123456789") for _ in range(6))
+        pin_source = "generated"
+        generated = True
+        pin_file.write_text(pin)
+        print(f"[SWARMZ] Generated operator PIN; saved to {pin_file}")
+
+    return {"pin": pin, "source": pin_source, "file": pin_file, "generated": generated}
+
+
+_pin_info = _load_operator_pin()
+OPERATOR_PIN = _pin_info["pin"]
+app.state.operator_pin_source = _pin_info
+
+VERBOSE = os.getenv("SWARMZ_VERBOSE", "0") not in {"0", "false", "False", None}
+telemetry.set_verbose(VERBOSE)
+
+engine = SwarmzEngine(data_dir=str(DATA_DIR))
+engine.offline_mode = OFFLINE_MODE
+engine.operator_key = OPERATOR_PIN
+
 
 def get_engine() -> SwarmzEngine:
-    global _engine_instance
-    if _engine_instance is None:
-        _engine_instance = SwarmzEngine()
-    return _engine_instance
+    return engine
 
-missions.get_engine = get_engine
-system.get_engine = get_engine
-admin.get_engine = get_engine
-ecosystem.set_engine_provider(get_engine)
 
-app.include_router(missions.router, prefix="/v1/missions", tags=["missions"])
-app.include_router(system.router, prefix="/v1/system", tags=["system"])
-app.include_router(admin.router, prefix="/v1/admin", tags=["admin"])
-app.include_router(addons_router, prefix="/v1/addons", tags=["addons"])
-app.include_router(guardrails_router, prefix="/v1/guardrails", tags=["guardrails"])
-app.include_router(dashboard_router, tags=["dashboard"])
-app.include_router(ui_router, tags=["ui"])
-app.include_router(ecosystem.router, prefix="/v1/ecosystem", tags=["ecosystem"])
+active_tokens: Dict[str, datetime] = {}
+PAIRING_EXEMPT = {"/v1/pairing/pair", "/v1/pairing/info", "/health"}
 
-# ---------------------------------------------------------------------------
-# PWA app-shell served at /
-# ---------------------------------------------------------------------------
-_PWA_SHELL = """\
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>SWARMZ</title>
-<link rel="manifest" href="/manifest.webmanifest">
-<link rel="icon" href="/icon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="/apple-touch-icon.svg">
-<meta name="theme-color" content="#0d1117">
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-background:#0d1117;color:#c9d1d9;display:flex;flex-direction:column;align-items:center;
-justify-content:center;min-height:100vh;padding:1.5rem;text-align:center}
-h1{font-size:2rem;margin-bottom:.25rem;color:#58a6ff}
-.tag{font-size:.85rem;color:#8b949e;margin-bottom:1.5rem}
-.cards{display:grid;gap:.75rem;width:100%;max-width:400px}
-a.card{display:block;padding:1rem;border-radius:10px;background:#161b22;
-text-decoration:none;color:#c9d1d9;border:1px solid #30363d;transition:border-color .2s}
-a.card:hover{border-color:#58a6ff}
-a.card h2{font-size:1rem;color:#58a6ff;margin-bottom:.25rem}
-a.card p{font-size:.85rem;color:#8b949e}
-footer{margin-top:2rem;font-size:.75rem;color:#484f58}
-</style>
-</head>
-<body>
-<h1>&#x1F41D; SWARMZ</h1>
-<p class="tag">Operator-Sovereign Mission Engine &middot; v1.0.0</p>
-<div class="cards">
- <a class="card" href="/ui"><h2>Operator Console</h2><p>Interactive UI &mdash; execute tasks, browse capabilities</p></a>
- <a class="card" href="/dashboard"><h2>Dashboard</h2><p>Mission monitoring &amp; status</p></a>
- <a class="card" href="/docs"><h2>API Docs</h2><p>Interactive Swagger UI</p></a>
- <a class="card" href="/health"><h2>Health</h2><p>Service health check</p></a>
- <a class="card" href="/v1/missions/list"><h2>Missions</h2><p>List active missions</p></a>
- <a class="card" href="/v1/system/omens"><h2>System Omens</h2><p>Current system signals</p></a>
- <a class="card" href="/v1/system/predictions"><h2>Predictions</h2><p>Engine forecasts</p></a>
-</div>
-<footer>Tip&nbsp;&bull; Open this page on your phone and tap <em>Add to Home Screen</em> for an app icon.</footer>
-<script>
-if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js');}
-</script>
-</body>
-</html>
-"""
+@app.get("/health")
+def health():
+    return {"ok": True, "service": "swarmz", "version": app.version}
 
-@app.get("/", response_class=HTMLResponse)
-def root():
-    return _PWA_SHELL
 
-# ---------------------------------------------------------------------------
-# PWA assets
-# ---------------------------------------------------------------------------
-_ICON_SVG = """\
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-<rect width="100" height="100" rx="20" fill="#0d1117"/>
-<text x="50" y="68" font-size="52" text-anchor="middle" fill="#58a6ff">&#x1F41D;</text>
-</svg>"""
-
-_MANIFEST = """\
-{
-  "name": "SWARMZ",
-  "short_name": "SWARMZ",
-  "start_url": "/",
-  "display": "standalone",
-  "background_color": "#0d1117",
-  "theme_color": "#0d1117",
-  "icons": [
-    {"src": "/icon.svg", "sizes": "any", "type": "image/svg+xml"},
-    {"src": "/apple-touch-icon.svg", "sizes": "180x180", "type": "image/svg+xml"}
-  ]
-}"""
-
-_SW_JS = """\
-const CACHE = 'swarmz-v1';
-const SHELL = ['/', '/manifest.webmanifest', '/icon.svg', '/apple-touch-icon.svg'];
-
-self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)));
-  self.skipWaiting();
-});
-
-self.addEventListener('activate', e => {
-  e.waitUntil(caches.keys().then(ks => Promise.all(
-    ks.filter(k => k !== CACHE).map(k => caches.delete(k))
-  )));
-  self.clients.claim();
-});
-
-self.addEventListener('fetch', e => {
-  const url = new URL(e.request.url);
-  // Network-first for API calls and OpenAPI spec
-  if (url.pathname.startsWith('/v1/') || url.pathname.startsWith('/docs/openapi')
-      || url.pathname === '/openapi.json') {
-    e.respondWith(
-      fetch(e.request).catch(() => caches.match(e.request))
-    );
-    return;
-  }
-  // Cache-first for shell assets
-  e.respondWith(
-    caches.match(e.request).then(r => r || fetch(e.request))
-  );
-});
-"""
-
-@app.get("/manifest.webmanifest")
-def manifest():
-    return Response(content=_MANIFEST, media_type="application/manifest+json")
-
-@app.get("/sw.js")
-def service_worker():
-    return Response(content=_SW_JS, media_type="application/javascript")
-
-@app.get("/icon.svg")
-def icon_svg():
-    return Response(content=_ICON_SVG, media_type="image/svg+xml")
-
-@app.get("/apple-touch-icon.svg")
-def apple_touch_icon():
-    return Response(content=_ICON_SVG, media_type="image/svg+xml")
-
-# ---------------------------------------------------------------------------
-# JSON status (moved to /status so /docs still works and / serves the PWA)
-# ---------------------------------------------------------------------------
-@app.get("/status")
-def status():
+@app.get("/v1/health")
+def v1_health(request: Request):
+    cfg = _load_runtime_config()
+    uptime = (datetime.utcnow() - START_TIME).total_seconds()
+    base_url = str(request.base_url).rstrip("/")
+    ui_expected = cfg.get("ui_base") or f"{base_url}"
     return {
-        "name": "SWARMZ Runtime",
-        "version": "1.0.0",
-        "status": "operational",
-        "docs": "/docs",
-        "dashboard": "/dashboard"
+        "ok": True,
+        "version": app.version,
+        "uptime_seconds": round(uptime, 2),
+        "data_dir": str(DATA_DIR),
+        "ui_expected": ui_expected,
+        "offline_mode": OFFLINE_MODE,
     }
 
 
-@app.on_event("startup")
-def on_startup():
-    from addons.schema_version import run_migrations
-    run_migrations()
+@app.middleware("http")
+async def operator_gate(request: Request, call_next):
+    if request.method in {"POST", "PUT", "DELETE", "PATCH"} and request.url.path not in PAIRING_EXEMPT:
+        auth = request.headers.get("Authorization", "")
+        bearer = None
+        if auth.lower().startswith("bearer "):
+            bearer = auth.split(" ", 1)[1].strip()
+        header_key = request.headers.get("X-Operator-Key")
+        token_ok = bearer in active_tokens
+        key_ok = header_key == OPERATOR_PIN
+        if not token_ok and not key_ok:
+            return JSONResponse(status_code=401, content={"ok": False, "error": "operator key required"})
+    telemetry.record_event("http_request", {"path": str(request.url.path), "method": request.method})
+    return await call_next(request)
 
-@app.get("/health")
-def health_check():
-    return get_engine().get_health()
+@app.exception_handler(Exception)
+async def unhandled_exception_handler(request: Request, exc: Exception):
+    # Keep errors visible + deterministic shape
+    telemetry.record_failure("unhandled_exception", str(exc), {"path": str(request.url.path)})
+    return JSONResponse(
+        status_code=500,
+        content={
+            "ok": False,
+            "error": str(exc),
+            "type": exc.__class__.__name__,
+            "path": str(request.url.path),
+            "trace": traceback.format_exc(),
+        },
+    )
 
-@app.get("/v1/health")
-def health_check_v1():
-    return get_engine().get_health()
+class PairRequest(BaseModel):
+    pin: str = Field(..., min_length=3)
 
 
-# ---------------------------------------------------------------------------
-# Auto-start loop when AUTO=1 environment variable is set
-# ---------------------------------------------------------------------------
-@app.on_event("startup")
-async def _maybe_auto_start():
-    if os.environ.get("AUTO", "0") == "1":
-        interval = int(os.environ.get("TICK_INTERVAL", "30"))
-        from swarmz_runtime.api.ecosystem import _get_loop
-        _get_loop().start(interval)
+class DispatchRequest(BaseModel):
+    goal: str
+    category: str = "general"
+    constraints: Dict[str, Any] = Field(default_factory=dict)
+
+
+class SovereignDispatch(BaseModel):
+    intent: str
+    scope: Any
+    limits: Any | None = None
+
+
+@app.get("/v1/pairing/info")
+def pairing_info(request: Request):
+    base_url = str(request.base_url).rstrip("/")
+    return {
+        "base_url": base_url,
+        "requires_pin": True,
+        "server_time": datetime.utcnow().isoformat() + "Z",
+        "version": app.version,
+    }
+
+
+@app.post("/v1/pairing/pair")
+def pairing_pair(body: PairRequest):
+    if body.pin != OPERATOR_PIN:
+        raise HTTPException(status_code=401, detail="invalid pin")
+    token = secrets.token_hex(16)
+    active_tokens[token] = datetime.utcnow()
+    telemetry.record_event("pairing_success", {"token": token})
+    return {"token": token}
+
+
+@app.get("/v1/runs")
+def list_runs():
+    runs = engine.db.load_all_missions()
+    runs_sorted = sorted(runs, key=lambda r: r.get("updated_at") or r.get("created_at", ""), reverse=True)
+    return {"runs": runs_sorted, "count": len(runs_sorted)}
+
+
+@app.get("/v1/runs/{run_id}")
+def get_run(run_id: str):
+    run = engine.db.get_mission(run_id)
+    if not run:
+        raise HTTPException(status_code=404, detail="run not found")
+    audit = [a for a in engine.db.load_audit_log(limit=500) if a.get("mission_id") == run_id]
+    return {"run": run, "audit": audit}
+
+
+@app.post("/v1/dispatch")
+def dispatch_mission(body: DispatchRequest, request: Request):
+    created = engine.create_mission(body.goal, body.category, body.constraints)
+    if "error" in created:
+        raise HTTPException(status_code=400, detail=created["error"])
+
+    header_key = request.headers.get("X-Operator-Key") or OPERATOR_PIN
+    ran = engine.run_mission(created["mission_id"], operator_key=header_key)
+    telemetry.record_event("dispatch", {"mission_id": created.get("mission_id"), "goal": body.goal})
+    if OFFLINE_MODE:
+        ran["offline_mode"] = True
+        ran["note"] = "OFFLINE_MODE is enabled; mission stored without external calls"
+    return {"created": created, "run": ran}
+
+
+@app.get("/v1/companion/state")
+def companion_state():
+    eng = get_engine()
+    return {"state": eng.evolution.get_companion_state()}
+
+
+@app.get("/v1/companion/history")
+def companion_history(limit: int = 20):
+    eng = get_engine()
+    lim = max(1, min(limit, 200))
+    return {"entries": eng.evolution.history_tail(limit=lim)}
+
+
+@app.get("/v1/runtime/scoreboard")
+def runtime_scoreboard():
+    eng = get_engine()
+    return eng.get_scoreboard()
+
+
+@app.get("/v1/audit/tail")
+def audit_tail(limit: int = 50):
+    limit = max(1, min(limit, 500))
+    entries = engine.db.load_audit_log(limit=limit)
+    return {"entries": entries[-limit:], "count": len(entries[-limit:])}
+
+
+@app.get("/v1/runtime/status")
+def runtime_status():
+    active = engine.db.get_active_missions()
+    pending = [m for m in engine.db.load_all_missions() if m.get("status") == "pending"]
+    avg_step = telemetry.avg_duration("run_mission") or telemetry.avg_duration("autoloop_tick")
+    last_evt = telemetry.last_event()
+    system_load = round(len(active) / max(engine.max_active_missions, 1), 2)
+    return {
+        "active_agents": len(active),
+        "queued_tasks": len(pending),
+        "avg_step_time_ms": avg_step,
+        "last_event": last_evt,
+        "system_load_estimate": system_load,
+    }
+
+
+@app.get("/v1/runtime/counterfactual")
+def runtime_counterfactual(limit: int = 50):
+    eng = get_engine()
+    lim = max(1, min(limit, 200))
+    overview = eng.get_counterfactual_overview(limit=lim)
+    return {
+        "snapshots": overview.get("snapshots", []),
+        "counterfactuals": overview.get("counterfactuals", []),
+        "reliability": overview.get("reliability", {}),
+        "uncertainty": overview.get("uncertainty", {}),
+    }
+
+
+@app.get("/v1/runtime/phase")
+def runtime_phase(limit: int = 100):
+    eng = get_engine()
+    lim = max(1, min(limit, 300))
+    overview = eng.get_phase_overview(limit=lim)
+    return {
+        "history": overview.get("history", []),
+        "patterns": overview.get("patterns", {}),
+        "interventions": overview.get("interventions", []),
+    }
+
+
+def _include_router_if_present():
+    try:
+        missions.get_engine = get_engine
+        app.include_router(missions.router, prefix="/v1/missions", tags=["missions"])
+    except Exception:
+        pass
+    try:
+        ecosystem.set_engine_provider(get_engine)
+        app.include_router(ecosystem.router, prefix="/v1/ecosystem", tags=["ecosystem"])
+    except Exception:
+        pass
+    try:
+        admin.get_engine = get_engine
+        app.include_router(admin.router, prefix="/v1/admin", tags=["admin"])
+    except Exception:
+        pass
+
+
+_include_router_if_present()
+
+# Galileo Harness routes (additive)
+try:
+    from swarmz_runtime.api.galileo_routes import router as galileo_router
+    app.include_router(galileo_router)
+except Exception:
+    pass
+
+# Best-effort: include existing routers if present (do not restructure repo).
+# If your repo already has routing elsewhere, this will hook it up.
+for mod_path, attr in [
+    ("swarmz_runtime.api.routes", "router"),
+    ("swarmz_runtime.api.router", "router"),
+    ("swarmz_runtime.api.v1.routes", "router"),
+    ("swarmz_runtime.api.v1.router", "router"),
+]:
+    try:
+        m = __import__(mod_path, fromlist=[attr])
+        r = getattr(m, attr)
+        app.include_router(r)
+        break
+    except Exception:
+        continue
+
+
+def _file_in_ui(name: str) -> Path:
+    return UI_DIR / name
+
+
+if UI_DIR.exists():
+    app.mount("/app", StaticFiles(directory=UI_DIR, html=True), name="pwa")
+
+
+@app.get("/")
+def root_index():
+    index = _file_in_ui("index.html")
+    if index.exists():
+        return FileResponse(index)
+    return {"ok": True, "message": "SWARMZ runtime ready"}
+
+
+@app.head("/")
+def root_head():
+    index = _file_in_ui("index.html")
+    if index.exists():
+        return FileResponse(index, media_type="text/html")
+    return JSONResponse(status_code=200, content={"ok": True})
+
+
+def _append_jsonl(path: Path, row: Dict[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with open(path, "a", encoding="utf-8") as f:
+        f.write(json.dumps(row, separators=(',', ':')) + "\n")
+
+
+def _tail_jsonl(path: Path, limit: int = 10) -> list:
+    if not path.exists():
+        return []
+    rows = []
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            for line in f:
+                if line.strip():
+                    try:
+                        rows.append(json.loads(line))
+                    except Exception:
+                        continue
+    except Exception:
+        return []
+    return rows[-limit:]
+
+
+@app.get("/manifest.json")
+def manifest_file():
+    manifest = _file_in_ui("manifest.json")
+    if manifest.exists():
+        return FileResponse(manifest)
+    raise HTTPException(status_code=404, detail="manifest not found")
+
+
+@app.head("/manifest.json")
+def manifest_head():
+    manifest = _file_in_ui("manifest.json")
+    if manifest.exists():
+        return FileResponse(manifest, media_type="application/json")
+    raise HTTPException(status_code=404, detail="manifest not found")
+
+
+@app.get("/sw.js")
+def service_worker():
+    sw_file = _file_in_ui("sw.js")
+    if sw_file.exists():
+        return FileResponse(sw_file, media_type="application/javascript")
+    raise HTTPException(status_code=404, detail="service worker not found")
+
+
+@app.post("/v1/sovereign/dispatch")
+def sovereign_dispatch(body: SovereignDispatch):
+    ts = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+    mission_id = f"M-{datetime.utcnow().strftime('%Y%m%d-%H%M%S')}-{secrets.token_hex(4)}"
+    mission = {
+        "mission_id": mission_id,
+        "intent": body.intent,
+        "scope": body.scope,
+        "limits": body.limits,
+        "status": "PENDING",
+        "timestamp": ts,
+    }
+    missions_file = DATA_DIR / "missions.jsonl"
+    audit_file = DATA_DIR / "audit.jsonl"
+    _append_jsonl(missions_file, mission)
+    _append_jsonl(audit_file, {"ts": ts, "event": "sovereign_dispatch", "mission_id": mission_id})
+    return {"ok": True, "mission_id": mission_id, "status": "PENDING"}
+
+
+@app.get("/v1/system/log")
+def system_log(tail: int = 10):
+    lim = max(1, min(tail, 500))
+    audit_file = DATA_DIR / "audit.jsonl"
+    return {"entries": _tail_jsonl(audit_file, lim)}
+
+
+@app.head("/sw.js")
+def service_worker_head():
+    sw_file = _file_in_ui("sw.js")
+    if sw_file.exists():
+        return FileResponse(sw_file, media_type="application/javascript")
+    raise HTTPException(status_code=404, detail="service worker not found")
+
+
+@app.get("/styles.css")
+def styles_file():
+    f = _file_in_ui("styles.css")
+    if f.exists():
+        return FileResponse(f, media_type="text/css")
+    raise HTTPException(status_code=404, detail="styles not found")
+
+
+@app.head("/styles.css")
+def styles_head():
+    f = _file_in_ui("styles.css")
+    if f.exists():
+        return FileResponse(f, media_type="text/css")
+    raise HTTPException(status_code=404, detail="styles not found")
+
+
+@app.get("/app.js")
+def app_js_file():
+    f = _file_in_ui("app.js")
+    if f.exists():
+        return FileResponse(f, media_type="application/javascript")
+    raise HTTPException(status_code=404, detail="app bundle not found")
+
+
+@app.head("/app.js")
+def app_js_head():
+    f = _file_in_ui("app.js")
+    if f.exists():
+        return FileResponse(f, media_type="application/javascript")
+    raise HTTPException(status_code=404, detail="app bundle not found")
+
+
+@app.get("/icons/{icon_name}")
+def icon_file(icon_name: str):
+    f = _file_in_ui("icons") / icon_name
+    if f.exists():
+        return FileResponse(f)
+    raise HTTPException(status_code=404, detail="icon not found")

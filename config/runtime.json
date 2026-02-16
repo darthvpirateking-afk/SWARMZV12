@@ -1,0 +1,4 @@
+{
+  "api_base": "http://localhost:8012",
+  "ui_base": "http://localhost:8012/app"
+}

@@ -1,0 +1,20 @@
+{
+  "domain": "test_bio",
+  "available_signals": [],
+  "allowed_methods": [
+    "simulation",
+    "ablation"
+  ],
+  "local_datasets": [],
+  "synthetic_generators": [
+    "synthetic_gen_v1"
+  ],
+  "metrics": [
+    "signal",
+    "effect_size"
+  ],
+  "constraints": [
+    "no web",
+    "local compute only"
+  ]
+}
