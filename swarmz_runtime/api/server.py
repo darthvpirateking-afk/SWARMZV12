@@ -4,13 +4,14 @@ from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, Response
 from swarmz_runtime.core.engine import SwarmzEngine
-from swarmz_runtime.api import missions, system, admin, ecosystem, debug
+from swarmz_runtime.api import missions, system, admin, ecosystem, debug, arena
 from addons.api.addons_router import router as addons_router
 from addons.api.guardrails_router import router as guardrails_router
 from addons.api.dashboard_router import router as dashboard_router
 from addons.api.ui_router import router as ui_router
 from addons.auth_gate import LANAuthMiddleware
 from addons.rate_limiter import RateLimitMiddleware
+from swarmz_runtime.arena.ui import router as arena_ui_router
 
 app = FastAPI(
     title="SWARMZ Runtime",
@@ -40,6 +41,7 @@ missions.get_engine = get_engine
 system.get_engine = get_engine
 admin.get_engine = get_engine
 debug.get_engine = get_engine
+arena.get_engine = get_engine
 ecosystem.set_engine_provider(get_engine)
 
 app.include_router(missions.router, prefix="/v1/missions", tags=["missions"])
@@ -51,6 +53,8 @@ app.include_router(dashboard_router, tags=["dashboard"])
 app.include_router(ui_router, tags=["ui"])
 app.include_router(ecosystem.router, prefix="/v1/ecosystem", tags=["ecosystem"])
 app.include_router(debug.router, prefix="/v1/debug", tags=["debug"])
+app.include_router(arena.router, prefix="/v1/arena", tags=["arena"])
+app.include_router(arena_ui_router, tags=["arena-ui"])
 
 # ---------------------------------------------------------------------------
 # PWA app-shell served at /
@@ -86,6 +90,7 @@ footer{margin-top:2rem;font-size:.75rem;color:#484f58}
 <h1>&#x1F41D; SWARMZ</h1>
 <p class="tag">Operator-Sovereign Mission Engine &middot; v1.0.0</p>
 <div class="cards">
+ <a class="card" href="/v1/arena/runs"><h2>&#x1F3C6; Arena</h2><p>Run parallel candidates &amp; rank results</p></a>
  <a class="card" href="/ui"><h2>Operator Console</h2><p>Interactive UI &mdash; execute tasks, browse capabilities</p></a>
  <a class="card" href="/dashboard"><h2>Dashboard</h2><p>Mission monitoring &amp; status</p></a>
  <a class="card" href="/docs"><h2>API Docs</h2><p>Interactive Swagger UI</p></a>
