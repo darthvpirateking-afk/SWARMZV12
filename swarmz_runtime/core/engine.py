@@ -60,7 +60,7 @@ class SwarmzEngine:
                 status=MissionStatus.PENDING,
                 leverage_score=leverage_score
             )
-        except Exception:
+        except (ValueError, KeyError):
             return {"error": f"Invalid category '{category}'. Must be one of: coin, forge, library, sanctuary"}
         
         self.db.save_mission(mission)

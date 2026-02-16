@@ -109,7 +109,7 @@ class TestDatabaseRobustJsonl:
     def test_load_missions_missing_file(self, tmp_path):
         from swarmz_runtime.storage.db import Database
         db = Database(str(tmp_path / "data"))
-        os.remove(db.missions_file)
+        db.missions_file.unlink(missing_ok=True)
         assert db.load_all_missions() == []
 
     def test_load_audit_log_corrupted(self, tmp_path):

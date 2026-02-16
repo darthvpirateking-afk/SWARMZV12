@@ -27,7 +27,7 @@ def read_jsonl(path: str | Path) -> List[Dict[str, Any]]:
         return []
 
     records: List[Dict[str, Any]] = []
-    quarantined = 0
+    quarantined_lines: List[str] = []
 
     try:
         with open(path, "r", encoding="utf-8") as fh:
@@ -38,12 +38,12 @@ def read_jsonl(path: str | Path) -> List[Dict[str, Any]]:
                 try:
                     records.append(json.loads(line))
                 except (json.JSONDecodeError, ValueError):
-                    quarantined += 1
+                    quarantined_lines.append(f"line {lineno}: {line}")
     except OSError:
         return []
 
-    if quarantined:
-        _quarantine_log(path, quarantined)
+    if quarantined_lines:
+        _quarantine_log(path, quarantined_lines)
 
     return records
 
@@ -71,11 +71,13 @@ def append_jsonl(path: str | Path, record: Dict[str, Any]) -> None:
         fh.write(json.dumps(record, default=str) + "\n")
 
 
-def _quarantine_log(path: Path, count: int) -> None:
+def _quarantine_log(path: Path, lines: List[str]) -> None:
     """Log quarantined lines to a sidecar .quarantine file."""
     q_path = path.with_suffix(path.suffix + ".quarantine")
     try:
         with open(q_path, "a", encoding="utf-8") as fh:
-            fh.write(f"Skipped {count} malformed line(s) in {path}\n")
+            fh.write(f"Skipped {len(lines)} malformed line(s) in {path}:\n")
+            for entry in lines:
+                fh.write(f"  {entry}\n")
     except OSError:
         pass  # best-effort
