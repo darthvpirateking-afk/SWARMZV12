@@ -51,3 +51,7 @@ htmlcov/
 
 # PyInstaller
 *.spec
+
+# local mobile workspace
+swarmz-mobile/
+
