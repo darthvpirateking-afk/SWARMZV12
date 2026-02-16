@@ -52,6 +52,9 @@ htmlcov/
 *.tmp
 /tmp/
 
+# Artifact packs output
+packs/
+
 # PyInstaller
 *.spec
 
