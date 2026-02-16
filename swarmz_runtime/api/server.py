@@ -4,14 +4,13 @@ from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, Response
 from swarmz_runtime.core.engine import SwarmzEngine
-from swarmz_runtime.api import missions, system, admin
+from swarmz_runtime.api import missions, system, admin, ecosystem, debug
 from addons.api.addons_router import router as addons_router
 from addons.api.guardrails_router import router as guardrails_router
 from addons.api.dashboard_router import router as dashboard_router
 from addons.api.ui_router import router as ui_router
 from addons.auth_gate import LANAuthMiddleware
 from addons.rate_limiter import RateLimitMiddleware
-from swarmz_runtime.api import missions, system, admin, ecosystem
 
 app = FastAPI(
     title="SWARMZ Runtime",
@@ -40,6 +39,7 @@ def get_engine() -> SwarmzEngine:
 missions.get_engine = get_engine
 system.get_engine = get_engine
 admin.get_engine = get_engine
+debug.get_engine = get_engine
 ecosystem.set_engine_provider(get_engine)
 
 app.include_router(missions.router, prefix="/v1/missions", tags=["missions"])
@@ -50,6 +50,7 @@ app.include_router(guardrails_router, prefix="/v1/guardrails", tags=["guardrails
 app.include_router(dashboard_router, tags=["dashboard"])
 app.include_router(ui_router, tags=["ui"])
 app.include_router(ecosystem.router, prefix="/v1/ecosystem", tags=["ecosystem"])
+app.include_router(debug.router, prefix="/v1/debug", tags=["debug"])
 
 # ---------------------------------------------------------------------------
 # PWA app-shell served at /

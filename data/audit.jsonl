@@ -1,3 +1,0 @@
-{"timestamp": "2026-02-16T06:38:07.094755", "event_type": "mission_created", "mission_id": "6f4e9fe6", "details": {"goal": "Test mission", "category": "coin"}, "visibility": "visible"}
-{"timestamp": "2026-02-16T06:38:29.682932+00:00", "event_type": "schema_migration", "details": {"from": 0, "to": 1, "label": "v0_to_v1"}}
-{"timestamp": "2026-02-16T06:38:32.247092", "event_type": "mission_created", "mission_id": "327a1d2e", "details": {"goal": "Test", "category": "coin"}, "visibility": "visible"}

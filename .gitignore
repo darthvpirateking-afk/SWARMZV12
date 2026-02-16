@@ -52,6 +52,10 @@ htmlcov/
 *.tmp
 /tmp/
 
+# Runtime data (created at startup)
+data/
+addons/data/backups/
+
 # Artifact packs output
 packs/
 

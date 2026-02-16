@@ -4,6 +4,7 @@ from typing import List, Dict, Any, Optional
 from datetime import datetime
 from pathlib import Path
 from swarmz_runtime.storage.schema import Mission, AuditEntry, Rune, MissionStatus
+from swarmz_runtime.storage.jsonl_utils import read_jsonl, write_jsonl, append_jsonl
 
 
 class Database:
@@ -29,8 +30,7 @@ class Database:
             self.state_file.write_text(json.dumps({"active_missions": 0, "pattern_counters": {}}))
     
     def save_mission(self, mission: Mission):
-        with open(self.missions_file, "a") as f:
-            f.write(json.dumps(mission.model_dump(mode='json')) + "\n")
+        append_jsonl(self.missions_file, mission.model_dump(mode='json'))
     
     def update_mission(self, mission_id: str, updates: Dict[str, Any]):
         missions = self.load_all_missions()
@@ -39,18 +39,10 @@ class Database:
                 mission.update(updates)
                 mission["updated_at"] = datetime.now().isoformat()
         
-        with open(self.missions_file, "w") as f:
-            for mission in missions:
-                f.write(json.dumps(mission) + "\n")
+        write_jsonl(self.missions_file, missions)
     
     def load_all_missions(self) -> List[Dict[str, Any]]:
-        missions = []
-        if self.missions_file.exists():
-            with open(self.missions_file, "r") as f:
-                for line in f:
-                    if line.strip():
-                        missions.append(json.loads(line))
-        return missions
+        return read_jsonl(self.missions_file)
     
     def get_mission(self, mission_id: str) -> Optional[Dict[str, Any]]:
         missions = self.load_all_missions()
@@ -64,16 +56,10 @@ class Database:
         return [m for m in missions if m["status"] == "active"]
     
     def log_audit(self, entry: AuditEntry):
-        with open(self.audit_file, "a") as f:
-            f.write(json.dumps(entry.model_dump(mode='json')) + "\n")
+        append_jsonl(self.audit_file, entry.model_dump(mode='json'))
     
     def load_audit_log(self, limit: int = 100) -> List[Dict[str, Any]]:
-        entries = []
-        if self.audit_file.exists():
-            with open(self.audit_file, "r") as f:
-                for line in f:
-                    if line.strip():
-                        entries.append(json.loads(line))
+        entries = read_jsonl(self.audit_file)
         return entries[-limit:]
     
     def save_rune(self, rune: Rune):
