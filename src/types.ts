@@ -79,3 +79,21 @@ export interface PatchPack {
   rationale: string;
   metrics_justification: string;
 }
+
+/**
+ * Artifact pack saved under ./packs/
+ */
+export interface ArtifactPack {
+  id: string;
+  task_id: string;
+  intent: string;
+  artifacts: string[];
+  verification: {
+    passed: boolean;
+    checks: number;
+    errors: string[];
+  };
+  rank: number;
+  created_at: number;
+  cycle_ms: number;
+}

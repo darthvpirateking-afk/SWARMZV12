@@ -58,3 +58,9 @@ export { WeightAdjuster } from './evolution/weight_adjuster';
 export { RoutingOptimizer } from './evolution/routing_optimizer';
 export { TemplateMutator } from './evolution/template_mutator';
 export { PatchpackGenerator } from './evolution/patchpack_generator';
+
+// Archive - Persists artifact packs to ./packs/
+export { Archiver } from './archive/archiver';
+
+// Factory - Autonomous artifact production loop
+export { ArtifactFactory } from './factory/artifact_factory';
