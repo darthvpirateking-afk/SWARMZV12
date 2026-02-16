@@ -49,13 +49,17 @@ def _coupling_damage(action: dict) -> float:
     return min(damage, 1.0)
 
 
+# Normalisation divisor: deltas are divided by this value and clamped to [0, 1].
+_NORM_SCALE = 100.0
+
+
 def _benefit(action: dict) -> float:
-    """Sum of positive expected deltas (normalised 0-1 via tanh-like clamp)."""
+    """Sum of positive expected deltas (normalised 0-1, clamped)."""
     total = 0.0
     for eff in action.get("expected_effects", []):
         d = eff.get("delta", 0)
         if d > 0:
-            total += min(d / 100.0, 1.0)  # simple normalisation
+            total += min(d / _NORM_SCALE, 1.0)
     return min(total, 1.0)
 
 

@@ -78,8 +78,8 @@ def run_cycle(bus, store, logger, adapter, regime, layers):
     # 2. Regimes
     active_objs = regime.active_objectives(store.get_value)
 
-    # 3. State snapshot for scoring
-    state_snap = {v: store.get(v) for v in store.all_latest()}
+    # 3. State snapshot for scoring (variable -> record dict)
+    state_snap = store.all_latest()
 
     # 4. Score & select
     best = select_best(ACTIONS, state_snap)

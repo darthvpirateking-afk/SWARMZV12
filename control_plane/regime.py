@@ -64,8 +64,10 @@ class RegimeManager:
                 met = evaluate(obj["operator"], current, obj["target"])
 
             if met and not rs.active:
-                # Check cooldown
-                if now - rs.deactivated_at >= obj.get("cooldown_after_exit", 0):
+                # Check cooldown (deactivated_at == 0 means never deactivated)
+                cooldown_elapsed = (rs.deactivated_at == 0.0
+                                    or now - rs.deactivated_at >= obj.get("cooldown_after_exit", 0))
+                if cooldown_elapsed:
                     rs.active = True
                     rs.activated_at = now
             elif not met and rs.active:

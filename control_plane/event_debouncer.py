@@ -63,5 +63,7 @@ class EventDebouncer:
                 cb(event, payload)
             except Exception as exc:  # noqa: BLE001
                 import sys
+                import traceback
                 print(f"[EventDebouncer] handler error for {event}: {exc}",
                       file=sys.stderr)
+                traceback.print_exc(file=sys.stderr)
