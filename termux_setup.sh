@@ -1,32 +1,43 @@
 #!/data/data/com.termux/files/usr/bin/bash
-# termux_setup.sh — One-time setup for SWARMZ on Termux (Android)
-#
-# Usage:
-#   pkg install git python -y
-#   git clone <repo-url> swarmz && cd swarmz
-#   bash termux_setup.sh
+# SWARMZ Termux Setup Script
+# Sets up Python environment on Android via Termux
 
-set -e
-
-echo "============================================"
-echo "  SWARMZ — Termux Setup"
-echo "============================================"
+echo "========================================"
+echo "SWARMZ - Termux Setup (Android)"
+echo "========================================"
 echo ""
 
-# 1. Update packages
-echo "[1/3] Updating Termux packages …"
-pkg update -y && pkg upgrade -y
+# Update package list
+echo "Updating Termux packages..."
+pkg update -y
 
-# 2. Install Python (if missing)
-echo "[2/3] Installing Python …"
-pkg install python -y
+# Install Python and essential tools
+echo "Installing Python and dependencies..."
+pkg install -y python python-pip
 
-# 3. Install pip dependencies
-echo "[3/3] Installing Python dependencies …"
+# Upgrade pip
+echo "Upgrading pip..."
 pip install --upgrade pip
+
+# Install SWARMZ dependencies
+echo "Installing SWARMZ requirements..."
 pip install -r requirements.txt
 
+if [ $? -ne 0 ]; then
+    echo ""
+    echo "ERROR: Failed to install dependencies"
+    echo "Please check your internet connection and try again"
+    exit 1
+fi
+
 echo ""
-echo "  ✓ Setup complete!"
-echo "  Run the server with:  bash termux_run.sh"
-echo "============================================"
+echo "========================================"
+echo "✓ SWARMZ setup complete!"
+echo "========================================"
+echo ""
+echo "To start the server, run:"
+echo "  ./termux_run.sh"
+echo ""
+echo "Or manually:"
+echo "  python swarmz_server.py"
+echo ""

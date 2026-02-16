@@ -1,135 +1,67 @@
-#!/usr/bin/env pwsh
-# SWARMZ - One-Command Startup Script (PowerShell)
-# Usage: .\RUN.ps1 [--test|--demo|--api]
+# SWARMZ Windows Launcher (PowerShell)
+# Creates virtual environment, installs dependencies, and starts the server
 
-param(
-    [switch]$test,
-    [switch]$demo,
-    [switch]$api,
-    [switch]$help
-)
-
-Write-Host "============================================" -ForegroundColor Cyan
-Write-Host "  SWARMZ - Operator-Sovereign System" -ForegroundColor Cyan
-Write-Host "============================================" -ForegroundColor Cyan
+Write-Host "========================================" -ForegroundColor Cyan
+Write-Host "SWARMZ - Windows Setup and Launch" -ForegroundColor Cyan
+Write-Host "========================================" -ForegroundColor Cyan
 Write-Host ""
 
-# Show help
-if ($help) {
-    Write-Host "Usage: .\RUN.ps1 [options]" -ForegroundColor Yellow
-    Write-Host ""
-    Write-Host "Options:" -ForegroundColor Green
-    Write-Host "  (no args)   Start interactive CLI mode"
-    Write-Host "  --test      Run test suite"
-    Write-Host "  --demo      Run demo examples"
-    Write-Host "  --api       Start API server (requires FastAPI)"
-    Write-Host "  --help      Show this help message"
-    Write-Host ""
-    exit 0
-}
-
-# Check Python installation
-Write-Host "[1/5] Checking Python installation..." -ForegroundColor Yellow
-$pythonCmd = $null
-foreach ($cmd in @("python3", "python")) {
-    try {
-        $version = & $cmd --version 2>&1
-        if ($version -match "Python 3\.([6-9]|[1-9][0-9])") {
-            $pythonCmd = $cmd
-            Write-Host "  ✓ Found: $version" -ForegroundColor Green
-            break
-        }
-    } catch {}
-}
-
-if (-not $pythonCmd) {
-    Write-Host "  ✗ Error: Python 3.6+ not found" -ForegroundColor Red
-    Write-Host "  Please install Python from https://www.python.org/" -ForegroundColor Red
+# Check if Python is installed
+try {
+    $pythonVersion = python --version 2>&1
+    Write-Host "✓ Python found: $pythonVersion" -ForegroundColor Green
+} catch {
+    Write-Host "✗ ERROR: Python is not installed or not in PATH" -ForegroundColor Red
+    Write-Host "Please install Python 3.6+ from python.org" -ForegroundColor Yellow
+    Read-Host "Press Enter to exit"
     exit 1
 }
 
-# Check/create virtual environment
-Write-Host "[2/5] Setting up virtual environment..." -ForegroundColor Yellow
+# Create virtual environment if it doesn't exist
 if (-not (Test-Path "venv")) {
-    Write-Host "  Creating new virtual environment..." -ForegroundColor Cyan
-    & $pythonCmd -m venv venv
+    Write-Host "Creating virtual environment..." -ForegroundColor Yellow
+    python -m venv venv
     if ($LASTEXITCODE -ne 0) {
-        Write-Host "  ✗ Failed to create virtual environment" -ForegroundColor Red
+        Write-Host "✗ ERROR: Failed to create virtual environment" -ForegroundColor Red
+        Read-Host "Press Enter to exit"
         exit 1
     }
-    Write-Host "  ✓ Virtual environment created" -ForegroundColor Green
-} else {
-    Write-Host "  ✓ Virtual environment exists" -ForegroundColor Green
+    Write-Host "✓ Virtual environment created successfully" -ForegroundColor Green
+    Write-Host ""
 }
 
 # Activate virtual environment
-Write-Host "[3/5] Activating virtual environment..." -ForegroundColor Yellow
-$activateScript = "venv\Scripts\Activate.ps1"
-if (Test-Path $activateScript) {
-    & $activateScript
-    Write-Host "  ✓ Virtual environment activated" -ForegroundColor Green
-} else {
-    Write-Host "  ⚠ Activation script not found, continuing..." -ForegroundColor Yellow
+Write-Host "Activating virtual environment..." -ForegroundColor Yellow
+& "venv\Scripts\Activate.ps1"
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "✗ ERROR: Failed to activate virtual environment" -ForegroundColor Red
+    Write-Host "You may need to run: Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser" -ForegroundColor Yellow
+    Read-Host "Press Enter to exit"
+    exit 1
 }
 
-# Install dependencies
-Write-Host "[4/5] Installing dependencies..." -ForegroundColor Yellow
-if (Test-Path "requirements.txt") {
-    $pipCmd = "venv\Scripts\pip.exe"
-    if (-not (Test-Path $pipCmd)) {
-        $pipCmd = "pip"
-    }
-    
-    & $pipCmd install -q -r requirements.txt 2>&1 | Out-Null
-    if ($LASTEXITCODE -eq 0) {
-        Write-Host "  ✓ Dependencies installed" -ForegroundColor Green
-    } else {
-        Write-Host "  ⚠ Some dependencies may have failed (optional packages)" -ForegroundColor Yellow
-    }
-} else {
-    Write-Host "  ⚠ requirements.txt not found, skipping..." -ForegroundColor Yellow
+# Install/upgrade dependencies
+Write-Host "Installing dependencies..." -ForegroundColor Yellow
+python -m pip install --upgrade pip --quiet
+pip install -r requirements.txt
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "✗ ERROR: Failed to install dependencies" -ForegroundColor Red
+    Read-Host "Press Enter to exit"
+    exit 1
 }
-
-# Run appropriate command
-Write-Host "[5/5] Starting SWARMZ..." -ForegroundColor Yellow
+Write-Host "✓ Dependencies installed successfully" -ForegroundColor Green
 Write-Host ""
 
-$pythonExe = "venv\Scripts\python.exe"
-if (-not (Test-Path $pythonExe)) {
-    $pythonExe = $pythonCmd
-}
-
-if ($test) {
-    Write-Host "Running test suite..." -ForegroundColor Cyan
-    Write-Host "============================================" -ForegroundColor Cyan
-    & $pythonExe test_swarmz.py
-} elseif ($demo) {
-    Write-Host "Running demo examples..." -ForegroundColor Cyan
-    Write-Host "============================================" -ForegroundColor Cyan
-    & $pythonExe examples.py
-} elseif ($api) {
-    Write-Host "Starting API server..." -ForegroundColor Cyan
-    Write-Host "============================================" -ForegroundColor Cyan
-    & $pythonExe run_swarmz.py
-} else {
-    Write-Host "Starting interactive CLI..." -ForegroundColor Cyan
-    Write-Host "============================================" -ForegroundColor Cyan
-    Write-Host "Available commands:" -ForegroundColor Green
-    Write-Host "  list          - List all capabilities"
-    Write-Host "  task <name>   - Execute a task"
-    Write-Host "  audit         - View audit log"
-    Write-Host "  exit          - Exit interactive mode"
-    Write-Host ""
-    Write-Host "Quick start:" -ForegroundColor Yellow
-    Write-Host "  swarmz> list"
-    Write-Host "  swarmz> task echo {`"message`": `"Hello!`"}"
-    Write-Host ""
-    Write-Host "============================================" -ForegroundColor Cyan
-    Write-Host ""
-    & $pythonExe swarmz_cli.py --interactive
-}
-
+# Start the server
+Write-Host "========================================" -ForegroundColor Cyan
+Write-Host "Starting SWARMZ Server..." -ForegroundColor Cyan
+Write-Host "========================================" -ForegroundColor Cyan
 Write-Host ""
-Write-Host "============================================" -ForegroundColor Cyan
-Write-Host "  SWARMZ session ended" -ForegroundColor Cyan
-Write-Host "============================================" -ForegroundColor Cyan
+python swarmz_server.py
+
+# Keep window open if there's an error
+if ($LASTEXITCODE -ne 0) {
+    Write-Host ""
+    Write-Host "✗ ERROR: Server stopped with error code $LASTEXITCODE" -ForegroundColor Red
+    Read-Host "Press Enter to exit"
+}

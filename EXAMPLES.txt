@@ -1,103 +1,378 @@
-============================================================
- SWARMZ — Quick-Start Examples
-============================================================
+================================================================================
+                    SWARMZ - EXAMPLES AND USAGE GUIDE
+================================================================================
 
-------------------------------------------------------------
- 1. INSTALL & RUN  (any OS with Python 3.6+)
-------------------------------------------------------------
+SWARMZ is an Operator-Sovereign "Do Anything" System with a REST API and 
+Progressive Web App (PWA) interface. This guide covers installation, running,
+and using SWARMZ on various platforms.
 
-  # Clone the repo
-  git clone https://github.com/darthvpirateking-afk/swarmz.git
-  cd swarmz
+================================================================================
+                        INSTALLATION INSTRUCTIONS
+================================================================================
 
-  # Create a virtual-env and install dependencies
-  python3 -m venv venv
-  source venv/bin/activate        # Windows: venv\Scripts\activate
-  pip install -r requirements.txt
+1. WINDOWS (Command Prompt / PowerShell)
+   --------------------------------------
+   Simply double-click one of these files:
+   - RUN.cmd        (for Command Prompt)
+   - RUN.ps1        (for PowerShell)
+   
+   These scripts will:
+   - Create a virtual environment
+   - Install dependencies
+   - Start the SWARMZ server
+   
+   Manual installation:
+   > python -m venv venv
+   > venv\Scripts\activate
+   > pip install -r requirements.txt
+   > python swarmz_server.py
 
-  # Start the server (binds to 0.0.0.0:8012)
-  python run_swarmz.py
+2. LINUX / macOS
+   -------------
+   $ python3 -m venv venv
+   $ source venv/bin/activate
+   $ pip install -r requirements.txt
+   $ python swarmz_server.py
 
-  The console will print:
-    Local:   http://localhost:8012
-    LAN:     http://<your-lan-ip>:8012
+3. ANDROID (Termux)
+   -----------------
+   a) Install Termux from F-Droid (https://f-droid.org/en/packages/com.termux/)
+   b) Open Termux and run:
+      $ pkg install git python
+      $ git clone <repository-url>
+      $ cd swarmz
+      $ chmod +x termux_setup.sh termux_run.sh
+      $ ./termux_setup.sh
+      $ ./termux_run.sh
 
+4. WINDOWS STANDALONE EXE
+   -----------------------
+   Build a single-file executable that doesn't require Python:
+   - Double-click PACK_EXE.ps1
+   - Or run: powershell -ExecutionPolicy Bypass -File PACK_EXE.ps1
+   - The executable will be in the dist/ folder
+   - Run dist\SWARMZ.exe to start the server
 
-------------------------------------------------------------
- 2. WINDOWS ONE-LINER
-------------------------------------------------------------
+================================================================================
+                            ACCESS URLS
+================================================================================
 
-  RUN.cmd api          — Batch file (cmd.exe)
-  .\RUN.ps1 -api       — PowerShell
+Once the server starts, you'll see:
 
+📡 Local Access (same device):
+   http://localhost:8000
 
-------------------------------------------------------------
- 3. TERMUX (Android)
-------------------------------------------------------------
+📡 LAN Access (other devices on same network):
+   http://192.168.x.x:8000  (actual IP shown on startup)
 
-  pkg install git python -y
-  git clone https://github.com/darthvpirateking-afk/swarmz.git
-  cd swarmz
-  bash termux_setup.sh      # one-time
-  bash termux_run.sh        # start server
+📚 API Documentation:
+   http://localhost:8000/docs
+   http://192.168.x.x:8000/docs
 
+💡 TIP: Use the LAN URL to access SWARMZ from:
+   - Your phone/tablet
+   - Another computer on the network
+   - Any device connected to the same WiFi/network
 
-------------------------------------------------------------
- 4. LAN ACCESS  (phone / tablet / second PC)
-------------------------------------------------------------
+================================================================================
+                      PWA INSTALLATION (Mobile/Desktop)
+================================================================================
 
-  Open a browser on any device connected to the same Wi-Fi
-  and navigate to the LAN URL printed at startup, e.g.:
+SWARMZ can be installed as a Progressive Web App for native-like experience:
 
-    http://192.168.1.42:8012
+📱 ON MOBILE (Chrome/Safari):
+   1. Open http://192.168.x.x:8000 in your mobile browser
+   2. Look for "Install" banner or "Add to Home Screen" prompt
+   3. Tap "Install" or "Add"
+   4. SWARMZ will appear on your home screen like a native app
+   5. Open it anytime - works offline for cached content!
 
+💻 ON DESKTOP (Chrome/Edge):
+   1. Open http://localhost:8000 in Chrome or Edge
+   2. Look for install icon (⊕) in the address bar
+   3. Click "Install SWARMZ"
+   4. The app will open in its own window
 
-------------------------------------------------------------
- 5. ADD TO HOME SCREEN / INSTALL APP  (PWA)
-------------------------------------------------------------
+🔋 PWA FEATURES:
+   - Offline access to the interface
+   - Add to home screen
+   - Standalone window (no browser UI)
+   - Fast loading with service worker caching
+   - Network-first strategy for API calls
 
-  Open http://<lan-ip>:8012 in Chrome or Safari on your
-  phone, then:
+================================================================================
+                         SAMPLE API REQUESTS
+================================================================================
 
-  Android (Chrome):
-    Menu ⋮ → "Add to Home screen" → tap Add
+1. HEALTH CHECK
+   ------------
+   $ curl http://localhost:8000/v1/health
 
-  iOS (Safari):
-    Share ↑ → "Add to Home Screen" → tap Add
+   Response:
+   {
+     "status": "healthy",
+     "service": "SWARMZ API",
+     "version": "1.0.0"
+   }
 
-  Desktop (Chrome / Edge):
-    Click the install icon in the address bar, or
-    Menu → "Install SWARMZ"
+2. LIST ALL TASKS
+   --------------
+   $ curl http://localhost:8000/v1/tasks
 
+   Response:
+   {
+     "success": true,
+     "tasks": {
+       "echo": {"description": "Echo a message back", ...},
+       "system_info": {"description": "Get system information", ...},
+       ...
+     },
+     "count": 3
+   }
 
-------------------------------------------------------------
- 6. SAMPLE curl REQUESTS
-------------------------------------------------------------
+3. EXECUTE ECHO TASK
+   -----------------
+   $ curl -X POST http://localhost:8000/v1/execute \
+     -H "Content-Type: application/json" \
+     -d '{"task": "echo", "params": {"message": "Hello SWARMZ!"}}'
 
-  # Health check
-  curl http://localhost:8012/health
+   Response:
+   {
+     "success": true,
+     "result": "Echo: Hello SWARMZ!"
+   }
 
-  # JSON status endpoint
-  curl http://localhost:8012/status
+4. GET SYSTEM INFO
+   ---------------
+   $ curl http://localhost:8000/v1/system/info
 
-  # Create a mission
-  curl -X POST http://localhost:8012/v1/missions/create \
-    -H "Content-Type: application/json" \
-    -d '{"goal":"Optimize conversion","category":"coin","constraints":{"max_time_seconds":60,"max_steps":3}}'
+   Response:
+   {
+     "success": true,
+     "info": {
+       "platform": "linux",
+       "python_version": "3.12.3",
+       "registered_tasks": 3,
+       "loaded_plugins": 2
+     }
+   }
 
-  # List missions
-  curl http://localhost:8012/v1/missions/list
+5. VIEW AUDIT LOG
+   --------------
+   $ curl http://localhost:8000/v1/audit
 
-  # System omens
-  curl http://localhost:8012/v1/system/omens
+   Response:
+   {
+     "success": true,
+     "audit_log": [
+       {
+         "action": "execute_task:echo",
+         "context": {...},
+         "approved": true
+       }
+     ],
+     "count": 1
+   }
 
-  # Predictions
-  curl http://localhost:8012/v1/system/predictions
+6. EXECUTE PYTHON CODE (Operator Sovereignty)
+   -------------------------------------------
+   $ curl -X POST http://localhost:8000/v1/execute \
+     -H "Content-Type: application/json" \
+     -d '{"task": "execute_python", "params": {"code": "result = 2 + 2"}}'
 
-  # Templates
-  curl http://localhost:8012/v1/system/templates
+   Response:
+   {
+     "success": true,
+     "result": 4
+   }
 
-  # Schedule maintenance
-  curl -X POST http://localhost:8012/v1/admin/maintenance
+7. ACCESS FROM REMOTE DEVICE
+   --------------------------
+   Replace localhost with your LAN IP (shown on server startup):
+   
+   $ curl http://192.168.1.100:8000/v1/health
+   $ curl http://192.168.1.100:8000/v1/tasks
 
-============================================================
+================================================================================
+                         LAN ACCESS EXAMPLES
+================================================================================
+
+SCENARIO 1: Run on Desktop, Access from Phone
+   1. Start SWARMZ on your desktop computer
+   2. Note the LAN IP address (e.g., 192.168.1.50:8000)
+   3. On your phone (connected to same WiFi):
+      - Open browser: http://192.168.1.50:8000
+      - Install as PWA: "Add to Home Screen"
+   4. Now you can control SWARMZ from your phone!
+
+SCENARIO 2: Run on Android (Termux), Access from Desktop
+   1. Start SWARMZ in Termux on your Android phone
+   2. Note the LAN IP address shown on startup
+   3. On your desktop computer:
+      - Open browser: http://192.168.1.75:8000
+      - Use the API or web interface
+   4. Your phone is now a server!
+
+SCENARIO 3: Multiple Devices
+   1. Start SWARMZ on any device
+   2. All devices on same network can access it:
+      - Tablets
+      - Laptops
+      - Phones
+      - Smart TVs with browsers
+      - Any device with a web browser or HTTP client
+
+================================================================================
+                         ADVANCED EXAMPLES
+================================================================================
+
+1. USING WITH PYTHON REQUESTS
+   ---------------------------
+   import requests
+
+   base_url = "http://localhost:8000"
+
+   # List tasks
+   response = requests.get(f"{base_url}/v1/tasks")
+   print(response.json())
+
+   # Execute task
+   response = requests.post(
+       f"{base_url}/v1/execute",
+       json={
+           "task": "echo",
+           "params": {"message": "Hello from Python!"}
+       }
+   )
+   print(response.json())
+
+2. USING WITH JAVASCRIPT (Browser/Node.js)
+   ---------------------------------------
+   // List tasks
+   fetch('http://localhost:8000/v1/tasks')
+     .then(r => r.json())
+     .then(data => console.log(data));
+
+   // Execute task
+   fetch('http://localhost:8000/v1/execute', {
+     method: 'POST',
+     headers: {'Content-Type': 'application/json'},
+     body: JSON.stringify({
+       task: 'echo',
+       params: {message: 'Hello from JavaScript!'}
+     })
+   })
+     .then(r => r.json())
+     .then(data => console.log(data));
+
+3. LOAD CUSTOM PLUGIN VIA CLI
+   ---------------------------
+   Before starting the server, add your plugin to config.json:
+   
+   {
+     "plugins": {
+       "auto_load": [
+         "plugins/filesystem.py",
+         "plugins/dataprocessing.py",
+         "plugins/my_custom_plugin.py"
+       ]
+     }
+   }
+
+================================================================================
+                         TROUBLESHOOTING
+================================================================================
+
+ISSUE: "Address already in use"
+   SOLUTION: Another process is using port 8000
+   - Change port: set PORT=8080 && python swarmz_server.py
+   - Or kill the existing process
+
+ISSUE: "Cannot access from other devices"
+   SOLUTION:
+   - Check firewall settings (allow port 8000)
+   - Ensure devices are on same network
+   - Verify server is bound to 0.0.0.0 (not 127.0.0.1)
+
+ISSUE: "Module not found" errors
+   SOLUTION: Install dependencies
+   - pip install -r requirements.txt
+
+ISSUE: PowerShell execution policy error
+   SOLUTION: Run as administrator:
+   - Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+
+ISSUE: PWA not installing
+   SOLUTION:
+   - Use HTTPS (or localhost)
+   - Use compatible browser (Chrome, Edge, Safari)
+   - Check service worker registration in browser console
+
+================================================================================
+                         SECURITY NOTES
+================================================================================
+
+⚠️  IMPORTANT SECURITY CONSIDERATIONS:
+
+1. OPERATOR SOVEREIGNTY: SWARMZ is designed for trusted operators
+   - The execute_python task allows arbitrary code execution
+   - Only run SWARMZ in trusted environments
+   - Don't expose to untrusted networks
+
+2. NETWORK ACCESS: When binding to 0.0.0.0:
+   - Anyone on your local network can access SWARMZ
+   - This is intentional for LAN access
+   - Use firewall rules if needed to restrict access
+   - Consider authentication for production use
+
+3. PWA OFFLINE CAPABILITIES:
+   - Service worker caches assets for offline use
+   - API calls still require network connection
+   - Cached content updates when online
+
+================================================================================
+                         MORE INFORMATION
+================================================================================
+
+📚 Documentation:
+   - README.md - Project overview
+   - ARCHITECTURE.md - System architecture
+   - USER_GUIDE.md - Detailed user guide
+   - /docs endpoint - Interactive API documentation
+
+🔌 Plugins:
+   - plugins/filesystem.py - File system operations
+   - plugins/dataprocessing.py - Data transformation
+   - Create your own in plugins/ directory
+
+🎯 Core Principles:
+   - Operator Sovereignty - You're in complete control
+   - Extensibility - Add capabilities via plugins
+   - Transparency - All actions are logged
+   - Flexibility - "Do anything" philosophy
+
+================================================================================
+                              QUICK REFERENCE
+================================================================================
+
+Start Server:
+  Windows:  RUN.cmd or RUN.ps1
+  Linux:    python swarmz_server.py
+  Termux:   ./termux_run.sh
+
+Access:
+  Local:    http://localhost:8000
+  LAN:      http://<your-ip>:8000
+  API Docs: http://localhost:8000/docs
+
+Key Endpoints:
+  /                     - PWA home page
+  /v1/health            - Health check
+  /v1/tasks             - List tasks
+  /v1/execute           - Execute task
+  /v1/audit             - Audit log
+  /docs                 - API documentation
+
+================================================================================
+                            END OF EXAMPLES
+================================================================================

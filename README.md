@@ -17,38 +17,33 @@
 ## Features
 
 - 🎯 **Task Execution Engine** - Execute any registered task with full control
-- 🤖 **SWARMZ Companion** - Personal AI companion with dual-mode cognition (NEW!)
 - 🔌 **Plugin System** - Extend capabilities dynamically
 - 📝 **Audit Logging** - Complete transparency of all operations
 - 🛡️ **Operator Sovereignty** - You're always in control
 - 🔧 **Built-in Tasks** - Core functionality out of the box
 - 💻 **CLI Interface** - Command-line and interactive modes
+- 🌐 **Web Server & REST API** - FastAPI-based API with OpenAPI docs
+- 📱 **Progressive Web App** - Mobile-friendly PWA with offline support
+- 🚀 **Cross-Platform** - Windows, Linux, macOS, and Android (Termux)
 - 📦 **Easy Configuration** - JSON-based configuration
 
 ## Quick Start
 
-### SWARMZ Companion (NEW!)
+### Web Server (Recommended)
 
 ```bash
-# Start the companion in interactive mode
-python3 companion_cli.py --interactive
+# Windows: Double-click RUN.cmd or RUN.ps1
+# Or manually:
+pip install -r requirements.txt
+python3 swarmz_server.py
 
-# Process a question (Companion Mode)
-python3 companion_cli.py --input "What is SWARMZ?"
-
-# Execute a command (Operator Mode)
-python3 companion_cli.py --input "Create a backup file"
-
-# Use with full SWARMZ Core
-python3 companion_cli.py --use-core --interactive
-
-# Show metrics
-python3 companion_cli.py --metrics
+# Access at:
+# Local:  http://localhost:8000
+# LAN:    http://192.168.x.x:8000 (shown on startup)
+# API Docs: http://localhost:8000/docs
 ```
 
-See [COMPANION_GUIDE.md](COMPANION_GUIDE.md) for complete documentation.
-
-### Basic Usage
+### CLI Usage
 
 ```bash
 # Run the demo
@@ -250,59 +245,51 @@ The "do anything" capability comes from:
 - No artificial restrictions on capabilities
 - Complete operator sovereignty over all operations
 
-## SWARMZ Companion
-
-**SWARMZ Companion** is a personal AI companion with dual-mode cognition:
-
-### Dual-Mode System
-
-1. **Companion Mode 🗨️** - Conversation, explanations, personality
-   - Free natural conversation
-   - Questions and clarifications
-   - No task execution
-
-2. **Operator Mode ⚙️** - Real-world execution with worker swarms
-   - Spawns controlled worker agents
-   - Follows execution loop: INTAKE → STRUCTURE → DECIDE → COMMIT → EXECUTE → VERIFY → LOG → EVOLVE
-   - Never stops at planning
-   - Produces real artifacts
-
-### Key Features
-
-- **Automatic Mode Detection** - Questions → Companion, Commands → Operator
-- **Worker Swarms** - Max 3 workers per task (Scout, Builder, Verify)
-- **Commit Engine** - Prevents stalling with states: ACTION_READY, NEEDS_CONFIRM, BLOCKED
-- **Intelligence Layer** - Predicts outcomes and learns from execution
-- **Evolution Mechanism** - Generates human-approved patchpacks for improvement
-- **Memory Persistence** - Remembers preferences, caps, and ongoing projects
-
-### Quick Example
-
-```python
-from companion import SwarmzCompanion
-
-companion = SwarmzCompanion()
-
-# Companion mode (conversation)
-response = companion.interact("What is SWARMZ?")
-# Returns: conversational response + [CONVERSATION]
-
-# Operator mode (execution)
-response = companion.interact("Create a file", {"name": "test.txt"})
-# Returns: SITUATION → DECISION → EXECUTION → VERIFY → LOG + [ACTION_READY]
-
-# Check metrics
-metrics = companion.get_metrics()
-print(f"Actions/day: {metrics['completed_verified_actions_per_day']}")
-```
-
-See **[COMPANION_GUIDE.md](COMPANION_GUIDE.md)** for complete documentation.
-
 ## Requirements
 
+### Core System
 - Python 3.6+
-- No external dependencies for core functionality
-- Plugins may have their own dependencies
+- No external dependencies for core functionality (swarmz.py, swarmz_cli.py)
+
+### Web Server & PWA
+- FastAPI and Uvicorn (install with: `pip install -r requirements.txt`)
+- Modern web browser for PWA features
+
+### Development
+- PyInstaller for building executables
+- pytest for testing (install with: `pip install -r requirements-dev.txt`)
+
+## Deployment Options
+
+### Windows
+- **RUN.cmd** - Double-click to auto-setup and start (Command Prompt)
+- **RUN.ps1** - Double-click to auto-setup and start (PowerShell)
+- **PACK_EXE.ps1** - Build standalone .exe with PyInstaller
+
+### Linux / macOS
+```bash
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+python swarmz_server.py
+```
+
+### Android (Termux)
+```bash
+# One-time setup
+./termux_setup.sh
+
+# Start server
+./termux_run.sh
+```
+
+### Progressive Web App (PWA)
+1. Start the server (any method above)
+2. Open the LAN URL on your mobile device
+3. Tap "Install" or "Add to Home Screen"
+4. Access SWARMZ like a native app!
+
+For detailed examples and usage, see **EXAMPLES.txt**.
 
 ## Contributing
 
@@ -323,63 +310,3 @@ SWARMZ is an operator-sovereign system designed for maximum flexibility and cont
 ---
 
 **Remember: With SWARMZ, the operator maintains complete sovereignty. You're in control.**
-
-
-
-
-
-
-
-
-
-SWARMZ — FOUNDER RECORD
-Creator:
-Regan Stewart Harris
-Date of Creation:
-16/02/2026
-Project Name:
-SWARMZ
-Declaration of Authorship:
-I declare that I am the original creator and author of the software system known as “SWARMZ”.
-All architecture, terminology, structure, and system behavior definitions described in this document originate from my work and development process.
-System Description:
-SWARMZ is a local-first governed software system that converts goals into structured missions, executes small safe actions, measures outcomes, and adapts behavior using deterministic rules while preserving operator control.
-Core Purpose:
-Prevent random work and unstable automation by enforcing a continuous operational loop:
-detect → evaluate → execute → measure → learn → adapt
-Operating Principles:
-• Deterministic operation
-• Operator-controlled execution
-• Reversible actions
-• Evidence-based adaptation
-• Local-first storage
-• Audit-logged behavior
-Core Components:
-Mission Ledger
-Stores structured tasks and outcomes.
-Decision Engine
-Evaluates actions across defined constraints before execution.
-Execution Layer
-Performs bounded, safe operations only.
-Measurement Layer
-Records measurable outcomes from every action.
-Adaptation Layer
-Updates strategies based on verified results.
-Audit Log
-Immutable record of all system actions and state changes.
-Key Terminology:
-Mission:
-A structured objective converted into executable steps.
-State:
-Current measurable condition of the system.
-Signal:
-Measured performance outcome used for decision making.
-Constraint:
-A rule preventing unstable or unsafe behavior.
-Adaptation:
-A change in strategy caused by evidence.
-Ownership Statement:
-The name “SWARMZ” and the system described herein are claimed as an original software project created by the author listed above.
-Signature:
-Regan Stewart Harris
-©2026 Regan S Harris. All rights reserved.

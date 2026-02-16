@@ -1,20 +1,2 @@
-# SWARMZ Core System Requirements
-# Python 3.6+ required
-
-# Core system uses only Python standard library
-# No external dependencies required for basic functionality
-
-# Optional dependencies for extended features:
-# Uncomment if needed:
-
-# FastAPI (for API server features)
-fastapi>=0.100.0
-uvicorn[standard]>=0.22.0
-python-multipart>=0.0.6
-
-# Data validation (required by swarmz_runtime)
-pydantic>=2.0.0
-
-# For future enhancements:
-# requests>=2.31.0
-# pandas>=2.0.0
+fastapi>=0.115.0
+uvicorn[standard]>=0.32.0

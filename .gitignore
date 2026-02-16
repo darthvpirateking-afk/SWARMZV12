@@ -6,6 +6,7 @@ __pycache__/
 .Python
 build/
 develop-eggs/
+dist/
 downloads/
 eggs/
 .eggs/
@@ -18,10 +19,6 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
-
-# Node.js
-node_modules/
-dist/
 
 # Virtual environments
 venv/
@@ -52,43 +49,13 @@ htmlcov/
 *.tmp
 /tmp/
 
-# Addon runtime data (generated at runtime)
-addons/data/backups/
-addons/data/guardrails/
-addons/data/memory/
-addons/data/contracts/
-addons/data/packs/
-addons/data/*.json
-addons/data/*.jsonl
-companion_memory.json
+# PyInstaller
+*.spec
 
-# Runtime data (generated at runtime)
-data/audit.jsonl
-data/missions.jsonl
-data/runes.json
-data/system_state.json
-data/state.json
-data/scoreboard.json
-data/KILL
-.swarmz_trash/
-.swarmz_workspace/
-.swarmz_workspace_api/
-_crashpack/
-swarmz_data/
-swarmz_local/
-swarmz_cmd
-SWARMZ.spec
-mobile/
-workspace/
-.env
-venv/
-.venv/
-*.bak
-env[*
-.swarmz/policies/
-fix.patch
-swarmz.json
-swarmz_runtime/api/v1/
-swarmz_runtime/extensions/
-test_api/
-test_ws/
+# local mobile workspace
+swarmz-mobile/
+
+
+# Windows reserved junk
+nul
+

@@ -1,148 +1,64 @@
 @echo off
-REM SWARMZ - One-Command Startup Script (Windows Batch)
-REM Usage: RUN.cmd [test|demo|api|help]
+REM SWARMZ Windows Launcher (Command Prompt)
+REM Creates virtual environment, installs dependencies, and starts the server
 
-setlocal enabledelayedexpansion
-
-echo ============================================
-echo   SWARMZ - Operator-Sovereign System
-echo ============================================
+echo ========================================
+echo SWARMZ - Windows Setup and Launch
+echo ========================================
 echo.
 
-REM Parse arguments
-set MODE=interactive
-if "%1"=="test" set MODE=test
-if "%1"=="demo" set MODE=demo
-if "%1"=="api" set MODE=api
-if "%1"=="help" goto :show_help
-if "%1"=="--test" set MODE=test
-if "%1"=="--demo" set MODE=demo
-if "%1"=="--api" set MODE=api
-if "%1"=="--help" goto :show_help
-if "%1"=="/?" goto :show_help
-
-goto :main
-
-:show_help
-echo Usage: RUN.cmd [options]
-echo.
-echo Options:
-echo   (no args)   Start interactive CLI mode
-echo   test        Run test suite
-echo   demo        Run demo examples
-echo   api         Start API server (requires FastAPI)
-echo   help        Show this help message
-echo.
-exit /b 0
-
-:main
-
-REM Check Python installation
-echo [1/5] Checking Python installation...
-set PYTHON_CMD=
-for %%p in (python3 python) do (
-    %%p --version >nul 2>&1
-    if !errorlevel! equ 0 (
-        for /f "tokens=*" %%v in ('%%p --version 2^>^&1') do (
-            echo %%v | findstr /r "Python 3\.[6-9] Python 3\.[1-9][0-9]" >nul
-            if !errorlevel! equ 0 (
-                set PYTHON_CMD=%%p
-                echo   [OK] Found: %%v
-                goto :python_found
-            )
-        )
-    )
+REM Check if Python is installed
+python --version >nul 2>&1
+if %errorlevel% neq 0 (
+    echo ERROR: Python is not installed or not in PATH
+    echo Please install Python 3.6+ from python.org
+    pause
+    exit /b 1
 )
 
-echo   [ERROR] Python 3.6+ not found
-echo   Please install Python from https://www.python.org/
-exit /b 1
-
-:python_found
-
-REM Check/create virtual environment
-echo [2/5] Setting up virtual environment...
+REM Create virtual environment if it doesn't exist
 if not exist "venv" (
-    echo   Creating new virtual environment...
-    %PYTHON_CMD% -m venv venv
-    if !errorlevel! neq 0 (
-        echo   [ERROR] Failed to create virtual environment
+    echo Creating virtual environment...
+    python -m venv venv
+    if %errorlevel% neq 0 (
+        echo ERROR: Failed to create virtual environment
+        pause
         exit /b 1
     )
-    echo   [OK] Virtual environment created
-) else (
-    echo   [OK] Virtual environment exists
+    echo Virtual environment created successfully
+    echo.
 )
 
 REM Activate virtual environment
-echo [3/5] Activating virtual environment...
-if exist "venv\Scripts\activate.bat" (
-    call venv\Scripts\activate.bat
-    echo   [OK] Virtual environment activated
-) else (
-    echo   [WARNING] Activation script not found, continuing...
+echo Activating virtual environment...
+call venv\Scripts\activate.bat
+if %errorlevel% neq 0 (
+    echo ERROR: Failed to activate virtual environment
+    pause
+    exit /b 1
 )
 
-REM Install dependencies
-echo [4/5] Installing dependencies...
-if exist "requirements.txt" (
-    if exist "venv\Scripts\pip.exe" (
-        venv\Scripts\pip.exe install -q -r requirements.txt >nul 2>&1
-    ) else (
-        pip install -q -r requirements.txt >nul 2>&1
-    )
-    if !errorlevel! equ 0 (
-        echo   [OK] Dependencies installed
-    ) else (
-        echo   [WARNING] Some dependencies may have failed (optional packages)
-    )
-) else (
-    echo   [WARNING] requirements.txt not found, skipping...
+REM Install/upgrade dependencies
+echo Installing dependencies...
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+if %errorlevel% neq 0 (
+    echo ERROR: Failed to install dependencies
+    pause
+    exit /b 1
 )
-
-REM Determine Python executable
-set PYTHON_EXE=venv\Scripts\python.exe
-if not exist "%PYTHON_EXE%" (
-    set PYTHON_EXE=%PYTHON_CMD%
-)
-
-REM Run appropriate command
-echo [5/5] Starting SWARMZ...
 echo.
 
-if "%MODE%"=="test" (
-    echo Running test suite...
-    echo ============================================
-    %PYTHON_EXE% test_swarmz.py
-) else if "%MODE%"=="demo" (
-    echo Running demo examples...
-    echo ============================================
-    %PYTHON_EXE% examples.py
-) else if "%MODE%"=="api" (
-    echo Starting API server...
-    echo ============================================
-    %PYTHON_EXE% run_swarmz.py
-) else (
-    echo Starting interactive CLI...
-    echo ============================================
-    echo Available commands:
-    echo   list          - List all capabilities
-    echo   task ^<name^>   - Execute a task
-    echo   audit         - View audit log
-    echo   exit          - Exit interactive mode
-    echo.
-    echo Quick start:
-    echo   swarmz^> list
-    echo   swarmz^> task echo {"message": "Hello!"}
-    echo.
-    echo ============================================
-    echo.
-    %PYTHON_EXE% swarmz_cli.py --interactive
-)
-
+REM Start the server
+echo ========================================
+echo Starting SWARMZ Server...
+echo ========================================
 echo.
-echo ============================================
-echo   SWARMZ session ended
-echo ============================================
+python swarmz_server.py
 
-endlocal
+REM Keep window open if there's an error
+if %errorlevel% neq 0 (
+    echo.
+    echo ERROR: Server stopped with error code %errorlevel%
+    pause
+)
