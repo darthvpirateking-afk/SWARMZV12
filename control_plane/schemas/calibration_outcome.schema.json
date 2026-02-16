@@ -1,0 +1,34 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CALIBRATION_VERIFICATION_OUTCOME",
+  "description": "Schema for calibration records emitted alongside verification outcomes.",
+  "type": "object",
+  "required": [
+    "calibration_record_id",
+    "job_id",
+    "decision_id",
+    "action_id",
+    "action_type",
+    "outcome",
+    "verify_spec_hash",
+    "config_hash"
+  ],
+  "properties": {
+    "calibration_record_id": { "type": "string" },
+    "job_id":                { "type": "string", "format": "uuid" },
+    "decision_id":           { "type": "string" },
+    "action_id":             { "type": "string" },
+    "action_type":           { "type": "string" },
+    "outcome":               { "type": "string", "enum": ["PASSED", "FAILED", "EXPIRED", "DEADLETTERED"] },
+    "verify_spec_hash":      { "type": "string" },
+    "config_hash":           { "type": "string" },
+    "baseline":              {},
+    "actual":                {},
+    "delta":                 {},
+    "threshold":             { "type": "number" },
+    "operator":              { "type": "string" },
+    "evaluated_at":          { "type": "string", "format": "date-time" },
+    "trace_id":              { "type": ["string", "null"] }
+  },
+  "additionalProperties": false
+}

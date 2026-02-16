@@ -1,0 +1,89 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ACTION",
+  "type": "object",
+  "required": ["id", "target_layer", "actuator", "magnitude", "duration", "irreversibility_cost", "expected_effects", "rollback", "verification"],
+  "properties": {
+    "id": { "type": "string" },
+    "target_layer": { "type": "string" },
+    "actuator": { "type": "string" },
+    "magnitude": {
+      "type": "object",
+      "required": ["type", "value"],
+      "properties": {
+        "type": { "type": "string", "enum": ["percent", "absolute", "enum"] },
+        "value": {}
+      }
+    },
+    "duration": {
+      "type": "object",
+      "required": ["type", "value"],
+      "properties": {
+        "type": { "type": "string", "enum": ["seconds", "minutes", "hours", "days", "weeks", "until"] },
+        "value": {}
+      }
+    },
+    "irreversibility_cost": { "type": "number", "minimum": 0, "maximum": 1 },
+    "expected_effects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["variable", "delta", "units", "horizon", "confidence"],
+        "properties": {
+          "variable": { "type": "string" },
+          "delta": { "type": "number" },
+          "units": { "type": "string" },
+          "horizon": {
+            "type": "object",
+            "required": ["type", "value"],
+            "properties": {
+              "type": { "type": "string", "enum": ["seconds", "minutes", "hours", "days", "weeks"] },
+              "value": { "type": "number" }
+            }
+          },
+          "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+        }
+      }
+    },
+    "rollback": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": { "type": "string", "enum": ["none", "action_ref", "instruction"] },
+        "action_id": { "type": "string" },
+        "steps": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "verification": {
+      "type": "object",
+      "required": ["metric", "op", "target_delta", "deadline", "data_requirement"],
+      "properties": {
+        "metric": { "type": "string" },
+        "op": { "type": "string", "enum": [">=", "<=", ">", "<", "==", "!="] },
+        "target_delta": { "type": "number" },
+        "deadline": {
+          "type": "object",
+          "required": ["type", "value"],
+          "properties": {
+            "type": { "type": "string", "enum": ["seconds", "minutes", "hours", "days", "weeks"] },
+            "value": { "type": "number" }
+          }
+        },
+        "data_requirement": { "type": "string" }
+      }
+    },
+    "constraints": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["variable", "op", "value"],
+        "properties": {
+          "variable": { "type": "string" },
+          "op": { "type": "string", "enum": [">=", "<=", ">", "<", "==", "!="] },
+          "value": { "type": "number" }
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}

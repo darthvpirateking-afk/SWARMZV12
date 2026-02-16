@@ -51,14 +51,17 @@ class SwarmzEngine:
         
         leverage_score = calculate_leverage_score(mission_data)
         
-        mission = Mission(
-            id=mission_id,
-            goal=goal,
-            category=category,
-            constraints=constraints,
-            status=MissionStatus.PENDING,
-            leverage_score=leverage_score
-        )
+        try:
+            mission = Mission(
+                id=mission_id,
+                goal=goal,
+                category=category,
+                constraints=constraints,
+                status=MissionStatus.PENDING,
+                leverage_score=leverage_score
+            )
+        except (ValueError, KeyError):
+            return {"error": f"Invalid category '{category}'. Must be one of: coin, forge, library, sanctuary"}
         
         self.db.save_mission(mission)
         

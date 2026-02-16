@@ -2,9 +2,10 @@
 verification_store.py – Append-only verification log backed by
 data/verification_log.jsonl.
 
-Stores baseline snapshots and verification outcomes.  Also supports
-querying outcomes by job_id or decision_id.
+Stores baseline snapshots and verification outcomes with config_hash linkage.
 """
+
+from __future__ import annotations
 
 import json
 import os
@@ -23,15 +24,14 @@ class VerificationStore:
         self._lock = threading.Lock()
 
     def log(self, entry: dict) -> dict:
-        """Append a verification entry with a timestamp."""
         entry.setdefault("time", datetime.now(timezone.utc).isoformat())
         with self._lock:
+            os.makedirs(os.path.dirname(self._path), exist_ok=True)
             with open(self._path, "a") as fh:
                 fh.write(json.dumps(entry, default=str) + "\n")
         return entry
 
     def read_all(self) -> list[dict]:
-        """Return every verification entry."""
         if not os.path.exists(self._path):
             return []
         entries: list[dict] = []
@@ -39,18 +39,8 @@ class VerificationStore:
             for line in fh:
                 line = line.strip()
                 if line:
-                    entries.append(json.loads(line))
+                    try:
+                        entries.append(json.loads(line))
+                    except json.JSONDecodeError:
+                        pass
         return entries
-
-    def find_by_job_id(self, job_id: str) -> list[dict]:
-        """Return all entries matching *job_id*."""
-        return [e for e in self.read_all() if e.get("job_id") == job_id]
-
-    def find_by_decision_id(self, decision_id: str) -> list[dict]:
-        """Return all entries matching *decision_id*."""
-        return [e for e in self.read_all()
-                if e.get("decision_id") == decision_id]
-
-    def find_by_outcome(self, outcome: str) -> list[dict]:
-        """Return all entries with a given outcome status."""
-        return [e for e in self.read_all() if e.get("outcome") == outcome]
