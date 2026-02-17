@@ -65,3 +65,5 @@ swarmz-mobile/
 # Windows reserved junk
 nul
 
+data/
+*.jsonl

@@ -1,4 +1,6 @@
-﻿# SWARMZ Source Available License
+﻿from core.license_guard import enforce
+enforce()
+# SWARMZ Source Available License
 # Commercial use, hosting, and resale prohibited.
 # See LICENSE file for details.
 #!/usr/bin/env python3
@@ -108,4 +110,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
