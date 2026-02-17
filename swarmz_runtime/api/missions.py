@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import Dict, Any, Optional, Callable
@@ -62,3 +65,4 @@ def approve_mission(request: ApproveMissionRequest):
     if "error" in result:
         raise HTTPException(status_code=403, detail=result["error"])
     return result
+

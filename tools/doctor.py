@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 """
 SWARMZ Doctor
 
@@ -10,9 +13,8 @@ Standard library only. Designed for Windows-friendly execution.
 import subprocess
 import sys
 import json
-import time
 from pathlib import Path
-from urllib import request, error
+from urllib import request
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = ROOT / "data"
@@ -21,6 +23,7 @@ AUDIT_PATH = DATA_DIR / "audit.jsonl"
 RUNTIME_CHECK = ROOT / "tools" / "runtime_check.py"
 RUN_SWARMZ = ROOT / "run_swarmz.py"
 STATUS_URL = "http://127.0.0.1:8012/v1/runtime/status"
+ENABLE_PROFILING = True  # Toggle for profiling runs
 
 
 def _section(title: str):
@@ -94,10 +97,13 @@ def main():
     print(rc_out.strip())
 
     _section("Profiling Run")
-    prof_code, prof_out = run_cmd([sys.executable, str(RUN_SWARMZ), "--profile"])
-    if prof_code != 0:
-        problems += 1
-    print(prof_out.strip())
+    if ENABLE_PROFILING:
+        prof_code, prof_out = run_cmd([sys.executable, str(RUN_SWARMZ), "--profile"])
+        if prof_code != 0:
+            problems += 1
+        print(prof_out.strip())
+    else:
+        print("Profiling is disabled.")
 
     _section("Profile Snippet")
     if PROFILE_PATH.exists():
@@ -127,3 +133,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

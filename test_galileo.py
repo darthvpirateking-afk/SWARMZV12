@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 #!/usr/bin/env python3
 """
 Test script for Galileo Harness v0.1
@@ -5,8 +8,6 @@ Verifies endpoints and determinism
 """
 
 import requests
-import json
-import time
 from pathlib import Path
 
 BASE_URL = "http://127.0.0.1:8000"
@@ -140,3 +141,4 @@ def test_galileo_endpoints():
 
 if __name__ == "__main__":
     test_galileo_endpoints()
+

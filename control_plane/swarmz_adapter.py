@@ -1,5 +1,8 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 """
-swarmz_adapter.py – Adapter abstraction for interfacing with the swarmz system.
+swarmz_adapter.py â€“ Adapter abstraction for interfacing with the swarmz system.
 
 This is the *in-process* version: it simply applies actions by emitting state
 updates back into the control plane.  A future version can replace this with
@@ -48,3 +51,4 @@ class SwarmzAdapter:
             })
         self._bus.publish("ACTION_EXECUTED", action)
         return True
+

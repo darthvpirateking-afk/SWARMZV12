@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 import json
 import hashlib
 import os
@@ -70,3 +73,4 @@ def verify_chain(path: Path = AUDIT_FILE) -> Tuple[bool, int]:
     except Exception:
         return False, count
     return True, count
+

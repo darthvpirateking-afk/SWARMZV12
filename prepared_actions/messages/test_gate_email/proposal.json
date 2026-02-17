@@ -1,0 +1,15 @@
+{
+  "mission_id": "test_gate_email",
+  "category": "messages",
+  "action": {
+    "action_type": "email",
+    "payload": {
+      "to": "test@example.com",
+      "body": "hello"
+    },
+    "gated_at": "2026-02-17T04:00:33.937652Z"
+  },
+  "risk_level": "low",
+  "prepared_at": "2026-02-17T04:00:33.938581Z",
+  "executed": false
+}

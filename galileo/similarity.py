@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 """
 Similarity module: local-only duplicate detection via Jaccard similarity
 Uses 3-gram shingles on normalized claim strings
@@ -127,3 +130,4 @@ def check_similarity(
         difference = "No similar prior/hypothesis found"
     
     return best_score, best_match or "", difference
+

@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 """
 Data Processing Plugin for SWARMZ
 
@@ -79,3 +82,4 @@ def register(executor):
         "params": {"text": "string", "operation": "string"},
         "category": "data"
     })
+

@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 """
 Budget Envelope + Burn Simulator.
 
@@ -73,7 +76,7 @@ def spend(amount: float, label: str) -> Dict[str, Any]:
     remaining = state["hard_cap"] - state["spent"] - state["reserved"]
     if amount > remaining:
         _audit("budget_breach_blocked", {"amount": amount, "remaining": remaining, "label": label})
-        return {"error": "Budget breach — spend blocked", "remaining": remaining}
+        return {"error": "Budget breach â€” spend blocked", "remaining": remaining}
     state["spent"] += amount
     state["history"].append({
         "amount": amount,
@@ -89,7 +92,7 @@ def reserve(amount: float, label: str) -> Dict[str, Any]:
     state = _load()
     remaining = state["hard_cap"] - state["spent"] - state["reserved"]
     if amount > remaining:
-        return {"error": "Budget breach — reserve blocked", "remaining": remaining}
+        return {"error": "Budget breach â€” reserve blocked", "remaining": remaining}
     state["reserved"] += amount
     _save(state)
     return {"status": "reserved", "reserved": state["reserved"]}
@@ -106,3 +109,4 @@ def reset_budget(hard_cap: Optional[float] = None) -> Dict[str, Any]:
     _save(state)
     _audit("budget_reset", {"hard_cap": state["hard_cap"]})
     return state
+

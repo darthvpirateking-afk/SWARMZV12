@@ -1,5 +1,8 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 """
-Operator Contract Files — human-readable config defining:
+Operator Contract Files â€” human-readable config defining:
   allowed actions, forbidden domains, approval rules, envelopes.
 
 Versioned + requires seal.
@@ -8,7 +11,7 @@ Versioned + requires seal.
 import json
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict
 
 from addons.config_ext import get_config
 
@@ -91,3 +94,4 @@ def validate_action(action: str) -> Dict[str, Any]:
         if domain in action:
             return {"allowed": False, "reason": f"Action touches forbidden domain '{domain}'"}
     return {"allowed": True}
+

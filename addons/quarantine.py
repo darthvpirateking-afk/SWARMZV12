@@ -1,5 +1,8 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 """
-Quarantine Mode — governance failure → QUARANTINE state.
+Quarantine Mode â€” governance failure â†’ QUARANTINE state.
 
 When triggered, the system only produces suggestion artifacts (read-only).
 No execution allowed until explicitly unsealed by operator.
@@ -73,3 +76,4 @@ def exit_quarantine(operator_key: str) -> Dict[str, Any]:
 
 def get_quarantine_status() -> Dict[str, Any]:
     return _load_state()
+

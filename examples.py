@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 #!/usr/bin/env python3
 """
 SWARMZ Examples - Demonstrating Operator Sovereignty
@@ -92,7 +95,7 @@ def example_plugin_system():
     fs_plugin = Path(__file__).parent / "plugins" / "filesystem.py"
     if fs_plugin.exists():
         plugin_name = swarmz.load_plugin(str(fs_plugin))
-        print(f"✓ Loaded plugin: {plugin_name}")
+        print(f"âœ“ Loaded plugin: {plugin_name}")
         
         # Use filesystem tasks
         files = swarmz.execute("fs_list", path=".")
@@ -103,7 +106,7 @@ def example_plugin_system():
     data_plugin = Path(__file__).parent / "plugins" / "dataprocessing.py"
     if data_plugin.exists():
         plugin_name = swarmz.load_plugin(str(data_plugin))
-        print(f"\n✓ Loaded plugin: {plugin_name}")
+        print(f"\nâœ“ Loaded plugin: {plugin_name}")
         
         # Use data processing tasks
         text = "SWARMZ - Operator Sovereign System"
@@ -166,7 +169,7 @@ def register(executor):
         
         # Load the custom plugin
         plugin_name = swarmz.load_plugin(plugin_path)
-        print(f"✓ Loaded custom plugin: {plugin_name}")
+        print(f"âœ“ Loaded custom plugin: {plugin_name}")
         
         # Use the custom tasks
         factorial_5 = swarmz.execute("math_factorial", n=5)
@@ -240,14 +243,14 @@ def main():
         print("All examples completed successfully!")
         print("=" * 60)
         print("\nKey Takeaways:")
-        print("• SWARMZ gives operators complete sovereignty")
-        print("• Extensible through plugins")
-        print("• Transparent through audit logs")
-        print("• 'Do anything' through code execution and plugins")
-        print("• Built for trusted operators who need flexibility")
+        print("â€¢ SWARMZ gives operators complete sovereignty")
+        print("â€¢ Extensible through plugins")
+        print("â€¢ Transparent through audit logs")
+        print("â€¢ 'Do anything' through code execution and plugins")
+        print("â€¢ Built for trusted operators who need flexibility")
         
     except Exception as e:
-        print(f"\n✗ Error running examples: {e}")
+        print(f"\nâœ— Error running examples: {e}")
         import traceback
         traceback.print_exc()
         return 1
@@ -257,3 +260,4 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
+

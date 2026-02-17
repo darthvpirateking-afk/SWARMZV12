@@ -1,5 +1,8 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 """
-Swarm Internal Protocol — multi-agent consistency.
+Swarm Internal Protocol â€” multi-agent consistency.
 
 All internal agents communicate via structured packets only:
   intent / context / constraints / plan / artifact / verification / result.
@@ -109,3 +112,4 @@ class PacketBus:
 
     def dump_json(self) -> str:
         return json.dumps(self._log, indent=2)
+

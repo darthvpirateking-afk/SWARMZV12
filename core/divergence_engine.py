@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 import json
 import time
 from datetime import datetime
@@ -87,3 +90,4 @@ class DivergenceEngine:
             "planning_horizon": self.state.get("planning_horizon", 1.0),
             "commitment_weight": self.state.get("commitment_weight", 1.0),
         }
+

@@ -1,0 +1,12 @@
+{
+  "classifiers": {
+    "default": "ALLOW",
+    "high_risk": "WARN",
+    "critical": "BLOCK"
+  },
+  "rules": [
+    {"pattern": "*", "class": "default"},
+    {"pattern": "test.critical_action", "class": "critical"},
+    {"pattern": "high_risk_action", "class": "high_risk"}
+  ]
+}

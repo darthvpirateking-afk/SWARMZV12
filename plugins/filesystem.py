@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 """
 File System Operations Plugin for SWARMZ
 
@@ -73,3 +76,4 @@ def register(executor):
         "params": {"filepath": "string"},
         "category": "filesystem"
     })
+

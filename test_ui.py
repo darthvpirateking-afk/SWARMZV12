@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 #!/usr/bin/env python3
 """Tests for the interactive web UI router (addons/api/ui_router.py)."""
 
@@ -112,3 +115,4 @@ class TestUIApiInfo(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
+

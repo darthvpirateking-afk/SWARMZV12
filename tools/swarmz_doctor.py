@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 #!/usr/bin/env python3
 """SWARMZ Doctor (product layer)
 
@@ -269,3 +272,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

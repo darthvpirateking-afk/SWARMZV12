@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 """
 Gates module: hard rule-based filtering gates (deterministic, no LLM)
 G0: Falsifiable - must have failure criteria
@@ -211,3 +214,4 @@ def apply_gates(hypothesis: Dict, similarity_score: float = 0.0, threshold: floa
     
     all_pass = len(failed) == 0
     return all_pass, passed, failed
+

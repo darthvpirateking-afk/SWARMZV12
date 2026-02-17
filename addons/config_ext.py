@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 """
 Extended configuration loader for SWARMZ addons.
 
@@ -26,13 +29,18 @@ _DEFAULTS: Dict[str, Any] = {
     "approval_queue_file": "addons/data/approval_queue.jsonl",
     "audit_file": "data/audit.jsonl",
     "lan_auth_enabled": True,
+    # Infra orchestrator feature flags (all opt-in)
+    "infra_orchestrator_enabled": False,
+    "infra_security_enabled": False,
+    "infra_billing_enabled": False,
+    "infra_blockchain_enabled": False,
 }
 
 _ENV_PREFIX = "SWARMZ_"
 
 
 def load_addon_config(config_path: str = "config.json") -> Dict[str, Any]:
-    """Return merged config: file defaults → config.json 'addons' section → env vars."""
+    """Return merged config: file defaults â†’ config.json 'addons' section â†’ env vars."""
     cfg: Dict[str, Any] = dict(_DEFAULTS)
 
     # Layer 1: config.json  (addons section only)
@@ -80,3 +88,4 @@ def reload_config() -> Dict[str, Any]:
     global _cached
     _cached = load_addon_config()
     return _cached
+

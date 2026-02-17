@@ -1,5 +1,8 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 """
-Bucket B — Guardrails & Observables.
+Bucket B â€” Guardrails & Observables.
 
 Enforceable guardrails translated from "unnameables":
   - Counterfactual Baseline Tracking
@@ -17,10 +20,9 @@ Enforceable guardrails translated from "unnameables":
 """
 
 import json
-import math
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 from addons.config_ext import get_config
 
@@ -78,7 +80,7 @@ def _load_jsonl(name: str) -> List[Dict[str, Any]]:
     return entries
 
 
-# ── 1. Counterfactual Baseline Tracking ──────────────────────────────
+# â”€â”€ 1. Counterfactual Baseline Tracking â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 def record_baseline(mission_id: str, expected_baseline: float, observed: float) -> Dict[str, Any]:
     delta = observed - expected_baseline
@@ -97,7 +99,7 @@ def get_baselines(limit: int = 50) -> List[Dict[str, Any]]:
     return _load_jsonl("counterfactual_baselines")[-limit:]
 
 
-# ── 2. Decision Pressure Mapping ─────────────────────────────────────
+# â”€â”€ 2. Decision Pressure Mapping â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 def record_pressure(mission_id: str, hesitation_ms: float, approval_delay_ms: float) -> Dict[str, Any]:
     pressure_score = (hesitation_ms + approval_delay_ms) / 2.0
@@ -116,7 +118,7 @@ def get_pressure_map(limit: int = 50) -> List[Dict[str, Any]]:
     return _load_jsonl("decision_pressure")[-limit:]
 
 
-# ── 3. Interference / Coupling Graph ─────────────────────────────────
+# â”€â”€ 3. Interference / Coupling Graph â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 def record_interference(source: str, target: str, effect: float) -> Dict[str, Any]:
     graph = _load_json("coupling_graph")
@@ -135,7 +137,7 @@ def get_coupling_graph() -> Dict[str, Any]:
     return _load_json("coupling_graph")
 
 
-# ── 4. Template Half-life / Decay ────────────────────────────────────
+# â”€â”€ 4. Template Half-life / Decay â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 def record_template_run(template_id: str, roi: float) -> Dict[str, Any]:
     entry = {
@@ -162,7 +164,7 @@ def compute_half_life(template_id: str) -> Dict[str, Any]:
     return {"template_id": template_id, "half_life_runs": runs_to_half, "peak_roi": peak}
 
 
-# ── 5. Irreversibility Tagging + Delay Window ────────────────────────
+# â”€â”€ 5. Irreversibility Tagging + Delay Window â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 def tag_irreversibility(action_id: str, blast_radius: str, delay_seconds: int = 0) -> Dict[str, Any]:
     cfg = get_config()
@@ -185,7 +187,7 @@ def get_irreversibility_tags(limit: int = 50) -> List[Dict[str, Any]]:
     return _load_jsonl("irreversibility_tags")[-limit:]
 
 
-# ── 6. Cheap Falsification First ─────────────────────────────────────
+# â”€â”€ 6. Cheap Falsification First â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 def submit_falsification(hypothesis: str, test_cost: float, disproved: bool) -> Dict[str, Any]:
     entry = {
@@ -202,7 +204,7 @@ def get_falsifications(limit: int = 50) -> List[Dict[str, Any]]:
     return _load_jsonl("falsifications")[-limit:]
 
 
-# ── 7. Negative Capability Map ───────────────────────────────────────
+# â”€â”€ 7. Negative Capability Map â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 def record_negative_zone(zone: str, failure_count: int) -> Dict[str, Any]:
     data = _load_json("negative_capability")
@@ -224,7 +226,7 @@ def should_avoid(zone: str, threshold: int = 3) -> bool:
     return zones.get(zone, {}).get("failure_count", 0) >= threshold
 
 
-# ── 8. Silence-as-Signal ─────────────────────────────────────────────
+# â”€â”€ 8. Silence-as-Signal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 def record_silence(period: str, metric: str) -> Dict[str, Any]:
     entry = {
@@ -241,7 +243,7 @@ def get_silence_signals(limit: int = 50) -> List[Dict[str, Any]]:
     return _load_jsonl("silence_signals")[-limit:]
 
 
-# ── 9. Surprise Detector via Shadow Replay ───────────────────────────
+# â”€â”€ 9. Surprise Detector via Shadow Replay â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 def shadow_replay(run_id: str, expected_hash: str, actual_hash: str) -> Dict[str, Any]:
     divergence = expected_hash != actual_hash
@@ -262,7 +264,7 @@ def get_shadow_replays(limit: int = 50) -> List[Dict[str, Any]]:
     return _load_jsonl("shadow_replays")[-limit:]
 
 
-# ── 10. Adversarial Input Stability Check ─────────────────────────────
+# â”€â”€ 10. Adversarial Input Stability Check â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 def stability_check(input_id: str, original_output: Any, perturbed_outputs: List[Any]) -> Dict[str, Any]:
     if not perturbed_outputs:
@@ -290,7 +292,7 @@ def get_stability_checks(limit: int = 50) -> List[Dict[str, Any]]:
     return _load_jsonl("stability_checks")[-limit:]
 
 
-# ── 11. Opportunity Cost Shadow / Regret Tracking ────────────────────
+# â”€â”€ 11. Opportunity Cost Shadow / Regret Tracking â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 def record_regret(chosen: str, alternatives: List[str], estimated_regret: float) -> Dict[str, Any]:
     entry = {
@@ -307,7 +309,7 @@ def get_regret_log(limit: int = 50) -> List[Dict[str, Any]]:
     return _load_jsonl("regret_tracking")[-limit:]
 
 
-# ── 12. Saturation Monitor ───────────────────────────────────────────
+# â”€â”€ 12. Saturation Monitor â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 def record_returns(metric: str, value: float) -> Dict[str, Any]:
     entry = {
@@ -341,3 +343,4 @@ def detect_saturation(metric: str, window: int = 10) -> Dict[str, Any]:
         "window": window,
         "last_value": recent[-1],
     }
+

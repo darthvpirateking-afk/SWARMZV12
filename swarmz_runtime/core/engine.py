@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 from typing import Dict, Any, Optional
 from datetime import datetime
 from pathlib import Path
@@ -455,3 +458,4 @@ class SwarmzEngine:
         except Exception:
             return []
         return rows[-limit:]
+

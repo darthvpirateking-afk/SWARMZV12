@@ -1,9 +1,11 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 import json
-import os
 from typing import List, Dict, Any, Optional
 from datetime import datetime
 from pathlib import Path
-from swarmz_runtime.storage.schema import Mission, AuditEntry, Rune, MissionStatus
+from swarmz_runtime.storage.schema import Mission, AuditEntry, Rune
 
 
 class Database:
@@ -166,3 +168,4 @@ class Database:
     def get_pattern_counter(self, pattern: str) -> int:
         state = self.load_state()
         return state.get("pattern_counters", {}).get(pattern, 0)
+

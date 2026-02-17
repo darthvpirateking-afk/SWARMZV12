@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 """
 Approval Queue + Patchpack Apply/Rollback.
 
@@ -107,3 +110,4 @@ def rollback_patch(patch_id: str) -> Dict[str, Any]:
             _audit("patch_rolled_back", {"patch_id": patch_id})
             return p
     return {"error": "Patch not found or not applied"}
+

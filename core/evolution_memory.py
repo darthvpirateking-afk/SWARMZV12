@@ -1,8 +1,12 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 import json
 import random
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, Any, List, Optional
+from zoneinfo import ZoneInfo
 
 from core.operator_anchor import compute_record_hash, sign_record, verify_signature
 
@@ -427,7 +431,7 @@ class EvolutionMemory:
         summary: Dict[str, Any] = {
             "epoch": epoch_idx,
             "records": count,
-            "generated_at": datetime.utcnow().isoformat() + "Z",
+            "generated_at": datetime.now(timezone.utc).isoformat() + "Z",
             "personality": self._personality,
             "strategies": {},
         }
@@ -447,3 +451,4 @@ class EvolutionMemory:
             }
         with open(epoch_file, "w", encoding="utf-8") as f:
             json.dump(summary, f, indent=2)
+

@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 from fastapi import APIRouter
 from typing import Callable
 from swarmz_runtime.core.engine import SwarmzEngine
@@ -28,3 +31,4 @@ def get_predictions():
 def get_templates():
     runes = get_engine().get_runes()
     return {"templates": runes, "count": len(runes)}
+

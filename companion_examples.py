@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 #!/usr/bin/env python3
 """
 SWARMZ Companion Examples
@@ -6,8 +9,8 @@ Demonstrates various usage patterns for the SWARMZ Companion system.
 """
 
 from companion import (
-    SwarmzCompanion, SystemMode, CommitState,
-    WorkerSwarm, TaskContext, IntelligenceLayer
+    SwarmzCompanion, CommitState,
+    WorkerSwarm, TaskContext
 )
 from swarmz import SwarmzCore
 
@@ -20,14 +23,14 @@ def example_basic_interaction():
     
     companion = SwarmzCompanion()
     
-    # Question → Companion Mode
+    # Question â†’ Companion Mode
     print("\n1. Question (Companion Mode):")
     response = companion.interact("What is SWARMZ?")
     print(f"Input: 'What is SWARMZ?'")
     print(f"Mode: {companion.get_current_mode().value}")
     print(f"Response: {response[:100]}...")
     
-    # Command → Operator Mode
+    # Command â†’ Operator Mode
     print("\n2. Command (Operator Mode):")
     response = companion.interact("Create a backup", {"name": "backup.txt"})
     print(f"Input: 'Create a backup'")
@@ -74,7 +77,7 @@ def example_worker_swarm():
         parameters={"data": "sample data"}
     )
     
-    print("\nExecuting Scout → Builder → Verify workflow:")
+    print("\nExecuting Scout â†’ Builder â†’ Verify workflow:")
     results = swarm.execute_workflow(task_context)
     
     for i, result in enumerate(results, 1):
@@ -98,7 +101,7 @@ def example_intelligence_learning():
     print("\nExecuting tasks to build history:")
     for i in range(5):
         response = companion.interact(f"Task {i}", {"id": i})
-        print(f"  Task {i}: {'✓' if '[ACTION_READY]' in response else '○'}")
+        print(f"  Task {i}: {'âœ“' if '[ACTION_READY]' in response else 'â—‹'}")
     
     # Check metrics
     print("\nMetrics after execution:")
@@ -112,7 +115,7 @@ def example_intelligence_learning():
     print("\nExecution logs:")
     logs = companion.mode_manager.operator_mode.intelligence.execution_logs
     for log in logs[-3:]:  # Show last 3
-        print(f"  • {log.task_name}: {log.success} ({log.time_taken:.3f}s)")
+        print(f"  â€¢ {log.task_name}: {log.success} ({log.time_taken:.3f}s)")
     
     print("\n" + "=" * 70 + "\n")
 
@@ -152,14 +155,14 @@ def example_memory_persistence():
     # Save to file
     print("\nSaving memory to file...")
     companion.save_memory("example_memory.json")
-    print("  ✓ Saved to example_memory.json")
+    print("  âœ“ Saved to example_memory.json")
     
     # Load in new companion
     print("\nLoading memory in new companion...")
     new_companion = SwarmzCompanion()
     new_companion.load_memory("example_memory.json")
     new_memory = new_companion.mode_manager.get_memory()
-    print(f"  ✓ Loaded preferences: {new_memory.preferences}")
+    print(f"  âœ“ Loaded preferences: {new_memory.preferences}")
     
     print("\n" + "=" * 70 + "\n")
 
@@ -212,13 +215,13 @@ def example_evolution_mechanism():
     # Try to generate patchpack
     patchpack = evolution.generate_patchpack()
     if patchpack:
-        print("\n✓ Patchpack generated!")
+        print("\nâœ“ Patchpack generated!")
         print(f"  Type: {patchpack['type']}")
         print(f"  Description: {patchpack['description']}")
         print(f"  Changes: {patchpack['changes']}")
         print("\n  (Waiting for human approval before applying)")
     else:
-        print("\n○ No patchpack needed yet (not enough data or performance is good)")
+        print("\nâ—‹ No patchpack needed yet (not enough data or performance is good)")
     
     print("\n" + "=" * 70 + "\n")
 
@@ -300,7 +303,7 @@ def main():
         try:
             func()
         except Exception as e:
-            print(f"\n❌ Error in {name}: {e}\n")
+            print(f"\nâŒ Error in {name}: {e}\n")
             import traceback
             traceback.print_exc()
     
@@ -311,3 +314,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

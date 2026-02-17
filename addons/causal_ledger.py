@@ -1,5 +1,8 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 """
-Causal Ledger — Single Lever Rule.
+Causal Ledger â€” Single Lever Rule.
 
 Every run must declare exactly "what changed" as a precise diff.
 Reject runs without a declared lever.
@@ -8,7 +11,7 @@ Reject runs without a declared lever.
 import json
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 from addons.config_ext import get_config
 
@@ -50,7 +53,7 @@ def validate_lever(mission_id: str) -> Dict[str, Any]:
     for e in reversed(entries):
         if e.get("mission_id") == mission_id:
             return {"valid": True, "lever": e.get("lever")}
-    return {"valid": False, "error": "No lever declared for this mission — run rejected"}
+    return {"valid": False, "error": "No lever declared for this mission â€” run rejected"}
 
 
 def load_ledger() -> List[Dict[str, Any]]:
@@ -63,3 +66,4 @@ def load_ledger() -> List[Dict[str, Any]]:
             if line.strip():
                 entries.append(json.loads(line))
     return entries
+

@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 #!/usr/bin/env python3
 """
 SWARMZ - Operator-Sovereign "Do Anything" System
@@ -19,6 +22,7 @@ import importlib
 import inspect
 from typing import Any, Dict, List, Optional, Callable
 from pathlib import Path
+from agent_framework.observability import configure_otel_providers
 
 
 class OperatorSovereignty:
@@ -196,6 +200,13 @@ class SwarmzCore:
             self.config = json.load(f)
 
 
+# Configure OpenTelemetry tracing for AI Toolkit
+configure_otel_providers(
+    vs_code_extension_port=4317,  # AI Toolkit gRPC port
+    enable_sensitive_data=True  # Enable capturing prompts and completions
+)
+
+
 def main():
     """Main entry point for SWARMZ system."""
     print("=" * 60)
@@ -237,3 +248,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

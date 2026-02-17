@@ -1,0 +1,4 @@
+{"ts":"2026-02-17T03:26:57.331159Z","direction":"inbound","event_id":"ccc2f69e-9e80-4a08-ada6-28576c9df3dc","source":"zapier","type":"trigger.test.smoke","payload":{"msg":"hello"},"ok":true,"error":null}
+{"ts":"2026-02-17T03:27:10.546068Z","direction":"inbound","event_id":"b67b4854-74ca-4592-aff7-ec92ac0f49e4","source":"smoke","type":"smoke.test","payload":{"x":1},"ok":true,"error":null}
+{"ts":"2026-02-17T03:27:16.777167Z","direction":"inbound","event_id":"5a6391b2-060d-47c9-bfe0-aff52ad5a598","source":"zapier","type":"trigger.test.smoke","payload":{"test":true},"ok":true,"error":null}
+{"ts":"2026-02-17T03:27:20.861010Z","direction":"inbound","event_id":"6a9d8768-8dd4-4d96-aa00-066c656942ab","source":"zapier","type":"trigger.test.dedupe","payload":{"test":true},"ok":true,"error":null,"dedupe":"skipped"}

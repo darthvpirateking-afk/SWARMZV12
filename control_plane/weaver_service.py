@@ -1,6 +1,9 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 #!/usr/bin/env python3
 """
-weaver_service.py – Main entry-point for the Layer-Weaver control plane.
+weaver_service.py â€“ Main entry-point for the Layer-Weaver control plane.
 
 Runs an event-driven loop:
   1. Collects state from all layers.
@@ -23,7 +26,7 @@ import os
 import sys
 import time
 
-# ── ensure the package is importable when run as a script ──────────────
+# â”€â”€ ensure the package is importable when run as a script â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 _DIR = os.path.dirname(os.path.abspath(__file__))
 _PARENT = os.path.dirname(_DIR)
 if _PARENT not in sys.path:
@@ -43,7 +46,7 @@ from control_plane.layers.swarm_health import SwarmHealthLayer
 from control_plane.layers.permissions import PermissionsLayer
 from control_plane.layers.memory import MemoryLayer
 
-# ── load actions catalogue ─────────────────────────────────────────────
+# â”€â”€ load actions catalogue â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 _ACTIONS_PATH = os.path.join(_DIR, "data", "actions.json")
 with open(_ACTIONS_PATH) as _f:
     ACTIONS: list[dict] = json.load(_f)
@@ -68,7 +71,7 @@ def _build_components():
 
 
 def run_cycle(bus, store, logger, adapter, regime, layers):
-    """Execute one full collect → score → act cycle.  Returns the decision."""
+    """Execute one full collect â†’ score â†’ act cycle.  Returns the decision."""
     # 1. Collect
     for layer in layers:
         for rec in layer.collect():
@@ -130,3 +133,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

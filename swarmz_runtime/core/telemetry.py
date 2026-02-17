@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 import json
 import os
 import threading
@@ -109,3 +112,4 @@ def avg_duration(name: str, max_samples: int = 100) -> Optional[float]:
     except Exception:
         return None
     return None
+

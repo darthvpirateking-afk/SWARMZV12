@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 """
 Schema versioning and boot-time migration.
 
@@ -16,7 +19,7 @@ from addons.config_ext import get_config
 
 CURRENT_SCHEMA_VERSION = 1
 
-# Registry: version → callable(data_dir)
+# Registry: version â†’ callable(data_dir)
 _MIGRATIONS: Dict[int, Callable[[Path], None]] = {}
 
 
@@ -94,8 +97,9 @@ def run_migrations(data_dir: str = "data") -> List[str]:
 
 # ---- v1 migration stub (no-op; establishes baseline) ----
 def _migrate_v1(data_dir: Path) -> None:
-    """Initial schema — no structural changes, just stamps version."""
+    """Initial schema â€” no structural changes, just stamps version."""
     pass
 
 
 register_migration(1, _migrate_v1)
+

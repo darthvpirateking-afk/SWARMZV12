@@ -1,10 +1,12 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 #!/usr/bin/env python3
 """
 Tests for the SWARMZ ecosystem autonomous loop and API endpoints.
 """
 
 import json
-import os
 import sys
 import tempfile
 import time
@@ -91,7 +93,7 @@ class TestAutoLoopManager(unittest.TestCase):
         self.loop.single_step("make money")
         self.assertEqual(self.loop._tick_count, 1)
 
-        # Create new manager – should load persisted tick_count
+        # Create new manager â€“ should load persisted tick_count
         loop2 = AutoLoopManager(self.engine, data_dir=self.tmpdir)
         self.assertEqual(loop2._tick_count, 1)
 
@@ -227,3 +229,4 @@ def run_tests():
 
 if __name__ == "__main__":
     sys.exit(run_tests())
+

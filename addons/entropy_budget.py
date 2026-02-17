@@ -1,5 +1,8 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 """
-Entropy Budget — complexity points.
+Entropy Budget â€” complexity points.
 
 Weekly cap on complexity additions.  New modules must "pay" complexity
 points.  Over-cap triggers merge/delete tasks.
@@ -8,7 +11,7 @@ points.  Over-cap triggers merge/delete tasks.
 import json
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 from addons.config_ext import get_config
 
@@ -82,7 +85,7 @@ def spend_entropy(points: int, label: str) -> Dict[str, Any]:
     if points > remaining:
         _audit("entropy_over_cap", {"points": points, "label": label, "remaining": remaining})
         return {
-            "error": "Entropy over-cap — trigger merge/delete tasks before adding complexity",
+            "error": "Entropy over-cap â€” trigger merge/delete tasks before adding complexity",
             "remaining": remaining,
         }
     state["spent"] += points
@@ -94,3 +97,4 @@ def spend_entropy(points: int, label: str) -> Dict[str, Any]:
     _save(state)
     _audit("entropy_spent", {"points": points, "label": label, "total": state["spent"]})
     return {"status": "ok", "spent": state["spent"], "remaining": state["weekly_cap"] - state["spent"]}
+

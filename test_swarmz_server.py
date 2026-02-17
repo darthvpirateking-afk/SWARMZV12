@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 #!/usr/bin/env python3
 """
 Test Suite for SWARMZ Web Server
@@ -149,7 +152,7 @@ def main():
     print()
     
     if not FASTAPI_AVAILABLE:
-        print("⚠️  FastAPI not installed - skipping web server tests")
+        print("âš ï¸  FastAPI not installed - skipping web server tests")
         print("   Install with: pip install -r requirements.txt")
         print()
         return 0
@@ -174,3 +177,4 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
+

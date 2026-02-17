@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 #!/usr/bin/env python3
 """
 SWARMZ Companion CLI - Interactive Interface
@@ -17,9 +20,9 @@ from swarmz import SwarmzCore
 def print_mode_indicator(mode: SystemMode):
     """Print visual indicator of current mode."""
     if mode == SystemMode.COMPANION:
-        print("🗨️  [COMPANION MODE]", end=" ")
+        print("ðŸ—¨ï¸  [COMPANION MODE]", end=" ")
     else:
-        print("⚙️  [OPERATOR MODE]", end=" ")
+        print("âš™ï¸  [OPERATOR MODE]", end=" ")
 
 
 def interactive_mode(companion: SwarmzCompanion, use_core: bool = False):
@@ -29,12 +32,12 @@ def interactive_mode(companion: SwarmzCompanion, use_core: bool = False):
     print("=" * 70)
     print()
     print("Dual-Mode Cognition System:")
-    print("  🗨️  Companion Mode - Conversation, explanations, personality")
-    print("  ⚙️  Operator Mode  - Real-world execution, spawns workers")
+    print("  ðŸ—¨ï¸  Companion Mode - Conversation, explanations, personality")
+    print("  âš™ï¸  Operator Mode  - Real-world execution, spawns workers")
     print()
     print("Mode selection is automatic based on your input:")
-    print("  - Questions → Companion Mode")
-    print("  - Commands → Operator Mode")
+    print("  - Questions â†’ Companion Mode")
+    print("  - Commands â†’ Operator Mode")
     print()
     print("Commands: help, metrics, memory, mode, exit")
     print("=" * 70)
@@ -67,7 +70,7 @@ def interactive_mode(companion: SwarmzCompanion, use_core: bool = False):
             
             if user_input.lower() == "metrics":
                 metrics = companion.get_metrics()
-                print("\n📊 System Metrics:")
+                print("\nðŸ“Š System Metrics:")
                 print(f"  Actions/day: {metrics['completed_verified_actions_per_day']:.2f}")
                 print(f"  Success rate: {metrics['success_rate']:.1%}")
                 print(f"  Error rate: {metrics['error_rate']:.1%}")
@@ -77,7 +80,7 @@ def interactive_mode(companion: SwarmzCompanion, use_core: bool = False):
             
             if user_input.lower() == "memory":
                 memory = companion.mode_manager.get_memory()
-                print("\n💾 Persistent Memory:")
+                print("\nðŸ’¾ Persistent Memory:")
                 print(f"  Preferences: {memory.preferences}")
                 print(f"  Caps: {memory.caps}")
                 print(f"  Whitelist: {memory.whitelist}")
@@ -103,7 +106,7 @@ def interactive_mode(companion: SwarmzCompanion, use_core: bool = False):
             print("\nGoodbye!")
             break
         except Exception as e:
-            print(f"\n❌ Error: {e}\n")
+            print(f"\nâŒ Error: {e}\n")
 
 
 def main():
@@ -139,14 +142,14 @@ Examples:
     swarmz_core = None
     if args.use_core:
         swarmz_core = SwarmzCore()
-        print("✓ Integrated with SWARMZ Core")
+        print("âœ“ Integrated with SWARMZ Core")
     
     companion = SwarmzCompanion(swarmz_core)
     
     # Load memory if exists
     if Path(args.memory_file).exists():
         companion.load_memory(args.memory_file)
-        print(f"✓ Loaded memory from {args.memory_file}")
+        print(f"âœ“ Loaded memory from {args.memory_file}")
     
     # Show metrics
     if args.metrics:
@@ -166,7 +169,7 @@ Examples:
             try:
                 params = json.loads(args.params)
             except json.JSONDecodeError:
-                print(f"❌ Invalid JSON in params: {args.params}")
+                print(f"âŒ Invalid JSON in params: {args.params}")
                 return 1
         
         response = companion.interact(args.input, params)
@@ -182,7 +185,7 @@ Examples:
         
         # Save memory on exit
         companion.save_memory(args.memory_file)
-        print(f"💾 Memory saved to {args.memory_file}")
+        print(f"ðŸ’¾ Memory saved to {args.memory_file}")
         return 0
     
     # If no arguments, show help
@@ -193,3 +196,4 @@ Examples:
 
 if __name__ == "__main__":
     sys.exit(main())
+

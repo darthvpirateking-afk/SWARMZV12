@@ -1,0 +1,15 @@
+{
+  "mission_id": "test_gate_buy",
+  "category": "purchases",
+  "action": {
+    "action_type": "purchase",
+    "payload": {
+      "item": "widget",
+      "cost": 9.99
+    },
+    "gated_at": "2026-02-17T04:00:33.942026Z"
+  },
+  "risk_level": "high",
+  "prepared_at": "2026-02-17T04:00:33.942966Z",
+  "executed": false
+}

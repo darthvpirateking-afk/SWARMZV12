@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 """
 JSONL utilities for robust reading/writing of JSON Lines format.
 Handles blank lines, malformed JSON, and quarantines bad rows.
@@ -88,3 +91,4 @@ def write_jsonl(filepath: Path, obj: Dict[str, Any]) -> None:
     except Exception as e:
         logger.error(f"Failed to write to {filepath}: {e}")
         raise
+

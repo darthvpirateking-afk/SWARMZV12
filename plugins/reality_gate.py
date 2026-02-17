@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 """
 Reality Gate Plugin for SWARMZ
 
@@ -13,8 +16,7 @@ External signals:
 - manual_confirmation
 """
 
-from typing import Dict, Any, List
-from datetime import datetime
+from typing import Dict, Any
 
 
 # Valid external signals
@@ -199,3 +201,4 @@ def register(executor):
         "params": {"source_type": "string", "external_verified": "bool"},
         "category": "reality_gate"
     })
+

@@ -1,5 +1,7 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 from typing import Dict, Any
-from datetime import datetime, timedelta
 import math
 
 
@@ -40,3 +42,4 @@ class LearningEngine:
             "constraints": mission.get("constraints", {}),
             "success_indicators": mission.get("success_indicators", {})
         }
+

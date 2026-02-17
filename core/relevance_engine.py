@@ -1,7 +1,9 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 import json
 import gzip
-import os
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
 
@@ -39,7 +41,7 @@ class RelevanceEngine:
         usefulness = self._compute_usefulness(inputs_hash, strategy, score, success)
         tier = self._tier_for(usefulness)
         record = {
-            "timestamp": datetime.utcnow().isoformat() + "Z",
+            "timestamp": datetime.now(timezone.utc).isoformat() + "Z",
             "mission_id": mission_id,
             "inputs_hash": inputs_hash,
             "strategy": strategy,
@@ -175,7 +177,7 @@ class RelevanceEngine:
         latency = self._avg_runtime()
         signal, noise = self._signal_noise()
         lines = [
-            f"Cognitive Load @ {datetime.utcnow().isoformat()}Z",
+            f"Cognitive Load @ {datetime.now(timezone.utc).isoformat()}Z",
             f"active_memory_size: hot={hot_size} warm={warm_size} cold={cold_size}",
             f"decision_latency_ms: {latency}",
             f"signal_ratio: {signal}",
@@ -212,3 +214,4 @@ class RelevanceEngine:
         noise = len(hist) - signals
         total = max(len(hist), 1)
         return (round(signals / total, 3), round(noise / total, 3))
+

@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 from typing import Dict, Any, List
 from swarmz_runtime.storage.db import Database
 
@@ -53,3 +56,4 @@ class ResonanceDetector:
             })
         
         return sorted(patterns, key=lambda x: x["frequency"], reverse=True)
+

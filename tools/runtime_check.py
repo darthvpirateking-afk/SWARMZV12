@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 """Lightweight runtime self-check for SWARMZ.
 
 Runs a short mission, emits telemetry, and reports timing + busy-loop heuristics.
@@ -11,7 +14,6 @@ import time
 from pathlib import Path
 
 from swarmz_runtime.core.engine import SwarmzEngine
-from swarmz_runtime.core import telemetry
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = ROOT / "data"
@@ -77,3 +79,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

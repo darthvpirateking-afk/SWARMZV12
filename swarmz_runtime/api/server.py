@@ -1,9 +1,12 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 import os
 import json
 import socket
 import secrets
 import traceback
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, Any
 
@@ -11,6 +14,7 @@ from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import JSONResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
+from zoneinfo import ZoneInfo
 
 from swarmz_runtime.core.engine import SwarmzEngine
 from swarmz_runtime.api import missions, ecosystem, admin
@@ -26,7 +30,7 @@ ROOT_DIR = Path(__file__).resolve().parent.parent.parent
 DATA_DIR = ROOT_DIR / "data"
 UI_DIR = ROOT_DIR / "web_ui"
 DATA_DIR.mkdir(exist_ok=True, parents=True)
-START_TIME = datetime.utcnow()
+START_TIME = datetime.now(timezone.utc)
 
 
 def _load_runtime_config() -> Dict[str, Any]:
@@ -142,7 +146,7 @@ def health():
 def v1_health(request: Request):
     cfg = _load_runtime_config()
     offline = _resolve_offline_mode(cfg)
-    uptime = (datetime.utcnow() - START_TIME).total_seconds()
+    uptime = (datetime.now(timezone.utc) - START_TIME).total_seconds()
     base_url = str(request.base_url).rstrip("/")
     ui_expected = cfg.get("uiBaseUrl") or cfg.get("ui_base") or f"{base_url}"
     return {
@@ -207,7 +211,7 @@ def pairing_info(request: Request):
     return {
         "base_url": base_url,
         "requires_pin": True,
-        "server_time": datetime.utcnow().isoformat() + "Z",
+        "server_time": datetime.now(timezone.utc).isoformat() + "Z",
         "version": app.version,
     }
 
@@ -217,7 +221,7 @@ def pairing_pair(body: PairRequest):
     if body.pin != OPERATOR_PIN:
         raise HTTPException(status_code=401, detail="invalid pin")
     token = secrets.token_hex(16)
-    active_tokens[token] = datetime.utcnow()
+    active_tokens[token] = datetime.now(timezone.utc)
     telemetry.record_event("pairing_success", {"token": token})
     return {"token": token}
 
@@ -347,6 +351,13 @@ try:
 except Exception:
     pass
 
+# Infra orchestrator routes (behind feature flag in router)
+try:
+    from swarmz_runtime.api.infra import router as infra_router
+    app.include_router(infra_router)
+except Exception:
+    pass
+
 # Best-effort: include existing routers if present (do not restructure repo).
 # If your repo already has routing elsewhere, this will hook it up.
 for mod_path, attr in [
@@ -362,6 +373,11 @@ for mod_path, attr in [
         break
     except Exception:
         continue
+
+from swarmz_app.api.hologram import router as hologram_router
+
+# Register the hologram router
+app.include_router(hologram_router)
 
 
 def _file_in_ui(name: str) -> Path:
@@ -527,3 +543,4 @@ def icon_file(icon_name: str):
     if f.exists():
         return FileResponse(f)
     raise HTTPException(status_code=404, detail="icon not found")
+

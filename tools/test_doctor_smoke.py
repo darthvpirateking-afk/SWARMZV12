@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 """Smoke test for doctor script.
 Ensures doctor runs to completion and returns one of the allowed codes (0,2,3)
 when server may or may not be running.
@@ -26,3 +29,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

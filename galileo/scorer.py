@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 """
 Scorer module: numeric scoring and accept/reject decision logic
 Rule-first scoring with deterministic heuristics
@@ -261,3 +264,4 @@ def should_accept(
         return False, f"Average score {avg_score:.2f} below threshold {novelty_threshold}"
     
     return True, f"All criteria met. Avg score: {avg_score:.2f}, Risk: {risk:.2f}"
+

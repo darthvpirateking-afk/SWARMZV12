@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 #!/usr/bin/env python3
 """
 Integration test for SWARMZ Companion with SWARMZ Core.
@@ -88,3 +91,4 @@ class TestCompanionCoreIntegration(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+

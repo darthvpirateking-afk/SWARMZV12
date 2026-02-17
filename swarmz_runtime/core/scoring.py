@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 from typing import Dict, Any, List
 
 
@@ -51,3 +54,4 @@ def should_execute(mission: Dict[str, Any]) -> bool:
     is_research = mission.get("category") == "library"
     
     return ev > 0 or is_research
+

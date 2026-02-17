@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 import json
 import time
 from pathlib import Path
@@ -98,3 +101,4 @@ def run_status() -> Dict[str, Any]:
         "chain_entries": count,
         "latest_report": latest_report,
     }
+

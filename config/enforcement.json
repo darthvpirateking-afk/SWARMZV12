@@ -1,0 +1,7 @@
+{
+  "mode": "OBSERVE",
+  "enabled": false,
+  "enforce_on": ["REALITY"],
+  "grace_seconds": 0,
+  "require_signature": true
+}

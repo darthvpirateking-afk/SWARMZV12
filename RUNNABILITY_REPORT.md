@@ -33,3 +33,25 @@
 - Existing nested package roots and duplicated directories (mobile/mobile, swarmz-mobile/swarmz-mobile) are reported as WARN; keep using repo root as authoritative.
 - doctor reports WARN when the server is not running (health unreachable); start the server to clear it.
 - Category validation is strict; use coin/forge/library/sanctuary to avoid 500s.
+
+## Test Suite Status (2026-02-17)
+- **93 tests, 100% pass** (`python -m pytest tests/ -v`)
+- End-to-end harness: `tests/test_e2e.py` — 34 tests covering core imports, engine wiring, orchestrator/Crew, companion, API endpoints, dispatch round-trip, addons/plugins, and UI assets.
+- Master SWARM AI: `tests/test_master_ai.py` — simulation mode and live API mode.
+- Engine tests: core safety, engines, observability, safe execution, config loader, context pack, companion master, AI audit, promotion path.
+
+## Checklist Completion
+| # | Task | Status |
+|---|------|--------|
+| 1 | Capture truth snapshot | DONE |
+| 2 | Restore base UI if drift | DONE |
+| 3 | Verify/fix launch scripts | DONE |
+| 4 | Clean up dependencies | DONE |
+| 5 | Add profiling toggles | DONE |
+| 6 | Verify new layers | DONE |
+| 7 | Implement Master SWARM AI | DONE |
+| 8 | Add end-to-end test harness | DONE |
+| 9 | Prepare final deliverables | DONE |
+
+## Bug Fixed During Checklist
+- `swarmz_runtime/api/server.py` line 6: missing `timezone` import from `datetime` — added `from datetime import datetime, timezone`.

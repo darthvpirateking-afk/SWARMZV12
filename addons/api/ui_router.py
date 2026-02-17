@@ -1,16 +1,19 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 """
-Interactive web UI for SWARMZ — serves a single-page application
+Interactive web UI for SWARMZ â€” serves a single-page application
 that lets operators browse capabilities, execute tasks, and view
 the audit log directly from a browser.
 
 API endpoints (JSON):
-    GET  /ui/api/capabilities  — list registered tasks
-    POST /ui/api/execute       — run a task by name with JSON params
-    GET  /ui/api/audit         — return the audit log
-    GET  /ui/api/info          — system information
+    GET  /ui/api/capabilities  â€” list registered tasks
+    POST /ui/api/execute       â€” run a task by name with JSON params
+    GET  /ui/api/audit         â€” return the audit log
+    GET  /ui/api/info          â€” system information
 
 HTML UI:
-    GET  /ui                   — interactive operator console
+    GET  /ui                   â€” interactive operator console
 """
 
 from __future__ import annotations
@@ -104,7 +107,7 @@ _UI_HTML = """\
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>SWARMZ — Operator Console</title>
+<title>SWARMZ â€” Operator Console</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
@@ -287,3 +290,4 @@ loadInfo();loadCaps();loadAudit();
 def ui_page():
     """Serve the interactive operator console."""
     return _UI_HTML
+

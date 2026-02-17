@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 from fastapi import APIRouter
 
 from swarmz_runtime.factory import engine
@@ -32,3 +35,4 @@ def factory_graph():
 def decisions_latest():
     dec = engine.latest_decision()
     return dec or {}
+

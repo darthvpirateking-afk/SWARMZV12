@@ -1,5 +1,7 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 from typing import Dict, Any, List
-from datetime import datetime, timedelta
 from swarmz_runtime.storage.db import Database
 
 
@@ -44,3 +46,4 @@ class ProphetEngine:
         
         count = self.failure_patterns.get(signature, 0)
         return min(0.8, count / 10)
+

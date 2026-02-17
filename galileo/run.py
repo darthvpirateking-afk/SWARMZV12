@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 """
 Run module: orchestrates Galileo harness 4-stage pipeline
 1. Load domain pack + generate hypothesis IDs
@@ -10,7 +13,7 @@ Run module: orchestrates Galileo harness 4-stage pipeline
 
 import json
 from pathlib import Path
-from typing import Dict, List, Tuple, Any, Optional
+from typing import Dict, List, Any
 from datetime import datetime
 
 from .determinism import generate_ids, stableStringify
@@ -23,7 +26,7 @@ from .storage import (
 )
 from .prompts import (
     get_generator_prompt, get_critic_prompt,
-    get_experimentalist_prompt, get_scorer_prompt
+    get_experimentalist_prompt
 )
 
 
@@ -335,3 +338,4 @@ def _synthetic_hypotheses(domain: str, n: int, hypothesis_ids: Dict) -> List[Dic
         hypotheses.append(hyp)
     
     return hypotheses
+

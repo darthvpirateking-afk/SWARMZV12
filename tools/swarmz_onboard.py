@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 #!/usr/bin/env python3
 """SWARMZ Onboard Wizard
 
@@ -17,7 +20,7 @@ import subprocess
 import sys
 import time
 from pathlib import Path
-from urllib import request, error
+from urllib import request
 
 ROOT = Path(__file__).resolve().parent.parent
 CONFIG_PATH = ROOT / "config" / "runtime.json"
@@ -85,7 +88,7 @@ def ensure_anchor() -> None:
     anchor = load_or_create_anchor(str(DATA_DIR))
     print(f"Operator anchor ready ({DATA_DIR / 'operator_anchor.json'})")
     if anchor.get("operator_public_key"):
-        print(f"Public key: {anchor['operator_public_key'][:12]}…")
+        print(f"Public key: {anchor['operator_public_key'][:12]}â€¦")
 
 
 def run_doctor() -> int:
@@ -93,7 +96,7 @@ def run_doctor() -> int:
     if not doctor.exists():
         print("Doctor missing; skipping")
         return 0
-    print("\nRunning doctor…")
+    print("\nRunning doctorâ€¦")
     proc = subprocess.run([sys.executable, str(doctor)], cwd=ROOT)
     return proc.returncode
 
@@ -169,3 +172,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

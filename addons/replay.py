@@ -1,5 +1,8 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 """
-Event-sourced replay — rebuild state from audit.jsonl.
+Event-sourced replay â€” rebuild state from audit.jsonl.
 
 Deterministic tool: reads the audit log and re-derives system state
 for debugging and recovery.
@@ -73,3 +76,4 @@ def replay_state(audit_path: str | None = None) -> Dict[str, Any]:
         "quarantine_events": quarantine_events,
         "replayed_at": datetime.now(timezone.utc).isoformat(),
     }
+

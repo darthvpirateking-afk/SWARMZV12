@@ -1,65 +1,83 @@
 @echo off
-REM SWARMZ_UP.cmd – Start SWARMZ in AUTO mode (AUTO=1)
-setlocal enabledelayedexpansion
+setlocal ENABLEDELAYEDEXPANSION
+cd /d %~dp0
 
-echo ============================================
-echo   SWARMZ – AUTO MODE STARTUP
-echo ============================================
-echo.
+echo SWARMZ_UP
 
-set AUTO=1
-set TICK_INTERVAL=30
-if "%OFFLINE_MODE%"=="" set OFFLINE_MODE=0
-set HOST=0.0.0.0
-set PORT=8012
-set BASE_URL=http://localhost:8012
+set HOSTBIND=0.0.0.0
+if "%PORT%"=="" (set PORT=8012)
 
-REM Locate Python
-set PYTHON_CMD=
-for %%p in (python3 python) do (
-    %%p --version >nul 2>&1
-    if !errorlevel! equ 0 (
-        set PYTHON_CMD=%%p
-        goto :found
-    )
+rem ---------- port check ----------
+set EXISTPID=
+for /f "tokens=5" %%p in ('netstat -ano ^| findstr ":%PORT% " ^| findstr LISTENING 2^>nul') do (
+  set EXISTPID=%%p
+  goto :foundpid
 )
-echo [ERROR] Python 3 not found. & exit /b 1
-:found
-
-REM Create venv if missing
-if not exist "venv" (
-    echo Creating virtual environment...
-    %PYTHON_CMD% -m venv venv
+:foundpid
+if defined EXISTPID (
+  if "%KILL_PORT%"=="1" (
+    echo KILL_PORT=1 — killing PID %EXISTPID% ...
+    taskkill /PID %EXISTPID% /F >nul 2>nul
+    timeout /t 1 >nul
+  ) else (
+    call :lanip
+    echo Server already running.
+    echo LOCAL: http://127.0.0.1:%PORT%/
+    if not "%LANIP%"=="" echo LAN:   http://%LANIP%:%PORT%/
+    echo PHONE: open LAN URL on same Wi-Fi
+    exit /b 0
+  )
 )
 
-set PYTHON_EXE=venv\Scripts\python.exe
-if not exist "%PYTHON_EXE%" set PYTHON_EXE=%PYTHON_CMD%
+rem ---------- LAN IP ----------
+call :lanip
+echo LOCAL: http://127.0.0.1:%PORT%/
+if not "%LANIP%"=="" echo LAN:   http://%LANIP%:%PORT%/
+echo PHONE: open LAN URL on same Wi-Fi
 
-REM Install deps
-if exist "venv\Scripts\pip.exe" (
-    venv\Scripts\pip.exe install -q -r requirements.txt >nul 2>&1
-) else (
-    pip install -q -r requirements.txt >nul 2>&1
+rem ---------- python ----------
+set PY=%~dp0venv\Scripts\python.exe
+if not exist "%PY%" set PY=python
+
+rem ---------- venv ----------
+set VENV=%~dp0venv\Scripts\python.exe
+if not exist "%VENV%" (
+  echo Creating virtual environment...
+  python -m venv %~dp0venv
+)
+if not exist "%VENV%" (
+  echo [ERROR] Virtual environment creation failed.
+  exit /b 1
 )
 
-echo Running self_check...
-%PYTHON_EXE% tools\self_check.py
-if errorlevel 1 (
-    echo [WARN] self_check reported issues. Continuing...
+rem ---------- install dependencies ----------
+if exist "%~dp0requirements.txt" (
+  echo Installing dependencies...
+  "%VENV%" -m pip install -U pip >nul 2>nul
+  "%VENV%" -m pip install -r "%~dp0requirements.txt" >nul 2>nul
 )
 
-if exist "config\runtime.json" (
-    for /f "usebackq tokens=1,2,3" %%a in (`powershell -NoProfile -Command "$cfg=Get-Content -Raw 'config/runtime.json' | ConvertFrom-Json; if($cfg){$h=$cfg.bind; if(-not $h){$h='0.0.0.0'}; $p=$cfg.port; if(-not $p){$p=8012}; $api=$cfg.apiBaseUrl; if(-not $api){$local=($h -eq '0.0.0.0') ? '127.0.0.1' : $h; $api='http://'+$local+':' + $p}; Write-Output \"$h $p $api\"}"`) do (
-        set HOST=%%a
-        set PORT=%%b
-        set BASE_URL=%%c
-    )
+rem ---------- start ----------
+if exist "%~dp0run_server.py" (
+  echo Starting run_server.py on %HOSTBIND%:%PORT%
+  "%PY%" run_server.py --host %HOSTBIND% --port %PORT%
+  exit /b %ERRORLEVEL%
 )
+if exist "%~dp0server.py" (
+  echo Starting uvicorn server:app on %HOSTBIND%:%PORT%
+  "%PY%" -m uvicorn server:app --host %HOSTBIND% --port %PORT%
+  exit /b %ERRORLEVEL%
+)
+echo [ERROR] No server.py or run_server.py found.
+exit /b 1
 
-echo Opening UI...
-start "" %BASE_URL%/app
-
-echo Starting SWARMZ (AUTO=1, TICK_INTERVAL=%TICK_INTERVAL%)...
-%PYTHON_EXE% run_server.py --host %HOST% --port %PORT%
-
+:lanip
+set LANIP=
+for /f "tokens=2 delims=:" %%i in ('ipconfig ^| findstr /i "IPv4" ^| findstr /v "127.0.0.1" ^| findstr /v "169.254"') do (
+  set TMP=%%i
+  set TMP=!TMP: =!
+  set LANIP=!TMP!
+  goto :eof
+)
+goto :eof
 endlocal

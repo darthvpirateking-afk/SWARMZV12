@@ -1,5 +1,8 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 """
-regime.py – Regime-based objectives with hysteresis.
+regime.py â€“ Regime-based objectives with hysteresis.
 
 Each objective belongs to a regime.  A regime becomes *active* when its entry
 condition is met and stays active for at least ``min_duration_active`` seconds.
@@ -12,7 +15,7 @@ from __future__ import annotations
 import json
 import os
 import time
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 import jsonschema
 
@@ -84,3 +87,4 @@ class RegimeManager:
     def all_regimes(self) -> dict[str, bool]:
         """Return a snapshot of regime activation states."""
         return {name: rs.active for name, rs in self._regimes.items()}
+

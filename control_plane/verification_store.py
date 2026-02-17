@@ -1,5 +1,8 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 """
-verification_store.py – Append-only verification log backed by
+verification_store.py â€“ Append-only verification log backed by
 data/verification_log.jsonl.
 
 Stores baseline snapshots and verification outcomes.
@@ -40,3 +43,4 @@ class VerificationStore:
                 if line:
                     entries.append(json.loads(line))
         return entries
+

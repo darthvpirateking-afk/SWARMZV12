@@ -1,6 +1,9 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 #!/usr/bin/env python3
 """
-verification_runner.py – Post-action verification with automatic rollback.
+verification_runner.py â€“ Post-action verification with automatic rollback.
 
 Behaviour:
   * Listens for ``ACTION_SELECTED`` events.
@@ -79,7 +82,7 @@ class VerificationRunner:
                 still_pending.append(item)
                 continue
 
-            # Deadline reached – evaluate
+            # Deadline reached â€“ evaluate
             actual = self._state.get_value(vspec["metric"])
             passed = False
             if actual is not None:
@@ -102,7 +105,7 @@ class VerificationRunner:
             else:
                 log_entry["outcome"] = "VERIFY_FAILED"
                 self._bus.publish("VERIFY_FAILED", log_entry)
-                print(f"[verify] FAILED: {action['action_id']} – triggering rollback")
+                print(f"[verify] FAILED: {action['action_id']} â€“ triggering rollback")
                 self._do_rollback(action)
 
             self._vstore.log(log_entry)
@@ -151,3 +154,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

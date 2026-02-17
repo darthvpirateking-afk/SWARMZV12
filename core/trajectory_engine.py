@@ -1,8 +1,12 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 import json
 import os
-from datetime import datetime, timedelta
+from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from typing import Dict, Any, List
+import time  # For profiling
 
 DEFAULT_FUTURE_STATE = {
     "north_star_description": "Reliable, adaptive operator companion",
@@ -51,7 +55,7 @@ class TrajectoryEngine:
             except Exception:
                 pass
         if DEFAULT_FUTURE_STATE["last_updated"] is None:
-            DEFAULT_FUTURE_STATE["last_updated"] = datetime.utcnow().isoformat() + "Z"
+            DEFAULT_FUTURE_STATE["last_updated"] = datetime.now(timezone.utc).isoformat() + "Z"
         with open(self.future_state_file, "w", encoding="utf-8") as f:
             json.dump(DEFAULT_FUTURE_STATE, f, indent=2)
         return DEFAULT_FUTURE_STATE
@@ -119,8 +123,8 @@ class TrajectoryEngine:
             start_ts = perf_entries[0].get("timestamp")
             end_ts = perf_entries[-1].get("timestamp")
             try:
-                start_dt = datetime.fromisoformat(start_ts.replace("Z", "+00:00")) if start_ts else datetime.utcnow()
-                end_dt = datetime.fromisoformat(end_ts.replace("Z", "+00:00")) if end_ts else datetime.utcnow()
+                start_dt = datetime.fromisoformat(start_ts.replace("Z", "+00:00")) if start_ts else datetime.now(timezone.utc)
+                end_dt = datetime.fromisoformat(end_ts.replace("Z", "+00:00")) if end_ts else datetime.now(timezone.utc)
                 elapsed_hours = max((end_dt - start_dt).total_seconds() / 3600.0, 0.001)
             except Exception:
                 elapsed_hours = 1.0
@@ -154,11 +158,12 @@ class TrajectoryEngine:
             "resource_usage": resource_usage,
             "strategy_variance": variance,
             "recent_trend_vector": trend,
-            "last_updated": datetime.utcnow().isoformat() + "Z",
+            "last_updated": datetime.now(timezone.utc).isoformat() + "Z",
         }
 
     # ---------- Public hooks ----------
     def trajectory_score(self, action_projection: Dict[str, Any]) -> float:
+        start_time = time.perf_counter()  # Start profiling
         if not self.current_state_file.exists():
             current_state = self._compute_current_state()
         else:
@@ -179,7 +184,10 @@ class TrajectoryEngine:
 
         trajectory_delta = distance_before - distance_after
         performance_score = float(action_projection.get("performance_score", 0.0))
-        return performance_score + trajectory_delta * self.bias_weight
+        result = performance_score + trajectory_delta * self.bias_weight
+        end_time = time.perf_counter()  # End profiling
+        print(f"Trajectory score computation took {end_time - start_time:.6f} seconds.")
+        return result
 
     def strategy_bias(self, strategy: str, avg_score: float) -> float:
         projection = {"performance_score": avg_score}
@@ -211,7 +219,7 @@ class TrajectoryEngine:
             self._drift_counter = max(0, self._drift_counter - 1)
         if self._drift_counter >= self._drift_threshold:
             event = {
-                "timestamp": datetime.utcnow().isoformat() + "Z",
+                "timestamp": datetime.now(timezone.utc).isoformat() + "Z",
                 "trend": trend,
                 "message": "trajectory drifting away from north star",
             }
@@ -233,9 +241,9 @@ class TrajectoryEngine:
         self._maybe_daily_brief()
 
     def _maybe_reflect(self) -> None:
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         if self.reflection_file.exists():
-            mtime = datetime.fromtimestamp(os.path.getmtime(self.reflection_file))
+            mtime = datetime.fromtimestamp(os.path.getmtime(self.reflection_file), tz=timezone.utc)
             if (now - mtime) < timedelta(hours=24):
                 return
 
@@ -257,9 +265,9 @@ class TrajectoryEngine:
             f.write("\n".join(lines))
 
     def _maybe_daily_brief(self) -> None:
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         if self.daily_brief_file.exists():
-            mtime = datetime.fromtimestamp(os.path.getmtime(self.daily_brief_file))
+            mtime = datetime.fromtimestamp(os.path.getmtime(self.daily_brief_file), tz=timezone.utc)
             if (now - mtime) < timedelta(hours=24):
                 return
 
@@ -307,3 +315,4 @@ class TrajectoryEngine:
 
         with open(self.daily_brief_file, "w", encoding="utf-8") as f:
             f.write("\n".join(lines))
+

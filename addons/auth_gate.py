@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 """
 LAN Write-Auth Hardening middleware for FastAPI.
 
@@ -62,7 +65,7 @@ class LANAuthMiddleware(BaseHTTPMiddleware):
 
         pin = cfg.get("operator_pin", "")
         if not pin:
-            # No PIN configured → allow all (operator chose not to enable)
+            # No PIN configured â†’ allow all (operator chose not to enable)
             return await call_next(request)
 
         if request.method in _SAFE_METHODS:
@@ -71,7 +74,7 @@ class LANAuthMiddleware(BaseHTTPMiddleware):
         if _is_localhost(request):
             return await call_next(request)
 
-        # Non-localhost write → require key
+        # Non-localhost write â†’ require key
         provided = (
             request.headers.get("X-Operator-Key")
             or request.query_params.get("operator_key")
@@ -85,3 +88,4 @@ class LANAuthMiddleware(BaseHTTPMiddleware):
             raise HTTPException(status_code=403, detail="Operator key required for LAN writes")
 
         return await call_next(request)
+

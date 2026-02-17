@@ -1,5 +1,8 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 """
-Addon API router — Bucket A features.
+Addon API router â€” Bucket A features.
 
 Endpoints for backup, replay, quarantine, budget, causal ledger,
 strategy registry, drift, entropy, operator contracts, approval queue,
@@ -13,7 +16,7 @@ from typing import Any, Dict, List, Optional
 router = APIRouter()
 
 
-# ── Request models ────────────────────────────────────────────────────
+# â”€â”€ Request models â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 class LeverRequest(BaseModel):
     mission_id: str
@@ -92,7 +95,7 @@ class QuarantineExitRequest(BaseModel):
     operator_key: str
 
 
-# ── Backup ────────────────────────────────────────────────────────────
+# â”€â”€ Backup â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 @router.get("/backup/export")
 def backup_export():
@@ -121,7 +124,7 @@ def backup_rollback(rollback_path: str):
     return result
 
 
-# ── Replay ────────────────────────────────────────────────────────────
+# â”€â”€ Replay â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 @router.get("/replay")
 def replay():
@@ -129,7 +132,7 @@ def replay():
     return replay_state()
 
 
-# ── Quarantine ────────────────────────────────────────────────────────
+# â”€â”€ Quarantine â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 @router.get("/quarantine")
 def quarantine_status():
@@ -152,7 +155,7 @@ def quarantine_exit(req: QuarantineExitRequest):
     return result
 
 
-# ── Budget ────────────────────────────────────────────────────────────
+# â”€â”€ Budget â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 @router.get("/budget")
 def budget_get():
@@ -181,7 +184,7 @@ def budget_reset():
     return reset_budget()
 
 
-# ── Causal Ledger ────────────────────────────────────────────────────
+# â”€â”€ Causal Ledger â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 @router.post("/ledger/declare")
 def ledger_declare(req: LeverRequest):
@@ -201,7 +204,7 @@ def ledger_list():
     return {"entries": load_ledger()}
 
 
-# ── Strategy Registry ────────────────────────────────────────────────
+# â”€â”€ Strategy Registry â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 @router.post("/strategies/register")
 def strategy_register(req: StrategyRegisterRequest):
@@ -239,7 +242,7 @@ def strategy_list():
     return {"strategies": list_strategies()}
 
 
-# ── Drift Scanner ────────────────────────────────────────────────────
+# â”€â”€ Drift Scanner â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 @router.get("/drift")
 def drift_scan():
@@ -259,7 +262,7 @@ def drift_get(name: str):
     return compute_drift(name)
 
 
-# ── Entropy Budget ───────────────────────────────────────────────────
+# â”€â”€ Entropy Budget â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 @router.get("/entropy")
 def entropy_get():
@@ -276,7 +279,7 @@ def entropy_spend(req: EntropySpendRequest):
     return result
 
 
-# ── Operator Contracts ───────────────────────────────────────────────
+# â”€â”€ Operator Contracts â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 @router.get("/contract")
 def contract_get():
@@ -305,7 +308,7 @@ def contract_validate(action: str):
     return validate_action(action)
 
 
-# ── Approval Queue ───────────────────────────────────────────────────
+# â”€â”€ Approval Queue â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 @router.post("/patches/submit")
 def patch_submit(req: PatchSubmitRequest):
@@ -346,7 +349,7 @@ def patch_rollback(req: PatchActionRequest):
     return result
 
 
-# ── Pack Artifacts ───────────────────────────────────────────────────
+# â”€â”€ Pack Artifacts â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 @router.post("/packs/store")
 def pack_store(req: PackStoreRequest):
@@ -376,7 +379,7 @@ def pack_verify(mission_id: str):
     return verify_pack(mission_id)
 
 
-# ── Memory Boundaries ───────────────────────────────────────────────
+# â”€â”€ Memory Boundaries â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 @router.post("/memory/put")
 def memory_put(req: MemoryPutRequest):
@@ -399,7 +402,7 @@ def memory_list(store: str):
     return {"store": store, "keys": list_keys(store), "data": dump_store(store)}
 
 
-# ── Golden Run ───────────────────────────────────────────────────────
+# â”€â”€ Golden Run â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 @router.post("/golden/record")
 def golden_record(req: GoldenRecordRequest):
@@ -417,3 +420,4 @@ def golden_replay(req: GoldenReplayRequest):
 def golden_list():
     from addons.golden_run import list_golden_runs
     return {"runs": list_golden_runs()}
+

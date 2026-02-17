@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 """
 GALILEO HARNESS v0.1
 Deterministic hypothesis generation and testing system
@@ -30,3 +33,4 @@ __all__ = [
     'get_experimentalist_prompt',
     'get_scorer_prompt',
 ]
+

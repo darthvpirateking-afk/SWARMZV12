@@ -1,5 +1,8 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 """
-event_debouncer.py – Simple in-process event bus with debouncing.
+event_debouncer.py â€“ Simple in-process event bus with debouncing.
 
 Events are string names (e.g. ``STATE_UPDATED``, ``ACTION_SELECTED``).
 Subscribers register callbacks; the debouncer coalesces rapid-fire events
@@ -67,3 +70,4 @@ class EventDebouncer:
                 print(f"[EventDebouncer] handler error for {event}: {exc}",
                       file=sys.stderr)
                 traceback.print_exc(file=sys.stderr)
+

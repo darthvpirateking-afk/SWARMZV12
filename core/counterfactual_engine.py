@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 import json
 from datetime import datetime
 from pathlib import Path
@@ -191,3 +194,4 @@ class CounterfactualEngine:
 
         with open(self.report_file, "w", encoding="utf-8") as f:
             f.write("\n".join(lines))
+

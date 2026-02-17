@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 """Minimal self-check for the PWA endpoints without extra dependencies."""
 
 import argparse
@@ -74,3 +77,4 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
+

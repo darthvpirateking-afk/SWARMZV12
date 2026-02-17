@@ -1,9 +1,12 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 """
 Prompts module: LLM prompt templates for Galileo harness
 Versioned, seeded, deterministic prompts for generator, critic, experimentalist, scorer
 """
 
-from typing import Dict, Any
+from typing import Dict
 
 
 def get_generator_prompt(domain: str, n_hypotheses: int, domain_pack: Dict = None, seed: int = 0) -> str:
@@ -174,3 +177,4 @@ If these criteria are met, STATUS=ACCEPTED.
 Otherwise, STATUS=REJECTED with failure reasons.
 
 This is computed deterministically by scorer.py, not by LLM."""
+

@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 from typing import Dict, Any
 from datetime import datetime, timedelta
 
@@ -25,3 +28,4 @@ class CadenceEngine:
     def schedule_next_run(self, mission: Dict[str, Any], success: bool) -> datetime:
         next_interval = self.calculate_next_interval(mission, success)
         return datetime.now() + timedelta(seconds=next_interval)
+

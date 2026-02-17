@@ -1,8 +1,11 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 """
-scoring.py – Deterministic action scoring for the Layer-Weaver control plane.
+scoring.py â€“ Deterministic action scoring for the Layer-Weaver control plane.
 
-Score = Benefit − (λ_risk * Risk + λ_coupling * CouplingDamage
-                   + λ_irr * Irreversibility + λ_uncertainty * Uncertainty)
+Score = Benefit âˆ’ (Î»_risk * Risk + Î»_coupling * CouplingDamage
+                   + Î»_irr * Irreversibility + Î»_uncertainty * Uncertainty)
 
 All deltas are normalised before scoring.  Ties are broken deterministically by
 action_id (lexicographic ascending).  If the best score is <= 0, NO_ACTION is
@@ -80,7 +83,7 @@ def score_action(action: dict, state: dict[str, Any],
     r = _risk(action)
     cd = _coupling_damage(action)
     irr = action.get("irreversibility_cost", 0.0)
-    # uncertainty = 1 − average confidence across affected variables
+    # uncertainty = 1 âˆ’ average confidence across affected variables
     confs: list[float] = []
     for eff in action.get("expected_effects", []):
         sv = state.get(eff["variable"])
@@ -108,3 +111,4 @@ def select_best(actions: list[dict], state: dict[str, Any],
     if not scored or scored[0][0] <= 0:
         return None
     return scored[0][2]
+

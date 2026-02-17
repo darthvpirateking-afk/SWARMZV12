@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 #!/usr/bin/env python3
 """
 SWARMZ Health Check Script
@@ -14,8 +17,7 @@ import sys
 import os
 import importlib
 import subprocess
-from typing import Dict, List, Tuple
-from pathlib import Path
+from typing import Dict
 
 
 class HealthChecker:
@@ -36,21 +38,21 @@ class HealthChecker:
             result = func()
             if result:
                 self.results["passed"].append(name)
-                print(f"  ✓ {name}")
+                print(f"  âœ“ {name}")
                 return True
             else:
                 self.results["failed"].append(name)
-                print(f"  ✗ {name}")
+                print(f"  âœ— {name}")
                 return False
         except Exception as e:
             self.results["failed"].append(f"{name}: {str(e)}")
-            print(f"  ✗ {name}: {str(e)}")
+            print(f"  âœ— {name}: {str(e)}")
             return False
     
     def warning(self, message: str):
         """Record a warning."""
         self.results["warnings"].append(message)
-        print(f"  ⚠ {message}")
+        print(f"  âš  {message}")
     
     def check_imports(self) -> bool:
         """Check that all core modules can be imported."""
@@ -98,7 +100,7 @@ class HealthChecker:
             return True
             
         except Exception as e:
-            print(f"  ✗ Core system error: {e}")
+            print(f"  âœ— Core system error: {e}")
             return False
     
     def check_builtin_tasks(self) -> bool:
@@ -124,7 +126,7 @@ class HealthChecker:
             return True
             
         except Exception as e:
-            print(f"  ✗ Built-in tasks error: {e}")
+            print(f"  âœ— Built-in tasks error: {e}")
             return False
     
     def check_plugins(self) -> bool:
@@ -162,7 +164,7 @@ class HealthChecker:
             return True
             
         except Exception as e:
-            print(f"  ✗ Plugin error: {e}")
+            print(f"  âœ— Plugin error: {e}")
             return False
     
     def check_configuration(self) -> bool:
@@ -214,23 +216,23 @@ class HealthChecker:
                 # Extract test count
                 for line in result.stdout.split('\n'):
                     if "Ran" in line and "test" in line:
-                        print(f"  ✓ {line.strip()}")
+                        print(f"  âœ“ {line.strip()}")
                     elif "Success rate: 100" in line:
-                        print(f"  ✓ {line.strip()}")
+                        print(f"  âœ“ {line.strip()}")
                 self.check("Test suite passed", lambda: True)
             else:
-                print(f"  ✗ Test suite failed")
+                print(f"  âœ— Test suite failed")
                 print(result.stdout)
                 self.check("Test suite passed", lambda: False)
             
             return passed
             
         except subprocess.TimeoutExpired:
-            print("  ✗ Test suite timed out")
+            print("  âœ— Test suite timed out")
             self.check("Test suite passed", lambda: False)
             return False
         except Exception as e:
-            print(f"  ✗ Test suite error: {e}")
+            print(f"  âœ— Test suite error: {e}")
             self.check("Test suite passed", lambda: False)
             return False
     
@@ -273,32 +275,32 @@ class HealthChecker:
         print("HEALTH CHECK REPORT")
         print("="*60)
         print(f"Total Checks: {self.total_checks}")
-        print(f"Passed: {passed_count} ✓")
-        print(f"Failed: {failed_count} ✗")
-        print(f"Warnings: {warning_count} ⚠")
+        print(f"Passed: {passed_count} âœ“")
+        print(f"Failed: {failed_count} âœ—")
+        print(f"Warnings: {warning_count} âš ")
         print(f"Success Rate: {success_rate:.1f}%")
         print("="*60)
         
         if failed_count > 0:
             print("\nFailed Checks:")
             for failure in self.results["failed"]:
-                print(f"  ✗ {failure}")
+                print(f"  âœ— {failure}")
         
         if warning_count > 0:
             print("\nWarnings:")
             for warning in self.results["warnings"]:
-                print(f"  ⚠ {warning}")
+                print(f"  âš  {warning}")
         
         # Overall status
         print("\n" + "="*60)
         if failed_count == 0:
-            print("STATUS: ✓ HEALTHY - All checks passed!")
+            print("STATUS: âœ“ HEALTHY - All checks passed!")
             status = "HEALTHY"
         elif failed_count <= 2:
-            print("STATUS: ⚠ DEGRADED - Some issues detected")
+            print("STATUS: âš  DEGRADED - Some issues detected")
             status = "DEGRADED"
         else:
-            print("STATUS: ✗ UNHEALTHY - Multiple failures detected")
+            print("STATUS: âœ— UNHEALTHY - Multiple failures detected")
             status = "UNHEALTHY"
         print("="*60)
         
@@ -345,3 +347,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

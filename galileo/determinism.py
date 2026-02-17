@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 """
 Determinism module: ensures reproducible outputs given same inputs
 - Stable JSON stringification (sorted keys, stable arrays)
@@ -107,3 +110,4 @@ def generate_ids(domain: str, seed: int, n_hypotheses: int) -> Tuple[str, Dict[i
         experiment_ids[hyp_id] = f"E-{date_str}-{exp_hash_8}"
     
     return run_id, hypothesis_ids, experiment_ids
+

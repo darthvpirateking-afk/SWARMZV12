@@ -1,8 +1,11 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 """
-Export / Import Backups — migrate state between devices.
+Export / Import Backups â€” migrate state between devices.
 
-export → ZIP of data/ directory (optionally encrypted).
-import → unpack ZIP, verify, replace data/, log audit entry.
+export â†’ ZIP of data/ directory (optionally encrypted).
+import â†’ unpack ZIP, verify, replace data/, log audit entry.
 """
 
 import io
@@ -77,3 +80,4 @@ def rollback_import(rollback_path: str, data_dir: str = "data") -> Dict[str, Any
     shutil.copytree(rp, dp)
     _audit("backup_rollback", {"restored_from": rollback_path})
     return {"status": "rolled_back", "restored_from": rollback_path}
+

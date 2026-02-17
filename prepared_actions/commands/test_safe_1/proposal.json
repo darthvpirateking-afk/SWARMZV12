@@ -1,0 +1,11 @@
+{
+  "mission_id": "test_safe_1",
+  "category": "commands",
+  "action": {
+    "cmd": "echo hello"
+  },
+  "risk_level": "low",
+  "prepared_at": "2026-02-17T04:00:33.888304Z",
+  "executed": true,
+  "executed_at": "2026-02-17T04:00:33.907445Z"
+}

@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 """
 Lead Audit Plugin for SWARMZ
 
@@ -7,10 +10,9 @@ Provides deterministic lead scoring and prioritization.
 
 import csv
 import io
-import hashlib
 import math
 from typing import Dict, Any, List
-from datetime import datetime, timedelta
+from datetime import datetime
 
 
 def parse_csv_data(csv_content: str) -> List[Dict[str, Any]]:
@@ -49,7 +51,7 @@ def calculate_value_score(value: str) -> float:
     """
     try:
         # Remove currency symbols and parse
-        value_clean = value.replace('$', '').replace(',', '').replace('€', '').replace('£', '')
+        value_clean = value.replace('$', '').replace(',', '').replace('â‚¬', '').replace('Â£', '')
         value_num = float(value_clean)
         
         # Logarithmic scaling: small differences at low end matter more
@@ -263,3 +265,4 @@ def register(executor):
         },
         "category": "lead_audit"
     })
+

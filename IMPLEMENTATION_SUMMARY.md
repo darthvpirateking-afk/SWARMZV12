@@ -31,6 +31,160 @@ Successfully implemented the **SWARMZ Companion** feature - a personal AI compan
 
 ### Documentation
 5. **COMPANION_GUIDE.md** (9.5KB)
+## Infra Orchestrator & PWA Extensions (Additive)
+
+> All changes in this section are **additive** and gated. The existing
+> architecture and behavior remain intact when infra features are
+> disabled.
+
+### New Runtime Core Modules
+
+- `swarmz_runtime/core/infra_model.py`
+   - Dataclass models for physical and virtual infra (data centers,
+      racks, nodes, storage, networks, tenants, backup/DR, GPU/blockchain
+      hosting).
+   - Pure data layer; not wired into execution paths by default.
+
+- `swarmz_runtime/core/infra_metrics.py`
+   - `record_infra_metrics(sample)`: appends normalized infra metrics
+      into `data/infra_events.jsonl`.
+   - `build_infra_overview(limit)`: computes per-node averages and
+      returns a simple overview for APIs and planners.
+
+- `swarmz_runtime/core/infra_autoscale.py`
+   - `compute_autoscale_recommendations(overview, target_cpu, max_cpu, min_cpu)`
+      returns explanation-first autoscale hints (`hot/normal/cold` nodes
+      and a summary status) without taking any actions.
+
+- `swarmz_runtime/core/infra_backup.py`
+   - `compute_backup_plan(state, default_interval_hours)`: inspects
+      `infra_state` and recommends a conservative backup/DR schedule
+      (interval, retention, replication) with a human-readable summary.
+
+- `swarmz_runtime/core/infra_missions.py`
+   - `emit_infra_missions(autoscale_plan, backup_plan)`: creates
+      **simulation-only** missions in `data/missions.jsonl`, tagged with
+      `infra_simulation: true` in `constraints`.
+   - No external infra APIs are called; this only writes missions.
+
+### New Storage Helpers
+
+- `swarmz_runtime/storage/infra_state.py`
+   - `append_infra_event`, `load_infra_events(limit)`: append-only
+      JSONL log for infra events at `data/infra_events.jsonl`.
+   - `save_infra_state`, `load_infra_state`: materialized view snapshot
+      at `data/infra_state.json`.
+
+### Config Flags (All Opt-In)
+
+- `addons/config_ext.py`
+   - New defaults (all `False`):
+      - `infra_orchestrator_enabled`
+      - `infra_security_enabled`
+      - `infra_billing_enabled`
+      - `infra_blockchain_enabled`
+   - Environment overrides via `SWARMZ_INFRA_ORCHESTRATOR_ENABLED`, etc.
+   - Existing addon config behavior unchanged when flags remain `False`.
+
+### New Runtime API Router
+
+- `swarmz_runtime/api/infra.py`
+   - Mounted in `swarmz_runtime/api/server.py` via `include_router`, but
+      all endpoints return `404` unless `infra_orchestrator_enabled` is
+      true.
+   - Endpoints:
+      - `POST /v1/infra/metrics` → `record_infra_metrics`.
+      - `GET /v1/infra/overview` → overview from recent metrics.
+      - `GET /v1/infra/events` → tail of raw infra events.
+      - `GET /v1/infra/state` → last infra state snapshot.
+      - `GET /v1/infra/autoscale_plan` → autoscale recommendations.
+      - `GET /v1/infra/backup_plan` → backup/DR recommendations.
+      - `POST /v1/infra/plan_missions` → emits simulation-only infra
+         missions using `infra_missions.emit_infra_missions`.
+
+### PWA Console Additions
+
+- `web/index.html`
+   - Added an **INFRA** panel in the right-hand data column:
+      - `infraSummary`: shows `INFRA: DISABLED` by default, or node
+         counts when infra is enabled.
+      - `infraAutoscale`: shows current autoscale summary status.
+      - `infraBackup`: shows current backup/DR summary status.
+      - `btnInfraSim`: "RUN INFRA SIM" button to trigger simulation.
+   - Removed an unused inline hologram React script that was not wired
+      to any bundler (HOLOGRAM panel remains as a static container).
+
+- `web/app.js`
+   - New DOM refs: `$infraSummary`, `$infraAutoscale`, `$infraBackup`,
+      `$btnInfraSim`.
+   - `fetchInfra()`: called in the main poll loop; queries
+      `/v1/infra/overview`, `/v1/infra/autoscale_plan`, and
+      `/v1/infra/backup_plan`.
+      - If infra is disabled (404), shows `INFRA: DISABLED`, `AUTOSCALE:
+         --`, `BACKUP: --`.
+      - On success, displays node counts and summary statuses.
+      - Fails soft if endpoints are unavailable.
+   - `runInfraSimulation()`: wired to `btnInfraSim`.
+      - `POST /v1/infra/plan_missions`.
+      - Shows a hint with the number of missions created.
+      - Calls `pollNow()` to refresh the mission queue.
+
+### Testing & Compatibility
+
+- After each batch of changes, ran:
+   - `pytest -q test_swarmz_server.py`
+   - Result: **12 tests passed**, confirming the existing web server
+      behavior and PWA expectations remain intact.
+- Full `pytest -q` currently fails on a pre-existing scaffold template
+   (`tools/vscode-scaffold-bot/.../test_{{snakeName}}.py`) and is
+   unrelated to these changes.
+
+### Rollback Notes
+
+- Git-based rollback (recommended):
+   - To discard **all** infra additions and PWA INFRA UI:
+      - `git reset --hard origin/copilot/add-pwa-setup-and-scripts`
+   - To remove only runtime infra features while keeping other work:
+      - `git restore swarmz_runtime/core/infra_*.py`
+      - `git restore swarmz_runtime/storage/infra_state.py`
+      - `git restore swarmz_runtime/api/infra.py`
+      - `git restore swarmz_runtime/api/server.py`
+      - `git restore addons/config_ext.py`
+   - To remove only the INFRA strip + button from the PWA UI:
+      - `git restore web/index.html web/app.js`
+
+- Config-based safety:
+   - Leaving `infra_orchestrator_enabled` at its default (`False`)
+      effectively disables all new `/v1/infra/*` routes and keeps the
+      INFRA panel in a passive "DISABLED" state.
+
+### Dev-only Helpers
+
+- `dev/infra_simulation_demo.py`
+   - Optional script that exercises the infra runtime endpoints against
+      a running local server.
+   - Sends sample metrics, fetches overview/autoscale/backup plans, and
+      triggers simulation-only infra missions.
+   - Lives under `dev/` and does not affect core behavior; safe to
+      remove via `git restore dev/infra_simulation_demo.py`.
+
+- `dev/decision_space_demo.py`
+   - Dev-only helper that queries `/health`, `/v1/ui/state`,
+      `/v1/missions/list`, and (optionally) `/v1/infra/*` to print a
+      concise "decision space" snapshot for the operator.
+   - Produces a small set of suggested next moves based on pending
+      missions and infra autoscale/backup summaries.
+   - Read-only: it does not mutate runtime state and can be removed via
+      `git restore dev/decision_space_demo.py`.
+
+- `dev/network_sim_demo.py`
+   - Sends synthetic infra metrics for several nodes into
+      `/v1/infra/metrics` and then reads `/v1/infra/overview` and
+      `/v1/infra/autoscale_plan`.
+   - Prints a simple network snapshot (node count, autoscale status,
+      hot/cold nodes) to pair with the NETWORK panel in the console.
+   - Non-destructive and removable via `git restore dev/network_sim_demo.py`.
+
    - Complete user guide
    - API documentation
    - Examples and troubleshooting

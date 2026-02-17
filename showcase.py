@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 #!/usr/bin/env python3
 """
 SWARMZ Companion Feature Showcase
@@ -5,8 +8,9 @@ SWARMZ Companion Feature Showcase
 Demonstrates all implemented features in a single comprehensive demo.
 """
 
-from companion import SwarmzCompanion, SystemMode
+from companion import SwarmzCompanion
 from swarmz import SwarmzCore
+import time  # For profiling
 
 
 def print_header(title):
@@ -18,7 +22,7 @@ def print_header(title):
 
 def print_success(message):
     """Print success message."""
-    print(f"✅ {message}")
+    print(f"âœ… {message}")
 
 
 def main():
@@ -41,11 +45,11 @@ def main():
     ]
     
     for question in questions:
-        print(f"❓ User: {question}")
+        print(f"â“ User: {question}")
         response = companion.interact(question)
         mode = companion.get_current_mode()
-        print(f"🗨️  Mode: {mode.value.upper()}")
-        print(f"💬 Response: {response[:80]}...")
+        print(f"ðŸ—¨ï¸  Mode: {mode.value.upper()}")
+        print(f"ðŸ’¬ Response: {response[:80]}...")
         print()
     
     # 3. Demonstrate Operator Mode
@@ -57,11 +61,11 @@ def main():
     ]
     
     for command, params in commands:
-        print(f"⚙️  User: {command}")
-        print(f"📋 Params: {params}")
+        print(f"âš™ï¸  User: {command}")
+        print(f"ðŸ“‹ Params: {params}")
         response = companion.interact(command, params)
         mode = companion.get_current_mode()
-        print(f"🔧 Mode: {mode.value.upper()}")
+        print(f"ðŸ”§ Mode: {mode.value.upper()}")
         
         # Extract key info from response
         lines = response.split('\n')
@@ -72,13 +76,16 @@ def main():
     
     # 4. Show Metrics
     print_header("4. System Metrics & Intelligence")
+    start_time = time.perf_counter()  # Start profiling
     metrics = companion.get_metrics()
-    print("📊 Performance Metrics:")
-    print(f"   • Actions per day: {metrics['completed_verified_actions_per_day']:.2f}")
-    print(f"   • Success rate: {metrics['success_rate']:.1%}")
-    print(f"   • Error rate: {metrics['error_rate']:.1%}")
-    print(f"   • Total actions: {metrics['total_actions']}")
+    print("ðŸ“Š Performance Metrics:")
+    print(f"   â€¢ Actions per day: {metrics['completed_verified_actions_per_day']:.2f}")
+    print(f"   â€¢ Success rate: {metrics['success_rate']:.1%}")
+    print(f"   â€¢ Error rate: {metrics['error_rate']:.1%}")
+    print(f"   â€¢ Total actions: {metrics['total_actions']}")
     print_success("Metrics tracking operational")
+    end_time = time.perf_counter()  # End profiling
+    print(f"Metrics display took {end_time - start_time:.6f} seconds.")
     
     # 5. Demonstrate Worker Swarm
     print_header("5. Worker Swarm System")
@@ -91,21 +98,21 @@ def main():
         parameters={"demo": True}
     )
     
-    print("🐝 Executing worker workflow: Scout → Builder → Verify")
+    print("ðŸ Executing worker workflow: Scout â†’ Builder â†’ Verify")
     results = swarm.execute_workflow(task)
     
     for i, result in enumerate(results, 1):
         print(f"\n   {i}. {result.worker_type.value.upper()} Worker:")
-        print(f"      ✓ Executed successfully")
-        print(f"      • Risks: {len(result.risks)} identified")
-        print(f"      • Next: {result.next_action}")
+        print(f"      âœ“ Executed successfully")
+        print(f"      â€¢ Risks: {len(result.risks)} identified")
+        print(f"      â€¢ Next: {result.next_action}")
     
     print()
     print_success("Worker swarm operational (max 3 workers enforced)")
     
     # 6. Demonstrate Commit Engine
     print_header("6. Commit Engine (Prevents Stalling)")
-    from companion import CommitEngine, CommitState
+    from companion import CommitEngine
     
     engine = CommitEngine()
     
@@ -121,7 +128,7 @@ def main():
             parameters=params
         )
         state = engine.evaluate(task)
-        print(f"📌 {description}")
+        print(f"ðŸ“Œ {description}")
         print(f"   State: {state.value.upper()}")
         print(f"   Expected: {expected}")
         print()
@@ -132,14 +139,14 @@ def main():
     print_header("7. Intelligence Layer (Learning)")
     intelligence = companion.mode_manager.operator_mode.intelligence
     
-    print("🧠 Intelligence Layer Features:")
-    print(f"   • Execution logs: {len(intelligence.execution_logs)} recorded")
-    print(f"   • Scoring weights: {intelligence.scoring_weights}")
+    print("ðŸ§  Intelligence Layer Features:")
+    print(f"   â€¢ Execution logs: {len(intelligence.execution_logs)} recorded")
+    print(f"   â€¢ Scoring weights: {intelligence.scoring_weights}")
     
     if intelligence.execution_logs:
         print(f"\n   Recent executions:")
         for log in intelligence.execution_logs[-3:]:
-            status = "✓" if log.success else "✗"
+            status = "âœ“" if log.success else "âœ—"
             print(f"      {status} {log.task_name} ({log.time_taken:.3f}s)")
     
     print()
@@ -148,7 +155,7 @@ def main():
     # 8. Demonstrate Memory Persistence
     print_header("8. Memory Persistence")
     
-    print("💾 Updating memory...")
+    print("ðŸ’¾ Updating memory...")
     companion.mode_manager.update_memory({
         "preferences": {"theme": "dark", "language": "en"},
         "caps": {"max_spend": 100.0, "max_workers": 3},
@@ -156,21 +163,21 @@ def main():
     })
     
     memory = companion.mode_manager.get_memory()
-    print(f"   • Preferences: {len(memory.preferences)} stored")
-    print(f"   • Caps: {len(memory.caps)} defined")
-    print(f"   • Whitelist: {len(memory.whitelist)} entries")
+    print(f"   â€¢ Preferences: {len(memory.preferences)} stored")
+    print(f"   â€¢ Caps: {len(memory.caps)} defined")
+    print(f"   â€¢ Whitelist: {len(memory.whitelist)} entries")
     print()
     print_success("Memory persists preferences, caps, and whitelist")
     
     # 9. Integration with SWARMZ Core
     print_header("9. Integration with SWARMZ Core")
     
-    print("🔗 Creating companion with SWARMZ Core integration...")
+    print("ðŸ”— Creating companion with SWARMZ Core integration...")
     core = SwarmzCore()
     integrated_companion = SwarmzCompanion(swarmz_core=core)
     
-    print(f"   • Core capabilities: {len(core.list_capabilities())}")
-    print(f"   • Companion ready: Yes")
+    print(f"   â€¢ Core capabilities: {len(core.list_capabilities())}")
+    print(f"   â€¢ Companion ready: Yes")
     print()
     print_success("Seamless integration with SWARMZ Core")
     
@@ -178,17 +185,17 @@ def main():
     print_header("10. Evolution Mechanism")
     
     evolution = companion.mode_manager.operator_mode.evolution
-    print("🔄 Evolution Features:")
-    print("   • Generates patchpacks from execution logs")
-    print("   • Requires human approval before applying")
-    print("   • Can modify: weights, routing, templates")
-    print("   • Never self-rewrites core code")
+    print("ðŸ”„ Evolution Features:")
+    print("   â€¢ Generates patchpacks from execution logs")
+    print("   â€¢ Requires human approval before applying")
+    print("   â€¢ Can modify: weights, routing, templates")
+    print("   â€¢ Never self-rewrites core code")
     
     patchpack = evolution.generate_patchpack()
     if patchpack:
-        print(f"\n   ✓ Patchpack generated: {patchpack['type']}")
+        print(f"\n   âœ“ Patchpack generated: {patchpack['type']}")
     else:
-        print(f"\n   • No patchpack needed (insufficient data or good performance)")
+        print(f"\n   â€¢ No patchpack needed (insufficient data or good performance)")
     
     print()
     print_success("Evolution mechanism operational")
@@ -199,22 +206,23 @@ def main():
     print("#" * 70)
     print()
     
-    print("✅ All Features Demonstrated:")
+    print("âœ… All Features Demonstrated:")
     print()
-    print("   ✓ Dual-mode cognition (Companion + Operator)")
-    print("   ✓ Automatic mode detection")
-    print("   ✓ 8-stage execution loop")
-    print("   ✓ Worker swarm system (max 3 workers)")
-    print("   ✓ Commit engine (prevents stalling)")
-    print("   ✓ Intelligence layer (learning)")
-    print("   ✓ Memory persistence")
-    print("   ✓ Safety boundaries")
-    print("   ✓ Evolution mechanism")
-    print("   ✓ SWARMZ Core integration")
+    print("   âœ“ Dual-mode cognition (Companion + Operator)")
+    print("   âœ“ Automatic mode detection")
+    print("   âœ“ 8-stage execution loop")
+    print("   âœ“ Worker swarm system (max 3 workers)")
+    print("   âœ“ Commit engine (prevents stalling)")
+    print("   âœ“ Intelligence layer (learning)")
+    print("   âœ“ Memory persistence")
+    print("   âœ“ Safety boundaries")
+    print("   âœ“ Evolution mechanism")
+    print("   âœ“ SWARMZ Core integration")
     print()
-    print("🎉 SWARMZ Companion is fully operational and ready for use!")
+    print("ðŸŽ‰ SWARMZ Companion is fully operational and ready for use!")
     print()
 
 
 if __name__ == "__main__":
     main()
+

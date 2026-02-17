@@ -1,5 +1,8 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 from pydantic import BaseModel, Field
-from typing import Optional, List, Dict, Any
+from typing import Optional, Dict, Any
 from datetime import datetime
 from enum import Enum
 
@@ -93,3 +96,4 @@ class MaintenanceTask(BaseModel):
     complexity_score: float
     scheduled_at: datetime
     reason: str
+

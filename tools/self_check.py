@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 #!/usr/bin/env python3
 """
 SWARMZ Self Check
@@ -11,7 +14,6 @@ SWARMZ Self Check
 Standard library only.
 """
 import json
-import os
 import socket
 import sys
 from pathlib import Path
@@ -193,3 +195,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

@@ -1,9 +1,12 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 """
-AutoLoopManager – background tick scheduler for SWARMZ.
+AutoLoopManager â€“ background tick scheduler for SWARMZ.
 
 Responsibilities:
   - start / stop a daemon thread that ticks every N seconds
-  - each tick: generate mission → score → execute → measure → persist
+  - each tick: generate mission â†’ score â†’ execute â†’ measure â†’ persist
   - state.json persistence for crash-safe resume
   - audit.jsonl append per tick
   - kill-switch via data/KILL file
@@ -12,7 +15,6 @@ Responsibilities:
 """
 
 import json
-import os
 import threading
 import time
 from datetime import datetime, timezone
@@ -51,7 +53,7 @@ class AutoLoopManager:
 
         self._load_state()
 
-    # ── public API ─────────────────────────────────────────────────────
+    # â”€â”€ public API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     def start(self, tick_interval: int = 30) -> None:
         with self._lock:
@@ -91,7 +93,7 @@ class AutoLoopManager:
             "max_ticks_per_minute": self.MAX_TICKS_PER_MINUTE,
         }
 
-    # ── internal loop ──────────────────────────────────────────────────
+    # â”€â”€ internal loop â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     def _loop(self) -> None:
         while self._running:
@@ -175,7 +177,7 @@ class AutoLoopManager:
             "ts": now_iso,
         }
 
-    # ── helpers ────────────────────────────────────────────────────────
+    # â”€â”€ helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     @staticmethod
     def _goal_to_category(goal: str) -> str:
@@ -233,3 +235,4 @@ class AutoLoopManager:
                 self._tick_interval = state.get("tick_interval", 30)
             except (json.JSONDecodeError, OSError):
                 pass  # start fresh
+

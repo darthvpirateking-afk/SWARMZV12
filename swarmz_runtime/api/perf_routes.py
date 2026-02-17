@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 import cProfile
 import pstats
 import io
@@ -46,3 +49,4 @@ def perf_bench():
     with bench_file.open("a", encoding="utf-8") as f:
         f.write(str(row) + "\n")
     return row
+

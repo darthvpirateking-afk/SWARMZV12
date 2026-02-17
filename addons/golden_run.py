@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 """
 Golden-Run / Determinism Harness.
 
@@ -8,7 +11,7 @@ import hashlib
 import json
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 from addons.config_ext import get_config
 
@@ -104,3 +107,4 @@ def _load_runs() -> List[Dict[str, Any]]:
 
 def list_golden_runs() -> List[Dict[str, Any]]:
     return _load_runs()
+

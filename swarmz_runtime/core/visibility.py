@@ -1,6 +1,6 @@
-from typing import Dict, Any
-from datetime import datetime, timedelta
-
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 
 class VisibilityManager:
     def __init__(self):
@@ -18,3 +18,4 @@ class VisibilityManager:
     
     def filter_events(self, events: list, visibility_level: str = "visible") -> list:
         return [e for e in events if self.should_log(e.get("visibility", "visible"), visibility_level)]
+

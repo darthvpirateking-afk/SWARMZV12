@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 #!/usr/bin/env python3
 """
 SWARMZ Command Line Interface
@@ -56,9 +59,9 @@ Examples:
         plugin_path = Path(args.load_plugin)
         if plugin_path.exists():
             plugin_name = swarmz.load_plugin(str(plugin_path))
-            print(f"✓ Loaded plugin: {plugin_name}")
+            print(f"âœ“ Loaded plugin: {plugin_name}")
         else:
-            print(f"✗ Plugin not found: {args.load_plugin}")
+            print(f"âœ— Plugin not found: {args.load_plugin}")
             return 1
     
     # List capabilities
@@ -79,7 +82,7 @@ Examples:
             print(f"\n{category.upper()}:")
             for name, meta in sorted(tasks):
                 desc = meta.get('description', 'No description')
-                print(f"  • {name:20s} - {desc}")
+                print(f"  â€¢ {name:20s} - {desc}")
         
         print(f"\nTotal capabilities: {len(capabilities)}")
         return 0
@@ -91,16 +94,16 @@ Examples:
             try:
                 params = json.loads(args.params)
             except json.JSONDecodeError:
-                print(f"✗ Invalid JSON in params: {args.params}")
+                print(f"âœ— Invalid JSON in params: {args.params}")
                 return 1
         
         try:
             result = swarmz.execute(args.task, **params)
-            print(f"✓ Task '{args.task}' executed successfully")
+            print(f"âœ“ Task '{args.task}' executed successfully")
             print(f"Result: {result}")
             return 0
         except Exception as e:
-            print(f"✗ Error executing task '{args.task}': {e}")
+            print(f"âœ— Error executing task '{args.task}': {e}")
             return 1
     
     # Show audit log
@@ -146,7 +149,7 @@ Examples:
                 if command == "list":
                     capabilities = swarmz.list_capabilities()
                     for name, meta in sorted(capabilities.items()):
-                        print(f"  • {name:20s} - {meta.get('description', '')}")
+                        print(f"  â€¢ {name:20s} - {meta.get('description', '')}")
                     continue
                 
                 if command == "audit":
@@ -158,9 +161,9 @@ Examples:
                     plugin_path = command[5:].strip()
                     try:
                         name = swarmz.load_plugin(plugin_path)
-                        print(f"✓ Loaded plugin: {name}")
+                        print(f"âœ“ Loaded plugin: {name}")
                     except Exception as e:
-                        print(f"✗ Error loading plugin: {e}")
+                        print(f"âœ— Error loading plugin: {e}")
                     continue
                 
                 if command.startswith("task "):
@@ -170,9 +173,9 @@ Examples:
                     
                     try:
                         result = swarmz.execute(task_name, **params)
-                        print(f"✓ Result: {result}")
+                        print(f"âœ“ Result: {result}")
                     except Exception as e:
-                        print(f"✗ Error: {e}")
+                        print(f"âœ— Error: {e}")
                     continue
                 
                 print("Unknown command. Type 'help' for available commands.")
@@ -183,7 +186,7 @@ Examples:
                 print("\nGoodbye!")
                 break
             except Exception as e:
-                print(f"✗ Error: {e}")
+                print(f"âœ— Error: {e}")
         
         return 0
     
@@ -195,3 +198,4 @@ Examples:
 
 if __name__ == "__main__":
     sys.exit(main())
+

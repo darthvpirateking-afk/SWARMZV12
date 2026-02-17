@@ -1,0 +1,14 @@
+{
+  "mission_id": "test_gate_1",
+  "category": "commands",
+  "action": {
+    "action_type": "shell_command",
+    "payload": {
+      "cmd": "ls -la"
+    },
+    "gated_at": "2026-02-17T04:00:33.933459Z"
+  },
+  "risk_level": "medium",
+  "prepared_at": "2026-02-17T04:00:33.934391Z",
+  "executed": false
+}

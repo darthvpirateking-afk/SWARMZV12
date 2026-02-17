@@ -1,5 +1,8 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 """
-layers/base.py – Abstract base class for all layer modules.
+layers/base.py â€“ Abstract base class for all layer modules.
 
 A layer is responsible for:
   1. Declaring the state variables it owns.
@@ -48,3 +51,4 @@ class BaseLayer(abc.ABC):
             "directionality": directionality,
             "source": f"layer:{self.name}",
         }
+

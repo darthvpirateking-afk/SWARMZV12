@@ -1,12 +1,15 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 """
-Drift Scanner — detect distribution shift and pause learning when drift is high.
+Drift Scanner â€” detect distribution shift and pause learning when drift is high.
 """
 
 import json
 import math
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 from addons.config_ext import get_config
 
@@ -95,3 +98,4 @@ def scan_all_metrics() -> List[Dict[str, Any]]:
                 e = json.loads(line)
                 names.add(e.get("metric", ""))
     return [compute_drift(n) for n in sorted(names) if n]
+

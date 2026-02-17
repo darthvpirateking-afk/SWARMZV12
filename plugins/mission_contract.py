@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 """
 Mission Contract Plugin for SWARMZ
 
@@ -6,7 +9,7 @@ Mission must be underspecified => SWARMZ must not run it.
 Enforces minimum required fields and external signal requirements.
 """
 
-from typing import Dict, Any, List, Tuple
+from typing import Dict, Any, List
 
 
 REQUIRED_TOP_LEVEL_FIELDS = [
@@ -250,3 +253,4 @@ def register(executor):
         "params": {},
         "category": "mission_contract"
     })
+

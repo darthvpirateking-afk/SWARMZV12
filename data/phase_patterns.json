@@ -5,9 +5,16 @@
     "recent": []
   },
   "abandoned": {
-    "count": 0,
-    "confidence": 0.05,
-    "recent": []
+    "count": 11,
+    "confidence": 1.0,
+    "recent": [
+      "stabilizing",
+      "stabilizing",
+      "stabilizing",
+      "stabilizing",
+      "stabilizing",
+      "stabilizing"
+    ]
   },
   "slowdowns": {
     "count": 0,
@@ -15,9 +22,13 @@
     "recent": []
   },
   "recoveries": {
-    "count": 2,
-    "confidence": 0.25,
+    "count": 65,
+    "confidence": 1.0,
     "recent": [
+      "stabilizing",
+      "stabilizing",
+      "stabilizing",
+      "stabilizing",
       "stabilizing",
       "stabilizing"
     ]

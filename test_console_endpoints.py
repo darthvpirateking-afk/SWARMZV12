@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 #!/usr/bin/env python3
 """Test script for SWARMZ console endpoints"""
 import requests
@@ -20,9 +23,9 @@ data = resp.json()
 print(json.dumps(data, indent=2))
 if data.get('ok'):
     mission_id_1 = data.get('mission_id')
-    print(f"✓ Mission created: {mission_id_1}")
+    print(f"âœ“ Mission created: {mission_id_1}")
 else:
-    print(f"✗ Mission creation failed: {data.get('error')}")
+    print(f"âœ— Mission creation failed: {data.get('error')}")
 
 # Test 2: Create another mission
 print("\n[2] Creating second mission...")
@@ -36,9 +39,9 @@ print(f"Status: {resp.status_code}")
 data = resp.json()
 if data.get('ok'):
     mission_id_2 = data.get('mission_id')
-    print(f"✓ Mission created: {mission_id_2}")
+    print(f"âœ“ Mission created: {mission_id_2}")
 else:
-    print(f"✗ Mission creation failed: {data.get('error')}")
+    print(f"âœ— Mission creation failed: {data.get('error')}")
 
 # Test 3: List missions
 print("\n[3] Listing missions...")
@@ -46,7 +49,7 @@ resp = requests.get('http://127.0.0.1:8012/v1/missions/list')
 print(f"Status: {resp.status_code}")
 data = resp.json()
 print(f"Total missions: {data.get('count')}")
-print(f"✓ Mission list count: {data.get('count')}")
+print(f"âœ“ Mission list count: {data.get('count')}")
 for m in data.get('missions', [])[:3]:
     print(f"  - {m.get('mission_id')}: {m.get('goal')} ({m.get('status')})")
 
@@ -55,10 +58,10 @@ print("\n[4] Getting UI state...")
 resp = requests.get('http://127.0.0.1:8012/v1/ui/state')
 print(f"Status: {resp.status_code}")
 data = resp.json()
-print(f"✓ Phase: {data.get('phase')}")
-print(f"✓ Total missions: {data.get('missions', {}).get('count_total')}")
-print(f"✓ Status counts: {data.get('missions', {}).get('count_by_status')}")
-print(f"✓ Last events: {len(data.get('last_events', []))} events")
+print(f"âœ“ Phase: {data.get('phase')}")
+print(f"âœ“ Total missions: {data.get('missions', {}).get('count_total')}")
+print(f"âœ“ Status counts: {data.get('missions', {}).get('count_by_status')}")
+print(f"âœ“ Last events: {len(data.get('last_events', []))} events")
 
 # Test 5: Check redirect
 print("\n[5] Checking / redirect to /console...")
@@ -67,9 +70,9 @@ print(f"Status: {resp.status_code}")
 location = resp.headers.get('Location')
 print(f"Location: {location}")
 if location == '/console':
-    print(f"✓ Redirect works correctly")
+    print(f"âœ“ Redirect works correctly")
 else:
-    print(f"✗ Redirect failed")
+    print(f"âœ— Redirect failed")
 
 # Test 6: Console page loads
 print("\n[6] Checking /console page...")
@@ -85,12 +88,13 @@ checks = {
     'Has statistics': 'Statistics' in resp.text or 'totalMissions' in resp.text,
 }
 for check, result in checks.items():
-    print(f"{'✓' if result else '✗'} {check}")
+    print(f"{'âœ“' if result else 'âœ—'} {check}")
 
 print("\n" + "=" * 60)
 print("Test Summary:")
-print(f"✓ Missions created and listed")
-print(f"✓ UI state endpoint working")
-print(f"✓ Redirect / → /console working")
-print(f"✓ Console UI page loads")
+print(f"âœ“ Missions created and listed")
+print(f"âœ“ UI state endpoint working")
+print(f"âœ“ Redirect / â†’ /console working")
+print(f"âœ“ Console UI page loads")
 print("=" * 60)
+

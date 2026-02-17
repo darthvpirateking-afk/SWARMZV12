@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 from pathlib import Path
 import zlib
 import struct
@@ -27,3 +30,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

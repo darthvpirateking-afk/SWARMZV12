@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 """
 SWARMZ Brain Mapping - Optimal model routing for cognitive stability.
 
@@ -6,10 +9,10 @@ identity. Auto mode is explicitly disabled to preserve personality continuity
 and learning weights.
 
 Architecture:
-    Commander Brain  (thinking, companion, reasoning)    → Claude Opus 4.6
-    Builder Brain    (coding, refactoring, writing files) → GPT-5.3-Codex
-    Utility Brain    (small tasks, classification, routing) → Claude Sonnet 4.5
-    Safety Brain     (diff inspection, bug spotting, verification) → GPT-5.1-Codex-Max
+    Commander Brain  (thinking, companion, reasoning)    â†’ Claude Opus 4.6
+    Builder Brain    (coding, refactoring, writing files) â†’ GPT-5.3-Codex
+    Utility Brain    (small tasks, classification, routing) â†’ Claude Sonnet 4.5
+    Safety Brain     (diff inspection, bug spotting, verification) â†’ GPT-5.1-Codex-Max
 """
 
 from enum import Enum
@@ -51,7 +54,7 @@ DEFAULT_BRAINS: Dict[str, Dict[str, str]] = {
     },
 }
 
-# Deterministic task-type → brain-role routing table
+# Deterministic task-type â†’ brain-role routing table
 DEFAULT_TASK_ROUTING: Dict[str, BrainRole] = {
     # Commander
     "thinking": BrainRole.COMMANDER,
@@ -82,7 +85,7 @@ DEFAULT_TASK_ROUTING: Dict[str, BrainRole] = {
 class BrainMapping:
     """Deterministic brain-to-model mapping.
 
-    Each task type routes to a specific model — no auto-routing.
+    Each task type routes to a specific model â€” no auto-routing.
     This preserves personality continuity and learning weights.
     """
 
@@ -148,10 +151,11 @@ class BrainMapping:
         return {role.value: dict(cfg) for role, cfg in self._brains.items()}
 
     def get_routing_table(self) -> Dict[str, str]:
-        """Return the full task-type → role routing table."""
+        """Return the full task-type â†’ role routing table."""
         return {task: role.value for task, role in self._task_routing.items()}
 
     @property
     def auto_mode(self) -> bool:
         """Auto mode is always disabled for cognitive stability."""
         return False
+

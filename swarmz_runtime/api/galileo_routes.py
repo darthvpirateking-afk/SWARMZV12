@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 from typing import Optional, List, Dict, Any
@@ -56,3 +59,4 @@ def galileo_run_get(run_id: str) -> Dict[str, Any]:
         if r.get("run_id") == run_id:
             return r
     raise HTTPException(status_code=404, detail="run_id not found")
+

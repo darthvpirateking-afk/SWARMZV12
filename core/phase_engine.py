@@ -1,5 +1,8 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 import json
-from datetime import datetime, timedelta
+from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -41,7 +44,7 @@ class PhaseEngine:
         work_intensity = self._recent_work_intensity()
         cluster_id = self._cluster_id(success_rate, div_score, ent_level)
         entry = {
-            "timestamp": datetime.utcnow().isoformat() + "Z",
+            "timestamp": datetime.now(timezone.utc).isoformat() + "Z",
             "state_of_life_hash": state_hash,
             "entropy_level": ent_level,
             "divergence_score": div_score,
@@ -158,7 +161,7 @@ class PhaseEngine:
                     "preventive_action": self._preventive_action(label),
                     "confidence": conf,
                 }
-                fname = self.preemptive_dir / f"plan_{int(datetime.utcnow().timestamp())}.json"
+                fname = self.preemptive_dir / f"plan_{int(datetime.now(timezone.utc).timestamp())}.json"
                 fname.write_text(json.dumps(plan, indent=2))
 
     def _preventive_action(self, label: str) -> str:
@@ -194,7 +197,7 @@ class PhaseEngine:
             self.patterns_file.write_text(json.dumps(data, indent=2))
 
     def _maybe_report(self, current: Dict[str, Any], patterns: Dict[str, Any]) -> None:
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         if self.report_file.exists():
             try:
                 mtime = datetime.fromtimestamp(self.report_file.stat().st_mtime)
@@ -245,3 +248,4 @@ class PhaseEngine:
                     except Exception:
                         continue
         return rows[-limit:]
+

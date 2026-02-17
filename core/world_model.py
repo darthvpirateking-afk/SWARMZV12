@@ -1,5 +1,7 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 import json
-import os
 import time
 from datetime import datetime
 from pathlib import Path
@@ -146,3 +148,4 @@ class WorldModel:
                 return json.load(f)
         except Exception:
             return self.recompute()
+

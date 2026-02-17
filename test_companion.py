@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 #!/usr/bin/env python3
 """
 Test Suite for SWARMZ Companion
@@ -7,8 +10,6 @@ Tests dual-mode cognition, execution loop, worker swarms, and all companion feat
 
 import unittest
 import sys
-import json
-import time
 from pathlib import Path
 
 # Add parent directory to path for imports
@@ -305,7 +306,7 @@ class TestOperatorMode(unittest.TestCase):
         self.assertIsInstance(state, CommitState)
     
     def test_execution_loop(self):
-        """Test execution loop: INTAKE → STRUCTURE → DECIDE → COMMIT → EXECUTE → VERIFY → LOG → EVOLVE."""
+        """Test execution loop: INTAKE â†’ STRUCTURE â†’ DECIDE â†’ COMMIT â†’ EXECUTE â†’ VERIFY â†’ LOG â†’ EVOLVE."""
         response, state = self.operator_mode.execute_task(
             "complete task",
             {"data": "test"}
@@ -527,3 +528,4 @@ def run_companion_tests():
 
 if __name__ == "__main__":
     sys.exit(run_companion_tests())
+

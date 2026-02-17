@@ -1,5 +1,8 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 """
-Pack Artifact Retrieval — list packs, download as ZIP, verify by mission_id.
+Pack Artifact Retrieval â€” list packs, download as ZIP, verify by mission_id.
 """
 
 import io
@@ -94,3 +97,4 @@ def verify_pack(mission_id: str) -> Dict[str, Any]:
         "missing": sorted(missing),
         "extra": sorted(extra),
     }
+

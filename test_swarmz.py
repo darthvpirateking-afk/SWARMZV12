@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 #!/usr/bin/env python3
 """
 Test Suite for SWARMZ System
@@ -7,7 +10,6 @@ Tests core functionality, operator sovereignty, and plugin system.
 
 import unittest
 import sys
-import json
 from pathlib import Path
 
 # Add parent directory to path for imports
@@ -326,3 +328,4 @@ def run_tests():
 
 if __name__ == "__main__":
     sys.exit(run_tests())
+

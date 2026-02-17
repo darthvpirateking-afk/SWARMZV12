@@ -1,5 +1,8 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 """
-Persistent Memory Boundaries — small JSON stores for the commander/verifier loop.
+Persistent Memory Boundaries â€” small JSON stores for the commander/verifier loop.
 
   skills.json, failures.json, preferences.json
 """
@@ -73,3 +76,4 @@ def delete(store: str, key: str) -> Dict[str, Any]:
 
 def dump_store(store: str) -> Dict[str, Any]:
     return _load_store(store)
+

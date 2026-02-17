@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>SWARMZ // MARKET LAB</title>
+  <link rel="stylesheet" href="/web/app.css">
+</head>
+<body>
+  <header>
+    <h1>SWARMZ Market Lab</h1>
+  </header>
+  <main>
+    <section>
+      <h2>Backtest Strategy</h2>
+      <form id="backtestForm">
+        <label for="csvPath">CSV Path:</label>
+        <input type="text" id="csvPath" name="csvPath" required>
+        <label for="strategy">Strategy (JSON):</label>
+        <textarea id="strategy" name="strategy" required>{}</textarea>
+        <button type="submit">Run Backtest</button>
+      </form>
+      <pre id="backtestResult"></pre>
+    </section>
+    <section>
+      <h2>Self-Check</h2>
+      <button id="btnSelfCheck">Run Self-Check</button>
+      <pre id="selfCheckResult"></pre>
+    </section>
+  </main>
+  <script>
+    document.getElementById('backtestForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const csvPath = document.getElementById('csvPath').value;
+      const strategy = document.getElementById('strategy').value;
+      const response = await fetch('/v1/market_lab/backtest', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ csv_path: csvPath, strategy: JSON.parse(strategy) })
+      });
+      const data = await response.json();
+      document.getElementById('backtestResult').textContent = JSON.stringify(data, null, 2);
+    });
+
+    document.getElementById('btnSelfCheck').addEventListener('click', async () => {
+      const response = await fetch('/v1/market_lab/self_check', { method: 'POST' });
+      const data = await response.json();
+      document.getElementById('selfCheckResult').textContent = JSON.stringify(data, null, 2);
+    });
+  </script>
+</body>
+</html>

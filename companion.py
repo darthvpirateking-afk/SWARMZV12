@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 #!/usr/bin/env python3
 """
 SWARMZ Companion - Personal AI Companion with Dual-Mode Cognition
@@ -8,10 +11,9 @@ execute real tasks by spawning controlled worker agents (Operator Mode).
 
 import json
 import time
-from typing import Any, Dict, List, Optional, Tuple, Callable
+from typing import Any, Dict, List, Optional, Tuple
 from enum import Enum
 from dataclasses import dataclass, field
-from datetime import datetime
 
 
 class SystemMode(Enum):
@@ -291,6 +293,7 @@ class IntelligenceLayer:
     
     def evolve_weights(self, performance_data: Dict[str, float]):
         """Evolve scoring weights based on performance."""
+        start_time = time.perf_counter()  # Start profiling
         # Simple weight adjustment based on performance
         for key, value in performance_data.items():
             if key in self.scoring_weights:
@@ -298,6 +301,8 @@ class IntelligenceLayer:
                 adjustment = (value - 0.5) * 0.1
                 self.scoring_weights[key] = max(0.1, min(2.0, 
                     self.scoring_weights[key] + adjustment))
+        end_time = time.perf_counter()  # End profiling
+        print(f"Weight evolution took {end_time - start_time:.6f} seconds.")
 
 
 class EvolutionMechanism:
@@ -380,7 +385,7 @@ class OperatorMode:
     def execute_task(self, intent: str, parameters: Dict[str, Any]) -> Tuple[str, CommitState]:
         """
         Execute task following the execution loop:
-        INTAKE → STRUCTURE → DECIDE → COMMIT → EXECUTE → VERIFY → LOG → EVOLVE
+        INTAKE â†’ STRUCTURE â†’ DECIDE â†’ COMMIT â†’ EXECUTE â†’ VERIFY â†’ LOG â†’ EVOLVE
         """
         start_time = time.time()
         task_id = f"task_{int(time.time() * 1000)}"
@@ -469,9 +474,9 @@ class ModeManager:
     def detect_mode(self, user_input: str) -> SystemMode:
         """
         Detect which mode to use based on user input.
-        Questions → Companion Mode
-        Commands → Operator Mode
-        Mixed intent → Operator Mode priority
+        Questions â†’ Companion Mode
+        Commands â†’ Operator Mode
+        Mixed intent â†’ Operator Mode priority
         """
         # Simple heuristic detection
         question_words = ["what", "why", "how", "when", "where", "who", "can you explain"]
@@ -628,3 +633,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

@@ -1,13 +1,16 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 """
-Ecosystem API – autonomous loop endpoints for SWARMZ.
+Ecosystem API â€“ autonomous loop endpoints for SWARMZ.
 
 Routes:
-    POST /v1/ecosystem/run            – single mission step
-    POST /v1/ecosystem/auto/start     – start autonomous loop
-    POST /v1/ecosystem/auto/stop      – stop autonomous loop
-    GET  /v1/ecosystem/verify         – verify ecosystem health
-    GET  /v1/ecosystem/packs/{mid}    – fetch mission pack by id
-    GET  /v1/ecosystem/status         – loop state, tick_count, last_tick_ts
+    POST /v1/ecosystem/run            â€“ single mission step
+    POST /v1/ecosystem/auto/start     â€“ start autonomous loop
+    POST /v1/ecosystem/auto/stop      â€“ stop autonomous loop
+    GET  /v1/ecosystem/verify         â€“ verify ecosystem health
+    GET  /v1/ecosystem/packs/{mid}    â€“ fetch mission pack by id
+    GET  /v1/ecosystem/status         â€“ loop state, tick_count, last_tick_ts
 """
 
 from fastapi import APIRouter, HTTPException
@@ -38,7 +41,7 @@ def set_engine_provider(fn: Callable[[], SwarmzEngine]) -> None:
     _loop_manager = None  # reset so next call re-creates with new engine
 
 
-# ── request / response models ─────────────────────────────────────────
+# â”€â”€ request / response models â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 class EcosystemRunRequest(BaseModel):
     operator_goal: str = "make money"
@@ -50,7 +53,7 @@ class AutoStartRequest(BaseModel):
     tick_interval: int = 30  # seconds between ticks
 
 
-# ── endpoints ──────────────────────────────────────────────────────────
+# â”€â”€ endpoints â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 @router.post("/run")
 def ecosystem_run(req: EcosystemRunRequest):
@@ -113,3 +116,4 @@ def ecosystem_status():
     """Show loop state, tick_count, last_tick_ts."""
     loop = _get_loop()
     return loop.get_state()
+

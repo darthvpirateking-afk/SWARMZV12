@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 """
 Storage module: atomic JSON/JSONL read/write operations for Galileo harness
 Ensures durability and prevents partial writes
@@ -5,7 +8,7 @@ Ensures durability and prevents partial writes
 
 import json
 from pathlib import Path
-from typing import List, Dict, Any, Tuple
+from typing import List, Dict, Tuple
 from datetime import datetime
 
 
@@ -194,3 +197,4 @@ def load_domain_pack(domain: str) -> Dict:
         pass  # Silently fail to save
     
     return default_pack
+

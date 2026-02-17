@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 from typing import List, Dict, Any
 from pathlib import Path
 import json
@@ -34,3 +37,4 @@ def read_experiments() -> List[Dict[str, Any]]:
 def read_runs() -> List[Dict[str, Any]]:
     ensure_storage()
     return _read_jsonl(GALILEO_DATA_DIR / "runs.jsonl")
+

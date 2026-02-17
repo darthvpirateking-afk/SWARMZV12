@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 #!/usr/bin/env python3
 # ONE_BUTTON_SWARMZ_OWNERSHIP_PACK.py
 #
@@ -55,7 +58,7 @@ def rel(p: Path) -> str:
         return str(p)
 
 def main() -> int:
-    print("SWARMZ — ONE BUTTON OWNERSHIP PACK (AU Pty Ltd) :: GENERATOR")
+    print("SWARMZ â€” ONE BUTTON OWNERSHIP PACK (AU Pty Ltd) :: GENERATOR")
     print(f"REPO ROOT: {ROOT}")
     print("MODE: additive only (no overwrites)\n")
 
@@ -92,7 +95,7 @@ def main() -> int:
             created.append(rel(path))
 
     # -------- docs/ownership --------
-    add(docs_dir / "README_OWNERSHIP_STACK.md", f"""# {project_name} — Ownership Stack v1 (AU)
+    add(docs_dir / "README_OWNERSHIP_STACK.md", f"""# {project_name} â€” Ownership Stack v1 (AU)
 
 Generated: {stamp}
 
@@ -120,13 +123,13 @@ This pack exists to make {project_name} a **sellable asset**:
 These templates are not legal advice. Use them as a starting pack for AU accountant/lawyer review.
 """)
 
-    add(docs_dir / "OUTCOME_METRICS.md", """# Outcome Metrics (Ownership → Net Worth Mechanism)
+    add(docs_dir / "OUTCOME_METRICS.md", """# Outcome Metrics (Ownership â†’ Net Worth Mechanism)
 
 ## Target (12 months)
 - Paying users: yes
 - MRR: $1,000+
 - Gross margin: 80%+
-- Founder ownership: 80–95% (unless deliberate dilution for high leverage)
+- Founder ownership: 80â€“95% (unless deliberate dilution for high leverage)
 - Clean IP chain: 100% assigned to the company
 - Minimal financial ledger: income/expenses/subscriptions tracked
 - Export/import + backups exist
@@ -150,7 +153,7 @@ Generated: {stamp}
 - No early share issues to advisors/contractors.
 
 ## Future (only when needed)
-- Create an Option Pool (5–15%) for true employees/contributors.
+- Create an Option Pool (5â€“15%) for true employees/contributors.
 - Options vest over time (typical: 4 years; 1-year cliff).
 - Grants happen after revenue traction.
 
@@ -360,7 +363,7 @@ Grant options to key contributors while preserving founder control.
 - Cliff: 12 months
 - Vesting schedule: monthly thereafter
 - Exercise price: FMV at grant (confirm with accountant)
-- Total pool: 5–15% (create only when needed)
+- Total pool: 5â€“15% (create only when needed)
 
 ## Governance
 - No grants without board approval + cap table update
@@ -375,7 +378,7 @@ Grant options to key contributors while preserving founder control.
 - Decide pool size + grant bands
 """)
 
-    add(legal_templates / "BOARD_MINUTES_SHARE_ISSUE.md", f"""# Board Minutes — Share Issue (Template)
+    add(legal_templates / "BOARD_MINUTES_SHARE_ISSUE.md", f"""# Board Minutes â€” Share Issue (Template)
 
 Company: {company_legal_name}
 ACN: {acn}
@@ -516,7 +519,7 @@ REQUIRED = [
 
 missing = [p for p in REQUIRED if not (ROOT / p).exists()]
 
-print("SWARMZ OWNERSHIP PACK — SELF CHECK")
+print("SWARMZ OWNERSHIP PACK â€” SELF CHECK")
 print("Repo:", ROOT)
 
 if missing:
@@ -553,3 +556,4 @@ sys.exit(0)
 
 if __name__ == "__main__":
     raise SystemExit(main())
+

@@ -1,12 +1,16 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 import hashlib
 import json
 import platform
 import secrets
 import subprocess
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, Any
+from zoneinfo import ZoneInfo
 
 
 ANCHOR_FILENAME = "operator_anchor.json"
@@ -61,7 +65,7 @@ def load_or_create_anchor(data_dir: str = "data") -> Dict[str, Any]:
     keys = _generate_keys()
     anchor = {
         "machine_fingerprint": compute_machine_fingerprint(),
-        "birth_timestamp": datetime.utcnow().isoformat() + "Z",
+        "birth_timestamp": datetime.now(timezone.utc).isoformat() + "Z",
         **keys,
     }
     with open(path, "w", encoding="utf-8") as f:
@@ -89,3 +93,4 @@ def sign_record(private_key: str, record_hash: str) -> str:
 def verify_signature(private_key: str, record_hash: str, signature: str) -> bool:
     expected = sign_record(private_key, record_hash)
     return secrets.compare_digest(expected, signature)
+

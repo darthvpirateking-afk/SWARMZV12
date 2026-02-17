@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 from fastapi import APIRouter, HTTPException, Request
 
 from swarmz_runtime.verify import runner, patchpacks, scheduler
@@ -42,3 +45,4 @@ def patchpack_apply(pack_id: str, request: Request):
 def patchpack_rollback(pack_id: str, request: Request):
     _require_operator(request)
     return patchpacks.rollback_patchpack(pack_id)
+

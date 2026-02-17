@@ -1,5 +1,8 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 """
-state_store.py – Append-only state store backed by data/state.jsonl.
+state_store.py â€“ Append-only state store backed by data/state.jsonl.
 
 Every state update is validated against schemas/state.schema.json and appended
 to the JSONL file.  The in-memory index provides O(1) latest-value lookups.
@@ -8,7 +11,7 @@ to the JSONL file.  The in-memory index provides O(1) latest-value lookups.
 import json
 import os
 import threading
-from datetime import datetime, timezone
+
 
 import jsonschema
 
@@ -73,3 +76,4 @@ class StateStore:
     def _append(self, record: dict):
         with open(self._path, "a") as fh:
             fh.write(json.dumps(record, default=str) + "\n")
+

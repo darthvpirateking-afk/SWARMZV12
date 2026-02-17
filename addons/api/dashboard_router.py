@@ -1,5 +1,8 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 """
-Minimal thumb-friendly dashboard — serves a small web UI
+Minimal thumb-friendly dashboard â€” serves a small web UI
 with missions list, status, costs, pending approvals.
 
 Also provides PWA manifest + service worker for offline caching.
@@ -51,21 +54,21 @@ ul{list-style:none;padding:0}li{padding:4px 0}
 </head>
 <body>
 <h1>&#x1F41D; SWARMZ Dashboard</h1>
-<div id="status">Loading…</div>
+<div id="status">Loadingâ€¦</div>
 
 <div class="row" id="metrics"></div>
 
 <h2>Missions</h2>
-<div id="missions"><em>Loading…</em></div>
+<div id="missions"><em>Loadingâ€¦</em></div>
 
 <h2>Pending Approvals</h2>
-<div id="patches"><em>Loading…</em></div>
+<div id="patches"><em>Loadingâ€¦</em></div>
 
 <h2>Budget</h2>
-<div id="budget"><em>Loading…</em></div>
+<div id="budget"><em>Loadingâ€¦</em></div>
 
 <h2>Quarantine</h2>
-<div id="quarantine"><em>Loading…</em></div>
+<div id="quarantine"><em>Loadingâ€¦</em></div>
 
 <h2>Quick Actions</h2>
 <div>
@@ -114,7 +117,7 @@ async function load(){
   // Budget
   const b = await j('/v1/addons/budget');
   const bd = document.getElementById('budget');
-  if(b){bd.innerHTML=`<div class="card"><strong>Spent:</strong> ${b.spent||0} / ${b.hard_cap||'∞'} | <strong>Remaining:</strong> ${(b.hard_cap||0)-(b.spent||0)-(b.reserved||0)}</div>`;}
+  if(b){bd.innerHTML=`<div class="card"><strong>Spent:</strong> ${b.spent||0} / ${b.hard_cap||'âˆž'} | <strong>Remaining:</strong> ${(b.hard_cap||0)-(b.spent||0)-(b.reserved||0)}</div>`;}
 
   // Quarantine
   const q = await j('/v1/addons/quarantine');
@@ -184,3 +187,4 @@ def pwa_manifest():
 def pwa_sw():
     from starlette.responses import Response
     return Response(content=_SW_JS, media_type="application/javascript")
+

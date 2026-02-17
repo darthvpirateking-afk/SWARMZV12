@@ -1,10 +1,13 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 """
-Guardrails API router — Bucket B observables.
+Guardrails API router â€” Bucket B observables.
 """
 
 from fastapi import APIRouter
 from pydantic import BaseModel
-from typing import Any, Dict, List, Optional
+from typing import Any, List
 
 router = APIRouter()
 
@@ -66,7 +69,7 @@ class ReturnsRequest(BaseModel):
     value: float
 
 
-# ── Counterfactual Baselines ──────────────────────────────────────────
+# â”€â”€ Counterfactual Baselines â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 @router.post("/baselines")
 def record_baseline(req: BaselineRequest):
@@ -79,7 +82,7 @@ def get_baselines():
     return {"baselines": get_baselines()}
 
 
-# ── Decision Pressure ────────────────────────────────────────────────
+# â”€â”€ Decision Pressure â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 @router.post("/pressure")
 def record_pressure(req: PressureRequest):
@@ -92,7 +95,7 @@ def get_pressure():
     return {"pressure_map": get_pressure_map()}
 
 
-# ── Interference Graph ───────────────────────────────────────────────
+# â”€â”€ Interference Graph â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 @router.post("/interference")
 def record_interference(req: InterferenceRequest):
@@ -105,7 +108,7 @@ def get_interference():
     return get_coupling_graph()
 
 
-# ── Template Decay ───────────────────────────────────────────────────
+# â”€â”€ Template Decay â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 @router.post("/decay")
 def record_decay(req: TemplateRunRequest):
@@ -118,7 +121,7 @@ def get_decay(template_id: str):
     return compute_half_life(template_id)
 
 
-# ── Irreversibility ──────────────────────────────────────────────────
+# â”€â”€ Irreversibility â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 @router.post("/irreversibility")
 def tag_irreversibility(req: IrreversibilityRequest):
@@ -131,7 +134,7 @@ def get_irreversibility():
     return {"tags": get_irreversibility_tags()}
 
 
-# ── Falsification ────────────────────────────────────────────────────
+# â”€â”€ Falsification â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 @router.post("/falsification")
 def submit_falsification(req: FalsificationRequest):
@@ -144,7 +147,7 @@ def get_falsification():
     return {"falsifications": get_falsifications()}
 
 
-# ── Negative Capability ──────────────────────────────────────────────
+# â”€â”€ Negative Capability â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 @router.post("/negative-zones")
 def record_negative(req: NegativeZoneRequest):
@@ -157,7 +160,7 @@ def get_negative():
     return {"zones": get_negative_zones()}
 
 
-# ── Silence-as-Signal ────────────────────────────────────────────────
+# â”€â”€ Silence-as-Signal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 @router.post("/silence")
 def record_silence(req: SilenceRequest):
@@ -170,7 +173,7 @@ def get_silence():
     return {"signals": get_silence_signals()}
 
 
-# ── Shadow Replay ────────────────────────────────────────────────────
+# â”€â”€ Shadow Replay â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 @router.post("/shadow-replay")
 def shadow_replay(req: ShadowReplayRequest):
@@ -183,7 +186,7 @@ def get_shadow():
     return {"replays": get_shadow_replays()}
 
 
-# ── Stability ────────────────────────────────────────────────────────
+# â”€â”€ Stability â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 @router.post("/stability")
 def stability_check(req: StabilityRequest):
@@ -196,7 +199,7 @@ def get_stability():
     return {"checks": get_stability_checks()}
 
 
-# ── Regret Tracking ──────────────────────────────────────────────────
+# â”€â”€ Regret Tracking â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 @router.post("/regret")
 def record_regret(req: RegretRequest):
@@ -209,7 +212,7 @@ def get_regret():
     return {"regret_log": get_regret_log()}
 
 
-# ── Saturation ───────────────────────────────────────────────────────
+# â”€â”€ Saturation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 @router.post("/saturation")
 def record_saturation(req: ReturnsRequest):
@@ -220,3 +223,4 @@ def record_saturation(req: ReturnsRequest):
 def get_saturation(metric: str):
     from addons.guardrails import detect_saturation
     return detect_saturation(metric)
+

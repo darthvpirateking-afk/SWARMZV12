@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 import json
 import time
 from pathlib import Path
@@ -50,3 +53,4 @@ def rollback_patchpack(pack_id: str) -> Dict[str, Any]:
         return {"ok": False, "error": "missing pack"}
     provenance.append_audit("patchpack_rollback", {"id": pack_id})
     return {"ok": True, "message": "rollback stub"}
+

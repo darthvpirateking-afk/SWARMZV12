@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 from typing import Dict, Any
 from swarmz_runtime.storage.schema import CrossLayerScores, TransactionValidation
 
@@ -92,3 +95,4 @@ def _evaluate_trust(mission: Dict[str, Any]) -> float:
 
 def _evaluate_prediction_confidence(mission: Dict[str, Any]) -> float:
     return 75
+

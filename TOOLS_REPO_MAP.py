@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 import os, json, hashlib, time
 
 ROOT = os.path.abspath(os.getcwd())
@@ -117,3 +120,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

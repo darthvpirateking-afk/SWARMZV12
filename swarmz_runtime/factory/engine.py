@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 import json
 import secrets
 import time
@@ -98,3 +101,4 @@ def mermaid_graph() -> str:
         lines.append(f"  {guild}[Guild {guild}] --> verify_{mid}")
         lines.append(f"  verify_{mid}[Verify {mid}] --> close_{mid}")
     return "\n".join(lines)
+

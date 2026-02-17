@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 """
 Strategy Registry + Kill Switches.
 
@@ -8,7 +11,7 @@ Auto-disable on breach; manual seal to re-enable.
 import json
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 from addons.config_ext import get_config
 
@@ -115,3 +118,4 @@ def check_kill_criteria(strategy_id: str, metrics: Dict[str, float]) -> Dict[str
 
 def list_strategies() -> Dict[str, Any]:
     return _load().get("strategies", {})
+

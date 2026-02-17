@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 #!/usr/bin/env python3
 """
 SWARMZ Web Server - PWA-enabled REST API
@@ -15,14 +18,51 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, Optional
 
-from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import HTMLResponse, JSONResponse, FileResponse, RedirectResponse
+from fastapi import Depends, FastAPI, HTTPException, Request
+from fastapi.responses import HTMLResponse, JSONResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
-from swarmz import SwarmzCore
 from jsonl_utils import read_jsonl, write_jsonl
+from core.activity_stream import record_event
+from addons.auth_gate import LANAuthMiddleware
+from addons.rate_limiter import RateLimitMiddleware
+from addons.security import (
+    IDSMiddleware,
+    RoleChecker,
+    append_security_event,
+    create_access_token,
+    get_current_user,
+    honeypot_endpoint,
+    security_status_snapshot,
+)
+
+try:
+    from swarmz import SwarmzCore
+    _swarmz_core = SwarmzCore()
+except Exception:
+    _swarmz_core = None
+
+
+def get_lan_ip() -> str:
+    """Best-effort LAN IP discovery (fallback to loopback)."""
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))
+        lan_ip = s.getsockname()[0]
+        s.close()
+        record_event({"event": "lan_ip_discovery", "ip": lan_ip, "timestamp": datetime.now().isoformat()})
+        return lan_ip
+    except Exception:
+        return "127.0.0.1"
+
+
+SERVER_PORT = int(os.environ.get("PORT", "8012"))
+LAN_IP = get_lan_ip()
+
+# Ensure data dir exists before anything writes to it
+Path("data").mkdir(parents=True, exist_ok=True)
 
 
 # API Models
@@ -44,6 +84,11 @@ class MissionCreateRequest(BaseModel):
     results: Dict[str, Any] = Field(default_factory=dict)
 
 
+class LoginRequest(BaseModel):
+    username: str
+    password: str
+
+
 # Initialize FastAPI app
 app = FastAPI(
     title="SWARMZ API",
@@ -53,10 +98,16 @@ app = FastAPI(
     openapi_url="/docs/openapi.json"
 )
 
-# Add CORS middleware
+# Core security middlewares (all conservative / opt-out via config):
+app.add_middleware(RateLimitMiddleware)
+app.add_middleware(LANAuthMiddleware)
+app.add_middleware(IDSMiddleware)
+
+# Add CORS middleware with explicit local/LAN origins
+allowed_origins = ["*"]  # LAN dev: allow all origins for pairing simplicity
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -161,16 +212,18 @@ async def run_mission(mission_id: str = None):
 
 # --- UI state endpoint ---
 def compute_phase(total_missions: int, success_count: int) -> str:
-    """Compute phase based on mission counts and success rate."""
-    success_rate = success_count / total_missions if total_missions > 0 else 0.0
-    if success_rate < 0.3 and total_missions > 0:
-        return "QUARANTINE"
+    """Compute phase based on mission counts and success rate.
+    QUARANTINE only when total >= 10 AND success_rate < 0.3.
+    Under 10 missions is always AWAKENING.
+    """
     if total_missions < 10:
         return "AWAKENING"
-    elif total_missions < 50:
+    success_rate = success_count / total_missions if total_missions > 0 else 0.0
+    if success_rate < 0.3:
+        return "QUARANTINE"
+    if total_missions < 50:
         return "FORGING"
-    else:
-        return "SOVEREIGN"
+    return "SOVEREIGN"
 
 
 @app.get("/v1/ui/state")
@@ -197,7 +250,9 @@ async def ui_state():
         "ok": True,
         "server": {
             "version": "1.0.0",
-            "now": now
+            "now": now,
+            "lan_url": f"http://{LAN_IP}:{SERVER_PORT}",
+            "local_url": f"http://127.0.0.1:{SERVER_PORT}"
         },
         "missions": {
             "count_total": len(missions),
@@ -217,297 +272,18 @@ async def traceback_last():
     }
 
 
-# --- Console UI Route ---
-@app.get("/console", response_class=HTMLResponse)
+# --- Console UI Route (now serves static HUD from web/) ---
+@app.get("/console")
 async def console_page():
-    """Serve the SWARMZ Console UI."""
-    return """<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚡ SWARMZ Console</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 1rem;
-            color: #333;
-        }
-        .container { max-width: 1200px; margin: 0 auto; }
-        header {
-            text-align: center;
-            color: white;
-            margin-bottom: 2rem;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-        header h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
-        .phase-label {
-            display: inline-block;
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            font-weight: bold;
-            margin-top: 1rem;
-        }
-        .phase-AWAKENING { background: rgba(255,0,0,0.2); border: 2px solid rgba(255,0,0,0.5); color: white; }
-        .phase-FORGING { background: rgba(255,255,0,0.1); border: 2px solid rgba(255,255,0,0.5); color: white; box-shadow: 0 0 10px rgba(255,255,0,0.5); }
-        .phase-SOVEREIGN { background: rgba(0,255,0,0.1); border: 2px solid rgba(0,255,0,0.5); color: white; box-shadow: 0 0 15px rgba(0,255,0,0.8); }
-        .phase-QUARANTINE { background: rgba(255,0,0,0.15); border: 2px solid rgba(255,0,0,0.8); color: white; box-shadow: 0 0 20px rgba(255,0,0,0.8); }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
-        .card {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 1.5rem;
-            border-radius: 1rem;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
-        }
-        .card h2 { color: #667eea; margin-bottom: 1rem; font-size: 1.3rem; }
-        input, select {
-            width: 100%;
-            padding: 0.75rem;
-            margin: 0.5rem 0;
-            border: 2px solid #e0e0e0;
-            border-radius: 0.5rem;
-            font-size: 1rem;
-        }
-        input:focus, select:focus { outline: none; border-color: #667eea; }
-        button {
-            padding: 0.75rem 1.5rem;
-            margin: 0.5rem 0.5rem 0.5rem 0;
-            border: none;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s ease;
-        }
-        .btn-primary { background: #667eea; color: white; }
-        .btn-primary:hover { background: #5568d3; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4); }
-        .btn-secondary { background: #764ba2; color: white; }
-        .btn-secondary:hover { background: #66408b; }
-        .stat { text-align: center; margin: 1rem 0; }
-        .stat-value { font-size: 2rem; font-weight: bold; color: #667eea; }
-        .stat-label { color: #666; font-size: 0.9rem; }
-        .mission-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
-        }
-        .mission-table th {
-            background: #f5f5f5;
-            padding: 1rem;
-            text-align: left;
-            color: #333;
-            font-weight: bold;
-            border-bottom: 2px solid #ddd;
-        }
-        .mission-table td {
-            padding: 0.75rem 1rem;
-            border-bottom: 1px solid #eee;
-        }
-        .badge {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            border-radius: 0.25rem;
-            font-size: 0.85rem;
-            font-weight: bold;
-            color: white;
-        }
-        .badge-PENDING { background: #ffc107; }
-        .badge-RUNNING { background: #2196f3; }
-        .badge-SUCCESS { background: #4caf50; }
-        .badge-FAILURE { background: #f44336; }
-        .log-panel {
-            background: #f5f5f5;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            font-family: monospace;
-            font-size: 0.85rem;
-            max-height: 200px;
-            overflow-y: auto;
-            color: #333;
-        }
-        @media (max-width: 768px) {
-            .grid { grid-template-columns: 1fr; }
-            header h1 { font-size: 1.8rem; }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <header>
-            <h1>⚡ SWARMZ Console</h1>
-            <div class="phase-label" id="phaseLabel">AWAKENING</div>
-        </header>
-
-        <div class="grid">
-            <!-- Form Card -->
-            <div class="card">
-                <h2>🎯 Create Mission</h2>
-                <input type="text" id="goalInput" placeholder="Mission goal..." />
-                <select id="categorySelect">
-                    <option value="">Select category...</option>
-                    <option value="test">Test</option>
-                    <option value="analysis">Analysis</option>
-                    <option value="generation">Generation</option>
-                    <option value="execution">Execution</option>
-                </select>
-                <button class="btn-primary" onclick="createMission()">CREATE</button>
-                <button class="btn-secondary" onclick="runMission()">RUN</button>
-                <button class="btn-secondary" onclick="refreshState()">REFRESH</button>
-            </div>
-
-            <!-- Current Mission Card -->
-            <div class="card">
-                <h2>📋 Current Mission</h2>
-                <div id="currentMission">None selected</div>
-            </div>
-
-            <!-- Statistics Card -->
-            <div class="card">
-                <h2>📊 Statistics</h2>
-                <div class="stat">
-                    <div class="stat-label">Total Missions</div>
-                    <div class="stat-value" id="totalMissions">0</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-label">Pending</div>
-                    <div class="stat-value" id="pendingCount">0</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-label">Successful</div>
-                    <div class="stat-value" id="successCount">0</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Missions Table Card -->
-        <div class="card" style="margin-bottom: 2rem;">
-            <h2>📝 Missions</h2>
-            <table class="mission-table">
-                <thead>
-                    <tr>
-                        <th>ID (First 8)</th>
-                        <th>Goal</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody id="missionsTableBody">
-                    <tr><td colspan="3" style="text-align: center; color: #999;">No missions yet</td></tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- System Log Card -->
-        <div class="card">
-            <h2>📜 System Log</h2>
-            <div class="log-panel" id="systemLog">Waiting for events...</div>
-        </div>
-    </div>
-
-    <script>
-        const API_BASE = location.origin || 'http://127.0.0.1:8012';
-        
-        function createMission() {
-            const goal = document.getElementById('goalInput').value;
-            const category = document.getElementById('categorySelect').value;
-            if (!goal || !category) return alert('Please fill in all fields');
-            
-            fetch(API_BASE + '/v1/missions/create', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ goal, category, constraints: {}, results: {} })
-            })
-            .then(r => r.json())
-            .then(d => {
-                if (d.ok) {
-                    localStorage.setItem('currentMissionId', d.mission_id);
-                    document.getElementById('goalInput').value = '';
-                    document.getElementById('categorySelect').value = '';
-                    refreshState();
-                } else alert('Error: ' + d.error);
-            });
-        }
-        
-        function runMission() {
-            const id = localStorage.getItem('currentMissionId');
-            if (!id) return alert('No mission selected');
-            
-            fetch(API_BASE + '/v1/missions/run?mission_id=' + id, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' }
-            })
-            .then(r => r.json())
-            .then(d => {
-                if (d.ok) refreshState();
-                else alert('Error: ' + d.error);
-            });
-        }
-        
-        function refreshState() {
-            Promise.all([
-                fetch(API_BASE + '/v1/ui/state').then(r => r.json()),
-                fetch(API_BASE + '/v1/missions/list').then(r => r.json())
-            ]).then(([uiData, listData]) => updateUI(uiData, listData));
-        }
-        
-        function updateUI(uiData, listData) {
-            // Update phase label
-            document.getElementById('phaseLabel').className = 'phase-label phase-' + uiData.phase;
-            document.getElementById('phaseLabel').textContent = uiData.phase;
-            
-            // Update stats
-            document.getElementById('totalMissions').textContent = uiData.missions.count_total;
-            document.getElementById('pendingCount').textContent = uiData.missions.count_by_status.PENDING || 0;
-            document.getElementById('successCount').textContent = uiData.missions.count_by_status.SUCCESS || 0;
-            
-            // Update missions table
-            const tbody = document.getElementById('missionsTableBody');
-            if (listData.missions.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: #999;">No missions yet</td></tr>';
-            } else {
-                tbody.innerHTML = listData.missions.map(m => `
-                    <tr>
-                        <td>${(m.mission_id || '').substring(0, 8)}</td>
-                        <td>${(m.goal || '').substring(0, 20)}</td>
-                        <td><span class="badge badge-${m.status}">${m.status}</span></td>
-                    </tr>
-                `).join('');
-            }
-            
-            // Update current mission
-            const curId = localStorage.getItem('currentMissionId');
-            const curMission = listData.missions.find(m => m.mission_id === curId);
-            if (curMission) {
-                document.getElementById('currentMission').innerHTML = `
-                    <strong>${curMission.mission_id}</strong><br>
-                    Goal: ${curMission.goal}<br>
-                    Status: <span class="badge badge-${curMission.status}">${curMission.status}</span><br>
-                    Created: ${curMission.created_at || 'N/A'}
-                `;
-            }
-            
-            // Update system log
-            const logHtml = uiData.last_events.map(e => 
-                `${e.timestamp || ''} | ${e.event || 'unknown'}`
-            ).join('<br>');
-            document.getElementById('systemLog').innerHTML = logHtml || 'No events yet';
-        }
-        
-        // Initial load and auto-refresh
-        refreshState();
-        setInterval(refreshState, 2000);
-    </script>
-</body>
-</html>"""
+    """Serve the SWARMZ Console HUD UI."""
+    return FileResponse("web/index.html", media_type="text/html")
 
 
-# --- Home redirect ---
+# --- Home route (serve HUD directly - no redirect loop) ---
 @app.get("/")
-async def home_redirect():
-    """Redirect to console."""
-    return RedirectResponse(url="/console", status_code=302)
+async def home_page():
+    """Serve the SWARMZ Console HUD at root."""
+    return FileResponse("web/index.html", media_type="text/html")
 
 
 # --- Manifest, Icons, and Other PWA Routes ---
@@ -537,6 +313,29 @@ async def manifest():
             }
         ],
         "categories": ["productivity", "utilities", "developer tools"],
+        "screenshots": []
+    }
+    return JSONResponse(content=manifest_data)
+
+
+@app.get("/pwa/manifest.json")
+async def pwa_manifest():
+    """Serve PWA manifest for phone mode."""
+    manifest_data = {
+        "name": "SWARMZ Console",
+        "short_name": "SWARMZ",
+        "description": "Operator-Sovereign control surface",
+        "start_url": "/console",
+        "scope": "/",
+        "display": "standalone",
+        "background_color": "#667eea",
+        "theme_color": "#6366f1",
+        "orientation": "portrait-primary",
+        "icons": [
+            {"src": "/icon.svg", "type": "image/svg+xml", "sizes": "any", "purpose": "any maskable"},
+            {"src": "/apple-touch-icon.svg", "type": "image/svg+xml", "sizes": "180x180"}
+        ],
+        "categories": ["productivity", "utilities"],
         "screenshots": []
     }
     return JSONResponse(content=manifest_data)
@@ -585,28 +384,13 @@ self.addEventListener('activate', (event) => {
     );
 });
 
-// Fetch event - network-first for API, cache-first for assets
+// Fetch event - never cache APIs; cache-first for static shell only
 self.addEventListener('fetch', (event) => {
     const { request } = event;
     const url = new URL(request.url);
 
-    // Network-first strategy for API endpoints and docs
-    if (url.pathname.startsWith('/v1/') || url.pathname.startsWith('/docs/')) {
-        event.respondWith(
-            fetch(request)
-                .then(response => {
-                    // Clone the response for caching
-                    const responseClone = response.clone();
-                    caches.open(CACHE_NAME).then(cache => {
-                        cache.put(request, responseClone);
-                    });
-                    return response;
-                })
-                .catch(() => {
-                    // Fall back to cache if network fails
-                    return caches.match(request);
-                })
-        );
+    if (url.pathname.startsWith('/v1/') || url.pathname.startsWith('/health')) {
+        event.respondWith(fetch(request));
         return;
     }
 
@@ -634,6 +418,67 @@ self.addEventListener('fetch', (event) => {
     return HTMLResponse(content=sw_js, media_type="application/javascript")
 
 
+@app.get("/pwa/sw.js")
+async def pwa_service_worker():
+    """Phone-mode service worker for offline shell cache."""
+    sw_js = """
+const CACHE_NAME = 'swarmz-shell-v1';
+const SHELL = [
+    '/',
+    '/console',
+    '/pwa/manifest.json',
+    '/icon.svg',
+    '/apple-touch-icon.svg'
+];
+
+self.addEventListener('install', event => {
+    event.waitUntil(
+        caches.open(CACHE_NAME).then(cache => cache.addAll(SHELL)).then(() => self.skipWaiting())
+    );
+});
+
+self.addEventListener('activate', event => {
+    event.waitUntil(
+        caches.keys().then(keys => Promise.all(keys.map(k => k !== CACHE_NAME ? caches.delete(k) : null))).then(() => self.clients.claim())
+    );
+});
+
+self.addEventListener('fetch', event => {
+    const req = event.request;
+    const url = new URL(req.url);
+
+    // Keep API network-only (no cache)
+    if (url.pathname.startsWith('/v1/') || url.pathname.startsWith('/health')) {
+        event.respondWith(fetch(req));
+        return;
+    }
+
+    // Navigation requests: offline fallback to /console
+    if (req.mode === 'navigate') {
+        event.respondWith(
+            fetch(req).catch(() => caches.match('/console'))
+        );
+        return;
+    }
+
+    // Cache-first for shell assets
+    event.respondWith(
+        caches.match(req).then(cached => {
+            if (cached) return cached;
+            return fetch(req).then(res => {
+                if (req.method === 'GET') {
+                    const copy = res.clone();
+                    caches.open(CACHE_NAME).then(c => c.put(req, copy));
+                }
+                return res;
+            });
+        })
+    );
+});
+"""
+    return HTMLResponse(content=sw_js, media_type="application/javascript")
+
+
 # SVG Icons
 @app.get("/icon.svg")
 async def icon_svg():
@@ -647,7 +492,7 @@ async def icon_svg():
   </defs>
   <rect width="200" height="200" rx="40" fill="url(#grad)"/>
   <text x="100" y="130" font-family="Arial, sans-serif" font-size="100" font-weight="bold" 
-        text-anchor="middle" fill="#ffffff">⚡</text>
+        text-anchor="middle" fill="#ffffff">âš¡</text>
 </svg>"""
     return HTMLResponse(content=svg, media_type="image/svg+xml")
 
@@ -664,7 +509,7 @@ async def apple_touch_icon():
   </defs>
   <rect width="180" height="180" fill="url(#grad)"/>
   <text x="90" y="120" font-family="Arial, sans-serif" font-size="90" font-weight="bold" 
-        text-anchor="middle" fill="#ffffff">⚡</text>
+        text-anchor="middle" fill="#ffffff">âš¡</text>
 </svg>"""
     return HTMLResponse(content=svg, media_type="image/svg+xml")
 
@@ -673,23 +518,62 @@ async def apple_touch_icon():
 @app.get("/v1/health")
 async def health_check():
     """Health check endpoint."""
-    return {
-        "status": "healthy",
-        "service": "SWARMZ API",
-        "version": "1.0.0"
-    }
+    return {"status": "healthy", "service": "SWARMZ API"}
+
+
+@app.post("/v1/auth/login")
+async def auth_login(payload: LoginRequest, request: Request):
+    """Issue a JWT for operator usage when correctly authenticated.
+
+    Maps the OPERATOR_KEY environment variable to a single "operator" user
+    with the "admin" role. If no JWT secret is configured, a clear error is
+    returned so operators know to set SWARMZ_JWT_SECRET / JWT_SECRET.
+    """
+
+    expected_key = os.environ.get("OPERATOR_KEY") or ""
+    if payload.username != "operator" or not expected_key or payload.password != expected_key:
+        append_security_event(
+            "login_failed",
+            {
+                "ip": request.client.host if request.client else "unknown",
+                "username": payload.username,
+            },
+        )
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+
+    try:
+        token = create_access_token(subject="operator", roles=["admin"])
+    except RuntimeError as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+    append_security_event(
+        "login_success",
+        {
+            "ip": request.client.host if request.client else "unknown",
+            "username": payload.username,
+            "roles": ["admin"],
+        },
+    )
+    return {"access_token": token, "token_type": "bearer"}
+
+
+@app.get("/v1/auth/me")
+async def auth_me(user=Depends(get_current_user)):
+    """Return current user information if a valid JWT is provided."""
+
+    if user is None:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    return {"sub": user.sub, "roles": user.roles}
 
 
 @app.get("/v1/tasks")
 async def list_tasks():
     """List all available tasks."""
+    if _swarmz_core is None:
+        return {"ok": False, "error": "core not available"}
     try:
-        capabilities = swarmz.list_capabilities()
-        return {
-            "success": True,
-            "tasks": capabilities,
-            "count": len(capabilities)
-        }
+        capabilities = _swarmz_core.list_capabilities()
+        return {"success": True, "tasks": capabilities, "count": len(capabilities)}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -697,54 +581,61 @@ async def list_tasks():
 @app.post("/v1/execute", response_model=TaskExecuteResponse)
 async def execute_task(request: TaskExecuteRequest):
     """Execute a task with provided parameters."""
+    if _swarmz_core is None:
+        return TaskExecuteResponse(success=False, error="core not available")
     try:
-        result = swarmz.execute(request.task, **request.params)
-        return TaskExecuteResponse(
-            success=True,
-            result=result
-        )
+        result = _swarmz_core.execute(request.task, **request.params)
+        return TaskExecuteResponse(success=True, result=result)
     except ValueError as e:
-        return TaskExecuteResponse(
-            success=False,
-            error=f"Task not found: {str(e)}"
-        )
+        return TaskExecuteResponse(success=False, error=f"Task not found: {str(e)}")
     except Exception as e:
-        return TaskExecuteResponse(
-            success=False,
-            error=str(e)
-        )
+        return TaskExecuteResponse(success=False, error=str(e))
 
 
 @app.get("/v1/audit")
 async def get_audit_log():
     """Get the audit log of all operations."""
+    if _swarmz_core is None:
+        return {"ok": False, "error": "core not available"}
     try:
-        audit = swarmz.get_audit_log()
-        return {
-            "success": True,
-            "audit_log": audit,
-            "count": len(audit)
-        }
+        audit = _swarmz_core.get_audit_log()
+        return {"success": True, "audit_log": audit, "count": len(audit)}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/v1/security/status")
+async def security_status(limit_events: int = 50):
+    """Return a snapshot of security configuration and recent incidents.
+
+    Exposes only high-level configuration flags and the tail of the
+    security_incidents.jsonl log for operator inspection.
+    """
+
+    snapshot = security_status_snapshot(limit_events=limit_events)
+    return {"ok": True, **snapshot}
 
 
 @app.get("/v1/system/info")
 async def system_info():
     """Get system information."""
+    if _swarmz_core is None:
+        return {"ok": False, "error": "core not available"}
     try:
-        info = swarmz.execute("system_info")
-        return {
-            "success": True,
-            "info": info
-        }
+        info = _swarmz_core.execute("system_info")
+        return {"success": True, "info": info}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 
 # --- Galileo Harness Routes ---
 @app.post("/v1/galileo/run")
-async def galileo_run(domain: str = "generic_local", seed: int = 12345, n_hypotheses: int = 5):
+async def galileo_run(
+    domain: str = "generic_local",
+    seed: int = 12345,
+    n_hypotheses: int = 5,
+    user=Depends(RoleChecker(["admin"])),
+):
     """
     Execute Galileo harness pipeline (deterministic hypothesis generation + testing).
     
@@ -815,6 +706,19 @@ async def galileo_hypotheses(domain: str = None, status: str = None):
             "ok": False,
             "error": str(e)
         }
+
+
+# Honeypot routes (log-only; always behave as if missing)
+
+
+@app.get("/admin")
+async def admin_honeypot(request: Request):
+    return await honeypot_endpoint(request, label="root_admin")
+
+
+@app.get("/v1/admin/secret")
+async def admin_secret_honeypot(request: Request):
+    return await honeypot_endpoint(request, label="api_admin_secret")
 
 
 @app.get("/v1/galileo/experiments")
@@ -1045,18 +949,63 @@ async def galileo_selfcheck():
         }
 
 
-# --- Helper Functions ---
-def get_lan_ip():
-    """Get the LAN IP address of this machine."""
+# --- Companion Message Endpoint ---
+@app.post("/v1/companion/message")
+async def companion_message(request: Request):
+    """
+    Handle companion messages sent from the frontend.
+
+    Routes through core.companion.chat (AI + rule-engine fallback).
+    Falls back to simple keyword responses if core.companion is unavailable.
+    """
     try:
-        # Create a socket to determine the local IP
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        s.connect(("8.8.8.8", 80))
-        lan_ip = s.getsockname()[0]
-        s.close()
-        return lan_ip
-    except Exception:
-        return "127.0.0.1"
+        data = await request.json()
+        user_message = data.get("text", "").strip()
+        if not user_message:
+            return JSONResponse({"ok": False, "error": "Empty message."}, status_code=400)
+
+        # Route through the full AI companion
+        try:
+            from core.companion import chat as companion_chat
+            result = companion_chat(user_message)
+            resp = {
+                "ok": True,
+                "reply": result.get("reply", "(empty)"),
+                "source": result.get("source", "unknown"),
+            }
+            if result.get("provider"):
+                resp["provider"] = result["provider"]
+            if result.get("model"):
+                resp["model"] = result["model"]
+            if result.get("latencyMs"):
+                resp["latencyMs"] = result["latencyMs"]
+            return JSONResponse(resp)
+        except Exception as companion_err:
+            # Fallback: keyword-based rule engine
+            lower = user_message.lower()
+            if "status" in lower:
+                reply = "System operational. Use the BUILD tab to dispatch missions."
+            elif "help" in lower:
+                reply = "COMMANDS: status | help | mode | missions | memory"
+            elif "mode" in lower:
+                reply = "Use the mode tabs in the HUD to switch COMPANION / BUILD / HOLOGRAM."
+            elif "mission" in lower:
+                reply = "Use BUILD mode to create and dispatch missions."
+            else:
+                reply = "ACKNOWLEDGED: " + user_message[:120]
+            return JSONResponse({
+                "ok": True,
+                "reply": reply,
+                "source": "inline_fallback",
+                "warning": f"core.companion unavailable: {str(companion_err)[:100]}",
+            })
+    except Exception as e:
+        return JSONResponse({"ok": False, "error": str(e)}, status_code=500)
+
+
+# --- Static file mount for HUD assets (CSS, JS) ---
+# MUST come after all explicit routes so /web/* doesn't shadow API paths.
+app.mount("/web", StaticFiles(directory="web"), name="web-static")
 
 
 # --- Main Entry Point ---
@@ -1066,12 +1015,12 @@ def main():
     import sys
     
     # Ensure UTF-8 encoding for stdout
-    if sys.stdout.encoding.lower() != 'utf-8':
+    if sys.stdout.encoding and sys.stdout.encoding.lower() != 'utf-8':
         sys.stdout.reconfigure(encoding='utf-8')
     
     # Get host and port
     host = "0.0.0.0"
-    port = int(os.environ.get("PORT", "8000"))
+    port = int(os.environ.get("PORT", SERVER_PORT))
     
     # Get LAN IP
     lan_ip = get_lan_ip()
@@ -1080,14 +1029,14 @@ def main():
     print("=" * 70)
     print("[*] SWARMZ Web Server Starting...")
     print("=" * 70)
-    print(f"\n[+] Server URLs:")
+    print("\n[+] Server URLs:")
     print(f"   Local:    http://localhost:{port}")
     print(f"   LAN:      http://{lan_ip}:{port}")
-    print(f"\n[+] API Documentation:")
+    print("\n[+] API Documentation:")
     print(f"   OpenAPI:  http://localhost:{port}/docs")
     print(f"   OpenAPI:  http://{lan_ip}:{port}/docs")
-    print(f"\n[+] Console UI:  /console")
-    print(f"[+] Access SWARMZ from any device on your network using the LAN URL")
+    print("\n[+] Console UI:  /console")
+    print("[+] Access SWARMZ from any device on your network using the LAN URL")
     print("=" * 70)
     print()
     
@@ -1102,3 +1051,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

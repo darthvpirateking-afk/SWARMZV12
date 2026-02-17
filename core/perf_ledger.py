@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 import json
 from datetime import datetime
 from pathlib import Path
@@ -37,3 +40,4 @@ class PerfLedger:
         except Exception:
             return []
         return entries[-max(1, limit):]
+

@@ -1,5 +1,8 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 """
-decision_logger.py – Append-only decision log backed by data/decision_log.jsonl.
+decision_logger.py â€“ Append-only decision log backed by data/decision_log.jsonl.
 
 Records every scoring decision (including NO_ACTION) with a timestamp.
 """
@@ -39,3 +42,4 @@ class DecisionLogger:
                 if line:
                     entries.append(json.loads(line))
         return entries
+

@@ -1,5 +1,8 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 from typing import Dict, Any, List
-from datetime import datetime, timedelta
+from datetime import datetime
 
 
 class MaintenanceScheduler:
@@ -29,3 +32,4 @@ class MaintenanceScheduler:
     
     def get_pending_tasks(self) -> List[Dict[str, Any]]:
         return self.maintenance_tasks
+

@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 """
 Encrypted-at-rest storage for JSONL/event logs.
 
@@ -10,7 +13,6 @@ replace with the ``cryptography`` library's Fernet or AES-GCM.
 This module is suitable for local-first / low-threat environments only.
 """
 
-import base64
 import hashlib
 import json
 import os
@@ -35,7 +37,7 @@ def _hmac_sha256(key: bytes, data: bytes) -> bytes:
 
 
 def encrypt_blob(plaintext: bytes, passphrase: str) -> bytes:
-    """Encrypt bytes with passphrase.  Returns nonce‖ciphertext‖mac."""
+    """Encrypt bytes with passphrase.  Returns nonceâ€–ciphertextâ€–mac."""
     key = _derive_key(passphrase)
     nonce = os.urandom(16)
     ct = _xor_bytes(plaintext, hashlib.sha256(key + nonce).digest())
@@ -53,7 +55,7 @@ def decrypt_blob(blob: bytes, passphrase: str) -> bytes:
     ct = blob[16:-32]
     expected = _hmac_sha256(key, nonce + ct)
     if not _constant_time_eq(mac, expected):
-        raise ValueError("Authentication failed — wrong key or tampered data")
+        raise ValueError("Authentication failed â€” wrong key or tampered data")
     return _xor_bytes(ct, hashlib.sha256(key + nonce).digest())
 
 
@@ -72,7 +74,7 @@ def save_encrypted_jsonl(path: Path, records: List[Dict[str, Any]], passphrase: 
 
 
 def load_encrypted_jsonl(path: Path, passphrase: str) -> List[Dict[str, Any]]:
-    """Read encrypted JSONL blob → list of dicts."""
+    """Read encrypted JSONL blob â†’ list of dicts."""
     blob = path.read_bytes()
     text = decrypt_blob(blob, passphrase).decode()
     return [json.loads(line) for line in text.splitlines() if line.strip()]
@@ -89,3 +91,4 @@ def get_encryption_key() -> Optional[str]:
     from addons.config_ext import get_config
     cfg = get_config()
     return cfg.get("encryption_key") or os.environ.get("SWARMZ_ENCRYPTION_KEY") or None
+

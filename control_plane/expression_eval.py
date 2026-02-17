@@ -1,5 +1,8 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 """
-expression_eval.py – Safe expression evaluator for the control plane.
+expression_eval.py â€“ Safe expression evaluator for the control plane.
 
 Evaluates simple comparison expressions against state variables without
 using ``eval()`` or ``exec()``.
@@ -23,3 +26,4 @@ def evaluate(op_str: str, actual, threshold) -> bool:
     if fn is None:
         raise ValueError(f"Unsupported operator: {op_str}")
     return fn(actual, threshold)
+

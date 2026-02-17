@@ -1,5 +1,7 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 import json
-import time
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, Any
@@ -89,3 +91,4 @@ class EntropyMonitor:
             "exploration_bias_delta": 0.02,
             "priority_finish": False,
         }
+

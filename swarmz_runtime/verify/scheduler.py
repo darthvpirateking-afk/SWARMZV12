@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 import json
 import time
 from pathlib import Path
@@ -76,3 +79,4 @@ def resume():
     st["paused"] = False
     _save_state(st)
     provenance.append_audit("scheduler_resumed", {})
+

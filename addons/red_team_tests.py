@@ -1,6 +1,9 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 #!/usr/bin/env python3
 """
-Red-Team Test Pack — deterministic adversarial cases.
+Red-Team Test Pack â€” deterministic adversarial cases.
 
 Tests: fake ROI spikes, duplicated runs, invalid approvals,
 conflicting A/B, budget overflow, quarantine enforcement,
@@ -9,7 +12,6 @@ tampered encryption, rate-limit bypass attempts, etc.
 "Self-test must pass before learning updates apply."
 """
 
-import json
 import sys
 import unittest
 from pathlib import Path
@@ -82,7 +84,7 @@ class TestInvalidApprovals(unittest.TestCase):
 
 
 class TestConflictingAB(unittest.TestCase):
-    """Interference graph catches A↔B conflicts."""
+    """Interference graph catches Aâ†”B conflicts."""
 
     def test_coupling_recorded(self):
         from addons.guardrails import record_interference, get_coupling_graph
@@ -191,3 +193,4 @@ def run_red_team():
 
 if __name__ == "__main__":
     sys.exit(run_red_team())
+

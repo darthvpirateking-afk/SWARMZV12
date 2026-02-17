@@ -1,3 +1,6 @@
+﻿# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
 """
 Per-IP / per-endpoint token-bucket rate limiter (LAN-safe).
 
@@ -6,7 +9,7 @@ Prevents accidental tight loops without blocking normal operator usage.
 
 import time
 from collections import defaultdict
-from typing import Dict, Tuple
+from typing import Dict
 
 from fastapi import Request, HTTPException
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
@@ -51,5 +54,6 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         key = f"{client}:{request.url.path}"
         bucket = self._buckets[key]
         if not bucket.consume():
-            raise HTTPException(status_code=429, detail="Rate limit exceeded — slow down")
+            raise HTTPException(status_code=429, detail="Rate limit exceeded â€” slow down")
         return await call_next(request)
+
