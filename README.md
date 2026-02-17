@@ -32,16 +32,62 @@
 ### Web Server (Recommended)
 
 ```bash
-# Windows: Double-click RUN.cmd or RUN.ps1
+# Windows: Double-click SWARMZ_UP.ps1 or SWARMZ_UP.cmd
 # Or manually:
 pip install -r requirements.txt
-python3 swarmz_server.py
+python run_server.py
 
 # Access at:
-# Local:  http://localhost:8000
-# LAN:    http://192.168.x.x:8000 (shown on startup)
-# API Docs: http://localhost:8000/docs
+# Local:  http://localhost:8012
+# LAN:    http://192.168.x.x:8012 (shown on startup)
+# API Docs: http://localhost:8012/docs
 ```
+
+### Phone / LAN Access
+
+1. Start the server with `SWARMZ_UP.ps1` (or `python run_server.py`).
+2. Note the **LAN** URL printed at startup (e.g. `http://192.168.1.42:8012`).
+3. Open that URL on any phone or tablet connected to the **same Wi-Fi**.
+4. If blocked, allow **TCP port 8012** through your firewall:
+   ```powershell
+   # PowerShell (run as Admin once)
+   New-NetFirewallRule -DisplayName "SWARMZ" -Direction Inbound -LocalPort 8012 -Protocol TCP -Action Allow
+   ```
+5. The HUD is a PWA — tap **"Add to Home Screen"** for native-app feel.
+
+### Two Modes: COMPANION and BUILD
+
+SWARMZ operates in two modes, toggled from the HUD header tabs:
+
+| Mode | Purpose |
+|------|---------|
+| **COMPANION** | Conversational interface — ask questions, get status, request help. |
+| **BUILD** | Mission dispatch — define an intent + spec, dispatch to the swarm runner. |
+
+Mode persists across restarts in `data/state.json`.
+
+### Swarm Runner
+
+`run_server.py` starts a background **swarm runner** thread that:
+
+- Ticks every 1 second looking for `PENDING` missions.
+- Marks mission `RUNNING` → executes a worker → writes `packs/<id>/result.json`.
+- Updates mission status to `SUCCESS` or `FAILURE`.
+- Writes a heartbeat to `data/runner_heartbeat.json` (check via `GET /v1/swarm/status`).
+
+### Smoke Test
+
+After starting the server, verify the full dispatch→run→success flow:
+
+```powershell
+# PowerShell
+.\SWARMZ_SMOKE_TEST.ps1
+
+# Or CMD
+SWARMZ_SMOKE_TEST.cmd
+```
+
+All 7 steps should pass: health, runner up, mode switch, dispatch, wait, confirm SUCCESS, result.json exists.
 
 ### CLI Usage
 
