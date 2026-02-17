@@ -1,0 +1,1 @@
+SWARMZ_AUTHORITY=official
