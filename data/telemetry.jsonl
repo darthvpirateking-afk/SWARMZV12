@@ -421,3 +421,24 @@
 {"ts":"2026-02-18T13:47:48.736870Z","type":"http_request","payload":{"path":"/v1/system/log","method":"GET"}}
 {"ts":"2026-02-18T13:47:48.759046Z","type":"http_request","payload":{"path":"/","method":"GET"}}
 {"ts":"2026-02-18T13:47:48.765090Z","type":"http_request","payload":{"path":"/config/runtime.json","method":"GET"}}
+{"ts":"2026-02-18T13:49:31.300691Z","type":"http_request","payload":{"path":"/health","method":"GET"}}
+{"ts":"2026-02-18T13:49:31.304997Z","type":"http_request","payload":{"path":"/v1/health","method":"GET"}}
+{"ts":"2026-02-18T13:49:31.308378Z","type":"http_request","payload":{"path":"/v1/pairing/info","method":"GET"}}
+{"ts":"2026-02-18T13:49:31.311307Z","type":"http_request","payload":{"path":"/v1/pairing/pair","method":"POST"}}
+{"ts":"2026-02-18T13:49:31.312149Z","type":"pairing_success","payload":{"token":"5329755ee0983cb1db826b27ac93df1e"}}
+{"ts":"2026-02-18T13:49:31.313758Z","type":"http_request","payload":{"path":"/v1/pairing/pair","method":"POST"}}
+{"ts":"2026-02-18T13:49:31.316898Z","type":"http_request","payload":{"path":"/v1/runtime/status","method":"GET"}}
+{"ts":"2026-02-18T13:49:31.320803Z","type":"http_request","payload":{"path":"/v1/runtime/scoreboard","method":"GET"}}
+{"ts":"2026-02-18T13:49:31.323826Z","type":"http_request","payload":{"path":"/v1/companion/state","method":"GET"}}
+{"ts":"2026-02-18T13:49:31.328903Z","type":"http_request","payload":{"path":"/v1/dispatch","method":"POST"}}
+{"ts":"2026-02-18T13:49:31.330154Z","type":"mission_created","payload":{"mission_id":"ede9ed45","goal":"E2E dispatch test","category":"forge"}}
+{"ts":"2026-02-18T13:49:31.330722Z","type":"unhandled_exception","error":"'id'","context":{"path":"/v1/dispatch"}}
+{"ts":"2026-02-18T13:49:31.335849Z","type":"http_request","payload":{"path":"/v1/sovereign/dispatch","method":"POST"}}
+{"ts":"2026-02-18T13:49:31.339528Z","type":"http_request","payload":{"path":"/v1/audit/tail","method":"GET"}}
+{"ts":"2026-02-18T13:49:31.347932Z","type":"http_request","payload":{"path":"/v1/system/log","method":"GET"}}
+{"ts":"2026-02-18T13:49:31.354994Z","type":"http_request","payload":{"path":"/v1/runs","method":"GET"}}
+{"ts":"2026-02-18T13:49:31.359227Z","type":"http_request","payload":{"path":"/config/runtime.json","method":"GET"}}
+{"ts":"2026-02-18T13:49:31.362340Z","type":"http_request","payload":{"path":"/v1/sovereign/dispatch","method":"POST"}}
+{"ts":"2026-02-18T13:49:31.364689Z","type":"http_request","payload":{"path":"/v1/system/log","method":"GET"}}
+{"ts":"2026-02-18T13:49:31.385882Z","type":"http_request","payload":{"path":"/","method":"GET"}}
+{"ts":"2026-02-18T13:49:31.391671Z","type":"http_request","payload":{"path":"/config/runtime.json","method":"GET"}}

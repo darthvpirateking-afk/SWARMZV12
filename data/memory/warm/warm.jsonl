@@ -43,3 +43,5 @@
 {"timestamp":"2026-02-17T04:00:26.778867+00:00Z","mission_id":"test_rel_m1","inputs_hash":"test_hash","strategy":"baseline","score":0.8,"success":true,"runtime_ms":100,"usefulness":0.792,"tier":"warm"}
 {"timestamp":"2026-02-18T13:46:28.498074+00:00Z","mission_id":"test_rel_m1","inputs_hash":"test_hash","strategy":"baseline","score":0.8,"success":true,"runtime_ms":100,"usefulness":0.792,"tier":"warm"}
 {"timestamp":"2026-02-18T13:47:48.794554+00:00Z","mission_id":"test_rel_m1","inputs_hash":"test_hash","strategy":"baseline","score":0.8,"success":true,"runtime_ms":100,"usefulness":0.792,"tier":"warm"}
+{"timestamp":"2026-02-18T13:49:25.035278+00:00Z","mission_id":"test_rel_m1","inputs_hash":"test_hash","strategy":"baseline","score":0.8,"success":true,"runtime_ms":100,"usefulness":0.792,"tier":"warm"}
+{"timestamp":"2026-02-18T13:49:31.420153+00:00Z","mission_id":"test_rel_m1","inputs_hash":"test_hash","strategy":"baseline","score":0.8,"success":true,"runtime_ms":100,"usefulness":0.792,"tier":"warm"}

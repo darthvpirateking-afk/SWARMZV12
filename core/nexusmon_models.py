@@ -7,7 +7,7 @@ All data is persisted as JSONL for append-only audit trail.
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 from enum import Enum
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 
 # ================================================================
@@ -103,6 +103,17 @@ class ChatReply(BaseModel):
 
 class OperatorProfile(BaseModel):
     """Profile of an operator in SWARMZ."""
+    model_config = ConfigDict(json_schema_extra={
+        "example": {
+            "operator_id": "op-123",
+            "username": "regan",
+            "risk_posture": "balanced",
+            "drift_score": 0.3,
+            "fatigue": 0.2,
+            "friction_patterns": ["avoids_complex_missions", "prefers_explanations"],
+        }
+    })
+    
     operator_id: str
     username: str = ""
     risk_posture: str = "balanced"  # conservative | balanced | aggressive
@@ -112,18 +123,6 @@ class OperatorProfile(BaseModel):
     preferences: Dict[str, Any] = Field(default_factory=dict)
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
-
-    class Config:
-        json_schema_extra = {
-            "example": {
-                "operator_id": "op-123",
-                "username": "regan",
-                "risk_posture": "balanced",
-                "drift_score": 0.3,
-                "fatigue": 0.2,
-                "friction_patterns": ["avoids_complex_missions", "prefers_explanations"],
-            }
-        }
 
 
 # ================================================================
@@ -186,24 +185,23 @@ class OperatorMemory(BaseModel):
 
 class NexusForm(BaseModel):
     """Current evolution state of operator."""
+    model_config = ConfigDict(json_schema_extra={
+        "example": {
+            "operator_id": "op-123",
+            "current_form": "Operator",
+            "transition_evidence": [
+                {"type": "mission_mastery", "count": 5}
+            ],
+            "coherence_score": 0.85
+        }
+    })
+    
     operator_id: str
     current_form: NexusFormType = NexusFormType.OPERATOR
     transition_evidence: List[Dict[str, Any]] = Field(default_factory=list)
     coherence_score: float = Field(default=0.7, ge=0.0, le=1.0)
     last_evolved_at: datetime = Field(default_factory=datetime.utcnow)
     created_at: datetime = Field(default_factory=datetime.utcnow)
-
-    class Config:
-        json_schema_extra = {
-            "example": {
-                "operator_id": "op-123",
-                "current_form": "Operator",
-                "transition_evidence": [
-                    {"type": "mission_mastery", "count": 5}
-                ],
-                "coherence_score": 0.85
-            }
-        }
 
 
 # ================================================================
@@ -212,6 +210,8 @@ class NexusForm(BaseModel):
 
 class ConversationContext(BaseModel):
     """Internal context used by conversation engine."""
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+    
     operator: OperatorProfile
     nexus_form: NexusForm
     missions: List[Dict[str, Any]] = Field(default_factory=list)
@@ -219,9 +219,6 @@ class ConversationContext(BaseModel):
     history: List[ConversationTurn] = Field(default_factory=list)
     ui_context: ChatContext = Field(default_factory=ChatContext)
     persona: Optional[Persona] = None
-
-    class Config:
-        arbitrary_types_allowed = True
 
 
 # ================================================================
@@ -246,22 +243,21 @@ class Mission(BaseModel):
 
 class AuditEvent(BaseModel):
     """Audit event for system transparency."""
+    model_config = ConfigDict(json_schema_extra={
+        "example": {
+            "timestamp": "2026-02-19T10:30:00Z",
+            "event_type": "chat_turn",
+            "operator_id": "op-123",
+            "details": {
+                "message": "Help me plan a mission",
+                "reply": "...",
+                "mode": "Plan"
+            }
+        }
+    })
+    
     timestamp: datetime = Field(default_factory=datetime.utcnow)
     event_type: str  # mission_dispatched | chat_turn | evolution_change | etc.
     operator_id: Optional[str] = None
     mission_id: Optional[str] = None
     details: Dict[str, Any] = Field(default_factory=dict)
-
-    class Config:
-        json_schema_extra = {
-            "example": {
-                "timestamp": "2026-02-19T10:30:00Z",
-                "event_type": "chat_turn",
-                "operator_id": "op-123",
-                "details": {
-                    "message": "Help me plan a mission",
-                    "reply": "...",
-                    "mode": "Plan"
-                }
-            }
-        }
