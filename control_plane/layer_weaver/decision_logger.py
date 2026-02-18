@@ -1,13 +1,12 @@
-﻿# SWARMZ Source Available License
-# Commercial use, hosting, and resale prohibited.
-# See LICENSE file for details.
 """
-verification_store.py â€“ Append-only verification log backed by
-data/verification_log.jsonl.
+decision_logger.py – Append-only decision log backed by
+data/decision_log.jsonl.
 
-Stores baseline snapshots and verification outcomes.  Also supports
-querying outcomes by job_id or decision_id.
+Records every scoring decision (including NO_ACTION) with timestamps,
+score breakdowns, objective id, and config_hash.
 """
+
+from __future__ import annotations
 
 import json
 import os
@@ -15,26 +14,25 @@ import threading
 from datetime import datetime, timezone
 
 _DIR = os.path.dirname(os.path.abspath(__file__))
-_DATA_PATH = os.path.join(_DIR, "data", "verification_log.jsonl")
+_DATA_PATH = os.path.join(_DIR, "data", "decision_log.jsonl")
 
 
-class VerificationStore:
-    """Thread-safe, append-only verification log."""
+class DecisionLogger:
+    """Thread-safe, append-only decision logger."""
 
     def __init__(self, data_path: str = _DATA_PATH):
         self._path = data_path
         self._lock = threading.Lock()
 
     def log(self, entry: dict) -> dict:
-        """Append a verification entry with a timestamp."""
         entry.setdefault("time", datetime.now(timezone.utc).isoformat())
         with self._lock:
+            os.makedirs(os.path.dirname(self._path), exist_ok=True)
             with open(self._path, "a") as fh:
                 fh.write(json.dumps(entry, default=str) + "\n")
         return entry
 
     def read_all(self) -> list[dict]:
-        """Return every verification entry."""
         if not os.path.exists(self._path):
             return []
         entries: list[dict] = []
@@ -42,5 +40,8 @@ class VerificationStore:
             for line in fh:
                 line = line.strip()
                 if line:
-                    entries.append(json.loads(line))
+                    try:
+                        entries.append(json.loads(line))
+                    except json.JSONDecodeError:
+                        pass
         return entries

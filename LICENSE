@@ -1,34 +1,21 @@
-﻿Business Source License 1.1
+MIT License
 
-Licensor: SWARMZ Project
-Licensed Work: SWARMZ Runtime
+Copyright (c) 2026 SWARMZ
 
-Additional Use Grant:
-You may use, modify, and run this software for personal use or internal organizational use only.
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-You are allowed to:
-- Run the software locally
-- Modify the source code
-- Build plugins or extensions for private use
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-You are NOT allowed to:
-- Sell this software
-- Repackage and distribute it commercially
-- Provide it as a hosted or managed service
-- Offer it as part of a competing product
-- Grant others commercial access to it
-- Use it to operate a SaaS platform
-- Offer paid access to any system primarily powered by this software
-
-Change Date:
-Four (4) years after each release of the software
-
-Change License:
-Apache License 2.0
-
-Termination:
-Any violation of the above restrictions automatically terminates your license rights.
-
-Disclaimer:
-This software is provided "as is", without warranty of any kind, express or implied.
-The licensor is not liable for any damages or losses resulting from its use.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

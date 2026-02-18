@@ -5,7 +5,7 @@ import json
 from typing import List, Dict, Any, Optional
 from datetime import datetime
 from pathlib import Path
-from swarmz_runtime.storage.schema import Mission, AuditEntry, Rune
+from swarmz_runtime.storage.schema import Mission, AuditEntry, Rune, MissionStatus
 
 
 class Database:
@@ -31,9 +31,8 @@ class Database:
             self.state_file.write_text(json.dumps({"active_missions": 0, "pattern_counters": {}}))
     
     def save_mission(self, mission: Mission):
-        # Atomic append, compact JSON
-        with open(self.missions_file, "a", encoding="utf-8") as f:
-            f.write(json.dumps(mission.model_dump(mode='json'), separators=(",", ":")) + "\n")
+        with open(self.missions_file, "a") as f:
+            f.write(json.dumps(mission.model_dump(mode='json')) + "\n")
     
     def update_mission(self, mission_id: str, updates: Dict[str, Any]):
         missions = self.load_all_missions()
@@ -42,31 +41,15 @@ class Database:
                 mission.update(updates)
                 mission["updated_at"] = datetime.now().isoformat()
         
-        with open(self.missions_file, "w") as f:
-            for mission in missions:
-                f.write(json.dumps(mission) + "\n")
+        write_jsonl(self.missions_file, missions)
     
     def load_all_missions(self) -> List[Dict[str, Any]]:
         missions = []
-        skipped_empty = 0
-        bad_rows = []
         if self.missions_file.exists():
-            with open(self.missions_file, "r", encoding="utf-8") as f:
+            with open(self.missions_file, "r") as f:
                 for line in f:
-                    if not line.strip():
-                        skipped_empty += 1
-                        continue
-                    try:
+                    if line.strip():
                         missions.append(json.loads(line))
-                    except Exception:
-                        bad_rows.append(line.rstrip("\n"))
-        if bad_rows:
-            self._quarantine_bad_rows(bad_rows, source="missions.jsonl")
-        self._last_missions_parse_stats = {
-            "skipped_empty": skipped_empty,
-            "bad_rows": len(bad_rows),
-            "parsed": len(missions)
-        }
         return missions
     
     def get_mission(self, mission_id: str) -> Optional[Dict[str, Any]]:
@@ -81,30 +64,16 @@ class Database:
         return [m for m in missions if m["status"] == "active"]
     
     def log_audit(self, entry: AuditEntry):
-        with open(self.audit_file, "a", encoding="utf-8") as f:
-            f.write(json.dumps(entry.model_dump(mode='json'), separators=(",", ":")) + "\n")
+        with open(self.audit_file, "a") as f:
+            f.write(json.dumps(entry.model_dump(mode='json')) + "\n")
     
     def load_audit_log(self, limit: int = 100) -> List[Dict[str, Any]]:
         entries = []
-        skipped_empty = 0
-        bad_rows = []
         if self.audit_file.exists():
-            with open(self.audit_file, "r", encoding="utf-8") as f:
+            with open(self.audit_file, "r") as f:
                 for line in f:
-                    if not line.strip():
-                        skipped_empty += 1
-                        continue
-                    try:
+                    if line.strip():
                         entries.append(json.loads(line))
-                    except Exception:
-                        bad_rows.append(line.rstrip("\n"))
-        if bad_rows:
-            self._quarantine_bad_rows(bad_rows, source="audit.jsonl")
-        self._last_audit_parse_stats = {
-            "skipped_empty": skipped_empty,
-            "bad_rows": len(bad_rows),
-            "parsed": len(entries)
-        }
         return entries[-limit:]
 
     def _quarantine_bad_rows(self, bad_rows, source):

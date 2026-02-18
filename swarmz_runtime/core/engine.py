@@ -90,8 +90,7 @@ class SwarmzEngine:
             category=category,
             constraints=constraints,
             status=MissionStatus.PENDING,
-            leverage_score=leverage_score,
-            operator_public_key=self.operator_public_key,
+            leverage_score=leverage_score
         )
         
         self.db.save_mission(mission)

@@ -37,6 +37,11 @@ class StateStore:
     # Public API
     # ------------------------------------------------------------------
 
+    @property
+    def path(self) -> str:
+        """Return the path to the backing JSONL file."""
+        return self._path
+
     def put(self, record: dict) -> dict:
         """Validate, persist and index a STATE record. Returns the record."""
         jsonschema.validate(instance=record, schema=_SCHEMA)

@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "STATE",
+  "type": "object",
+  "required": ["layer", "variable", "value", "units", "time", "confidence", "directionality", "source"],
+  "properties": {
+    "layer": { "type": "string" },
+    "variable": { "type": "string" },
+    "value": { "oneOf": [{"type": "number"}, {"type": "string"}, {"type": "boolean"}] },
+    "units": { "type": "string" },
+    "time": { "type": "string", "format": "date-time" },
+    "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+    "directionality": {
+      "type": "string",
+      "enum": ["higher_better", "higher_worse", "lower_better", "lower_worse", "neutral"]
+    },
+    "source": { "type": "string" }
+  },
+  "additionalProperties": false
+}

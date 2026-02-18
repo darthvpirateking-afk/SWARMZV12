@@ -32,62 +32,16 @@
 ### Web Server (Recommended)
 
 ```bash
-# Windows: Double-click SWARMZ_UP.ps1 or SWARMZ_UP.cmd
+# Windows: Double-click RUN.cmd or RUN.ps1
 # Or manually:
 pip install -r requirements.txt
 python run_server.py
 
 # Access at:
-# Local:  http://localhost:8012
-# LAN:    http://192.168.x.x:8012 (shown on startup)
-# API Docs: http://localhost:8012/docs
+# Local:  http://localhost:8000
+# LAN:    http://192.168.x.x:8000 (shown on startup)
+# API Docs: http://localhost:8000/docs
 ```
-
-### Phone / LAN Access
-
-1. Start the server with `SWARMZ_UP.ps1` (or `python run_server.py`).
-2. Note the **LAN** URL printed at startup (e.g. `http://192.168.1.42:8012`).
-3. Open that URL on any phone or tablet connected to the **same Wi-Fi**.
-4. If blocked, allow **TCP port 8012** through your firewall:
-   ```powershell
-   # PowerShell (run as Admin once)
-   New-NetFirewallRule -DisplayName "SWARMZ" -Direction Inbound -LocalPort 8012 -Protocol TCP -Action Allow
-   ```
-5. The HUD is a PWA — tap **"Add to Home Screen"** for native-app feel.
-
-### Two Modes: COMPANION and BUILD
-
-SWARMZ operates in two modes, toggled from the HUD header tabs:
-
-| Mode | Purpose |
-|------|---------|
-| **COMPANION** | Conversational interface — ask questions, get status, request help. |
-| **BUILD** | Mission dispatch — define an intent + spec, dispatch to the swarm runner. |
-
-Mode persists across restarts in `data/state.json`.
-
-### Swarm Runner
-
-`run_server.py` starts a background **swarm runner** thread that:
-
-- Ticks every 1 second looking for `PENDING` missions.
-- Marks mission `RUNNING` → executes a worker → writes `packs/<id>/result.json`.
-- Updates mission status to `SUCCESS` or `FAILURE`.
-- Writes a heartbeat to `data/runner_heartbeat.json` (check via `GET /v1/swarm/status`).
-
-### Smoke Test
-
-After starting the server, verify the full dispatch→run→success flow:
-
-```powershell
-# PowerShell
-.\SWARMZ_SMOKE_TEST.ps1
-
-# Or CMD
-SWARMZ_SMOKE_TEST.cmd
-```
-
-All 7 steps should pass: health, runner up, mode switch, dispatch, wait, confirm SUCCESS, result.json exists.
 
 ### CLI Usage
 
@@ -98,261 +52,148 @@ python3 swarmz.py
 # List all capabilities
 python3 swarmz_cli.py --list
 
-# Execute a task
-python3 swarmz_cli.py --task echo --params '{"message": "Hello, SWARMZ!"}'
 
-# Start interactive mode
+Execute:
+
+python3 swarmz_cli.py --task echo --params '{"message":"hello"}'
+
+
+Interactive:
+
 python3 swarmz_cli.py --interactive
-```
 
-### Interactive Mode
+Module System
 
-```bash
-$ python3 swarmz_cli.py --interactive
-swarmz> list
-  • echo                 - Echo a message back
-  • system_info          - Get system information
-  • execute_python       - Execute Python code (operator sovereignty)
-
-swarmz> task echo {"message": "Hello!"}
-✓ Result: Echo: Hello!
-
-swarmz> audit
-1. execute_task:echo - True
-
-swarmz> exit
-```
-
-## Architecture
-
-### Core Components
-
-1. **SwarmzCore** - Main system coordinator
-2. **OperatorSovereignty** - Ensures operator control and maintains audit logs
-3. **TaskExecutor** - Executes registered tasks and manages plugins
-4. **Plugin System** - Extends capabilities dynamically
-
-### Plugin System
-
-Plugins are Python modules that register new tasks with the system:
-
-```python
-# plugins/example.py
-def register(executor):
-    def my_task(param1, param2):
-        return f"Processed {param1} and {param2}"
-    
-    executor.register_task("my_task", my_task, {
-        "description": "Example task",
-        "params": {"param1": "string", "param2": "string"}
-    })
-```
-
-Load plugins:
-```bash
-python3 swarmz_cli.py --load-plugin plugins/example.py --task my_task --params '{"param1": "A", "param2": "B"}'
-```
-
-## Built-in Capabilities
-
-### Core Tasks
-- **echo** - Echo a message back
-- **system_info** - Get system information
-- **execute_python** - Execute arbitrary Python code (operator sovereignty)
-
-### File System Plugin (`plugins/filesystem.py`)
-- **fs_list** - List directory contents
-- **fs_read** - Read file contents
-- **fs_write** - Write content to file
-- **fs_mkdir** - Create a directory
-- **fs_info** - Get file information
-
-### Data Processing Plugin (`plugins/dataprocessing.py`)
-- **data_json_parse** - Parse JSON string
-- **data_json_stringify** - Convert object to JSON
-- **data_hash** - Generate hash of string
-- **data_transform** - Transform data collection
-- **data_encode** - Encode or decode text
-
-## Configuration
-
-Create a `config.json` file:
-
-```json
-{
-  "system_name": "SWARMZ",
-  "operator_sovereignty": {
-    "enabled": true,
-    "auto_approve": true,
-    "audit_enabled": true
-  },
-  "plugins": {
-    "auto_load": [
-      "plugins/filesystem.py",
-      "plugins/dataprocessing.py"
-    ]
-  }
-}
-```
-
-Use configuration:
-```bash
-python3 swarmz_cli.py --config config.json --list
-```
-
-## Advanced Usage
-
-### Python API
-
-```python
-from swarmz import SwarmzCore
-
-# Initialize system
-swarmz = SwarmzCore()
-
-# Execute tasks
-result = swarmz.execute("echo", message="Hello!")
-info = swarmz.execute("system_info")
-
-# Load plugins
-swarmz.load_plugin("plugins/filesystem.py")
-
-# List capabilities
-capabilities = swarmz.list_capabilities()
-
-# Get audit log
-audit = swarmz.get_audit_log()
-```
-
-### Creating Custom Plugins
-
-1. Create a Python file in the `plugins/` directory
-2. Implement a `register(executor)` function
-3. Register your tasks using `executor.register_task()`
-4. Load the plugin via CLI or API
+Modules register tasks into the runtime.
 
 Example:
-```python
-# plugins/network.py
-import requests
 
 def register(executor):
-    def http_get(url):
-        response = requests.get(url)
-        return response.text
-    
-    executor.register_task("http_get", http_get, {
-        "description": "Fetch content from URL",
-        "params": {"url": "string"},
-        "category": "network"
-    })
-```
 
-## Operator Sovereignty in Action
+    def my_task(a, b):
+        return f"{a}-{b}"
 
-SWARMZ embodies operator sovereignty through:
+    executor.register_task(
+        "my_task",
+        my_task,
+        {"description": "example"}
+    )
 
-1. **Permission System** - All actions go through sovereignty checks
-2. **Audit Trail** - Complete log of all operations
-3. **Override Capability** - Operator can override any restriction
-4. **Code Execution** - Trusted operators can execute arbitrary code
-5. **Plugin Control** - Operator decides what capabilities to load
 
-### Example: Arbitrary Code Execution
+Load:
 
-```bash
-python3 swarmz_cli.py --task execute_python --params '{"code": "result = 2 + 2"}'
-```
+python3 swarmz_cli.py --load-plugin plugins/example.py
 
-This demonstrates true operator sovereignty - the system trusts the operator completely.
+Included Capabilities
 
-## Security Considerations
+Core:
 
-- **Operator Trust** - The system is designed for trusted operators
-- **Code Execution** - `execute_python` task allows arbitrary code execution
-- **Plugin Loading** - Plugins have full system access
-- **Audit Logging** - All actions are logged for accountability
+echo
 
-## Use Cases
+system_info
 
-- **Automation** - Automate any task through the plugin system
-- **DevOps** - System administration and management
-- **Data Processing** - Transform and manipulate data
-- **Prototyping** - Quickly add capabilities as needed
-- **Personal Tools** - Build your own operator-controlled toolset
+execute_python
 
-## Philosophy
+Filesystem module:
 
-SWARMZ is built on the principle that **the operator knows best**. Rather than restricting what can be done, SWARMZ empowers operators with complete control while maintaining transparency through audit logs.
+list
 
-The "do anything" capability comes from:
-- Unlimited extensibility through plugins
-- Built-in arbitrary code execution for trusted operators
-- No artificial restrictions on capabilities
-- Complete operator sovereignty over all operations
+read
 
-## Requirements
+write
 
-### Core System
-- Python 3.6+
-- No external dependencies for core functionality (swarmz.py, swarmz_cli.py)
+mkdir
 
-### Web Server & PWA
-- FastAPI and Uvicorn (install with: `pip install -r requirements.txt`)
-- Modern web browser for PWA features
+info
 
-### Development
-- PyInstaller for building executables
-- pytest for testing (install with: `pip install -r requirements-dev.txt`)
+Data module:
 
-## Deployment Options
+json parse/stringify
 
-### Windows
-- **RUN.cmd** - Double-click to auto-setup and start (Command Prompt)
-- **RUN.ps1** - Double-click to auto-setup and start (PowerShell)
-- **PACK_EXE.ps1** - Build standalone .exe with PyInstaller
+hashing
 
-### Linux / macOS
-```bash
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-python swarmz_server.py
-```
+transforms
 
-### Android (Termux)
-```bash
-# One-time setup
-./termux_setup.sh
+encoding
 
-# Start server
-./termux_run.sh
-```
+Configuration
 
-### Progressive Web App (PWA)
-1. Start the server (any method above)
-2. Open the LAN URL on your mobile device
-3. Tap "Install" or "Add to Home Screen"
-4. Access SWARMZ like a native app!
+config.json
 
-For detailed examples and usage, see **EXAMPLES.txt**.
+{
+  "audit_enabled": true,
+  "auto_load": [
+    "plugins/filesystem.py",
+    "plugins/dataprocessing.py"
+  ]
+}
 
-## Contributing
+Python Usage
+from swarmz import SwarmzCore
 
-To add new built-in tasks or plugins:
+swarmz = SwarmzCore()
 
-1. For core tasks: Edit `swarmz.py` and add to `_register_builtin_tasks()`
-2. For plugins: Create a new file in `plugins/` directory
-3. Follow the plugin registration pattern
+swarmz.execute("echo", message="hi")
+swarmz.load_plugin("plugins/filesystem.py")
+swarmz.list_capabilities()
+swarmz.get_audit_log()
 
-## License
+Security Model
 
-MIT License - See LICENSE file for details
+SWARMZ assumes a trusted operator.
 
-## Project Status
+Important implications:
 
-SWARMZ is an operator-sovereign system designed for maximum flexibility and control. It is production-ready for trusted operator environments.
+Code execution is unrestricted
 
----
+Modules have full local access
 
-**Remember: With SWARMZ, the operator maintains complete sovereignty. You're in control.**
+No isolation boundary exists
+
+Audit exists for traceability, not prevention
+
+Do not expose directly to untrusted users.
+
+Intended Uses
+
+Personal automation runtime
+
+Local admin tooling
+
+Data manipulation workspace
+
+Rapid capability prototyping
+
+Operator-controlled integrations
+
+Requirements
+
+Core:
+Python 3.6+
+
+Web UI:
+FastAPI + Uvicorn
+
+Deployment
+
+Runs on:
+
+Windows
+
+Linux
+
+macOS
+
+Android (Termux)
+
+Project Position
+
+This repository provides a controllable execution runtime.
+It is a tool, not a platform service.
+
+Behavior is defined by the operator and loaded modules.
+
+Notice
+
+The system executes exactly what it is instructed to execute.
+Responsibility for usage and exposure rests with the operator.

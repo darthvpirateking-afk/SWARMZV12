@@ -53,6 +53,10 @@ htmlcov/
 /tmp/
 tmpclaude-*
 
+# Runtime data (created at startup)
+data/
+addons/data/backups/
+
 # Artifact packs output
 packs/
 
@@ -68,3 +72,4 @@ nul
 
 data/
 *.jsonl
+tools/prune_logs.py
