@@ -44,6 +44,14 @@ try:
 except Exception:
     _swarmz_core = None
 
+# Import NEXUSMON router for conversational interface
+try:
+    from core.nexusmon_router import router as nexusmon_router
+    _nexusmon_available = True
+except Exception as e:
+    _nexusmon_available = False
+    print(f"Warning: NEXUSMON router not available: {e}")
+
 
 def get_lan_ip() -> str:
     """Best-effort LAN IP discovery (fallback to loopback)."""
@@ -112,6 +120,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Include NEXUSMON conversational interface router
+if _nexusmon_available:
+    app.include_router(nexusmon_router)
 
 # Setup logging
 logging.basicConfig(filename="data/server_live.log", level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")

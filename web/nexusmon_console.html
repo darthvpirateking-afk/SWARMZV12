@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXUSMON Console - SWARMZ Conversational Interface</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0d1117;
+            color: #c9d1d9;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        #app {
+            display: flex;
+            height: 100vh;
+            gap: 16px;
+            padding: 16px;
+            background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+        }
+
+        #sidebar {
+            width: 250px;
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            overflow-y: auto;
+        }
+
+        .sidebar-section {
+            border-bottom: 1px solid #30363d;
+            padding-bottom: 12px;
+        }
+
+        .sidebar-section:last-child {
+            border-bottom: none;
+        }
+
+        .sidebar-section h3 {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #8b949e;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .sidebar-item {
+            padding: 8px 12px;
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+
+        .sidebar-item:hover {
+            background: #161b22;
+            border-color: #58a6ff;
+            color: #58a6ff;
+        }
+
+        .sidebar-item.active {
+            background: #238636;
+            border-color: #238636;
+            color: white;
+        }
+
+        #main-console {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+
+        #nexusmon-console {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-panel {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 12px;
+            margin-top: auto;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 4px 0;
+            color: #8b949e;
+        }
+
+        .info-value {
+            color: #c9d1d9;
+            font-weight: 500;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border: 2px solid #30363d;
+            border-top-color: #58a6ff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- Sidebar with navigation and info -->
+        <div id="sidebar">
+            <div class="sidebar-section">
+                <h3>📊 Navigation</h3>
+                <div class="sidebar-item active" data-screen="Console">NEXUSMON Console</div>
+                <div class="sidebar-item" data-screen="Missions">Missions</div>
+                <div class="sidebar-item" data-screen="Audit">Audit Log</div>
+                <div class="sidebar-item" data-screen="Metrics">Metrics</div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>⚡ Quick Actions</h3>
+                <div class="sidebar-item" onclick="quickAction('create_mission')">+ Create Mission</div>
+                <div class="sidebar-item" onclick="quickAction('view_recent')">📜 Recent Events</div>
+                <div class="sidebar-item" onclick="quickAction('system_status')">🔍 System Status</div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>👤 Operator</h3>
+                <div id="operator-info" class="info-panel">
+                    <div class="info-item">
+                        <span>ID</span>
+                        <span class="info-value" id="op-id">op-001</span>
+                    </div>
+                    <div class="info-item">
+                        <span>Form</span>
+                        <span class="info-value" id="op-form">Operator</span>
+                    </div>
+                    <div class="info-item">
+                        <span>Drift</span>
+                        <span class="info-value" id="op-drift">0.0%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main console area -->
+        <div id="main-console">
+            <div id="nexusmon-console"></div>
+        </div>
+    </div>
+
+    <script src="/nexusmon_console.js"></script>
+    <script>
+        // Initialize NEXUSMON Console
+        const operatorId = localStorage.getItem('operatorId') || 'op-001';
+        localStorage.setItem('operatorId', operatorId);
+
+        document.getElementById('op-id').textContent = operatorId;
+
+        NexusmonConsole.init(operatorId, {
+            apiBase: '/v1/nexusmon',
+            screen: 'Console',
+            missionId: null
+        });
+
+        // Handle sidebar navigation
+        document.querySelectorAll('[data-screen]').forEach(item => {
+            item.addEventListener('click', () => {
+                document.querySelectorAll('[data-screen]').forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+                console.log('Switched to screen:', item.dataset.screen);
+            });
+        });
+
+        // Handle quick actions
+        function quickAction(action) {
+            const messages = {
+                'create_mission': 'Help me create a new mission.',
+                'view_recent': 'Show me recent events.',
+                'system_status': 'What is the system status right now?'
+            };
+            
+            if (messages[action]) {
+                // Insert message into input and send
+                const input = document.getElementById('chat-input');
+                input.value = messages[action];
+                input.focus();
+                NexusmonConsole.sendMessage();
+            }
+        }
+
+        // Listen for NEXUSMON actions
+        document.getElementById('nexusmon-console').addEventListener('nexusmon:action', (e) => {
+            console.log('NEXUSMON action:', e.detail);
+            const action = e.detail;
+            
+            switch (action.type) {
+                case 'CreateMission':
+                    console.log('Create mission:', action.payload);
+                    break;
+                case 'OpenMission':
+                    console.log('Open mission:', action.payload);
+                    break;
+                case 'ViewMetrics':
+                    document.querySelector('[data-screen="Metrics"]').click();
+                    break;
+                case 'ViewAudit':
+                    document.querySelector('[data-screen="Audit"]').click();
+                    break;
+                default:
+                    console.log('Unknown action');
+            }
+        });
+
+        // Update operator form indicator from NEXUSMON updates
+        const originalInit = NexusmonConsole.init;
+        NexusmonConsole.loadForm = async function() {
+            try {
+                const res = await fetch(`/v1/nexusmon/operators/${operatorId}/nexus-form`);
+                const form = await res.json();
+                document.getElementById('op-form').textContent = form.current_form || 'Operator';
+            } catch (err) {
+                console.error('Error loading form:', err);
+            }
+        };
+
+        NexusmonConsole.loadForm();
+
+        // Periodically update operator info
+        setInterval(() => {
+            NexusmonConsole.loadForm();
+        }, 30000);
+    </script>
+</body>
+</html>
