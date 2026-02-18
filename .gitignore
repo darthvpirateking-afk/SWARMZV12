@@ -51,6 +51,7 @@ htmlcov/
 # Temporary files
 *.tmp
 /tmp/
+tmpclaude-*
 
 # Artifact packs output
 packs/

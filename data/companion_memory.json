@@ -331,9 +331,16 @@
       "status": "SUCCESS",
       "summary": "test summary",
       "timestamp": "2026-02-18T13:46:28.101567+00:00Z"
+    },
+    {
+      "mission_id": "test_m1",
+      "intent": "smoke",
+      "status": "SUCCESS",
+      "summary": "test summary",
+      "timestamp": "2026-02-18T13:47:48.539463+00:00Z"
     }
   ],
   "learned_constraints": [],
-  "version": 48,
-  "updated_at": "2026-02-18T13:46:28.101654+00:00Z"
+  "version": 49,
+  "updated_at": "2026-02-18T13:47:48.539549+00:00Z"
 }

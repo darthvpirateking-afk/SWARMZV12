@@ -279,3 +279,7 @@
 {"event_id":"b316efeb-dcb6-41c1-8817-59c42e317804","ts":"2026-02-18T13:46:28.525008Z","event_type":"drift_detected","trial_id":"NONE","payload":{"metric_name":"conv","context":"ctx","drift_magnitude":131.2899,"older_mean":0.5045,"recent_mean":0.902,"older_std":0.003}}
 {"event_id":"dd801993-c7f4-431c-8677-7fe6557d29d6","ts":"2026-02-18T13:46:28.531663Z","event_type":"followup_suggestions_generated","trial_id":"NONE","payload":{"context":"ctx","limit":5,"count":0}}
 {"event_id":"a165f4f9-9cce-4b1a-a216-91b15c36b2a5","ts":"2026-02-18T13:46:28.532687Z","event_type":"followup_suggestions_generated","trial_id":"NONE","payload":{"context":"","limit":5,"count":2}}
+{"event_id":"a123c7c6-531d-4b18-881c-9de0142aa9bc","ts":"2026-02-18T13:47:48.509831Z","event_type":"auto_check_skipped_low_level","trial_id":"SYSTEM","payload":{"level":0,"reason":"Auto-check scheduler unlocks at LV2 (CHAMPION)"}}
+{"event_id":"352dd4e6-9e3a-4d32-9f9e-e709a2ed7857","ts":"2026-02-18T13:47:48.822359Z","event_type":"drift_detected","trial_id":"NONE","payload":{"metric_name":"conv","context":"ctx","drift_magnitude":131.2899,"older_mean":0.5045,"recent_mean":0.902,"older_std":0.003}}
+{"event_id":"f68229f3-61bb-4c08-9e14-831bf415e80b","ts":"2026-02-18T13:47:48.829442Z","event_type":"followup_suggestions_generated","trial_id":"NONE","payload":{"context":"ctx","limit":5,"count":0}}
+{"event_id":"bb5c9a20-c93e-48b0-8aed-de2bb42576ca","ts":"2026-02-18T13:47:48.830387Z","event_type":"followup_suggestions_generated","trial_id":"NONE","payload":{"context":"","limit":5,"count":2}}

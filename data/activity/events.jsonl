@@ -67,3 +67,4 @@
 {"event": "lan_ip_discovery", "ip": "192.168.1.102", "timestamp": "2026-02-17T14:37:25.049454"}
 {"event": "lan_ip_discovery", "ip": "192.168.1.102", "timestamp": "2026-02-17T15:00:24.269713"}
 {"event": "lan_ip_discovery", "ip": "127.0.0.1", "timestamp": "2026-02-18T13:46:28.006748"}
+{"event": "lan_ip_discovery", "ip": "127.0.0.1", "timestamp": "2026-02-18T13:47:48.472968"}

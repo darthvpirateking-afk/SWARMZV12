@@ -22,7 +22,6 @@ import importlib
 import inspect
 from typing import Any, Dict, List, Optional, Callable
 from pathlib import Path
-from agent_framework.observability import configure_otel_providers
 
 
 class OperatorSovereignty:
@@ -200,11 +199,11 @@ class SwarmzCore:
             self.config = json.load(f)
 
 
-# Configure OpenTelemetry tracing for AI Toolkit
-configure_otel_providers(
-    vs_code_extension_port=4317,  # AI Toolkit gRPC port
-    enable_sensitive_data=True  # Enable capturing prompts and completions
-)
+# Note: OpenTelemetry tracing for AI Toolkit can be configured here when available
+# configure_otel_providers(
+#     vs_code_extension_port=4317,  # AI Toolkit gRPC port
+#     enable_sensitive_data=True  # Enable capturing prompts and completions
+# )
 
 
 def main():
