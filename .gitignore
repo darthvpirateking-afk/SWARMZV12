@@ -73,3 +73,6 @@ nul
 data/
 *.jsonl
 tools/prune_logs.py
+
+# Ignore operator_anchor.json
+data/operator_anchor.json
