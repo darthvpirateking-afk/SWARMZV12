@@ -1,21 +1,52 @@
-MIT License
+SWARMZ Proprietary License (Locked Edition)
+Copyright (c) 2026 Regan
+All Rights Reserved
 
-Copyright (c) 2026 SWARMZ
+SWARMZ, including all source code, binaries, assets, documentation, designs,
+architecture, concepts, and any derivative intellectual property (collectively
+“SWARMZ”), is the exclusive property of Regan.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+No rights are granted to any person or entity except the copyright holder.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+You MAY NOT, under any circumstances:
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+• use SWARMZ for personal, commercial, academic, or research purposes  
+• copy, reproduce, or redistribute any part of SWARMZ  
+• modify, alter, or create derivative works  
+• publish or host SWARMZ publicly or privately  
+• sublicense, sell, rent, or transfer SWARMZ  
+• integrate SWARMZ into any software, service, or system  
+• train AI models on SWARMZ or its outputs  
+• reverse engineer, decompile, or extract internal logic  
+• fork, clone, or mirror the repository  
+• upload SWARMZ to any platform without written permission  
+• claim ownership, authorship, or contribution to SWARMZ  
+
+Any unauthorized use is strictly prohibited and may result in legal action,
+including but not limited to damages, injunctions, and recovery of legal fees.
+
+------------------------------------------------------------
+DEVELOPER EXCEPTION (REGAN ONLY)
+------------------------------------------------------------
+
+The copyright holder (Regan) retains full rights to:
+
+• use SWARMZ for any purpose  
+• modify, extend, and develop SWARMZ  
+• run SWARMZ locally or on hosted infrastructure  
+• create derivative works  
+• integrate SWARMZ into other systems  
+• license SWARMZ to others under separate agreements  
+
+No other individual or entity is granted these rights.
+
+------------------------------------------------------------
+DISCLAIMER
+------------------------------------------------------------
+
+SWARMZ IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+INCLUDING BUT NOT LIMITED TO FITNESS FOR A PARTICULAR PURPOSE, NON-INFRINGEMENT,
+OR MERCHANTABILITY. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY
+CLAIM, DAMAGES, OR OTHER LIABILITY ARISING FROM THE USE OF SWARMZ.
+
+For licensing inquiries, contact the copyright holder.
