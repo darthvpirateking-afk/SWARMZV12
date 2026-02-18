@@ -50,3 +50,4 @@
 {"timestamp":"2026-02-18T13:46:28.471419Z","mission_id":"test_engine_pl","runtime_ms":100,"success_bool":true,"cost_estimate":0.01,"agent_work_time":0.0,"agent_wait_time":0.0}
 {"timestamp":"2026-02-18T13:47:48.767436Z","mission_id":"test_engine_pl","runtime_ms":100,"success_bool":true,"cost_estimate":0.01,"agent_work_time":0.0,"agent_wait_time":0.0}
 {"timestamp":"2026-02-18T13:49:31.393921Z","mission_id":"test_engine_pl","runtime_ms":100,"success_bool":true,"cost_estimate":0.01,"agent_work_time":0.0,"agent_wait_time":0.0}
+{"timestamp":"2026-02-18T13:49:51.595173Z","mission_id":"test_engine_pl","runtime_ms":100,"success_bool":true,"cost_estimate":0.01,"agent_work_time":0.0,"agent_wait_time":0.0}

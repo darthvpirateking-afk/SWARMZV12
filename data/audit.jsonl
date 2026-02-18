@@ -1741,3 +1741,6 @@
 {"timestamp":"2026-02-18T13:49:31.330227","event_type":"mission_created","mission_id":"ede9ed45","details":{"goal":"E2E dispatch test","category":"forge"},"visibility":"visible"}
 {"ts":"2026-02-18T13:49:31.336971Z","event":"sovereign_dispatch","mission_id":"M-20260218-134931-71bc6fc1"}
 {"ts":"2026-02-18T13:49:31.362968Z","event":"sovereign_dispatch","mission_id":"M-20260218-134931-cef4034f"}
+{"timestamp":"2026-02-18T13:49:51.529022","event_type":"mission_created","mission_id":"119768f0","details":{"goal":"E2E dispatch test","category":"forge"},"visibility":"visible"}
+{"ts":"2026-02-18T13:49:51.535978Z","event":"sovereign_dispatch","mission_id":"M-20260218-134951-a1e8960e"}
+{"ts":"2026-02-18T13:49:51.562939Z","event":"sovereign_dispatch","mission_id":"M-20260218-134951-f6f539da"}
