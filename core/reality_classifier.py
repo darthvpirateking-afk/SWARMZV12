@@ -7,6 +7,7 @@ Implements the Reality Classifier layer to categorize actions based on risk.
 
 import json
 import logging
+import fnmatch
 logging.basicConfig(level=logging.DEBUG)
 
 CONFIG_PATH = "config/reality_classifier.json"
@@ -19,7 +20,7 @@ def classify_action(action_name):
     config = load_classifier_config()
     logging.debug(f"Loaded config: {config}")
     for rule in config["rules"]:
-        if action_name.endswith(rule["pattern"]):
+        if fnmatch.fnmatch(action_name, rule["pattern"]):
             logging.debug(f"Matched rule: {rule}")
             return config["classifiers"].get(rule["class"], "ALLOW")
     logging.debug("No matching rule found. Defaulting to ALLOW.")

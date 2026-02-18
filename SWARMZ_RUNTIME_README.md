@@ -11,6 +11,38 @@ Server will be available at: http://127.0.0.1:8012
 
 API Documentation: http://127.0.0.1:8012/docs
 
+## Runtime Check (Recommended)
+
+Run a quick self-check to validate the runtime and telemetry wiring:
+
+```bash
+python tools/runtime_check.py
+```
+
+Machine-readable output:
+
+```bash
+python tools/runtime_check.py --json
+```
+
+Use a custom data directory:
+
+```bash
+python tools/runtime_check.py --data-dir data
+```
+
+Example output (human):
+
+```text
+=== RUNTIME CHECK ===
+status: ok
+wall_ms: 123.45
+mission create/run: {"created": {"mission_id": "..."}, "ran": {"status": "ok"}}
+last_runtime_metric: {"ts": 1739999999, "cpu_ms": 42}
+last_telemetry: {"ts": 1739999999, "event": "mission_ran"}
+busy_loops_detected: none
+```
+
 ## API Endpoints
 
 ### Missions
@@ -30,6 +62,28 @@ API Documentation: http://127.0.0.1:8012/docs
 ### Admin
 
 - `POST /v1/admin/maintenance` - Schedule maintenance tasks
+
+## Additional Notes
+
+- **Operator Key**: Ensure the operator key is stored securely in `data/operator_pin.txt`.
+- **Logs**: All actions are logged for transparency.
+- **Extensibility**: Add new capabilities via plugins in the `plugins/` directory.
+- **Health Check**: Use `/v1/health` to verify the system is running.
+
+## Troubleshooting
+
+Common runtime check issues and fixes:
+
+- **mission_run_failed**: Ensure the operator key is valid and the runtime is fully initialized.
+- **missing_runtime_metrics**: Start the server once and run a mission to emit metrics.
+- **missing_telemetry**: Verify telemetry is enabled and `data/telemetry.jsonl` is writable.
+- **busy_loops_detected**: Review polling loops and add sleep/backoff.
+
+If the runtime check fails immediately, reinstall dependencies:
+
+```bash
+pip install -r requirements.txt
+```
 
 ## Example Requests
 

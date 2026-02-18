@@ -18,11 +18,10 @@ def rotate_logs(log_file):
     """Rotate the log file if it exceeds the maximum size."""
     if os.path.getsize(log_file) > RETENTION_CONFIG["max_file_size"]:
         timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-        os.rename(log_file, f"{log_file}-{timestamp}.gz")
-        with gzip.open(f"{log_file}-{timestamp}.gz", "wb") as f:
-            with open(log_file, "rb") as original:
-                f.write(original.read())
-        open(log_file, "w").close()
+        compressed_file = f"{log_file}-{timestamp}.gz"
+        with open(log_file, "rb") as original, gzip.open(compressed_file, "wb") as compressed:
+            compressed.write(original.read())
+        os.remove(log_file)
 
 def prune_logs(log_dir):
     """Prune logs older than the retention period."""

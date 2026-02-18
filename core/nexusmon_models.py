@@ -102,13 +102,27 @@ class ChatReply(BaseModel):
 # ================================================================
 
 class OperatorProfile(BaseModel):
-    """Profile of an operator in SWARMZ."""
+    """Deep operator profile model for SWARMZ."""
     model_config = ConfigDict(json_schema_extra={
         "example": {
             "operator_id": "op-123",
             "username": "regan",
-            "risk_posture": "balanced",
             "drift_score": 0.3,
+            "friction": 0.2,
+            "coherence": 0.8,
+            "cognitive_bandwidth": 0.7,
+            "fatigue_level": 0.1,
+            "risk_baseline": "medium",
+            "risk_current": "medium",
+            "mission_success_rate": 0.85,
+            "mission_failure_clusters": 2,
+            "mission_throughput": 12,
+            "blind_spots": ["complexity_underestimation"],
+            "leverage_preferences": ["structured_problems"],
+            "explanation_preference": "detailed",
+            "directness_preference": "high",
+            "evolution_bias": 0.15,
+            "risk_posture": "balanced",
             "fatigue": 0.2,
             "friction_patterns": ["avoids_complex_missions", "prefers_explanations"],
         }
@@ -116,11 +130,40 @@ class OperatorProfile(BaseModel):
     
     operator_id: str
     username: str = ""
-    risk_posture: str = "balanced"  # conservative | balanced | aggressive
+
+    # Core behavioral metrics (0-1)
     drift_score: float = Field(default=0.0, ge=0.0, le=1.0)
+    friction: float = Field(default=0.0, ge=0.0, le=1.0)
+    coherence: float = Field(default=0.7, ge=0.0, le=1.0)
+    cognitive_bandwidth: float = Field(default=0.7, ge=0.0, le=1.0)
+    fatigue_level: float = Field(default=0.0, ge=0.0, le=1.0)
+
+    # Risk modeling
+    risk_baseline: str = "medium"  # low | medium | high
+    risk_current: str = "medium"   # low | medium | high
+
+    # Mission behavior
+    mission_success_rate: float = Field(default=1.0, ge=0.0, le=1.0)
+    mission_failure_clusters: int = Field(default=0, ge=0)
+    mission_throughput: int = Field(default=0, ge=0)
+
+    # Pattern recognition
+    blind_spots: List[str] = Field(default_factory=list)
+    leverage_preferences: List[str] = Field(default_factory=list)
+
+    # Conversational preferences
+    explanation_preference: str = "detailed"  # short | detailed | structural
+    directness_preference: str = "medium"     # low | medium | high
+
+    # Evolution influence
+    evolution_bias: float = Field(default=0.0, ge=-1.0, le=1.0)
+
+    # Legacy fields for backward compatibility
+    risk_posture: str = "balanced"  # conservative | balanced | aggressive
     fatigue: float = Field(default=0.0, ge=0.0, le=1.0)
     friction_patterns: List[str] = Field(default_factory=list)
     preferences: Dict[str, Any] = Field(default_factory=dict)
+
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 

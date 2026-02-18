@@ -72,19 +72,35 @@ class PersonaEngine:
                 metaphor=0.7
             )
 
+        fatigue_level = operator.fatigue_level if hasattr(operator, "fatigue_level") else operator.fatigue
+
         # Adjust warmth based on fatigue (higher fatigue = more warmth)
-        if operator.fatigue > 0.6:
+        if fatigue_level > 0.6:
             style.warmth = min(1.0, style.warmth + 0.2)
 
+        risk_current = operator.risk_current if hasattr(operator, "risk_current") else "medium"
+
         # Adjust directness based on risk posture
-        if operator.risk_posture == "conservative":
+        if risk_current == "low" or operator.risk_posture == "conservative":
             style.directness = max(0.5, style.directness - 0.15)
-        elif operator.risk_posture == "aggressive":
+        elif risk_current == "high" or operator.risk_posture == "aggressive":
             style.directness = min(1.0, style.directness + 0.1)
+
+        # Adjust directness from preference if provided
+        if operator.directness_preference == "low":
+            style.directness = max(0.4, style.directness - 0.2)
+        elif operator.directness_preference == "high":
+            style.directness = min(1.0, style.directness + 0.2)
 
         # Adjust abstraction based on coherence (lower coherence = more explanation)
         if nexus_form.coherence_score < 0.5:
             style.abstraction = max(0.2, style.abstraction - 0.2)
+
+        # Adjust abstraction based on explanation preference
+        if operator.explanation_preference == "short":
+            style.abstraction = max(0.2, style.abstraction - 0.2)
+        elif operator.explanation_preference == "structural":
+            style.abstraction = min(0.9, style.abstraction + 0.2)
 
         # Build description
         description = self._build_description(form, operator)
@@ -108,7 +124,9 @@ class PersonaEngine:
         
         base_desc = form_descriptions.get(form, "guide")
         
-        if operator.fatigue > 0.7:
+        fatigue_level = operator.fatigue_level if hasattr(operator, "fatigue_level") else operator.fatigue
+
+        if fatigue_level > 0.7:
             return f"{base_desc}, speaking with extra clarity and care"
         elif operator.drift_score > 0.6:
             return f"{base_desc}, attentive to your drift patterns"
