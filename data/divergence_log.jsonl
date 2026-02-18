@@ -63,3 +63,5 @@
 {"timestamp":"2026-02-17T04:00:25.101964Z","planned":9,"executed":48,"divergence_score":0,"state":{"divergence_score":0,"branching_factor":1.05,"planning_horizon":1.05,"commitment_weight":1.0}}
 {"timestamp":"2026-02-17T04:00:25.215383Z","planned":9,"executed":48,"divergence_score":0,"state":{"divergence_score":0,"branching_factor":1.1025,"planning_horizon":1.1025,"commitment_weight":1.0}}
 {"timestamp":"2026-02-17T04:00:26.740165Z","planned":9,"executed":49,"divergence_score":0,"state":{"divergence_score":0,"branching_factor":1.05,"planning_horizon":1.05,"commitment_weight":1.0}}
+{"timestamp":"2026-02-18T13:46:28.164566Z","planned":9,"executed":0,"divergence_score":9,"state":{"divergence_score":9,"branching_factor":0.8,"planning_horizon":0.9,"commitment_weight":1.2}}
+{"timestamp":"2026-02-18T13:46:28.490320Z","planned":9,"executed":1,"divergence_score":8,"state":{"divergence_score":8,"branching_factor":0.8,"planning_horizon":0.9,"commitment_weight":1.2}}

@@ -41,3 +41,4 @@
 {"timestamp":"2026-02-16T20:58:28.396438+00:00Z","mission_id":"test_rel_m1","inputs_hash":"test_hash","strategy":"baseline","score":0.8,"success":true,"runtime_ms":100,"usefulness":0.792,"tier":"warm"}
 {"timestamp":"2026-02-17T04:00:25.144357+00:00Z","mission_id":"test_ap","inputs_hash":"abc","strategy":"baseline","score":1.0,"success":true,"runtime_ms":50,"usefulness":0.99,"tier":"warm"}
 {"timestamp":"2026-02-17T04:00:26.778867+00:00Z","mission_id":"test_rel_m1","inputs_hash":"test_hash","strategy":"baseline","score":0.8,"success":true,"runtime_ms":100,"usefulness":0.792,"tier":"warm"}
+{"timestamp":"2026-02-18T13:46:28.498074+00:00Z","mission_id":"test_rel_m1","inputs_hash":"test_hash","strategy":"baseline","score":0.8,"success":true,"runtime_ms":100,"usefulness":0.792,"tier":"warm"}
