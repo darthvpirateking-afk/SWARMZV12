@@ -185,7 +185,7 @@ class NextTaskMatrix:
             execution_mode = "sovereign_override"
             priority = "critical"
         elif coherence > 0.7 and vector_max > 0.6:
-            execution_mode = "emergent_uplift"
+            execution_mode = "deterministic_uplift"
             priority = "high"
         elif coherence > 0.5 and vector_max > 0.4:
             execution_mode = "archetypal_alignment"

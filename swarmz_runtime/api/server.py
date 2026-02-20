@@ -37,6 +37,8 @@ from .federation_routes import router as federation_routes_router
 from .charter_routes import router as charter_routes_router
 from .fusion_routes import router as fusion_routes_router
 from .template_sync_routes import router as template_sync_routes_router
+from .system_primitives_routes import router as system_primitives_routes_router
+from swarmz_runtime.core.system_primitives import SystemPrimitivesRuntime
 from addons.api.addons_router import router as addons_router
 from .companion_state import companion_state
 
@@ -74,6 +76,7 @@ def create_app() -> FastAPI:
     app.include_router(charter_routes_router, prefix="/v1", tags=["charter"])
     app.include_router(fusion_routes_router, prefix="/v1", tags=["fusion"])
     app.include_router(template_sync_routes_router, prefix="/v1", tags=["template-sync"])
+    app.include_router(system_primitives_routes_router, prefix="/v1", tags=["system-primitives"])
     app.include_router(addons_router, prefix="/v1/addons", tags=["addons"])
 
     if "guardrails_router" in globals() and guardrails_router is not None:
@@ -391,6 +394,7 @@ VERBOSE = os.getenv("SWARMZ_VERBOSE", "0") not in {"0", "false", "False", None}
 engine = SwarmzEngine(data_dir=str(DATA_DIR))
 engine.offline_mode = OFFLINE_MODE
 engine.operator_key = OPERATOR_PIN
+primitives_runtime = SystemPrimitivesRuntime(ROOT_DIR)
 
 # Engine provider for all modules (used to avoid circular imports)
 def get_engine():
@@ -448,15 +452,18 @@ def runtime_status():
 
 @app.get("/v1/runtime/scoreboard")
 def runtime_scoreboard_view():
+    deterministic_traits = {
+        "logic": 0.60,
+        "precision": 0.62,
+        "empathy": 0.64,
+        "stability": 0.70,
+    }
     return {
         "ok": True,
         "timestamp": datetime.now(timezone.utc).isoformat(),
-        "personality": {
-            "risk_tolerance": 0.5,
-            "speed_preference": 0.5,
-            "exploration_bias": 0.5,
-            "retry_patience": 0.5,
-        },
+        "personality": dict(deterministic_traits),
+        "partner_traits": deterministic_traits,
+        "traits_mode": "deterministic_static",
     }
 
 
@@ -632,9 +639,8 @@ def evolve_partner(payload: OrganismEvolveRequest):
     partner["tier_index"] = next_index
     partner["autonomy_ceiling"] = min(100, 25 + (next_index * 15))
 
-    traits = partner.setdefault("traits", {"logic": 0.6, "empathy": 0.64, "precision": 0.62})
-    for key in ("logic", "empathy", "precision"):
-        traits[key] = min(1.0, round(float(traits.get(key, 0.5)) + 0.03, 2))
+    partner.setdefault("traits", {"logic": 0.60, "empathy": 0.64, "precision": 0.62, "stability": 0.70})
+    partner["traits_mode"] = "deterministic_static"
 
     history = state.setdefault("evolution_tree", {}).setdefault("history", [])
     history.append(
@@ -763,10 +769,34 @@ def dispatch(req: DispatchRequest, request: Request):
     if not op_key or op_key != OPERATOR_PIN:
         raise HTTPException(status_code=401, detail="operator key required")
 
+    contract = primitives_runtime.validate_contract(
+        {
+            "action_type": "dispatch",
+            "payload": {
+                "goal": req.goal,
+                "category": req.category,
+                "constraints": req.constraints,
+            },
+            "safety": {"irreversible": False, "operator_approved": True},
+            "resources": {"cpu": 1.0, "memory_mb": 512, "timeout_s": 60},
+            "meta": {"source": "api.dispatch", "weaver_validated": True},
+        },
+        regime="dispatch",
+    )
+    if not contract["validation"]["allowed"]:
+        raise HTTPException(
+            status_code=400,
+            detail={
+                "error": "contract_rejected",
+                "violations": contract["validation"]["violations"],
+                "companion_notified": contract["companion_notified"],
+            },
+        )
+
     engine = get_engine()
     created = engine.create_mission(req.goal, req.category, req.constraints)
     run = engine.run_mission(created.get("mission_id", "")) if created.get("mission_id") else {"error": "create_failed"}
-    return {"created": created, "run": run}
+    return {"created": created, "run": run, "contract": contract["validation"]}
 
 
 @app.get("/v1/audit/tail")
@@ -927,6 +957,30 @@ def service_worker():
 
 @app.post("/v1/sovereign/dispatch")
 def sovereign_dispatch(body: SovereignDispatch):
+    contract = primitives_runtime.validate_contract(
+        {
+            "action_type": "create_mission",
+            "payload": {
+                "intent": body.intent,
+                "scope": body.scope,
+                "limits": body.limits,
+            },
+            "safety": {"irreversible": False, "operator_approved": True},
+            "resources": {"cpu": 1.0, "memory_mb": 256, "timeout_s": 30},
+            "meta": {"source": "api.sovereign_dispatch", "weaver_validated": True},
+        },
+        regime="sovereign_dispatch",
+    )
+    if not contract["validation"]["allowed"]:
+        raise HTTPException(
+            status_code=400,
+            detail={
+                "error": "contract_rejected",
+                "violations": contract["validation"]["violations"],
+                "companion_notified": contract["companion_notified"],
+            },
+        )
+
     now = datetime.now(timezone.utc)
     ts = now.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
     mission_id = f"M-{now.strftime('%Y%m%d-%H%M%S')}-{secrets.token_hex(4)}"
@@ -942,7 +996,7 @@ def sovereign_dispatch(body: SovereignDispatch):
     audit_file = DATA_DIR / "audit.jsonl"
     _append_jsonl(missions_file, mission)
     _append_jsonl(audit_file, {"ts": ts, "event": "sovereign_dispatch", "mission_id": mission_id})
-    return {"ok": True, "mission_id": mission_id, "status": "PENDING"}
+    return {"ok": True, "mission_id": mission_id, "status": "PENDING", "contract": contract["validation"]}
 
 
 @app.get("/v1/system/log")

@@ -7,6 +7,6 @@ router = APIRouter()
 def runtime_scoreboard():
     return {
         "ok": True,
-        "personality": "default",
+        "partner_traits_mode": "deterministic_static",
         "timestamp": datetime.now(timezone.utc).isoformat(),
     }
