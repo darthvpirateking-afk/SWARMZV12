@@ -106,7 +106,15 @@ def _extract_mission_id(row: Dict[str, Any]) -> Optional[str]:
     return mid if mid else None
 
 
+def _normalize_mission_id(mission_id: Optional[str]) -> Optional[str]:
+    if mission_id is None:
+        return None
+    mid = str(mission_id).strip()
+    return mid if mid else None
+
+
 def _mission_trace_rows(mission_id: Optional[str], limit: int) -> List[Dict[str, Any]]:
+    mission_id = _normalize_mission_id(mission_id)
     events = _ecosystem.list_timeline()
     missions = _ecosystem.list_missions()
 
@@ -145,7 +153,17 @@ def _mission_trace_rows(mission_id: Optional[str], limit: int) -> List[Dict[str,
         }
 
     rows = list(traces.values())
-    rows.sort(key=lambda item: item.get("result", {}).get("updated_at") or "")
+    for item in rows:
+        steps = item.get("steps", [])
+        if isinstance(steps, list):
+            steps.sort(key=lambda step: str(step.get("created_at") or ""))
+    rows.sort(
+        key=lambda item: (
+            str(item.get("result", {}).get("updated_at") or ""),
+            str(item.get("steps", [])[-1].get("created_at") if item.get("steps") else ""),
+            str(item.get("mission_id") or ""),
+        )
+    )
     return rows[-limit:]
 
 
