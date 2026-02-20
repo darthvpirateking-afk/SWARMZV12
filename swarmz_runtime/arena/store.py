@@ -29,19 +29,20 @@ class ArenaStore:
     def update_run(self, run_id: str, updates: Dict[str, Any]) -> None:
         runs = read_jsonl(self.runs_file)
         for r in runs:
-            if r.get("id") == run_id:
+            if isinstance(r, dict) and r.get("id") == run_id:
                 r.update(updates)
         write_jsonl(self.runs_file, runs)
 
     def get_run(self, run_id: str) -> Optional[Dict[str, Any]]:
         for r in read_jsonl(self.runs_file):
-            if r.get("id") == run_id:
+            if isinstance(r, dict) and r.get("id") == run_id:
                 return r
         return None
 
     def list_runs(self, limit: int = 50) -> List[Dict[str, Any]]:
         runs = read_jsonl(self.runs_file)
-        return runs[-limit:]
+        rows = [row for row in runs if isinstance(row, dict)]
+        return rows[-limit:]
 
     # ── Candidates ───────────────────────────────────────────────────
 
@@ -51,16 +52,18 @@ class ArenaStore:
     def update_candidate(self, candidate_id: str, updates: Dict[str, Any]) -> None:
         cands = read_jsonl(self.candidates_file)
         for c in cands:
-            if c.get("id") == candidate_id:
+            if isinstance(c, dict) and c.get("id") == candidate_id:
                 c.update(updates)
         write_jsonl(self.candidates_file, cands)
 
     def get_candidates_for_run(self, run_id: str) -> List[Dict[str, Any]]:
-        return [c for c in read_jsonl(self.candidates_file)
-                if c.get("run_id") == run_id]
+        return [
+            c for c in read_jsonl(self.candidates_file)
+            if isinstance(c, dict) and c.get("run_id") == run_id
+        ]
 
     def get_candidate(self, candidate_id: str) -> Optional[Dict[str, Any]]:
         for c in read_jsonl(self.candidates_file):
-            if c.get("id") == candidate_id:
+            if isinstance(c, dict) and c.get("id") == candidate_id:
                 return c
         return None
