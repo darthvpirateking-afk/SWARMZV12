@@ -37,4 +37,3 @@ def read_experiments() -> List[Dict[str, Any]]:
 def read_runs() -> List[Dict[str, Any]]:
     ensure_storage()
     return _read_jsonl(GALILEO_DATA_DIR / "runs.jsonl")
-

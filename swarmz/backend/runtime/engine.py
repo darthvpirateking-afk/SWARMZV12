@@ -17,6 +17,7 @@ from backend.core.avatar.state import State
 from backend.core.avatar.presence import Presence
 from backend.core.cosmology.mesh_router import MeshRouter
 
+
 class Engine:
     def __init__(self):
         self.config = None
@@ -47,15 +48,11 @@ class Engine:
             "parser": Parser(),
             "planner": Planner(),
             "executor": Executor(),
-            "reporter": Reporter()
+            "reporter": Reporter(),
         }
         self.swarm_engine = {
             "registry": Registry(),
             "behavior": BehaviorEngine(),
-            "formation": FormationEngine()
+            "formation": FormationEngine(),
         }
-        self.avatar = {
-            "brain": Brain(),
-            "state": State(),
-            "presence": Presence()
-        }
+        self.avatar = {"brain": Brain(), "state": State(), "presence": Presence()}

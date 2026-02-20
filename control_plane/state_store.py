@@ -81,4 +81,3 @@ class StateStore:
     def _append(self, record: dict):
         with open(self._path, "a") as fh:
             fh.write(json.dumps(record, default=str) + "\n")
-

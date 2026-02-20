@@ -11,9 +11,16 @@ def write_png(path: Path, size=(192, 192), color=(124, 58, 237, 255)) -> None:
     raw = b"".join(b"\x00" + bytes(color) * w for _ in range(h))
 
     def chunk(t: bytes, data: bytes) -> bytes:
-        return struct.pack(">I", len(data)) + t + data + struct.pack(">I", zlib.crc32(t + data) & 0xFFFFFFFF)
+        return (
+            struct.pack(">I", len(data))
+            + t
+            + data
+            + struct.pack(">I", zlib.crc32(t + data) & 0xFFFFFFFF)
+        )
 
-    png = b"\x89PNG\r\n\x1a\n" + chunk(b"IHDR", struct.pack(">IIBBBBB", w, h, 8, 6, 0, 0, 0))
+    png = b"\x89PNG\r\n\x1a\n" + chunk(
+        b"IHDR", struct.pack(">IIBBBBB", w, h, 8, 6, 0, 0, 0)
+    )
     png += chunk(b"IDAT", zlib.compress(raw, 9))
     png += chunk(b"IEND", b"")
 
@@ -30,4 +37,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

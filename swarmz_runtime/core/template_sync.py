@@ -78,7 +78,9 @@ class TemplateSyncManager:
         cfg = self.get_config()
         cfg["operator_id"] = operator_id.strip()
         if allowlist is not None:
-            cfg["allowlist"] = [entry.strip() for entry in allowlist if entry and entry.strip()]
+            cfg["allowlist"] = [
+                entry.strip() for entry in allowlist if entry and entry.strip()
+            ]
         if auto_sync is not None:
             cfg["auto_sync"] = bool(auto_sync)
         if sync_interval_hours is not None:
@@ -121,7 +123,11 @@ class TemplateSyncManager:
         self._append_jsonl(self._jobs_path, job)
 
         if dry_run:
-            return {"ok": True, "job": job, "message": "Dry-run only. No remote fetch executed."}
+            return {
+                "ok": True,
+                "job": job,
+                "message": "Dry-run only. No remote fetch executed.",
+            }
 
         record = {
             "template_id": f"tpl-{secrets.token_hex(4)}",

@@ -29,7 +29,11 @@ def test_blueprint_to_fulfillment_pipeline(client, tmp_path, monkeypatch):
 
     bp = client.post(
         "/v1/blueprints",
-        json={"name": "Digital Operator Pack", "spec": {"artifact": "bundle.zip"}, "owner": "operator"},
+        json={
+            "name": "Digital Operator Pack",
+            "spec": {"artifact": "bundle.zip"},
+            "owner": "operator",
+        },
     )
     assert bp.status_code == 200
     blueprint_id = bp.json()["blueprint"]["blueprint_id"]
@@ -57,15 +61,23 @@ def test_blueprint_to_fulfillment_pipeline(client, tmp_path, monkeypatch):
     assert catalog.status_code == 200
     assert catalog.json()["count"] >= 1
 
-    checkout = client.post("/v1/store/checkout", json={"sku": sku, "quantity": 2, "payment_provider": "manual"})
+    checkout = client.post(
+        "/v1/store/checkout",
+        json={"sku": sku, "quantity": 2, "payment_provider": "manual"},
+    )
     assert checkout.status_code == 200
     order_id = checkout.json()["order"]["order_id"]
 
-    paid = client.post("/v1/store/payment-webhook", json={"order_id": order_id, "event": "payment_succeeded"})
+    paid = client.post(
+        "/v1/store/payment-webhook",
+        json={"order_id": order_id, "event": "payment_succeeded"},
+    )
     assert paid.status_code == 200
     assert paid.json()["ok"] is True
 
-    fulfilled = client.post(f"/v1/store/orders/{order_id}/fulfill", json={"mode": "digital"})
+    fulfilled = client.post(
+        f"/v1/store/orders/{order_id}/fulfill", json={"mode": "digital"}
+    )
     assert fulfilled.status_code == 200
     assert fulfilled.json()["ok"] is True
 

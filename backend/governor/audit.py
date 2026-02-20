@@ -1,5 +1,6 @@
 # Audit module for SWARMZ governor
 
+
 class Audit:
     def __init__(self):
         self.logs = []

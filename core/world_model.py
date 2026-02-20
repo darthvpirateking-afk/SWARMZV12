@@ -52,7 +52,9 @@ class WorldModel:
         successes = sum(1 for e in entries if e.get("success_bool"))
         failures = len(entries) - successes
         latency = sum(e.get("runtime_ms", 0.0) for e in entries) / max(len(entries), 1)
-        resource = sum(e.get("cost_estimate", 0.0) for e in entries) / max(len(entries), 1)
+        resource = sum(e.get("cost_estimate", 0.0) for e in entries) / max(
+            len(entries), 1
+        )
         throughput = len(entries) / max((entries and 24.0) or 1.0, 1.0)
         return {
             "throughput": throughput,
@@ -120,7 +122,11 @@ class WorldModel:
 
     def recompute(self) -> Dict[str, Any]:
         perf = self._load_perf()
-        roots = [self.data_dir.parent / "addons", self.data_dir.parent / "src", self.data_dir.parent / "packs"]
+        roots = [
+            self.data_dir.parent / "addons",
+            self.data_dir.parent / "src",
+            self.data_dir.parent / "packs",
+        ]
         activity = self._gather_file_activity(roots)
         state = {
             "time_allocation": perf.get("throughput", 0.0),
@@ -128,7 +134,8 @@ class WorldModel:
             "financial_flow": perf.get("resource_usage", 0.0),
             "commitment_load": activity.get("recent_hours", 0),
             "recent_outputs": self._recent_outputs(),
-            "idle_vs_execution_ratio": perf.get("throughput", 0.0) / max(perf.get("throughput", 1.0) + 1, 1),
+            "idle_vs_execution_ratio": perf.get("throughput", 0.0)
+            / max(perf.get("throughput", 1.0) + 1, 1),
             "strategy_variance": self._strategy_variance(),
             "trend_vector": self._trend_vector(),
             "last_updated": datetime.now(timezone.utc).isoformat(),
@@ -148,4 +155,3 @@ class WorldModel:
                 return json.load(f)
         except Exception:
             return self.recompute()
-

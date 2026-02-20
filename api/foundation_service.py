@@ -10,7 +10,6 @@ from api.foundation_models import (
     ApiRouteEntry,
 )
 
-
 FOUNDATION_DOMAINS = [
     "cyber",
     "security",
@@ -68,7 +67,9 @@ class ApiFoundationService:
             methods: Iterable[str] = getattr(route, "methods", [])
             if not path or not isinstance(path, str):
                 continue
-            normalized_methods = sorted([m for m in methods if m not in {"HEAD", "OPTIONS"}])
+            normalized_methods = sorted(
+                [m for m in methods if m not in {"HEAD", "OPTIONS"}]
+            )
             if not normalized_methods:
                 continue
             entries.append(ApiRouteEntry(path=path, methods=normalized_methods))

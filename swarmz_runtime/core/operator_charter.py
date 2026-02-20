@@ -4,7 +4,6 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import Any, Dict, List
 
-
 OPERATOR_PRIME_DIRECTIVE = (
     "All systems, agents, organisms, and autonomous processes must act in service of the "
     "Operator's intent, protection, and advantage—never in conflict with them. When intent "
@@ -100,13 +99,18 @@ class CharterDecision:
         }
 
 
-def evaluate_prime_directive(intent: str, explicit: bool, action: str, requested_autonomy: int, max_autonomy: int) -> CharterDecision:
+def evaluate_prime_directive(
+    intent: str, explicit: bool, action: str, requested_autonomy: int, max_autonomy: int
+) -> CharterDecision:
     if not intent.strip() and not explicit:
         return CharterDecision(
             mode="minimal_action",
             allowed=False,
             rationale="Operator intent unclear; defaulting to safety and minimal action.",
-            constraints=["require_operator_clarification", "freeze_high_risk_execution"],
+            constraints=[
+                "require_operator_clarification",
+                "freeze_high_risk_execution",
+            ],
         )
 
     capped = min(100, max(0, requested_autonomy))
@@ -118,8 +122,15 @@ def evaluate_prime_directive(intent: str, explicit: bool, action: str, requested
             constraints=[f"autonomy_cap={max_autonomy}", "require_operator_override"],
         )
 
-    is_high_risk = any(k in action.lower() for k in ["rollback", "withdraw", "execute", "publish", "high_risk"])
-    constraints = ["ledger_log_required", "policy_engine_required", "governance_agent_required"]
+    is_high_risk = any(
+        k in action.lower()
+        for k in ["rollback", "withdraw", "execute", "publish", "high_risk"]
+    )
+    constraints = [
+        "ledger_log_required",
+        "policy_engine_required",
+        "governance_agent_required",
+    ]
     if is_high_risk:
         constraints.append("approval_required_for_irreversible")
 
@@ -243,7 +254,11 @@ def evaluate_operating_matrix(
     return {
         "mode": "matrix_pass" if allowed else "matrix_block",
         "allowed": allowed,
-        "rationale": "Operating matrix constraints satisfied." if allowed else "Operating matrix rejected action.",
+        "rationale": (
+            "Operating matrix constraints satisfied."
+            if allowed
+            else "Operating matrix rejected action."
+        ),
         "violations": violations,
         "evaluated_at": datetime.now(timezone.utc).isoformat(),
     }

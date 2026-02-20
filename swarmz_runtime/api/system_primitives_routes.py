@@ -4,8 +4,10 @@ from typing import Any, Dict
 from fastapi import APIRouter
 from pydantic import BaseModel, Field
 
-from swarmz_runtime.core.system_primitives import ERROR_TAXONOMY, SystemPrimitivesRuntime
-
+from swarmz_runtime.core.system_primitives import (
+    ERROR_TAXONOMY,
+    SystemPrimitivesRuntime,
+)
 
 router = APIRouter()
 _runtime = SystemPrimitivesRuntime(Path(__file__).resolve().parent.parent.parent)
@@ -55,7 +57,9 @@ def error_taxonomy():
 def solve_constraints(payload: ConstraintSolveRequest):
     return {
         "ok": True,
-        "decision": _runtime.solve_constraints(payload.mission_type, payload.constraints, payload.facts),
+        "decision": _runtime.solve_constraints(
+            payload.mission_type, payload.constraints, payload.facts
+        ),
     }
 
 
@@ -67,12 +71,19 @@ def validate_contract(payload: ContractValidateRequest):
 
 @router.post("/system-primitives/missions/compile")
 def compile_mission(payload: MissionCompileRequest):
-    return _runtime.compile_mission(payload.intent, payload.mission_type, payload.constraints, payload.context)
+    return _runtime.compile_mission(
+        payload.intent, payload.mission_type, payload.constraints, payload.context
+    )
 
 
 @router.post("/system-primitives/reality-sync/push")
 def push_reality_event(payload: RealitySyncPushRequest):
-    return {"ok": True, "event": _runtime.push_reality_event(payload.event_type, payload.payload, payload.source)}
+    return {
+        "ok": True,
+        "event": _runtime.push_reality_event(
+            payload.event_type, payload.payload, payload.source
+        ),
+    }
 
 
 @router.post("/system-primitives/reality-sync/drain")
@@ -82,7 +93,9 @@ def drain_reality_events(payload: RealitySyncDrainRequest):
 
 @router.post("/system-primitives/override/execute")
 def execute_override(payload: OperatorOverrideRequest):
-    return _runtime.execute_override(payload.command, payload.args, payload.operator_approved, payload.reason)
+    return _runtime.execute_override(
+        payload.command, payload.args, payload.operator_approved, payload.reason
+    )
 
 
 @router.get("/system-primitives/state")

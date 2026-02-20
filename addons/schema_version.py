@@ -84,7 +84,9 @@ def run_migrations(data_dir: str = "data") -> List[str]:
             _backup_data(dp, label)
             _MIGRATIONS[ver](dp)
             _write_version(state_file, ver)
-            _append_audit("schema_migration", {"from": current, "to": ver, "label": label}, dp)
+            _append_audit(
+                "schema_migration", {"from": current, "to": ver, "label": label}, dp
+            )
             current = ver
             applied.append(label)
 
@@ -184,7 +186,9 @@ def _migrate_v6(data_dir: Path) -> None:
             "enabled": True,
             "created_at": datetime.now(timezone.utc).isoformat(),
         }
-        companion_file.write_text(json.dumps(companion_payload, indent=2), encoding="utf-8")
+        companion_file.write_text(
+            json.dumps(companion_payload, indent=2), encoding="utf-8"
+        )
 
     milestones_file = data_dir / "build_milestones_state.json"
     if not milestones_file.exists():
@@ -214,8 +218,9 @@ def _migrate_v6(data_dir: Path) -> None:
             "history": history,
             "created_at": datetime.now(timezone.utc).isoformat(),
         }
-        milestones_file.write_text(json.dumps(milestones_payload, indent=2), encoding="utf-8")
+        milestones_file.write_text(
+            json.dumps(milestones_payload, indent=2), encoding="utf-8"
+        )
 
 
 register_migration(6, _migrate_v6)
-

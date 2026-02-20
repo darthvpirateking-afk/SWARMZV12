@@ -2,6 +2,7 @@
 # This module transforms fabrics into continuous supra-dimensional fields.
 # Missions and swarm operations can operate across continuous gradients.
 
+
 class SupraFabricEngineV1:
     def __init__(self):
         # Initialize fabric continua
@@ -12,7 +13,7 @@ class SupraFabricEngineV1:
         self.continua[name] = {
             "dimensions": dimensions,
             "gradient": gradient,
-            "topology": "continuous"
+            "topology": "continuous",
         }
 
     def set_gradient(self, name, gradient):
@@ -24,9 +25,10 @@ class SupraFabricEngineV1:
         """Merge two continua into a new supra-topology."""
         if name1 in self.continua and name2 in self.continua:
             self.continua[new_name] = {
-                "dimensions": self.continua[name1]["dimensions"] + self.continua[name2]["dimensions"],
+                "dimensions": self.continua[name1]["dimensions"]
+                + self.continua[name2]["dimensions"],
                 "gradient": "merged",
-                "topology": "merged-continuum"
+                "topology": "merged-continuum",
             }
             del self.continua[name1]
             del self.continua[name2]
@@ -34,6 +36,7 @@ class SupraFabricEngineV1:
     def list_continua(self):
         """List all fabric continua."""
         return self.continua
+
 
 # Example usage
 if __name__ == "__main__":

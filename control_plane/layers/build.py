@@ -16,4 +16,3 @@ class BuildLayer(BaseLayer):
     def collect(self) -> list[dict]:
         current = self._state.get_value("build.pass_rate", 100)
         return [self._make_record("build.pass_rate", current, units="percent")]
-

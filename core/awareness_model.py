@@ -23,7 +23,7 @@ import statistics
 from dataclasses import dataclass, asdict
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List
 
 from jsonl_utils import read_jsonl
 from core.atomic import atomic_append_jsonl
@@ -39,10 +39,10 @@ AWARENESS_LOG = DATA_DIR / "audit_awareness.jsonl"
 # â”€â”€ Config / thresholds â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 AWARENESS_CONFIG: Dict[str, Any] = {
-    "instability_window": 20,          # how many recent missions to consider
+    "instability_window": 20,  # how many recent missions to consider
     "instability_quarantine_rate": 0.3,
-    "coupling_min_shared": 2,          # how many missions per resource to flag coupling
-    "bounded_window": 20,              # how many recent missions to inspect for stagnation
+    "coupling_min_shared": 2,  # how many missions per resource to flag coupling
+    "bounded_window": 20,  # how many recent missions to inspect for stagnation
 }
 
 
@@ -81,6 +81,7 @@ class NormalizedEvent:
 
 # â”€â”€ Low-level loaders (read-only) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
+
 def _load_missions() -> List[Dict[str, Any]]:
     rows, _, _ = read_jsonl(MISSIONS_FILE)
     return rows
@@ -92,6 +93,7 @@ def _load_audit_events() -> List[Dict[str, Any]]:
 
 
 # â”€â”€ Normalization â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
 
 def _safe_iso(ts: str | None) -> str:
     if not ts:
@@ -172,6 +174,7 @@ def normalize_events() -> List[Dict[str, Any]]:
 
 # â”€â”€ Topology model â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
+
 def build_topology() -> Dict[str, Any]:
     """Build a lightweight topology from normalized events.
 
@@ -189,14 +192,17 @@ def build_topology() -> Dict[str, Any]:
 
     for ev in events:
         mid = ev["mission_id"]
-        node = nodes.setdefault(mid, {
-            "mission_id": mid,
-            "size": 0,
-            "risk": [],
-            "status": ev.get("result") or "",
-            "last_event_at": ev["timestamp"],
-            "resources": set(),
-        })
+        node = nodes.setdefault(
+            mid,
+            {
+                "mission_id": mid,
+                "size": 0,
+                "risk": [],
+                "status": ev.get("result") or "",
+                "last_event_at": ev["timestamp"],
+                "resources": set(),
+            },
+        )
 
         node["size"] += 1
         node["risk"].append(ev.get("risk_score", 0.0))
@@ -222,12 +228,14 @@ def build_topology() -> Dict[str, Any]:
         # Fully connect missions sharing this resource
         for i, src in enumerate(uniq):
             for dst in uniq[i + 1 :]:
-                edges.append({
-                    "source": src,
-                    "target": dst,
-                    "resource": resource,
-                    "weight": 1.0,
-                })
+                edges.append(
+                    {
+                        "source": src,
+                        "target": dst,
+                        "resource": resource,
+                        "weight": 1.0,
+                    }
+                )
 
     topology = {
         "nodes": list(nodes.values()),
@@ -241,6 +249,7 @@ def build_topology() -> Dict[str, Any]:
 
 
 # â”€â”€ Alerts / pressure model â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
 
 def compute_alerts(topology: Dict[str, Any]) -> Dict[str, Any]:
     """Compute read-only warning flags from a topology snapshot."""
@@ -256,7 +265,10 @@ def compute_alerts(topology: Dict[str, Any]) -> Dict[str, Any]:
 
     # Instability: mirrors QUARANTINE logic from swarmz_server.compute_phase
     variance_rising = False
-    if total_missions >= 10 and success_rate < AWARENESS_CONFIG["instability_quarantine_rate"]:
+    if (
+        total_missions >= 10
+        and success_rate < AWARENESS_CONFIG["instability_quarantine_rate"]
+    ):
         variance_rising = True
 
     # Coupling: detect resources shared by many missions
@@ -264,11 +276,17 @@ def compute_alerts(topology: Dict[str, Any]) -> Dict[str, Any]:
     for n in nodes:
         for r in n.get("resources", []):
             resource_counts[r] = resource_counts.get(r, 0) + 1
-    coupling_resources = [r for r, c in resource_counts.items() if c >= AWARENESS_CONFIG["coupling_min_shared"]]
+    coupling_resources = [
+        r
+        for r, c in resource_counts.items()
+        if c >= AWARENESS_CONFIG["coupling_min_shared"]
+    ]
     coupling_detected = bool(coupling_resources)
 
     # Bounded results: many missions but almost no SUCCESS
-    bounded_results = total_missions >= AWARENESS_CONFIG["bounded_window"] and successes == 0
+    bounded_results = (
+        total_missions >= AWARENESS_CONFIG["bounded_window"] and successes == 0
+    )
 
     return {
         "variance_rising": variance_rising,
@@ -281,6 +299,7 @@ def compute_alerts(topology: Dict[str, Any]) -> Dict[str, Any]:
 
 
 # â”€â”€ Self-check / audit helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
 
 def _audit(event: str, payload: Dict[str, Any]) -> None:
     entry = {
@@ -310,4 +329,3 @@ def self_check() -> Dict[str, Any]:
     _audit("awareness_self_check", payload)
 
     return {"ok": True, **payload}
-

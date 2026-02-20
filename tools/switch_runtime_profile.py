@@ -6,6 +6,7 @@ Usage:
   python tools/switch_runtime_profile.py render
   python tools/switch_runtime_profile.py --show
 """
+
 from __future__ import annotations
 
 import argparse
@@ -69,7 +70,9 @@ def _switch(profile: str) -> int:
 def main() -> int:
     parser = argparse.ArgumentParser(description="Switch SWARMZ runtime profile")
     parser.add_argument("profile", nargs="?", choices=sorted(PROFILE_FILES.keys()))
-    parser.add_argument("--show", action="store_true", help="Show active runtime.json settings")
+    parser.add_argument(
+        "--show", action="store_true", help="Show active runtime.json settings"
+    )
     args = parser.parse_args()
 
     if args.show:

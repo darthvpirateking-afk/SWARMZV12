@@ -60,8 +60,9 @@ def check_guardrails(guardrails: list, state_values: Dict[str, Any]) -> bool:
     return True
 
 
-def compute_benefit(action: dict, active_objectives: List[dict],
-                    target_ranges: Dict[str, float]) -> float:
+def compute_benefit(
+    action: dict, active_objectives: List[dict], target_ranges: Dict[str, float]
+) -> float:
     """Compute normalized Benefit from active objective weights."""
     total = 0.0
     for obj in active_objectives:
@@ -86,9 +87,9 @@ def compute_risk(action: dict) -> float:
     return 1.0 - min(confs)
 
 
-def compute_coupling_damage(action: dict, edges: List[dict],
-                            target_ranges: Dict[str, float],
-                            target_vars: set) -> float:
+def compute_coupling_damage(
+    action: dict, edges: List[dict], target_ranges: Dict[str, float], target_vars: set
+) -> float:
     """Propagate expected effects through 1-2 hops of coupling edges.
 
     Only penalize negative impacts on non-target variables.
@@ -139,26 +140,29 @@ def compute_coupling_damage(action: dict, edges: List[dict],
 
 def compute_uncertainty(action: dict, edges: List[dict]) -> float:
     """Uncertainty = 1 − min(min_conf_effects, min_edge_conf_traversed)."""
-    effect_confs = [e.get("confidence", 0.5) for e in action.get("expected_effects", [])]
+    effect_confs = [
+        e.get("confidence", 0.5) for e in action.get("expected_effects", [])
+    ]
     if not effect_confs:
         return 1.0
 
     # Find edge confidences traversed by this action's effects
     affected_vars = {e["variable"] for e in action.get("expected_effects", [])}
-    edge_confs = [e["confidence"] for e in edges
-                  if e["from_variable"] in affected_vars]
+    edge_confs = [e["confidence"] for e in edges if e["from_variable"] in affected_vars]
 
     min_eff = min(effect_confs)
     min_edge = min(edge_confs) if edge_confs else 1.0
     return 1.0 - min(min_eff, min_edge)
 
 
-def score_action(action: dict,
-                 active_objectives: List[dict],
-                 lambdas: Dict[str, float],
-                 target_ranges: Dict[str, float],
-                 edges: List[dict],
-                 state_values: Dict[str, Any]) -> Optional[Tuple[float, dict]]:
+def score_action(
+    action: dict,
+    active_objectives: List[dict],
+    lambdas: Dict[str, float],
+    target_ranges: Dict[str, float],
+    edges: List[dict],
+    state_values: Dict[str, Any],
+) -> Optional[Tuple[float, dict]]:
     """Score a single action. Returns (score, breakdown) or None if ineligible."""
     # Check hard constraints
     if not check_constraints(action, state_values):
@@ -199,12 +203,14 @@ def score_action(action: dict,
     return (score, breakdown)
 
 
-def select_best_action(actions: List[dict],
-                       active_objectives: List[dict],
-                       lambdas: Dict[str, float],
-                       target_ranges: Dict[str, float],
-                       edges: List[dict],
-                       state_values: Dict[str, Any]) -> Tuple[Optional[dict], Optional[dict]]:
+def select_best_action(
+    actions: List[dict],
+    active_objectives: List[dict],
+    lambdas: Dict[str, float],
+    target_ranges: Dict[str, float],
+    edges: List[dict],
+    state_values: Dict[str, Any],
+) -> Tuple[Optional[dict], Optional[dict]]:
     """Score all actions and return the best one.
 
     Returns (best_action, breakdown) or (None, None) if all suppressed.
@@ -212,8 +218,9 @@ def select_best_action(actions: List[dict],
     candidates: List[Tuple[float, dict, dict]] = []
 
     for action in actions:
-        result = score_action(action, active_objectives, lambdas,
-                              target_ranges, edges, state_values)
+        result = score_action(
+            action, active_objectives, lambdas, target_ranges, edges, state_values
+        )
         if result is not None:
             score, breakdown = result
             candidates.append((score, action, breakdown))
@@ -224,8 +231,10 @@ def select_best_action(actions: List[dict],
     # Sort: highest score first, then tie-breakers
     def sort_key(item):
         score, action, _bd = item
-        min_conf = min((e.get("confidence", 0.5)
-                        for e in action.get("expected_effects", [])), default=0)
+        min_conf = min(
+            (e.get("confidence", 0.5) for e in action.get("expected_effects", [])),
+            default=0,
+        )
         return (
             -score,
             -min_conf,

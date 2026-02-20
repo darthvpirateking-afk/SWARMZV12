@@ -11,6 +11,7 @@ Guides first-time setup:
 - run doctor
 - start server once and confirm /v1/health
 """
+
 from __future__ import annotations
 
 import json
@@ -119,12 +120,26 @@ def wait_for_health(port: int, host: str, timeout: float = 20.0) -> bool:
 
 
 def start_server_once(host: str, port: int, offline: bool) -> bool:
-    cmd = [sys.executable, str(ROOT / "run_server.py"), "--port", str(port), "--host", host]
+    cmd = [
+        sys.executable,
+        str(ROOT / "run_server.py"),
+        "--port",
+        str(port),
+        "--host",
+        host,
+    ]
     print(f"Starting server once: {' '.join(cmd)}")
     env = os.environ.copy()
     if offline:
         env["OFFLINE_MODE"] = "1"
-    proc = subprocess.Popen(cmd, cwd=ROOT, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, env=env)
+    proc = subprocess.Popen(
+        cmd,
+        cwd=ROOT,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        env=env,
+    )
     ok = False
     try:
         ok = wait_for_health(port, host)
@@ -172,4 +187,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

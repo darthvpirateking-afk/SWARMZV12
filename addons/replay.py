@@ -76,4 +76,3 @@ def replay_state(audit_path: str | None = None) -> Dict[str, Any]:
         "quarantine_events": quarantine_events,
         "replayed_at": datetime.now(timezone.utc).isoformat(),
     }
-

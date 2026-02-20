@@ -1,4 +1,3 @@
-
 # MIT License
 # Copyright (c) 2026 SWARMZ
 #
@@ -27,13 +26,16 @@ Implements the Reality Classifier layer to categorize actions based on risk.
 import json
 import logging
 import fnmatch
+
 logging.basicConfig(level=logging.DEBUG)
 
 CONFIG_PATH = "config/reality_classifier.json"
 
+
 def load_classifier_config():
     with open(CONFIG_PATH, "r") as f:
         return json.load(f)
+
 
 def classify_action(action_name):
     config = load_classifier_config()
@@ -41,11 +43,14 @@ def classify_action(action_name):
     for rule in config["rules"]:
         pattern = rule["pattern"]
         # Use fnmatchcase for strict matching, fallback to fnmatch for compatibility
-        if fnmatch.fnmatchcase(action_name, pattern) or fnmatch.fnmatch(action_name, pattern):
+        if fnmatch.fnmatchcase(action_name, pattern) or fnmatch.fnmatch(
+            action_name, pattern
+        ):
             logging.debug(f"Matched rule: {rule}")
             return config["classifiers"].get(rule["class"], "ALLOW")
     logging.debug("No matching rule found. Defaulting to ALLOW.")
     return "ALLOW"
+
 
 def handle_action(action_name):
     classification = classify_action(action_name)

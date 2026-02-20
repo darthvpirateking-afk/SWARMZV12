@@ -1,5 +1,6 @@
 # Telemetry module for SWARMZ runtime
 
+
 class Telemetry:
     def __init__(self):
         self.events = []

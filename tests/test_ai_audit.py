@@ -6,9 +6,9 @@ tests/test_ai_audit.py â€” Tests for core/ai_audit.py (Commit 3).
 """
 
 
-
 def test_log_model_call():
     from core.ai_audit import log_model_call, tail_ai
+
     log_model_call(
         provider="test",
         model="test-model",
@@ -28,6 +28,7 @@ def test_log_model_call():
 
 def test_log_decision():
     from core.ai_audit import log_decision, tail_decisions
+
     log_decision(
         decision_type="strategy_selection",
         mission_id="test_m1",
@@ -47,10 +48,10 @@ def test_log_decision():
 
 def test_sequence_numbers_increment():
     from core.ai_audit import log_model_call, tail_ai
+
     log_model_call(provider="seq1", model="m", ok=True)
     log_model_call(provider="seq2", model="m", ok=True)
     entries = tail_ai(10)
     seq_entries = [e for e in entries if e.get("provider", "").startswith("seq")]
     if len(seq_entries) >= 2:
         assert seq_entries[-1]["seq"] > seq_entries[-2]["seq"]
-

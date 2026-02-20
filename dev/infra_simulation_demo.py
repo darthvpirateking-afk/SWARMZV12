@@ -62,7 +62,9 @@ def main() -> None:
     try:
         o = _get("/v1/infra/overview")
         if o.status_code == 404:
-            print("[dev] /v1/infra/* endpoints are disabled (infra_orchestrator_enabled=False).")
+            print(
+                "[dev] /v1/infra/* endpoints are disabled (infra_orchestrator_enabled=False)."
+            )
             return
     except Exception as exc:  # pragma: no cover
         print(f"[dev] Error calling /v1/infra/overview: {exc}")
@@ -70,8 +72,22 @@ def main() -> None:
 
     # Send a couple of sample metrics.
     samples = [
-        {"node_id": "node-1", "cpu": 0.9, "memory": 0.8, "disk": 0.7, "net_rx": 10, "net_tx": 5},
-        {"node_id": "node-2", "cpu": 0.2, "memory": 0.3, "disk": 0.4, "net_rx": 1, "net_tx": 2},
+        {
+            "node_id": "node-1",
+            "cpu": 0.9,
+            "memory": 0.8,
+            "disk": 0.7,
+            "net_rx": 10,
+            "net_tx": 5,
+        },
+        {
+            "node_id": "node-2",
+            "cpu": 0.2,
+            "memory": 0.3,
+            "disk": 0.4,
+            "net_rx": 1,
+            "net_tx": 2,
+        },
     ]
     for s in samples:
         try:
@@ -109,4 +125,3 @@ def main() -> None:
 
 if __name__ == "__main__":  # pragma: no cover
     main()
-

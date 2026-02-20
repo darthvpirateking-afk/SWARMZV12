@@ -17,5 +17,7 @@ async def companion_core_status() -> CompanionCoreStatusResponse:
 
 
 @router.post("/message", response_model=CompanionCoreMessageResponse)
-async def companion_core_message(payload: CompanionCoreMessageRequest) -> CompanionCoreMessageResponse:
+async def companion_core_message(
+    payload: CompanionCoreMessageRequest,
+) -> CompanionCoreMessageResponse:
     return _service.message(payload.text)

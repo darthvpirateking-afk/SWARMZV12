@@ -8,17 +8,14 @@ import os
 import json
 import socket
 import secrets
-import traceback
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, Any, Optional, List
 
 from fastapi import FastAPI, Request, HTTPException, Query
-from fastapi.responses import HTMLResponse, JSONResponse, FileResponse, Response
+from fastapi.responses import HTMLResponse, FileResponse, Response
 from fastapi.staticfiles import StaticFiles
-from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
-from zoneinfo import ZoneInfo
 
 from contextlib import asynccontextmanager
 
@@ -27,9 +24,8 @@ logger = logging.getLogger("swarmz.server")
 from swarmz_runtime.core.engine import SwarmzEngine
 from jsonl_utils import read_jsonl
 from kernel_runtime.orchestrator import SwarmzOrchestrator
-from swarmz_runtime.api import missions, system, admin, ecosystem
+from swarmz_runtime.api import system, admin, ecosystem
 from . import arena as arena_api
-from .runtime_endpoints import runtime_scoreboard
 from .missions import router as missions_router
 from .system import router as system_router
 from .admin import router as admin_router
@@ -47,7 +43,6 @@ from .system_primitives_routes import router as system_primitives_routes_router
 from swarmz_runtime.core.system_primitives import SystemPrimitivesRuntime
 from addons.api.addons_router import router as addons_router
 from addons.api.guardrails_router import router as guardrails_router
-from .companion_state import companion_state
 
 # ---- cheap constants only (NO orchestrator creation here) ----
 BASE_DIR = Path(__file__).resolve().parent
@@ -57,10 +52,12 @@ UI_DIR = ROOT_DIR / "web_ui"
 DATA_DIR.mkdir(exist_ok=True, parents=True)
 START_TIME = datetime.now(timezone.utc)
 
+
 def build_orchestrator():
     """Initialize and return a SwarmzOrchestrator instance."""
     orchestrator_instance = SwarmzOrchestrator()
     return orchestrator_instance
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -68,6 +65,7 @@ async def lifespan(app: FastAPI):
     app.state.orchestrator = build_orchestrator()
     yield
     # shutdown: optional cleanup
+
 
 def create_app() -> FastAPI:
     app = FastAPI(lifespan=lifespan)
@@ -79,21 +77,27 @@ def create_app() -> FastAPI:
     app.include_router(factory_routes_router, prefix="/v1/factory", tags=["factory"])
     app.include_router(meta_routes_router, prefix="/v1/meta", tags=["meta"])
     app.include_router(operational_routes_router, prefix="/v1", tags=["operational"])
-    app.include_router(operator_ecosystem_routes_router, prefix="/v1", tags=["operator-os"])
+    app.include_router(
+        operator_ecosystem_routes_router, prefix="/v1", tags=["operator-os"]
+    )
     app.include_router(federation_routes_router, prefix="/v1", tags=["federation"])
     app.include_router(charter_routes_router, prefix="/v1", tags=["charter"])
     app.include_router(fusion_routes_router, prefix="/v1", tags=["fusion"])
     app.include_router(primal_routes_router, prefix="/v1", tags=["primal"])
-    app.include_router(template_sync_routes_router, prefix="/v1", tags=["template-sync"])
-    app.include_router(system_primitives_routes_router, prefix="/v1", tags=["system-primitives"])
+    app.include_router(
+        template_sync_routes_router, prefix="/v1", tags=["template-sync"]
+    )
+    app.include_router(
+        system_primitives_routes_router, prefix="/v1", tags=["system-primitives"]
+    )
     app.include_router(addons_router, prefix="/v1/addons", tags=["addons"])
     app.include_router(guardrails_router, prefix="/v1/guardrails", tags=["guardrails"])
 
     return app
 
+
 # Create the app instance
 app = create_app()
-
 
 
 class SovereignDispatch(BaseModel):
@@ -101,8 +105,10 @@ class SovereignDispatch(BaseModel):
     scope: Any = Field(default_factory=dict)
     limits: Any = Field(default_factory=dict)
 
+
 class PairRequest(BaseModel):
     pin: str
+
 
 class DispatchRequest(BaseModel):
     goal: str
@@ -169,7 +175,9 @@ def _load_runtime_config() -> Dict[str, Any]:
     cfg: Dict[str, Any] = {}
     if isinstance(raw, dict):
         cfg.update(raw)
-        api_base = raw.get("apiBaseUrl") or raw.get("api_base") or raw.get("api_base_url")
+        api_base = (
+            raw.get("apiBaseUrl") or raw.get("api_base") or raw.get("api_base_url")
+        )
         ui_base = raw.get("uiBaseUrl") or raw.get("ui_base") or raw.get("ui_base_url")
         if api_base:
             cfg["apiBaseUrl"] = api_base
@@ -403,16 +411,16 @@ engine.offline_mode = OFFLINE_MODE
 engine.operator_key = OPERATOR_PIN
 primitives_runtime = SystemPrimitivesRuntime(ROOT_DIR)
 
+
 # Engine provider for all modules (used to avoid circular imports)
 def get_engine():
     return engine
+
 
 system.get_engine = get_engine
 admin.get_engine = get_engine
 ecosystem.set_engine_provider(get_engine)
 arena_api.get_engine = get_engine
-
-
 
 
 @app.get("/v1/companion/state", tags=["companion"])
@@ -424,8 +432,6 @@ def companion_state():
         "self_assessment": "MASTER_SWARMZ companion state is active.",
     }
 
-def companion_history(tail: int = 10):
-    return {"ok": True, "records": [], "history": [], "read_only": True}
 
 @app.get("/health")
 def health():
@@ -434,7 +440,7 @@ def health():
 
 @app.get("/arena", response_class=HTMLResponse)
 def arena_page():
-        return """
+    return """
         <!doctype html>
         <html>
             <head><title>SWARMZ Arena</title></head>
@@ -448,7 +454,12 @@ def arena_page():
 @app.get("/v1/health")
 def health_v1():
     uptime = (datetime.now(timezone.utc) - START_TIME).total_seconds()
-    return {"ok": True, "status": "ok", "uptime_seconds": int(uptime), "offline_mode": OFFLINE_MODE}
+    return {
+        "ok": True,
+        "status": "ok",
+        "uptime_seconds": int(uptime),
+        "offline_mode": OFFLINE_MODE,
+    }
 
 
 @app.get("/v1/pairing/info")
@@ -468,7 +479,12 @@ def pairing_pair(payload: PairRequest):
 
 @app.get("/v1/runtime/status")
 def runtime_status():
-    return {"ok": True, "active_agents": 0, "queued_tasks": 0, "system_load_estimate": 0.0}
+    return {
+        "ok": True,
+        "active_agents": 0,
+        "queued_tasks": 0,
+        "system_load_estimate": 0.0,
+    }
 
 
 @app.get("/v1/runtime/scoreboard")
@@ -642,7 +658,9 @@ def set_shadow_mode(payload: ShadowModeRequest):
     state["shadow_mode"] = {
         "enabled": bool(payload.enabled),
         "lane": payload.lane,
-        "last_activation": datetime.now(timezone.utc).isoformat() if payload.enabled else None,
+        "last_activation": (
+            datetime.now(timezone.utc).isoformat() if payload.enabled else None
+        ),
     }
     _write_command_center_state(state)
     return {"ok": True, "shadow_mode": state["shadow_mode"]}
@@ -660,7 +678,9 @@ def evolve_partner(payload: OrganismEvolveRequest):
     partner["tier_index"] = next_index
     partner["autonomy_ceiling"] = min(100, 25 + (next_index * 15))
 
-    partner.setdefault("traits", {"logic": 0.60, "empathy": 0.64, "precision": 0.62, "stability": 0.70})
+    partner.setdefault(
+        "traits", {"logic": 0.60, "empathy": 0.64, "precision": 0.62, "stability": 0.70}
+    )
     partner["traits_mode"] = "deterministic_static"
 
     history = state.setdefault("evolution_tree", {}).setdefault("history", [])
@@ -687,8 +707,12 @@ def evolve_shadow(payload: OrganismEvolveRequest):
     next_index = min(current_index + 1, len(tiers) - 1)
     shadow["tier"] = tiers[next_index]
     shadow["tier_index"] = next_index
-    shadow["risk_precision"] = min(0.99, round(float(shadow.get("risk_precision", 0.35)) + 0.08, 2))
-    shadow["tactical_authority"] = "policy_bounded_autonomy" if next_index >= 4 else "operator_approval"
+    shadow["risk_precision"] = min(
+        0.99, round(float(shadow.get("risk_precision", 0.35)) + 0.08, 2)
+    )
+    shadow["tactical_authority"] = (
+        "policy_bounded_autonomy" if next_index >= 4 else "operator_approval"
+    )
 
     history = state.setdefault("evolution_tree", {}).setdefault("history", [])
     history.append(
@@ -707,7 +731,9 @@ def evolve_shadow(payload: OrganismEvolveRequest):
 @app.post("/v1/command-center/loop/tick")
 def tick_autonomy_loop(payload: LoopTickRequest):
     state = _read_command_center_state()
-    loop = state.setdefault("autonomy_loop", _default_command_center_state()["autonomy_loop"])
+    loop = state.setdefault(
+        "autonomy_loop", _default_command_center_state()["autonomy_loop"]
+    )
     loop["tick_count"] = int(loop.get("tick_count", 0)) + 1
     loop["last_tick"] = datetime.now(timezone.utc).isoformat()
     loop["last_cycle_label"] = payload.cycle_label
@@ -725,11 +751,15 @@ def tick_autonomy_loop(payload: LoopTickRequest):
 @app.post("/v1/command-center/evolution/promote")
 def promote_partner(payload: EvolutionPromoteRequest):
     state = _read_command_center_state()
-    evo = state.setdefault("evolution_tree", _default_command_center_state()["evolution_tree"])
+    evo = state.setdefault(
+        "evolution_tree", _default_command_center_state()["evolution_tree"]
+    )
     tiers = evo.get("tiers", ["seed", "scout", "operator", "architect", "sovereign"])
     partners = evo.setdefault("partners", [])
 
-    partner = next((p for p in partners if p.get("partner_id") == payload.partner_id), None)
+    partner = next(
+        (p for p in partners if p.get("partner_id") == payload.partner_id), None
+    )
     if partner is None:
         partner = {"partner_id": payload.partner_id, "tier": tiers[0], "xp": 0}
         partners.append(partner)
@@ -761,7 +791,9 @@ def marketplace_list(status: Optional[str] = Query(default=None)):
     marketplace = state.setdefault("marketplace", {"missions": []})
     missions = marketplace.setdefault("missions", [])
     if status:
-        missions = [m for m in missions if str(m.get("status", "")).lower() == status.lower()]
+        missions = [
+            m for m in missions if str(m.get("status", "")).lower() == status.lower()
+        ]
     return {"ok": True, "missions": missions, "count": len(missions)}
 
 
@@ -816,7 +848,11 @@ def dispatch(req: DispatchRequest, request: Request):
 
     engine = get_engine()
     created = engine.create_mission(req.goal, req.category, req.constraints)
-    run = engine.run_mission(created.get("mission_id", "")) if created.get("mission_id") else {"error": "create_failed"}
+    run = (
+        engine.run_mission(created.get("mission_id", ""))
+        if created.get("mission_id")
+        else {"error": "create_failed"}
+    )
     return {"created": created, "run": run, "contract": contract["validation"]}
 
 
@@ -853,6 +889,7 @@ def config_runtime():
     }
     merged.update(_runtime_cfg)
     return merged
+
 
 # ---------------------------------------------------------------------------
 # PWA app-shell served at /
@@ -904,9 +941,11 @@ if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js');}
 </html>
 """
 
+
 @app.get("/", response_class=HTMLResponse)
 def root():
     return _PWA_SHELL
+
 
 # ---------------------------------------------------------------------------
 # PWA assets
@@ -964,9 +1003,11 @@ self.addEventListener('fetch', e => {
 });
 """
 
+
 @app.get("/manifest.webmanifest")
 def manifest():
     return Response(content=_MANIFEST, media_type="application/manifest+json")
+
 
 @app.get("/sw.js")
 def service_worker():
@@ -1016,8 +1057,15 @@ def sovereign_dispatch(body: SovereignDispatch):
     missions_file = DATA_DIR / "missions.jsonl"
     audit_file = DATA_DIR / "audit.jsonl"
     _append_jsonl(missions_file, mission)
-    _append_jsonl(audit_file, {"ts": ts, "event": "sovereign_dispatch", "mission_id": mission_id})
-    return {"ok": True, "mission_id": mission_id, "status": "PENDING", "contract": contract["validation"]}
+    _append_jsonl(
+        audit_file, {"ts": ts, "event": "sovereign_dispatch", "mission_id": mission_id}
+    )
+    return {
+        "ok": True,
+        "mission_id": mission_id,
+        "status": "PENDING",
+        "contract": contract["validation"],
+    }
 
 
 @app.get("/v1/system/log")
@@ -1074,15 +1122,18 @@ def icon_file(icon_name: str):
         return FileResponse(f)
     raise HTTPException(status_code=404, detail="icon not found")
 
+
 # Temporary fallback for `_file_in_ui` to resolve NameError.
 def _file_in_ui(filename: str):
     from pathlib import Path
+
     return Path("ui") / filename
+
 
 try:
     from swarmz_runtime.api.companion_state import companion_state
 except ImportError:
     logger.warning("Fallback: companion_state not imported")
+
     def companion_state():
         return {"status": "Fallback companion state"}
-
