@@ -40,3 +40,259 @@ This codifies the architecture doctrine as enforceable runtime checks.
 ## Notes
 
 This does not replace existing policy engine checks; it adds a doctrine-level gate to preserve immutable history, replayability, and operator sovereignty.
+
+## SWARMZ Software-Builder Architecture
+
+All safe, all powerful, all actionable. Let's lock it in.
+
+SWARMZ is structured as a governed multi-agent organism:
+
+### 1. Operator Layer
+
+You give:
+- missions
+- constraints
+- acceptance criteria
+- approvals
+
+You are the sovereign.
+
+### 2. Doctrine Layer
+
+Defines:
+- sequencing
+- safety
+- deterministic behavior
+- artifact-only evolution
+
+This prevents drift.
+
+### 3. Agent Layer
+
+Each agent has:
+- a role
+- a scope
+- a mission template
+- a deterministic output format
+
+Agents never act outside their lane.
+
+### 4. Artifact Layer
+
+Everything SWARMZ produces is:
+- versioned
+- inspectable
+- modifiable
+- additive-only
+
+No silent changes.
+
+### 5. Integration Layer
+
+Assembles:
+- backend
+- frontend
+- data models
+- UI
+- logic
+- tools
+
+This is the factory floor.
+
+## SWARMZ App-Factory Blueprint
+
+How SWARMZ builds full apps from scratch in four phases:
+
+### Phase 1 - Specification
+- Operator gives mission
+- Architect agent produces spec
+- Operator approves
+
+### Phase 2 - Generation
+- Backend agent generates API
+- Frontend agent generates UI
+- Data agent generates models
+- Logic agent generates systems
+
+### Phase 3 - Assembly
+- Integrator agent merges modules
+- Tester agent validates behavior
+- Operator reviews
+
+### Phase 4 - Delivery
+- Final artifact produced
+- Operator signs off
+- Stored in Artifact Vault
+
+This is deterministic, safe, and repeatable.
+
+## SWARMZ Agent Roles (Software Development)
+
+Each agent has a strict, operator-defined purpose.
+
+### 1. Architect Agent
+Produces:
+- system diagrams
+- module breakdowns
+- API contracts
+- data schemas
+
+### 2. Backend Agent
+Produces:
+- FastAPI services
+- endpoints
+- business logic
+- validation
+
+### 3. Frontend Agent
+Produces:
+- React components
+- UI layouts
+- dashboards
+- forms
+
+### 4. Data Agent
+Produces:
+- JSON schemas
+- data models
+- migrations
+- seed data
+
+### 5. Logic Agent
+Produces:
+- game systems
+- simulations
+- progression logic
+- combat logic
+
+### 6. Integrator Agent
+Assembles:
+- backend + frontend
+- data + logic
+- config + environment
+
+### 7. Tester Agent
+Produces:
+- test cases
+- validation scripts
+- scenario checks
+
+### 8. Documenter Agent
+Produces:
+- READMEs
+- API docs
+- usage guides
+
+Each agent is deterministic and governed.
+
+## SWARMZ Mission Templates (App Creation)
+
+Reusable commands for building software:
+
+### 1. Build Backend Service
+```txt
+MISSION: BUILD_BACKEND
+INPUT: API spec
+OUTPUT: FastAPI service
+```
+
+### 2. Build Frontend Dashboard
+```txt
+MISSION: BUILD_DASHBOARD
+INPUT: UI spec
+OUTPUT: React app
+```
+
+### 3. Build Data Model
+```txt
+MISSION: BUILD_MODEL
+INPUT: schema
+OUTPUT: JSON + validation
+```
+
+### 4. Build Game System
+```txt
+MISSION: BUILD_SYSTEM
+INPUT: system spec
+OUTPUT: logic module
+```
+
+### 5. Build Tool
+```txt
+MISSION: BUILD_TOOL
+INPUT: tool description
+OUTPUT: CLI or UI tool
+```
+
+### 6. Build Editor
+```txt
+MISSION: BUILD_EDITOR
+INPUT: entity type
+OUTPUT: web-based editor
+```
+
+These missions allow SWARMZ to build software safely under operator control.
+
+## Full App-Factory Blueprint (Complete)
+
+```yaml
+SWARMZ_APP_FACTORY:
+	OPERATOR_LAYER:
+		- missions
+		- constraints
+		- approvals
+
+	DOCTRINE_LAYER:
+		- deterministic sequencing
+		- additive-only evolution
+		- artifact governance
+
+	AGENT_LAYER:
+		- Architect
+		- Backend
+		- Frontend
+		- Data
+		- Logic
+		- Integrator
+		- Tester
+		- Documenter
+
+	ARTIFACT_LAYER:
+		- versioned outputs
+		- inspectable modules
+		- no silent changes
+
+	INTEGRATION_LAYER:
+		- assemble backend + frontend + data + logic
+
+	MISSION_TEMPLATES:
+		- BUILD_BACKEND
+		- BUILD_DASHBOARD
+		- BUILD_MODEL
+		- BUILD_SYSTEM
+		- BUILD_TOOL
+		- BUILD_EDITOR
+
+	OUTPUT:
+		- apps
+		- tools
+		- dashboards
+		- editors
+		- game systems
+		- utilities
+```
+
+## Next Move
+
+Now that the architecture is locked, SWARMZ can build first:
+
+1. A dashboard
+2. A backend service
+3. A mission editor
+4. A partner evolution editor
+5. A chip designer
+6. A base builder UI
+7. A lore codex
+8. A companion app
+9. A governance-style voting system (fictional)
+10. A full dev portal
