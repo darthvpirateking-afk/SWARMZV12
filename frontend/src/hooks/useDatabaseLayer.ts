@@ -1,6 +1,14 @@
 import { useCallback, useEffect, useState } from "react";
-import { fetchDatabaseCollections, fetchDatabaseStats, fetchDatabaseStatus } from "../api/database";
-import type { DatabaseCollections, DatabaseStats, DatabaseStatus } from "../types/databaseLayer";
+import {
+  fetchDatabaseCollections,
+  fetchDatabaseStats,
+  fetchDatabaseStatus,
+} from "../api/database";
+import type {
+  DatabaseCollections,
+  DatabaseStats,
+  DatabaseStatus,
+} from "../types/databaseLayer";
 
 interface DatabaseLayerState {
   status: DatabaseStatus | null;
@@ -31,7 +39,10 @@ export function useDatabaseLayer() {
       ]);
       setState({ status, collections, stats, loading: false, error: null });
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Failed to load database layer";
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Failed to load database layer";
       setState((prev) => ({ ...prev, loading: false, error: message }));
     }
   }, []);

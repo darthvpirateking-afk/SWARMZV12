@@ -1,15 +1,19 @@
 # SWARMZ Source Available License
 # Commercial use, hosting, and resale prohibited.
 # See LICENSE file for details.
-from typing import Dict, Any, List, Optional, Callable
+from __future__ import annotations
+from typing import TYPE_CHECKING, Dict, Any, List, Optional, Callable
 from datetime import datetime
 import hashlib
 import json
 
+if TYPE_CHECKING:
+    from swarmz_runtime.core.engine import SwarmzEngine  # noqa: F811
+
 # Avoid circular import - will be set by the engine
 _engine_instance = None
 
-def set_engine_provider(engine_provider: Callable):
+def set_engine_provider(engine_provider: Callable[[], Any]):
     """Set the engine provider function to avoid circular imports."""
     global _engine_instance
     _engine_instance = engine_provider
@@ -35,8 +39,8 @@ class MetaSelector:
     Sovereign meta-selector governing all layers without being governed.
     """
 
-    def __init__(self, engine_provider: Callable = None):
-        if engine_provider:
+    def __init__(self, engine_provider: Callable[[], Any] | None = None):
+        if engine_provider is not None:
             set_engine_provider(engine_provider)
         engine = get_engine()
         self.lattice_flow = LatticeFlow(engine)

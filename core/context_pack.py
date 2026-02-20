@@ -271,7 +271,7 @@ def after_mission(
     *,
     strategy: str = "baseline",
     inputs_hash: str = "",
-    candidates: list = None,
+    candidates: Optional[list] = None,
 ) -> None:
     """Update ALL engines after mission completion.
 

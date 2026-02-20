@@ -31,7 +31,10 @@ export function useCompanionCore() {
       const status = await fetchCompanionCoreStatus();
       setState((prev) => ({ ...prev, status, loading: false, error: null }));
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Failed to load companion core status";
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Failed to load companion core status";
       setState((prev) => ({ ...prev, loading: false, error: message }));
     }
   }, []);
@@ -40,9 +43,17 @@ export function useCompanionCore() {
     setState((prev) => ({ ...prev, loading: true, error: null }));
     try {
       const result = await sendCompanionCoreMessage(text);
-      setState((prev) => ({ ...prev, messageResult: result, loading: false, error: null }));
+      setState((prev) => ({
+        ...prev,
+        messageResult: result,
+        loading: false,
+        error: null,
+      }));
     } catch (error) {
-      const payload = error instanceof Error ? error.message : "Failed to send companion core message";
+      const payload =
+        error instanceof Error
+          ? error.message
+          : "Failed to send companion core message";
       setState((prev) => ({ ...prev, loading: false, error: payload }));
     }
   }, []);

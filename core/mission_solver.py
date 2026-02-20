@@ -10,7 +10,7 @@ Falls back gracefully when offline or no API key.
 """
 
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, Any
 
