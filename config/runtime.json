@@ -1,6 +1,6 @@
 {
-  "apiBaseUrl": "http://localhost:8012",
-  "uiBaseUrl": "http://localhost:8012/app",
+  "apiBaseUrl": "https://swarmzV10-.onrender.com",
+  "uiBaseUrl": "https://swarmzV10-.onrender.com/app",
   "bind": "0.0.0.0",
   "port": 8012,
   "offlineMode": false,

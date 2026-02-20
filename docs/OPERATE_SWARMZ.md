@@ -28,6 +28,12 @@
 	- `SWARMZ_PROFILE.cmd local` or `SWARMZ_PROFILE.cmd render`
 	- `./SWARMZ_PROFILE.ps1 local` or `./SWARMZ_PROFILE.ps1 render`
 
+## Reconnect to Main Swarm
+
+- One click (CMD): `SWARMZ_MAIN_SWARM.cmd`
+- One click (PowerShell): `./SWARMZ_MAIN_SWARM.ps1`
+- Manual equivalent: `python tools/switch_runtime_profile.py render`
+
 ## What Each Main Button Does (`/app`)
 
 ### Pairing
