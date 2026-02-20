@@ -273,6 +273,20 @@ Render (recommended config):
 - Build command: `pip install -r requirements.txt`
 - Start command: `python run_server.py --host 0.0.0.0 --port $PORT`
 - Health check path: `/v1/health`
+- Required env vars for live model routing:
+  - `OPENAI_API_KEY=<your key>` (if using OpenAI provider)
+  - `ANTHROPIC_API_KEY=<your key>` (if using Anthropic provider)
+  - `OFFLINE_MODE=false`
+  - `MODEL_PROVIDER=openai` or `MODEL_PROVIDER=anthropic`
+- Optional env vars:
+  - `SWARMZ_MODEL=gpt-4.1` (or your allowed model)
+  - `OPENAI_BASE_URL=https://api.openai.com/v1`
+
+Post-deploy verification:
+
+```bash
+python tools/render_post_deploy_check.py --base https://swarmzV10-.onrender.com
+```
 
 Project Position
 
