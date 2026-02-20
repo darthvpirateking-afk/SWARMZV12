@@ -3,12 +3,12 @@
  * Part of Measurement Spine - intelligence source
  */
 
-import { MetricEntry } from '../types';
+import { MetricEntry } from "../types";
 
 export interface OutcomeRecord {
   id: string;
   metric: MetricEntry;
-  result: 'success' | 'failure' | 'partial';
+  result: "success" | "failure" | "partial";
   details: any;
 }
 
@@ -19,21 +19,25 @@ export class OutcomeLogger {
   /**
    * Log an outcome
    */
-  log(metric: MetricEntry, result: 'success' | 'failure' | 'partial', details: any): OutcomeRecord {
+  log(
+    metric: MetricEntry,
+    result: "success" | "failure" | "partial",
+    details: any,
+  ): OutcomeRecord {
     const record: OutcomeRecord = {
       id: `outcome_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       metric,
       result,
-      details
+      details,
     };
-    
+
     this.outcomes.push(record);
-    
+
     // Keep only recent records
     if (this.outcomes.length > this.maxRecords) {
       this.outcomes = this.outcomes.slice(-this.maxRecords);
     }
-    
+
     return record;
   }
 
@@ -41,14 +45,14 @@ export class OutcomeLogger {
    * Get outcomes for a specific action
    */
   getByAction(action: string): OutcomeRecord[] {
-    return this.outcomes.filter(o => o.metric.action === action);
+    return this.outcomes.filter((o) => o.metric.action === action);
   }
 
   /**
    * Get successful outcomes
    */
   getSuccessful(limit?: number): OutcomeRecord[] {
-    const successful = this.outcomes.filter(o => o.result === 'success');
+    const successful = this.outcomes.filter((o) => o.result === "success");
     return limit ? successful.slice(-limit) : successful;
   }
 
@@ -56,7 +60,7 @@ export class OutcomeLogger {
    * Get failed outcomes
    */
   getFailed(limit?: number): OutcomeRecord[] {
-    const failed = this.outcomes.filter(o => o.result === 'failure');
+    const failed = this.outcomes.filter((o) => o.result === "failure");
     return limit ? failed.slice(-limit) : failed;
   }
 
@@ -64,9 +68,8 @@ export class OutcomeLogger {
    * Get outcomes in time range
    */
   getInTimeRange(start_ms: number, end_ms: number): OutcomeRecord[] {
-    return this.outcomes.filter(o => 
-      o.metric.timestamp >= start_ms && 
-      o.metric.timestamp <= end_ms
+    return this.outcomes.filter(
+      (o) => o.metric.timestamp >= start_ms && o.metric.timestamp <= end_ms,
     );
   }
 
@@ -82,19 +85,24 @@ export class OutcomeLogger {
     average_duration_ms: number;
   } {
     const total = this.outcomes.length;
-    const successful = this.outcomes.filter(o => o.result === 'success').length;
-    const failed = this.outcomes.filter(o => o.result === 'failure').length;
-    const partial = this.outcomes.filter(o => o.result === 'partial').length;
-    
-    const total_duration = this.outcomes.reduce((sum, o) => sum + o.metric.duration_ms, 0);
-    
+    const successful = this.outcomes.filter(
+      (o) => o.result === "success",
+    ).length;
+    const failed = this.outcomes.filter((o) => o.result === "failure").length;
+    const partial = this.outcomes.filter((o) => o.result === "partial").length;
+
+    const total_duration = this.outcomes.reduce(
+      (sum, o) => sum + o.metric.duration_ms,
+      0,
+    );
+
     return {
       total,
       successful,
       failed,
       partial,
       success_rate: total > 0 ? successful / total : 0,
-      average_duration_ms: total > 0 ? total_duration / total : 0
+      average_duration_ms: total > 0 ? total_duration / total : 0,
     };
   }
 

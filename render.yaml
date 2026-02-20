@@ -5,8 +5,11 @@ services:
     rootDir: .
     buildCommand: pip install -r requirements.txt
     startCommand: python run_server.py --host 0.0.0.0 --port $PORT
-    healthCheckPath: /v1/health
+    healthCheckPath: /health
     autoDeployTrigger: commit
+    envVars:
+      - key: ALLOWED_ORIGINS
+        value: https://swarmz-frontend.onrender.com
 
   - type: web
     name: swarmz-frontend
@@ -15,3 +18,6 @@ services:
     buildCommand: npm install && npm run build
     staticPublishPath: dist
     autoDeployTrigger: commit
+    envVars:
+      - key: VITE_API_BASE_URL
+        value: https://swarmzv10.onrender.com

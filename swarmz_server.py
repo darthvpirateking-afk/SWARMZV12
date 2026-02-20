@@ -157,8 +157,12 @@ app.add_middleware(RateLimitMiddleware)
 app.add_middleware(LANAuthMiddleware)
 app.add_middleware(IDSMiddleware)
 
-# Add CORS middleware with explicit local/LAN origins
-allowed_origins = ["*"]  # LAN dev: allow all origins for pairing simplicity
+# Add CORS middleware — allow_credentials=True requires explicit origins (not "*")
+_raw_origins = os.environ.get(
+    "ALLOWED_ORIGINS",
+    "http://localhost:5173,http://localhost:4173,http://127.0.0.1:5173",
+)
+allowed_origins = [o.strip() for o in _raw_origins.split(",") if o.strip()]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,

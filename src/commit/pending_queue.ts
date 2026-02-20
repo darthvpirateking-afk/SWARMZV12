@@ -3,8 +3,8 @@
  * Part of Commit Engine - prevents thinking forever
  */
 
-import { CommitState } from '../types';
-import { CommitDecision } from '../cognition/commit_controller';
+import { CommitState } from "../types";
+import { CommitDecision } from "../cognition/commit_controller";
 
 export interface QueuedAction {
   id: string;
@@ -26,11 +26,11 @@ export class PendingQueue {
       commit_decision: commit,
       state: commit.state,
       queued_at: Date.now(),
-      execute_at: commit.auto_execute 
-        ? Date.now() + (commit.countdown_seconds || 0) * 1000 
-        : undefined
+      execute_at: commit.auto_execute
+        ? Date.now() + (commit.countdown_seconds || 0) * 1000
+        : undefined,
     };
-    
+
     this.queue.set(action.id, action);
     return action;
   }
@@ -40,10 +40,11 @@ export class PendingQueue {
    */
   getReadyActions(): QueuedAction[] {
     const now = Date.now();
-    return Array.from(this.queue.values()).filter(action => 
-      action.state === 'ACTION_READY' && 
-      action.execute_at !== undefined &&
-      action.execute_at <= now
+    return Array.from(this.queue.values()).filter(
+      (action) =>
+        action.state === "ACTION_READY" &&
+        action.execute_at !== undefined &&
+        action.execute_at <= now,
     );
   }
 
@@ -51,8 +52,8 @@ export class PendingQueue {
    * Get actions waiting for confirmation
    */
   getWaitingActions(): QueuedAction[] {
-    return Array.from(this.queue.values()).filter(action => 
-      action.state === 'NEEDS_CONFIRM'
+    return Array.from(this.queue.values()).filter(
+      (action) => action.state === "NEEDS_CONFIRM",
     );
   }
 
@@ -60,8 +61,8 @@ export class PendingQueue {
    * Get blocked actions
    */
   getBlockedActions(): QueuedAction[] {
-    return Array.from(this.queue.values()).filter(action => 
-      action.state === 'BLOCKED'
+    return Array.from(this.queue.values()).filter(
+      (action) => action.state === "BLOCKED",
     );
   }
 
@@ -71,14 +72,14 @@ export class PendingQueue {
   updateState(action_id: string, new_state: CommitState): boolean {
     const action = this.queue.get(action_id);
     if (!action) return false;
-    
+
     action.state = new_state;
-    
+
     // If now ready and was waiting, set execute time
-    if (new_state === 'ACTION_READY' && !action.execute_at) {
+    if (new_state === "ACTION_READY" && !action.execute_at) {
       action.execute_at = Date.now();
     }
-    
+
     return true;
   }
 
