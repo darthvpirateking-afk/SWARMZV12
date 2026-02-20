@@ -99,6 +99,17 @@ All under your control.
 
 Then double-click the `SWARMZ` icon on your desktop.
 
+### Phone Mode (Same Wi-Fi)
+
+```powershell
+# One-click phone-ready launcher
+./PHONE_MODE.ps1
+
+# Or double-click PHONE_MODE.cmd
+```
+
+Then open the printed LAN URL on your phone (example: `http://192.168.x.x:8012/`).
+
 ### Web Server (Recommended)
 
 ```bash

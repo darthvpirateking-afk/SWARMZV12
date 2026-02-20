@@ -96,3 +96,46 @@ def test_riftwalk_trace_and_sigilstack_registry(client, monkeypatch, tmp_path):
     assert item["name"] == "Sigil attack module"
     assert item["tier"] == 3
     assert item["type"] == "ATTACK"
+
+
+def test_riftwalk_trace_limit_and_mission_filtering(client, monkeypatch, tmp_path):
+    _set_isolated_primal_runtime(monkeypatch, tmp_path)
+
+    for mission_id in ["m-seed-1", "m-seed-2", "m-seed-3"]:
+        event = client.post(
+            "/v1/operator-os/timeline/event",
+            json={
+                "event_type": "mission_started",
+                "domain": "missions",
+                "risk": "low",
+                "money_impact_cents": 0,
+                "details": {"agent": "planner", "mission_id": mission_id},
+            },
+        )
+        assert event.status_code == 200
+        mission = client.post(
+            "/v1/operator-os/missions/upsert",
+            json={
+                "mission_id": mission_id,
+                "mission_type": "seedrun",
+                "status": "running",
+                "risk_level": "low",
+                "budget_cents": 100,
+                "policy_profile": "default",
+                "agents": ["planner"],
+            },
+        )
+        assert mission.status_code == 200
+
+    limited = client.get("/v1/riftwalk/trace?limit=2")
+    assert limited.status_code == 200
+    limited_payload = limited.json()
+    assert limited_payload["ok"] is True
+    assert limited_payload["count"] == 2
+
+    filtered = client.get("/v1/riftwalk/trace?mission_id=%20m-seed-2%20")
+    assert filtered.status_code == 200
+    filtered_payload = filtered.json()
+    assert filtered_payload["ok"] is True
+    assert filtered_payload["count"] == 1
+    assert filtered_payload["trace"][0]["mission_id"] == "m-seed-2"
