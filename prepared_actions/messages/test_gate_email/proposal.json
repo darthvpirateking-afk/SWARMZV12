@@ -7,9 +7,9 @@
       "to": "test@example.com",
       "body": "hello"
     },
-    "gated_at": "2026-02-20T12:24:48.510057Z"
+    "gated_at": "2026-02-20T12:31:09.337370Z"
   },
   "risk_level": "low",
-  "prepared_at": "2026-02-20T12:24:48.510180Z",
+  "prepared_at": "2026-02-20T12:31:09.337489Z",
   "executed": false
 }

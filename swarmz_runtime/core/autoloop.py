@@ -57,12 +57,15 @@ class AutoLoopManager:
 
     def start(self, tick_interval: int = 30) -> None:
         if self._thread is None:
-            self._thread = threading.Thread(target=self._loop)
+            self._running = True
+            self._tick_interval = tick_interval
+            self._thread = threading.Thread(target=self._loop, daemon=True)
             self._thread.start()
 
     def stop(self) -> None:
+        self._running = False
         if self._thread is not None:
-            self._thread.join()
+            self._thread.join(timeout=self._tick_interval + 5)
             self._thread = None
         self._persist_state()
 
