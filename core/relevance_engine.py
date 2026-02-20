@@ -1,4 +1,4 @@
-﻿# SWARMZ Source Available License
+# SWARMZ Source Available License
 # Commercial use, hosting, and resale prohibited.
 # See LICENSE file for details.
 import json
@@ -22,6 +22,8 @@ class RelevanceEngine:
         self.archive_dir = self.mem_dir / "archive"
         for d in [self.mem_dir, self.hot_dir, self.warm_dir, self.cold_dir, self.archive_dir]:
             d.mkdir(parents=True, exist_ok=True)
+        # Make hot.jsonl deterministic and parallel-safe:
+        (self.hot_dir / "hot.jsonl").touch(exist_ok=True)
         self.lessons_file = self.data_dir / "lessons.jsonl"
         self.cognitive_file = self.data_dir / "cognitive_load.txt"
         self.evolution = evolution

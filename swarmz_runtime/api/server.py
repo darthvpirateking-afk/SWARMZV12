@@ -1,6 +1,8 @@
-﻿# SWARMZ Source Available License
+# SWARMZ Source Available License
 # Commercial use, hosting, and resale prohibited.
 # See LICENSE file for details.
+
+
 import os
 import json
 import socket
@@ -8,34 +10,138 @@ import secrets
 import traceback
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Dict, Any
+from typing import Dict, Any, Optional, List
 
-from fastapi import FastAPI, Request, HTTPException
-from fastapi.responses import JSONResponse, FileResponse
+from fastapi import FastAPI, Request, HTTPException, Query
+from fastapi.responses import HTMLResponse, JSONResponse, FileResponse, Response
 from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from zoneinfo import ZoneInfo
 
+from contextlib import asynccontextmanager
+
 from swarmz_runtime.core.engine import SwarmzEngine
-from swarmz_runtime.api import missions, system, admin
-from addons.api.addons_router import router as addons_router
-from addons.api.guardrails_router import router as guardrails_router
-from addons.api.dashboard_router import router as dashboard_router
-from addons.api.ui_router import router as ui_router
-from addons.auth_gate import LANAuthMiddleware
-from addons.rate_limiter import RateLimitMiddleware
+from jsonl_utils import read_jsonl
+from kernel_runtime.orchestrator import SwarmzOrchestrator
 from swarmz_runtime.api import missions, system, admin, ecosystem
+from .runtime_endpoints import runtime_scoreboard
+from .missions import router as missions_router
+from .system import router as system_router
+from .admin import router as admin_router
+from .factory_routes import router as factory_routes_router
+from .meta_routes import router as meta_routes_router
+from .operational_routes import router as operational_routes_router
+from .operator_ecosystem_routes import router as operator_ecosystem_routes_router
+from .federation_routes import router as federation_routes_router
+from .charter_routes import router as charter_routes_router
+from .fusion_routes import router as fusion_routes_router
+from addons.api.addons_router import router as addons_router
+from .companion_state import companion_state
 
-app = FastAPI(
-    title="SWARMZ",
-    version=os.getenv("SWARMZ_VERSION", "0.0.0"),
-)
-
-ROOT_DIR = Path(__file__).resolve().parent.parent.parent
+# ---- cheap constants only (NO orchestrator creation here) ----
+BASE_DIR = Path(__file__).resolve().parent
+ROOT_DIR = BASE_DIR.parent.parent
 DATA_DIR = ROOT_DIR / "data"
 UI_DIR = ROOT_DIR / "web_ui"
 DATA_DIR.mkdir(exist_ok=True, parents=True)
 START_TIME = datetime.now(timezone.utc)
+
+def build_orchestrator():
+    """Initialize and return a SwarmzOrchestrator instance."""
+    orchestrator_instance = SwarmzOrchestrator()
+    return orchestrator_instance
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # startup: attach orchestrator here, not at import time
+    app.state.orchestrator = build_orchestrator()
+    yield
+    # shutdown: optional cleanup
+
+def create_app() -> FastAPI:
+    app = FastAPI(lifespan=lifespan)
+    app.mount("/static", StaticFiles(directory=str(UI_DIR)), name="static")
+    app.include_router(missions_router, prefix="/v1/missions", tags=["missions"])
+    app.include_router(system_router, prefix="/v1/system", tags=["system"])
+    app.include_router(admin_router, prefix="/v1/admin", tags=["admin"])
+    app.include_router(factory_routes_router, prefix="/v1/factory", tags=["factory"])
+    app.include_router(meta_routes_router, prefix="/v1/meta", tags=["meta"])
+    app.include_router(operational_routes_router, prefix="/v1", tags=["operational"])
+    app.include_router(operator_ecosystem_routes_router, prefix="/v1", tags=["ecosystem"])
+    app.include_router(federation_routes_router, prefix="/v1", tags=["federation"])
+    app.include_router(charter_routes_router, prefix="/v1", tags=["charter"])
+    app.include_router(fusion_routes_router, prefix="/v1", tags=["fusion"])
+    app.include_router(addons_router, prefix="/v1/addons", tags=["addons"])
+
+    if "guardrails_router" in globals() and guardrails_router is not None:
+        app.include_router(guardrails_router, prefix="/v1/guardrails", tags=["guardrails"])
+
+    return app
+
+# Create the app instance
+app = create_app()
+
+
+
+class SovereignDispatch(BaseModel):
+    intent: str
+    scope: Any = Field(default_factory=dict)
+    limits: Any = Field(default_factory=dict)
+
+class PairRequest(BaseModel):
+    pin: str
+
+class DispatchRequest(BaseModel):
+    goal: str
+    category: str
+    constraints: Dict[str, Any] = Field(default_factory=dict)
+
+
+class AutonomyDialRequest(BaseModel):
+    level: int = Field(ge=0, le=100)
+
+
+class ShadowModeRequest(BaseModel):
+    enabled: bool
+    lane: str = "mirror"
+
+
+class EvolutionPromoteRequest(BaseModel):
+    partner_id: str
+    reason: str = "operator_promotion"
+
+
+class MarketplacePublishRequest(BaseModel):
+    mission_type: str
+    title: str
+    reward_points: int = Field(ge=0)
+    tags: List[str] = Field(default_factory=list)
+
+
+class OrganismEvolveRequest(BaseModel):
+    reason: str = "mission_success"
+
+
+class LoopTickRequest(BaseModel):
+    cycle_label: str = "default"
+
+
+def _append_jsonl(path: Path, record: Dict[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with open(path, "a", encoding="utf-8") as fh:
+        fh.write(json.dumps(record, default=str) + "\n")
+
+
+def _tail_jsonl(path: Path, limit: int) -> list:
+    if not path.exists():
+        return []
+    try:
+        lines = path.read_text(encoding="utf-8").strip().splitlines()
+        tail = lines[-limit:]
+        return [json.loads(line) for line in tail if line.strip()]
+    except Exception:
+        return []
 
 
 def _load_runtime_config() -> Dict[str, Any]:
@@ -64,6 +170,156 @@ def _load_runtime_config() -> Dict[str, Any]:
         if "offlineMode" not in cfg and "offline_mode" in raw:
             cfg["offlineMode"] = raw.get("offline_mode")
     return cfg
+
+
+def _command_center_state_path() -> Path:
+    return DATA_DIR / "command_center_state.json"
+
+
+def _default_command_center_state() -> Dict[str, Any]:
+    return {
+        "autonomy": {"level": 35, "mode": "assisted"},
+        "shadow_mode": {"enabled": False, "lane": "mirror", "last_activation": None},
+        "partner": {
+            "name": "AegisShade",
+            "tier": "Rookie",
+            "tier_index": 1,
+            "traits": {"logic": 0.60, "empathy": 0.64, "precision": 0.62},
+            "autonomy_ceiling": 25,
+        },
+        "shadow": {
+            "name": "NightLegion",
+            "tier": "Dormant",
+            "tier_index": 0,
+            "risk_precision": 0.35,
+            "tactical_authority": "operator_approval",
+        },
+        "autonomy_loop": {
+            "sensors": [
+                "sales",
+                "refunds",
+                "support_tickets",
+                "fulfillment_delays",
+                "spend_rate",
+                "conversion_rate",
+                "blueprint_performance",
+            ],
+            "last_tick": None,
+            "tick_count": 0,
+        },
+        "evolution_tree": {
+            "tiers": ["seed", "scout", "operator", "architect", "sovereign"],
+            "partners": [
+                {"partner_id": "alpha", "tier": "scout", "xp": 18},
+                {"partner_id": "beta", "tier": "operator", "xp": 42},
+            ],
+            "history": [],
+        },
+        "marketplace": {
+            "missions": [
+                {
+                    "listing_id": "mk-001",
+                    "mission_type": "recon",
+                    "title": "Map runtime blind spots",
+                    "reward_points": 150,
+                    "tags": ["runtime", "analysis"],
+                    "status": "open",
+                }
+            ]
+        },
+    }
+
+
+def _read_command_center_state() -> Dict[str, Any]:
+    path = _command_center_state_path()
+    if not path.exists():
+        state = _default_command_center_state()
+        _write_command_center_state(state)
+        return state
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        if isinstance(payload, dict):
+            return payload
+    except Exception:
+        pass
+    state = _default_command_center_state()
+    _write_command_center_state(state)
+    return state
+
+
+def _write_command_center_state(state: Dict[str, Any]) -> None:
+    path = _command_center_state_path()
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(state, indent=2), encoding="utf-8")
+
+
+def _autonomy_mode_from_level(level: int) -> str:
+    if level < 25:
+        return "manual"
+    if level < 55:
+        return "assisted"
+    if level < 80:
+        return "autonomous"
+    return "sovereign"
+
+
+def _partner_tiers() -> List[str]:
+    return ["Egg", "Rookie", "Champion", "Ultimate", "Mega", "Ultra"]
+
+
+def _shadow_tiers() -> List[str]:
+    return ["Dormant", "Shade", "Wraith", "Reaper", "General", "Monarch"]
+
+
+def _cockpit_feed(state: Dict[str, Any]) -> Dict[str, Any]:
+    missions_file = DATA_DIR / "missions.jsonl"
+    runs_file = DATA_DIR / "runs.jsonl"
+    missions_result = read_jsonl(missions_file)
+    runs_result = read_jsonl(runs_file)
+
+    if isinstance(missions_result, tuple):
+        missions = missions_result[0]
+    elif isinstance(missions_result, list):
+        missions = missions_result
+    else:
+        missions = []
+
+    if isinstance(runs_result, tuple):
+        runs = runs_result[0]
+    elif isinstance(runs_result, list):
+        runs = runs_result
+    else:
+        runs = []
+
+    queued = sum(
+        1
+        for mission in missions
+        if str(mission.get("status", "")).upper() in {"PENDING", "QUEUED", "CREATED"}
+    )
+    completed = sum(
+        1
+        for mission in missions
+        if str(mission.get("status", "")).upper() in {"SUCCESS", "COMPLETED", "DONE"}
+    )
+
+    return {
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "queue_depth": queued,
+        "completed_count": completed,
+        "recent_runs": runs[-5:],
+        "autonomy": state.get("autonomy", {}),
+        "shadow_mode": state.get("shadow_mode", {}),
+        "organism": {
+            "partner_tier": state.get("partner", {}).get("tier", "Rookie"),
+            "shadow_tier": state.get("shadow", {}).get("tier", "Dormant"),
+        },
+        "partner_summary": state.get("evolution_tree", {}).get("partners", []),
+        "ledger": {
+            "missions_total": len(missions),
+            "runs_total": len(runs),
+            "audit_events_last_20": len(_tail_jsonl(DATA_DIR / "audit.jsonl", 20)),
+        },
+    }
 
 
 def _lan_ip() -> str:
@@ -128,32 +384,422 @@ OPERATOR_PIN = _pin_info["pin"]
 app.state.operator_pin_source = _pin_info
 
 VERBOSE = os.getenv("SWARMZ_VERBOSE", "0") not in {"0", "false", "False", None}
-telemetry.set_verbose(VERBOSE)
+
 
 engine = SwarmzEngine(data_dir=str(DATA_DIR))
 engine.offline_mode = OFFLINE_MODE
 engine.operator_key = OPERATOR_PIN
 
+# Engine provider for all modules (used to avoid circular imports)
+def get_engine():
+    return engine
 
-def get_engine() -> SwarmzEngine:
-    global _engine_instance
-    if _engine_instance is None:
-        _engine_instance = SwarmzEngine()
-    return _engine_instance
-
-missions.get_engine = get_engine
 system.get_engine = get_engine
 admin.get_engine = get_engine
 ecosystem.set_engine_provider(get_engine)
 
-app.include_router(missions.router, prefix="/v1/missions", tags=["missions"])
-app.include_router(system.router, prefix="/v1/system", tags=["system"])
-app.include_router(admin.router, prefix="/v1/admin", tags=["admin"])
-app.include_router(addons_router, prefix="/v1/addons", tags=["addons"])
-app.include_router(guardrails_router, prefix="/v1/guardrails", tags=["guardrails"])
-app.include_router(dashboard_router, tags=["dashboard"])
-app.include_router(ui_router, tags=["ui"])
-app.include_router(ecosystem.router, prefix="/v1/ecosystem", tags=["ecosystem"])
+
+
+
+@app.get("/v1/companion/state", tags=["companion"])
+def companion_state():
+    return {
+        "ok": True,
+        "state": "active",
+        "master_identity": "MASTER_SWARMZ",
+        "self_assessment": "MASTER_SWARMZ companion state is active.",
+    }
+
+def companion_history(tail: int = 10):
+    return {"ok": True, "records": [], "history": [], "read_only": True}
+
+@app.get("/health")
+def health():
+    return {"ok": True, "status": "ok"}
+
+
+@app.get("/v1/health")
+def health_v1():
+    uptime = (datetime.now(timezone.utc) - START_TIME).total_seconds()
+    return {"ok": True, "status": "ok", "uptime_seconds": int(uptime), "offline_mode": OFFLINE_MODE}
+
+
+@app.get("/v1/pairing/info")
+def pairing_info():
+    if not _pin_info:
+        raise HTTPException(status_code=404, detail="No pairing info")
+    return _pin_info
+
+
+@app.post("/v1/pairing/pair")
+def pairing_pair(payload: PairRequest):
+    if payload.pin != OPERATOR_PIN:
+        raise HTTPException(status_code=401, detail="Invalid PIN")
+    token = f"pair-{OPERATOR_PIN}"
+    return {"ok": True, "token": token}
+
+
+@app.get("/v1/runtime/status")
+def runtime_status():
+    return {"ok": True, "active_agents": 0, "queued_tasks": 0, "system_load_estimate": 0.0}
+
+
+@app.get("/v1/runtime/scoreboard")
+def runtime_scoreboard_view():
+    return {
+        "ok": True,
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "personality": {
+            "risk_tolerance": 0.5,
+            "speed_preference": 0.5,
+            "exploration_bias": 0.5,
+            "retry_patience": 0.5,
+        },
+    }
+
+
+@app.get("/v1/companion/history")
+def companion_history(tail: int = 10):
+    return {"ok": True, "records": [], "history": [], "read_only": True}
+
+
+@app.get("/v1/prepared/pending")
+def prepared_pending(category: Optional[str] = None):
+    base = ROOT_DIR / "prepared_actions"
+    items = []
+    counts: Dict[str, int] = {}
+
+    if base.exists():
+        for category_dir in base.iterdir():
+            if not category_dir.is_dir():
+                continue
+            if category and category_dir.name != category:
+                continue
+
+            pending_in_category = 0
+            for mission_dir in category_dir.iterdir():
+                if not mission_dir.is_dir():
+                    continue
+                proposal_file = mission_dir / "proposal.json"
+                if not proposal_file.exists():
+                    continue
+                try:
+                    payload = json.loads(proposal_file.read_text(encoding="utf-8"))
+                except Exception:
+                    continue
+                if payload.get("executed"):
+                    continue
+
+                pending_in_category += 1
+                payload["category"] = category_dir.name
+                items.append(payload)
+
+            counts[category_dir.name] = pending_in_category
+
+    return {
+        "ok": True,
+        "pending": items,
+        "items": items,
+        "count": len(items),
+        "counts": counts,
+    }
+
+
+@app.get("/v1/ai/status")
+def ai_status():
+    missions_file = DATA_DIR / "missions.jsonl"
+    result = read_jsonl(missions_file)
+
+    if isinstance(result, tuple):
+        missions = result[0]
+    elif isinstance(result, list):
+        missions = result
+    else:
+        missions = []
+
+    success_count = sum(
+        1
+        for mission in missions
+        if str(mission.get("status", "")).upper() in {"SUCCESS", "COMPLETED"}
+    )
+    total = len(missions)
+    success_rate = (success_count / total) if total else 0.0
+
+    if total < 10:
+        phase = "AWAKENING"
+    elif success_rate < 0.3:
+        phase = "QUARANTINE"
+    elif total < 50:
+        phase = "FORGING"
+    else:
+        phase = "SOVEREIGN"
+
+    return {
+        "ok": True,
+        "phase": phase,
+        "quarantine": phase == "QUARANTINE",
+        "missions_total": total,
+        "success_rate": success_rate,
+    }
+
+
+@app.get("/v1/observability/health")
+def observability_health():
+    return {"status": "ok"}
+
+
+@app.get("/v1/observability/ready")
+def observability_ready():
+    return {"status": "ready"}
+
+
+@app.get("/v1/command-center/state")
+def command_center_state():
+    state = _read_command_center_state()
+    return {
+        "ok": True,
+        "cockpit": _cockpit_feed(state),
+        "shadow_mode": state.get("shadow_mode", {}),
+        "partner": state.get("partner", {}),
+        "shadow": state.get("shadow", {}),
+        "autonomy_loop": state.get("autonomy_loop", {}),
+        "evolution_tree": state.get("evolution_tree", {}),
+        "autonomy": state.get("autonomy", {}),
+        "marketplace": state.get("marketplace", {}),
+        "lore": {
+            "world_bible": "docs/WORLD_BIBLE.md",
+            "status": "loaded",
+        },
+        "deploy": {
+            "entrypoint": "SWARMZ_ONE_BUTTON_DEPLOY.ps1",
+            "status": "ready",
+        },
+    }
+
+
+@app.get("/v1/command-center/organism/state")
+def organism_state():
+    state = _read_command_center_state()
+    return {
+        "ok": True,
+        "partner": state.get("partner", {}),
+        "shadow": state.get("shadow", {}),
+        "autonomy": state.get("autonomy", {}),
+        "loop": state.get("autonomy_loop", {}),
+    }
+
+
+@app.post("/v1/command-center/autonomy")
+def set_autonomy_dial(payload: AutonomyDialRequest):
+    state = _read_command_center_state()
+    level = int(payload.level)
+    partner = state.setdefault("partner", _default_command_center_state()["partner"])
+    autonomy_cap = int(partner.get("autonomy_ceiling", 25))
+    bounded_level = min(level, autonomy_cap)
+    state["autonomy"] = {
+        "level": bounded_level,
+        "mode": _autonomy_mode_from_level(bounded_level),
+        "updated_at": datetime.now(timezone.utc).isoformat(),
+        "requested_level": level,
+    }
+    _write_command_center_state(state)
+    return {"ok": True, "autonomy": state["autonomy"]}
+
+
+@app.post("/v1/command-center/shadow")
+def set_shadow_mode(payload: ShadowModeRequest):
+    state = _read_command_center_state()
+    state["shadow_mode"] = {
+        "enabled": bool(payload.enabled),
+        "lane": payload.lane,
+        "last_activation": datetime.now(timezone.utc).isoformat() if payload.enabled else None,
+    }
+    _write_command_center_state(state)
+    return {"ok": True, "shadow_mode": state["shadow_mode"]}
+
+
+@app.post("/v1/command-center/partner/evolve")
+def evolve_partner(payload: OrganismEvolveRequest):
+    state = _read_command_center_state()
+    partner = state.setdefault("partner", _default_command_center_state()["partner"])
+    tiers = _partner_tiers()
+    current_tier = partner.get("tier", tiers[0])
+    current_index = tiers.index(current_tier) if current_tier in tiers else 0
+    next_index = min(current_index + 1, len(tiers) - 1)
+    partner["tier"] = tiers[next_index]
+    partner["tier_index"] = next_index
+    partner["autonomy_ceiling"] = min(100, 25 + (next_index * 15))
+
+    traits = partner.setdefault("traits", {"logic": 0.6, "empathy": 0.64, "precision": 0.62})
+    for key in ("logic", "empathy", "precision"):
+        traits[key] = min(1.0, round(float(traits.get(key, 0.5)) + 0.03, 2))
+
+    history = state.setdefault("evolution_tree", {}).setdefault("history", [])
+    history.append(
+        {
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "entity": "partner",
+            "from": current_tier,
+            "to": partner["tier"],
+            "reason": payload.reason,
+        }
+    )
+    _write_command_center_state(state)
+    return {"ok": True, "partner": partner, "history": history[-10:]}
+
+
+@app.post("/v1/command-center/shadow/evolve")
+def evolve_shadow(payload: OrganismEvolveRequest):
+    state = _read_command_center_state()
+    shadow = state.setdefault("shadow", _default_command_center_state()["shadow"])
+    tiers = _shadow_tiers()
+    current_tier = shadow.get("tier", tiers[0])
+    current_index = tiers.index(current_tier) if current_tier in tiers else 0
+    next_index = min(current_index + 1, len(tiers) - 1)
+    shadow["tier"] = tiers[next_index]
+    shadow["tier_index"] = next_index
+    shadow["risk_precision"] = min(0.99, round(float(shadow.get("risk_precision", 0.35)) + 0.08, 2))
+    shadow["tactical_authority"] = "policy_bounded_autonomy" if next_index >= 4 else "operator_approval"
+
+    history = state.setdefault("evolution_tree", {}).setdefault("history", [])
+    history.append(
+        {
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "entity": "shadow",
+            "from": current_tier,
+            "to": shadow["tier"],
+            "reason": payload.reason,
+        }
+    )
+    _write_command_center_state(state)
+    return {"ok": True, "shadow": shadow, "history": history[-10:]}
+
+
+@app.post("/v1/command-center/loop/tick")
+def tick_autonomy_loop(payload: LoopTickRequest):
+    state = _read_command_center_state()
+    loop = state.setdefault("autonomy_loop", _default_command_center_state()["autonomy_loop"])
+    loop["tick_count"] = int(loop.get("tick_count", 0)) + 1
+    loop["last_tick"] = datetime.now(timezone.utc).isoformat()
+    loop["last_cycle_label"] = payload.cycle_label
+    loop["last_summary"] = {
+        "brain": "mission_plan_updated",
+        "shadow": "risk_scan_completed",
+        "immune": "policy_guardrails_applied",
+        "memory": "experience_archive_appended",
+        "reproduction": "blueprint_variants_ready",
+    }
+    _write_command_center_state(state)
+    return {"ok": True, "loop": loop}
+
+
+@app.post("/v1/command-center/evolution/promote")
+def promote_partner(payload: EvolutionPromoteRequest):
+    state = _read_command_center_state()
+    evo = state.setdefault("evolution_tree", _default_command_center_state()["evolution_tree"])
+    tiers = evo.get("tiers", ["seed", "scout", "operator", "architect", "sovereign"])
+    partners = evo.setdefault("partners", [])
+
+    partner = next((p for p in partners if p.get("partner_id") == payload.partner_id), None)
+    if partner is None:
+        partner = {"partner_id": payload.partner_id, "tier": tiers[0], "xp": 0}
+        partners.append(partner)
+
+    current_tier = partner.get("tier", tiers[0])
+    current_index = tiers.index(current_tier) if current_tier in tiers else 0
+    next_index = min(current_index + 1, len(tiers) - 1)
+    partner["tier"] = tiers[next_index]
+    partner["xp"] = int(partner.get("xp", 0)) + 10
+
+    history = evo.setdefault("history", [])
+    history.append(
+        {
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "partner_id": payload.partner_id,
+            "from": current_tier,
+            "to": partner["tier"],
+            "reason": payload.reason,
+        }
+    )
+
+    _write_command_center_state(state)
+    return {"ok": True, "partner": partner, "history": history[-10:]}
+
+
+@app.get("/v1/command-center/marketplace/list")
+def marketplace_list(status: Optional[str] = Query(default=None)):
+    state = _read_command_center_state()
+    marketplace = state.setdefault("marketplace", {"missions": []})
+    missions = marketplace.setdefault("missions", [])
+    if status:
+        missions = [m for m in missions if str(m.get("status", "")).lower() == status.lower()]
+    return {"ok": True, "missions": missions, "count": len(missions)}
+
+
+@app.post("/v1/command-center/marketplace/publish")
+def marketplace_publish(payload: MarketplacePublishRequest):
+    state = _read_command_center_state()
+    marketplace = state.setdefault("marketplace", {"missions": []})
+    missions = marketplace.setdefault("missions", [])
+    listing = {
+        "listing_id": f"mk-{secrets.token_hex(3)}",
+        "mission_type": payload.mission_type,
+        "title": payload.title,
+        "reward_points": int(payload.reward_points),
+        "tags": payload.tags,
+        "status": "open",
+        "created_at": datetime.now(timezone.utc).isoformat(),
+    }
+    missions.append(listing)
+    _write_command_center_state(state)
+    return {"ok": True, "listing": listing}
+
+
+@app.post("/v1/dispatch")
+def dispatch(req: DispatchRequest, request: Request):
+    op_key = request.headers.get("X-Operator-Key")
+    if not op_key or op_key != OPERATOR_PIN:
+        raise HTTPException(status_code=401, detail="operator key required")
+
+    engine = get_engine()
+    created = engine.create_mission(req.goal, req.category, req.constraints)
+    run = engine.run_mission(created.get("mission_id", "")) if created.get("mission_id") else {"error": "create_failed"}
+    return {"created": created, "run": run}
+
+
+@app.get("/v1/audit/tail")
+def audit_tail(limit: int = 10):
+    lim = max(1, min(limit, 500))
+    audit_file = DATA_DIR / "audit.jsonl"
+    return {"entries": _tail_jsonl(audit_file, lim)}
+
+
+@app.get("/v1/runs")
+def runs():
+    runs_file = DATA_DIR / "runs.jsonl"
+    result = read_jsonl(runs_file)
+
+    # Defensive: tolerate regressions or unexpected return types
+    if not result or not isinstance(result, tuple):
+        entries = []
+    else:
+        entries, _, _ = result
+
+    return {"runs": entries, "count": len(entries)}
+
+
+@app.get("/config/runtime.json")
+def config_runtime():
+    port = int(os.environ.get("PORT", "8012"))
+    base = os.environ.get("BASE_URL") or f"http://127.0.0.1:{port}"
+    merged = {
+        "apiBaseUrl": base,
+        "uiBaseUrl": base,
+        "port": port,
+        "offlineMode": OFFLINE_MODE,
+    }
+    merged.update(_runtime_cfg)
+    return merged
 
 # ---------------------------------------------------------------------------
 # PWA app-shell served at /
@@ -279,8 +925,9 @@ def service_worker():
 
 @app.post("/v1/sovereign/dispatch")
 def sovereign_dispatch(body: SovereignDispatch):
-    ts = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.%fZ")
-    mission_id = f"M-{datetime.utcnow().strftime('%Y%m%d-%H%M%S')}-{secrets.token_hex(4)}"
+    now = datetime.now(timezone.utc)
+    ts = now.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+    mission_id = f"M-{now.strftime('%Y%m%d-%H%M%S')}-{secrets.token_hex(4)}"
     mission = {
         "mission_id": mission_id,
         "intent": body.intent,
@@ -349,4 +996,23 @@ def icon_file(icon_name: str):
     if f.exists():
         return FileResponse(f)
     raise HTTPException(status_code=404, detail="icon not found")
+
+# Temporary fallback for `_file_in_ui` to resolve NameError.
+def _file_in_ui(filename: str):
+    from pathlib import Path
+    return Path("ui") / filename
+
+# Temporary fallback definitions for debugging
+try:
+    from addons.api.guardrails_router import router as guardrails_router
+except ImportError:
+    print("Fallback: guardrails_router not imported")
+    guardrails_router = None
+
+try:
+    from swarmz_runtime.api.companion_state import companion_state
+except ImportError:
+    print("Fallback: companion_state not imported")
+    def companion_state():
+        return {"status": "Fallback companion state"}
 

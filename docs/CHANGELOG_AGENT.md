@@ -11,7 +11,7 @@
 - `core/awareness_api.py` — Awareness module API (system metrics, alerts)
 - `core/forensics_api.py` — Forensics module API (event timeline, evidence)
 - `core/shell_api.py` — Shell module API (command execution, history)
-- `core/market_lab_api.py` — Market Lab module API (strategies, backtesting)
+- `core/market_lab_api.py` — Market La`b module API (strategies, backtesting)
 - `web/app.css`, `web/app.js` — Core UI styling and logic
 - `web/hologram.css`, `web/hologram.html`, `web/hologram.js` — Hologram dashboard
 - `web/trials.css`, `web/trials.html`, `web/trials.js` — Trials/testing UI

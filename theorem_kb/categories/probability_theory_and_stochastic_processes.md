@@ -1,0 +1,44 @@
+# Probability theory and stochastic processes
+
+**40 theorems**
+
+- **Bayes' theorem** -- probability
+- **Bertrand's ballot theorem** -- probability theory, combinatorics
+- **Burke's theorem** -- probability theory, queueing theory
+- **Central limit theorem** -- probability
+- **Clark-Ocone theorem** -- stochastic processes
+- **Continuous mapping theorem** -- probability theory
+- **Cramer's theorem (large deviations)** -- probability
+- **Dawson-Gartner theorem** -- asymptotic analysis
+- **Donsker's theorem** -- probability theory
+- **Doob decomposition theorem** -- stochastic processes
+- **Doob's martingale convergence theorems** -- stochastic processes
+- **Doob-Meyer decomposition theorem** -- stochastic processes
+- **Dudley's theorem** -- probability
+- **Dunford-Pettis theorem** -- probability theory
+- **Fernique's theorem** -- measure theory
+- **Foster's theorem** -- statistics
+- **Freidlin-Wentzell theorem** -- stochastic processes
+- **Girsanov's theorem** -- stochastic processes
+- **Glivenko's theorem** -- probability
+- **Gordon-Newell theorem** -- queueing theory
+- **Hammersley-Clifford theorem** -- probability
+- **Helly-Bray theorem** -- probability theory
+- **Integral representation theorem for classical Wiener space** -- measure theory
+- **Ionescu-Tulcea theorem** -- probability theory
+- **Jackson's theorem** -- queueing theory
+- **Karhunen-Loeve theorem** -- stochastic processes
+- **Kolmogorov extension theorem** -- stochastic processes
+- **Kolmogorov's three-series theorem** -- mathematical series
+- **Le Cam's theorem** -- probability theory
+- **Levy continuity theorem** -- probability
+- **Levy's modulus of continuity theorem** -- probability
+- **Martingale representation theorem** -- probability theory
+- **Maxwell's theorem** -- probability theory
+- **Optional stopping theorem** -- probability theory
+- **Poisson limit theorem** -- probability
+- **Raikov's theorem** -- probability
+- **Skorokhod's embedding theorem** -- statistics
+- **Skorokhod's representation theorem** -- statistics
+- **Slutsky's theorem** -- probability theory
+- **Theorem of de Moivre-Laplace** -- probability theory

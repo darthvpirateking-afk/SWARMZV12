@@ -1,4 +1,4 @@
-﻿# SWARMZ Source Available License
+# SWARMZ Source Available License
 # Commercial use, hosting, and resale prohibited.
 # See LICENSE file for details.
 """
@@ -25,34 +25,24 @@ from fastapi import APIRouter
 from fastapi.responses import HTMLResponse, JSONResponse
 from pydantic import BaseModel
 
-from swarmz import SwarmzCore
+
+from fastapi import Request, Depends
+
+def get_orchestrator(request: Request):
+  return getattr(request.app.state, "orchestrator", None)
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
+
 # ---------------------------------------------------------------------------
-# Shared SwarmzCore instance (lazy singleton)
+# Dependency-based SwarmzCore access via orchestrator
 # ---------------------------------------------------------------------------
-_core: SwarmzCore | None = None
-
-
-def _get_core() -> SwarmzCore:
-    global _core
-    if _core is None:
-        _core = SwarmzCore()
-        # Auto-load bundled plugins when available
-        from pathlib import Path
-
-        plugins_dir = Path(__file__).resolve().parent.parent.parent / "plugins"
-        for plugin_file in sorted(plugins_dir.glob("*.py")):
-            if plugin_file.name.startswith("_"):
-                continue
-            try:
-                _core.load_plugin(str(plugin_file))
-            except Exception:
-                logger.warning("Failed to load plugin %s", plugin_file.name, exc_info=True)
-    return _core
+def _get_core(orchestrator=Depends(get_orchestrator)):
+  if orchestrator and hasattr(orchestrator, "core"):
+    return orchestrator.core
+  return None
 
 
 # ---------------------------------------------------------------------------
@@ -63,39 +53,47 @@ class ExecuteRequest(BaseModel):
     params: Dict[str, Any] = {}
 
 
+
 @router.get("/ui/api/capabilities")
-def api_capabilities():
-    core = _get_core()
-    return JSONResponse({"capabilities": core.list_capabilities()})
+def api_capabilities(core=Depends(_get_core)):
+  if not core:
+    return JSONResponse({"capabilities": []})
+  return JSONResponse({"capabilities": core.list_capabilities()})
+
 
 
 @router.post("/ui/api/execute")
-def api_execute(req: ExecuteRequest):
-    core = _get_core()
-    try:
-        result = core.execute(req.task, **req.params)
-        return JSONResponse({"ok": True, "result": result})
-    except Exception as exc:
-        return JSONResponse(
-            {"ok": False, "error": str(exc)},
-            status_code=400,
-        )
+def api_execute(req: ExecuteRequest, core=Depends(_get_core)):
+  if not core:
+    return JSONResponse({"ok": False, "error": "Core unavailable"}, status_code=500)
+  try:
+    result = core.execute(req.task, **req.params)
+    return JSONResponse({"ok": True, "result": result})
+  except Exception as exc:
+    return JSONResponse(
+      {"ok": False, "error": str(exc)},
+      status_code=400,
+    )
+
 
 
 @router.get("/ui/api/audit")
-def api_audit():
-    core = _get_core()
-    return JSONResponse({"audit": core.get_audit_log()})
+def api_audit(core=Depends(_get_core)):
+  if not core:
+    return JSONResponse({"audit": []})
+  return JSONResponse({"audit": core.get_audit_log()})
+
 
 
 @router.get("/ui/api/info")
-def api_info():
-    core = _get_core()
-    try:
-        info = core.execute("system_info")
-    except Exception:
-        info = {}
-    return JSONResponse({"info": info})
+def api_info(core=Depends(_get_core)):
+  if not core:
+    return JSONResponse({"info": {}})
+  try:
+    info = core.execute("system_info")
+  except Exception:
+    info = {}
+  return JSONResponse({"info": info})
 
 
 # ---------------------------------------------------------------------------

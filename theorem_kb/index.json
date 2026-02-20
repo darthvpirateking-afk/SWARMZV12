@@ -1,0 +1,297 @@
+{
+  "generated": "2026-02-19T11:57:03.377296",
+  "total_theorems": 1278,
+  "total_categories": 58,
+  "categories": [
+    {
+      "category": "Abstract harmonic analysis",
+      "count": 3,
+      "file": "theorem_kb\\categories\\abstract_harmonic_analysis.md"
+    },
+    {
+      "category": "Algebraic geometry",
+      "count": 49,
+      "file": "theorem_kb\\categories\\algebraic_geometry.md"
+    },
+    {
+      "category": "Algebraic topology",
+      "count": 32,
+      "file": "theorem_kb\\categories\\algebraic_topology.md"
+    },
+    {
+      "category": "Approximations and expansions",
+      "count": 2,
+      "file": "theorem_kb\\categories\\approximations_and_expansions.md"
+    },
+    {
+      "category": "Associative rings and algebras",
+      "count": 12,
+      "file": "theorem_kb\\categories\\associative_rings_and_algebras.md"
+    },
+    {
+      "category": "Astronomy and astrophysics",
+      "count": 2,
+      "file": "theorem_kb\\categories\\astronomy_and_astrophysics.md"
+    },
+    {
+      "category": "Biology and other natural sciences",
+      "count": 1,
+      "file": "theorem_kb\\categories\\biology_and_other_natural_sciences.md"
+    },
+    {
+      "category": "Calculus of variations and optimal control; optimization",
+      "count": 9,
+      "file": "theorem_kb\\categories\\calculus_of_variations_and_optimal_control_optimization.md"
+    },
+    {
+      "category": "Category theory and homological algebra",
+      "count": 8,
+      "file": "theorem_kb\\categories\\category_theory_and_homological_algebra.md"
+    },
+    {
+      "category": "Classical thermodynamics, heat transfer",
+      "count": 2,
+      "file": "theorem_kb\\categories\\classical_thermodynamics_heat_transfer.md"
+    },
+    {
+      "category": "Combinatorics",
+      "count": 80,
+      "file": "theorem_kb\\categories\\combinatorics.md"
+    },
+    {
+      "category": "Commutative algebra",
+      "count": 18,
+      "file": "theorem_kb\\categories\\commutative_algebra.md"
+    },
+    {
+      "category": "Computer science",
+      "count": 39,
+      "file": "theorem_kb\\categories\\computer_science.md"
+    },
+    {
+      "category": "Convex and discrete geometry",
+      "count": 42,
+      "file": "theorem_kb\\categories\\convex_and_discrete_geometry.md"
+    },
+    {
+      "category": "Difference and functional equations",
+      "count": 1,
+      "file": "theorem_kb\\categories\\difference_and_functional_equations.md"
+    },
+    {
+      "category": "Differential geometry",
+      "count": 41,
+      "file": "theorem_kb\\categories\\differential_geometry.md"
+    },
+    {
+      "category": "Dynamical systems and ergodic theory",
+      "count": 20,
+      "file": "theorem_kb\\categories\\dynamical_systems_and_ergodic_theory.md"
+    },
+    {
+      "category": "Field theory and polynomials",
+      "count": 19,
+      "file": "theorem_kb\\categories\\field_theory_and_polynomials.md"
+    },
+    {
+      "category": "Fluid mechanics",
+      "count": 6,
+      "file": "theorem_kb\\categories\\fluid_mechanics.md"
+    },
+    {
+      "category": "Functional analysis",
+      "count": 26,
+      "file": "theorem_kb\\categories\\functional_analysis.md"
+    },
+    {
+      "category": "Functions of a complex variable",
+      "count": 66,
+      "file": "theorem_kb\\categories\\functions_of_a_complex_variable.md"
+    },
+    {
+      "category": "Game theory, economics, social and behavioral sciences",
+      "count": 29,
+      "file": "theorem_kb\\categories\\game_theory_economics_social_and_behavioral_sciences.md"
+    },
+    {
+      "category": "General algebraic systems",
+      "count": 3,
+      "file": "theorem_kb\\categories\\general_algebraic_systems.md"
+    },
+    {
+      "category": "General topology",
+      "count": 23,
+      "file": "theorem_kb\\categories\\general_topology.md"
+    },
+    {
+      "category": "Geometry",
+      "count": 87,
+      "file": "theorem_kb\\categories\\geometry.md"
+    },
+    {
+      "category": "Global analysis, analysis on manifolds",
+      "count": 1,
+      "file": "theorem_kb\\categories\\global_analysis_analysis_on_manifolds.md"
+    },
+    {
+      "category": "Group theory and generalizations",
+      "count": 56,
+      "file": "theorem_kb\\categories\\group_theory_and_generalizations.md"
+    },
+    {
+      "category": "Harmonic analysis on Euclidean spaces",
+      "count": 16,
+      "file": "theorem_kb\\categories\\harmonic_analysis_on_euclidean_spaces.md"
+    },
+    {
+      "category": "Information and communication, circuits",
+      "count": 6,
+      "file": "theorem_kb\\categories\\information_and_communication_circuits.md"
+    },
+    {
+      "category": "Integral equations",
+      "count": 1,
+      "file": "theorem_kb\\categories\\integral_equations.md"
+    },
+    {
+      "category": "Integral transforms, operational calculus",
+      "count": 5,
+      "file": "theorem_kb\\categories\\integral_transforms_operational_calculus.md"
+    },
+    {
+      "category": "K-theory",
+      "count": 2,
+      "file": "theorem_kb\\categories\\k_theory.md"
+    },
+    {
+      "category": "Linear and multilinear algebra; matrix theory",
+      "count": 22,
+      "file": "theorem_kb\\categories\\linear_and_multilinear_algebra_matrix_theory.md"
+    },
+    {
+      "category": "Logics and foundations",
+      "count": 50,
+      "file": "theorem_kb\\categories\\logics_and_foundations.md"
+    },
+    {
+      "category": "Manifolds and cell complexes",
+      "count": 37,
+      "file": "theorem_kb\\categories\\manifolds_and_cell_complexes.md"
+    },
+    {
+      "category": "Measure and integration",
+      "count": 31,
+      "file": "theorem_kb\\categories\\measure_and_integration.md"
+    },
+    {
+      "category": "Mechanics of deformable solids",
+      "count": 5,
+      "file": "theorem_kb\\categories\\mechanics_of_deformable_solids.md"
+    },
+    {
+      "category": "Mechanics of particles and systems",
+      "count": 9,
+      "file": "theorem_kb\\categories\\mechanics_of_particles_and_systems.md"
+    },
+    {
+      "category": "Nonassociative rings and algebras",
+      "count": 9,
+      "file": "theorem_kb\\categories\\nonassociative_rings_and_algebras.md"
+    },
+    {
+      "category": "Number theory",
+      "count": 116,
+      "file": "theorem_kb\\categories\\number_theory.md"
+    },
+    {
+      "category": "Numerical analysis",
+      "count": 5,
+      "file": "theorem_kb\\categories\\numerical_analysis.md"
+    },
+    {
+      "category": "Operations research, mathematical programming",
+      "count": 6,
+      "file": "theorem_kb\\categories\\operations_research_mathematical_programming.md"
+    },
+    {
+      "category": "Operator theory",
+      "count": 40,
+      "file": "theorem_kb\\categories\\operator_theory.md"
+    },
+    {
+      "category": "Optics, electromagnetic theory",
+      "count": 7,
+      "file": "theorem_kb\\categories\\optics_electromagnetic_theory.md"
+    },
+    {
+      "category": "Order, lattices, ordered algebraic structures",
+      "count": 14,
+      "file": "theorem_kb\\categories\\order_lattices_ordered_algebraic_structures.md"
+    },
+    {
+      "category": "Ordinary differential equations",
+      "count": 11,
+      "file": "theorem_kb\\categories\\ordinary_differential_equations.md"
+    },
+    {
+      "category": "Partial differential equations",
+      "count": 4,
+      "file": "theorem_kb\\categories\\partial_differential_equations.md"
+    },
+    {
+      "category": "Probability theory and stochastic processes",
+      "count": 40,
+      "file": "theorem_kb\\categories\\probability_theory_and_stochastic_processes.md"
+    },
+    {
+      "category": "Quantum theory",
+      "count": 36,
+      "file": "theorem_kb\\categories\\quantum_theory.md"
+    },
+    {
+      "category": "Real functions",
+      "count": 40,
+      "file": "theorem_kb\\categories\\real_functions.md"
+    },
+    {
+      "category": "Relativity and gravitational theory",
+      "count": 9,
+      "file": "theorem_kb\\categories\\relativity_and_gravitational_theory.md"
+    },
+    {
+      "category": "Sequence, series, summability",
+      "count": 9,
+      "file": "theorem_kb\\categories\\sequence_series_summability.md"
+    },
+    {
+      "category": "Several complex variables and analytic spaces",
+      "count": 23,
+      "file": "theorem_kb\\categories\\several_complex_variables_and_analytic_spaces.md"
+    },
+    {
+      "category": "Special functions",
+      "count": 3,
+      "file": "theorem_kb\\categories\\special_functions.md"
+    },
+    {
+      "category": "Statistical mechanics, structure of matter",
+      "count": 10,
+      "file": "theorem_kb\\categories\\statistical_mechanics_structure_of_matter.md"
+    },
+    {
+      "category": "Statistics",
+      "count": 22,
+      "file": "theorem_kb\\categories\\statistics.md"
+    },
+    {
+      "category": "Systems theory; control",
+      "count": 4,
+      "file": "theorem_kb\\categories\\systems_theory_control.md"
+    },
+    {
+      "category": "Topological groups, Lie groups",
+      "count": 9,
+      "file": "theorem_kb\\categories\\topological_groups_lie_groups.md"
+    }
+  ]
+}

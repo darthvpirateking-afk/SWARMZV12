@@ -1,4 +1,4 @@
-﻿# SWARMZ Source Available License
+# SWARMZ Source Available License
 # Commercial use, hosting, and resale prohibited.
 # See LICENSE file for details.
 import json
@@ -101,4 +101,79 @@ def run_status() -> Dict[str, Any]:
         "chain_entries": count,
         "latest_report": latest_report,
     }
+
+
+def verify_kernel_integrity(strict: bool = True) -> Dict[str, Any]:
+    """Perform strict kernel integrity validation."""
+    started = time.time()
+    issues = []
+    checks = []
+
+    # Check 1: Audit chain integrity
+    chain_ok, chain_count = provenance.verify_chain()
+    checks.append("audit_chain_integrity")
+    if not chain_ok:
+        issues.append("Audit chain integrity compromised")
+
+    # Check 2: Data invariants
+    invariants = verify_invariants()
+    checks.append("data_invariants")
+    if not invariants.get("ok", False):
+        issues.append(f"Data invariants violated: {invariants.get('issues', [])}")
+
+    # Check 3: Mission consistency
+    missions = _read_jsonl(DATA_DIR / "missions.jsonl")
+    checks.append("mission_consistency")
+    mission_ids = set()
+    for m in missions:
+        mid = m.get("id")
+        if mid in mission_ids:
+            issues.append(f"Duplicate mission ID: {mid}")
+        mission_ids.add(mid)
+
+    # Check 4: Learning state integrity
+    evolution_file = DATA_DIR / "evolution.jsonl"
+    if evolution_file.exists():
+        checks.append("learning_state_integrity")
+        try:
+            evolution_data = _read_jsonl(evolution_file)
+            if not evolution_data:
+                issues.append("Empty learning state")
+        except Exception as e:
+            issues.append(f"Learning state corruption: {str(e)}")
+
+    # Check 5: Performance ledger integrity
+    perf_file = DATA_DIR / "perf_ledger.jsonl"
+    if perf_file.exists():
+        checks.append("performance_ledger_integrity")
+        try:
+            perf_data = _read_jsonl(perf_file)
+            # Basic validation - ensure required fields
+            for entry in perf_data[-10:]:  # Check last 10 entries
+                if not all(k in entry for k in ["mission_id", "time_spent", "success"]):
+                    issues.append("Performance ledger missing required fields")
+                    break
+        except Exception as e:
+            issues.append(f"Performance ledger corruption: {str(e)}")
+
+    # Strict mode: Fail on any issues
+    integrity_passed = len(issues) == 0 if strict else len([i for i in issues if "corruption" in i or "compromised" in i]) == 0
+
+    result = {
+        "integrity_passed": integrity_passed,
+        "issues": issues,
+        "checks": checks,
+        "strict_mode": strict,
+        "timestamp": started,
+        "validation_duration": time.time() - started
+    }
+
+    # Log kernel validation
+    provenance.append_audit("kernel_validation", {
+        "integrity_passed": integrity_passed,
+        "issues_count": len(issues),
+        "strict_mode": strict
+    })
+
+    return result
 

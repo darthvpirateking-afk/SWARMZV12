@@ -1,4 +1,4 @@
-﻿# SWARMZ Source Available License
+# SWARMZ Source Available License
 # Commercial use, hosting, and resale prohibited.
 # See LICENSE file for details.
 #!/usr/bin/env python3
@@ -87,6 +87,10 @@ class TestCompanionCoreIntegration(unittest.TestCase):
         self.companion.interact("Run echo task", {"message": "test"})
         intelligence = self.companion.mode_manager.operator_mode.intelligence
         self.assertIsInstance(intelligence.execution_logs, list)
+
+
+def test_integration():
+    pass
 
 
 if __name__ == "__main__":

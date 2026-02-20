@@ -1,4 +1,4 @@
-﻿# SWARMZ Source Available License
+# SWARMZ Source Available License
 # Commercial use, hosting, and resale prohibited.
 # See LICENSE file for details.
 #!/usr/bin/env python3
@@ -15,7 +15,7 @@ from pathlib import Path
 from swarmz import SwarmzCore
 
 
-def main():
+def cli_main():
     parser = argparse.ArgumentParser(
         description="SWARMZ - Operator-Sovereign 'Do Anything' System",
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -197,5 +197,5 @@ Examples:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    cli_main()
 

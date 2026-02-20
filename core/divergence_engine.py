@@ -1,9 +1,9 @@
-﻿# SWARMZ Source Available License
+# SWARMZ Source Available License
 # Commercial use, hosting, and resale prohibited.
 # See LICENSE file for details.
 import json
 import time
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, Any
 
@@ -74,7 +74,7 @@ class DivergenceEngine:
             self.state["commitment_weight"] = max(1.0, self.state.get("commitment_weight", 1.0) * 0.98)
 
         event = {
-            "timestamp": datetime.utcnow().isoformat() + "Z",
+            "timestamp": datetime.now(timezone.utc).isoformat(),
             "planned": planned,
             "executed": executed,
             "divergence_score": divergence,

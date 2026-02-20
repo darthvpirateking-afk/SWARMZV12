@@ -1,4 +1,4 @@
-﻿# SWARMZ Source Available License
+# SWARMZ Source Available License
 # Commercial use, hosting, and resale prohibited.
 # See LICENSE file for details.
 """
@@ -9,6 +9,7 @@ Validates that all engine classes instantiate and their hook methods work.
 
 import json
 from pathlib import Path
+import pytest
 
 
 def test_perf_ledger():
@@ -123,15 +124,35 @@ def test_counterfactual_engine():
     assert ds.exists()
 
 
-def test_relevance_engine():
+def test_relevance_engine(tmp_path):
     from core.relevance_engine import RelevanceEngine
     from core.evolution_memory import EvolutionMemory
     from core.operator_anchor import load_or_create_anchor
-    anchor = load_or_create_anchor("data")
-    evo = EvolutionMemory("data", anchor=anchor)
-    re = RelevanceEngine("data", evo)
+
+    # Setup isolated data directory
+    data_dir = tmp_path / "data"
+    data_dir.mkdir(parents=True, exist_ok=True)
+    mem_hot_dir = data_dir / "memory" / "hot"
+    mem_hot_dir.mkdir(parents=True, exist_ok=True)
+    history_file = data_dir / "evolution_history.jsonl"
+
+    # Populate evolution_history.jsonl with a sample record
+    sample_record = {
+        "inputs_hash": "test_hash",
+        "strategy_used": "baseline",
+        "score": 0.8,
+        "success_bool": True,
+        "previous_hash": "GENESIS"
+    }
+    with open(history_file, "w", encoding="utf-8") as f:
+        f.write(json.dumps(sample_record) + "\n")
+
+    anchor = load_or_create_anchor(str(data_dir))
+    evo = EvolutionMemory(str(data_dir), anchor=anchor)
+    re = RelevanceEngine(str(data_dir), evo)
+
     # after_outcome should not crash
     re.after_outcome("test_rel_m1", "test_hash", "baseline", 0.8, True, 100)
-    hot = Path("data/memory/hot/hot.jsonl")
+    hot = mem_hot_dir / "hot.jsonl"
     assert hot.exists()
 

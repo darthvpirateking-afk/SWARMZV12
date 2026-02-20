@@ -1,0 +1,45 @@
+# Differential geometry
+
+**41 theorems**
+
+- **2-pi theorem** -- Riemannian geometry
+- **Abel's curve theorem** -- Riemannian geometry
+- **Beltrami's theorem** -- Riemannian geometry
+- **Berger-Kazdan comparison theorem** -- Riemannian geometry
+- **Bertrand-Diquet-Puiseux theorem** -- differential geometry
+- **Bishop-Gromov inequality** -- Riemannian geometry
+- **Bonnet theorem** -- differential geometry
+- **Caratheodory-Jacobi-Lie theorem** -- symplectic topology
+- **Cartan-Hadamard theorem** -- Riemannian geometry
+- **Cheng's eigenvalue comparison theorem** -- Riemannian geometry
+- **Chern-Gauss-Bonnet theorem** -- differential geometry
+- **Classification of symmetric spaces** -- Lie theory
+- **Darboux's theorem** -- symplectic topology
+- **Euler's theorem** -- differential geometry
+- **Four-vertex theorem** -- differential geometry
+- **Frobenius theorem** -- foliations
+- **Gauss's lemma** -- Riemannian geometry
+- **Gauss's Theorema Egregium** -- differential geometry
+- **Gauss-Bonnet theorem** -- differential geometry
+- **Geroch's splitting theorem** -- differential geometry
+- **Gromov's compactness theorem** -- Riemannian geometry
+- **Gromov's compactness theorem** -- symplectic topology
+- **Gromov-Ruh theorem** -- differential geometry
+- **Hilbert's theorem** -- differential geometry
+- **Hopf-Rinow theorem** -- differential geometry
+- **Killing-Hopf theorem** -- Riemannian geometry
+- **Lee Hwa Chung theorem** -- symplectic topology
+- **Lie-Palais theorem** -- differential geometry
+- **Meusnier's theorem** -- differential geometry
+- **Mostow rigidity theorem** -- differential geometry
+- **Myers theorem** -- differential geometry
+- **Myers-Steenrod theorem** -- differential geometry
+- **Nash embedding theorem** -- differential geometry
+- **Non-squeezing theorem** -- symplectic geometry
+- **Rashevsky-Chow theorem** -- control theory
+- **Rauch comparison theorem** -- Riemannian geometry
+- **Schwarz-Ahlfors-Pick theorem** -- differential geometry
+- **Soul theorem** -- Riemannian geometry
+- **Sphere theorem** -- Riemannian geometry
+- **Synge's theorem** -- Riemannian geometry
+- **Toponogov's theorem** -- Riemannian geometry

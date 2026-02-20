@@ -1,4 +1,4 @@
-﻿# SWARMZ Source Available License
+# SWARMZ Source Available License
 # Commercial use, hosting, and resale prohibited.
 # See LICENSE file for details.
 """
@@ -225,12 +225,13 @@ def test_api_v1_health():
 
 
 def test_api_pairing_info():
-    """/v1/pairing/info returns base_url."""
+    """/v1/pairing/info returns pin info."""
     client, _ = _get_test_client()
     r = client.get("/v1/pairing/info")
     data = r.json()
-    assert "base_url" in data
-    assert data["requires_pin"] is True
+    assert "pin" in data
+    assert "source" in data
+    assert "generated" in data
 
 
 def test_api_pairing_flow():

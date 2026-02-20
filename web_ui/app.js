@@ -45,6 +45,16 @@ function setPill(id, text, ok) {
 
 function setHint(text) { setText("pairHint", text); }
 
+function renderCommandCenterOutput(payload) {
+  const box = $("commandCenterOutput");
+  if (!box) return;
+  if (!payload) {
+    box.textContent = "Command center state unavailable.";
+    return;
+  }
+  box.textContent = JSON.stringify(payload, null, 2);
+}
+
 async function loadRuntimeConfig() {
   try {
     const res = await fetch("/config/runtime.json", { cache: "no-store" });
@@ -234,7 +244,9 @@ async function pairNow() {
     state.token = token;
     localStorage.setItem("swarmz_token", token);
     setPairStatus("Paired", true);
-    setHint("Token stored. You can now dispatch and refresh runs/audit.");
+    setHint("Token stored. Ignition controls activated - operator sovereignty engaged.");
+    showIgnitionControls();
+    showCommandCenterControls();
 
     await refreshAll();
   } catch (e) {
@@ -322,7 +334,7 @@ async function dispatchNow() {
 }
 
 async function refreshAll() {
-  await Promise.allSettled([loadRuns(), loadRunDetail(), loadAudit(), refreshHealth()]);
+  await Promise.allSettled([loadRuns(), loadRunDetail(), loadAudit(), refreshHealth(), loadCommandCenterState()]);
 }
 
 function wirePwaInstall() {
@@ -349,6 +361,384 @@ function registerServiceWorker() {
   navigator.serviceWorker.register("/sw.js").catch(() => {});
 }
 
+// Ignition control functions
+function showIgnitionControls() {
+  const section = $("ignitionSection");
+  if (section) section.style.display = "block";
+  setPill("ignitionStatus", "Active", true);
+}
+
+function hideIgnitionControls() {
+  const section = $("ignitionSection");
+  if (section) section.style.display = "none";
+  setPill("ignitionStatus", "Inactive", false);
+}
+
+async function executeOperatorCommand() {
+  const command = $("operatorCommand")?.value;
+  if (!command) return;
+
+  const params = {};
+
+  if (command === "execute_artifact") {
+    const artifactId = $("artifactId")?.value?.trim();
+    if (!artifactId) {
+      setHint("Artifact ID required for execution");
+      return;
+    }
+    params.artifact_id = artifactId;
+  }
+
+  try {
+    let endpoint = "/v1/admin/command";
+    let body = { command, parameters: params, operator_key: state.token };
+
+    if (command === "kernel_validate") {
+      endpoint = "/v1/verify/kernel";
+      body = { strict: true };
+    }
+
+    const resp = await apiFetch(endpoint, {
+      method: "POST",
+      body: JSON.stringify(body),
+    });
+
+    setHint(`Command executed: ${command}`);
+    console.log("Command result:", resp);
+
+    // Refresh status after command
+    await refreshHealth();
+
+  } catch (e) {
+    setHint(`Command failed: ${e.message}`);
+  }
+}
+
+async function validateKernel() {
+  try {
+    const resp = await apiFetch("/v1/verify/kernel", {
+      method: "POST",
+      body: JSON.stringify({ strict: true }),
+    });
+
+    const passed = resp.integrity_passed;
+    setHint(passed ? "Kernel validation passed" : `Kernel issues: ${resp.issues.join(", ")}`);
+    setPill("ignitionStatus", passed ? "Kernel OK" : "Kernel Issues", passed);
+
+  } catch (e) {
+    setHint(`Kernel validation failed: ${e.message}`);
+    setPill("ignitionStatus", "Validation Error", false);
+  }
+}
+
+function updateCommandFields() {
+  const command = $("operatorCommand")?.value;
+  const artifactField = $("artifactField");
+
+  if (command === "execute_artifact") {
+    if (artifactField) artifactField.style.display = "block";
+  } else {
+    if (artifactField) artifactField.style.display = "none";
+  }
+}
+
+// Meta-selector functions
+function showMetaControls() {
+  const section = $("metaSection");
+  if (section) section.style.display = "block";
+  setPill("metaStatus", "Active", true);
+}
+
+function hideMetaControls() {
+  const section = $("metaSection");
+  if (section) section.style.display = "none";
+  setPill("metaStatus", "Inactive", false);
+}
+
+async function makeSovereignDecision() {
+  const contextText = $("decisionContext")?.value?.trim();
+  const optionsText = $("decisionOptions")?.value?.trim();
+
+  if (!contextText || !optionsText) {
+    setHint("Both context and options are required for sovereign decision");
+    return;
+  }
+
+  try {
+    const context = JSON.parse(contextText);
+    const options = JSON.parse(optionsText);
+
+    const resp = await apiFetch("/v1/meta/decide", {
+      method: "POST",
+      body: JSON.stringify({ context, options }),
+    });
+
+    setHint(`Sovereign decision made: ${resp.sovereign_decision.id} (coherence: ${resp.meta_coherence.toFixed(4)})`);
+    console.log("Sovereign decision:", resp);
+
+  } catch (e) {
+    setHint(`Sovereign decision failed: ${e.message}`);
+  }
+}
+
+async function applySovereignControl() {
+  const contextText = $("decisionContext")?.value?.trim();
+
+  if (!contextText) {
+    setHint("Context is required for sovereign control");
+    return;
+  }
+
+  try {
+    const context = JSON.parse(contextText);
+
+    const resp = await apiFetch("/v1/meta/control", {
+      method: "POST",
+      body: JSON.stringify({ context, decision_type: "sovereign_override" }),
+    });
+
+    setHint(`Sovereign control applied: ${resp.control_decision.id}`);
+    console.log("Sovereign control:", resp);
+
+  } catch (e) {
+    setHint(`Sovereign control failed: ${e.message}`);
+  }
+}
+
+async function checkLatticeStatus() {
+  try {
+    const resp = await apiFetch("/v1/meta/lattice", {
+      method: "GET",
+    });
+
+    setHint(`Lattice status: ${resp.sovereign_governance} | ${resp.lattice_layers.length} layers active`);
+    console.log("Lattice status:", resp);
+
+  } catch (e) {
+    setHint(`Lattice status check failed: ${e.message}`);
+  }
+}
+
+async function processTaskMatrix() {
+  const contextText = $("taskContext")?.value?.trim();
+  const optionsText = $("taskOptions")?.value?.trim();
+
+  if (!contextText || !optionsText) {
+    setHint("Both context and options are required for task matrix processing");
+    return;
+  }
+
+  try {
+    const context = JSON.parse(contextText);
+    const options = JSON.parse(optionsText);
+
+    const resp = await apiFetch("/v1/meta/task-matrix", {
+      method: "POST",
+      body: JSON.stringify({ context, options }),
+    });
+
+    setHint(`Task matrix processed: ${resp.ignition_state_vector.cockpit_signal.operational_readiness} (coherence: ${resp.meta_coherence.toFixed(4)})`);
+    console.log("Task matrix result:", resp);
+
+    // Auto-populate kernel ignition input
+    const ignitionInput = $("ignitionStateInput");
+    if (ignitionInput) {
+      ignitionInput.value = JSON.stringify(resp.ignition_state_vector, null, 2);
+      setHint(`Task matrix processed and ignition state loaded for kernel ignition`);
+    }
+
+  } catch (e) {
+    setHint(`Task matrix processing failed: ${e.message}`);
+  }
+}
+
+async function getIgnitionStatus() {
+  try {
+    const resp = await apiFetch("/v1/meta/ignition-status", {
+      method: "GET",
+    });
+
+    setHint(`Ignition status: ${resp.ignition_phase} | Task matrix: ${resp.task_matrix} | Sovereign: ${resp.sovereign_arbitration}`);
+    console.log("Ignition status:", resp);
+
+  } catch (e) {
+    setHint(`Ignition status check failed: ${e.message}`);
+  }
+}
+
+async function executeKernelIgnition() {
+  const ignitionStateText = $("ignitionStateInput")?.value?.trim();
+
+  if (!ignitionStateText) {
+    setHint("Ignition state vector is required for kernel ignition");
+    return;
+  }
+
+  try {
+    const ignitionState = JSON.parse(ignitionStateText);
+
+    const resp = await apiFetch("/v1/meta/kernel-ignition", {
+      method: "POST",
+      body: JSON.stringify({ ignition_state: ignitionState }),
+    });
+
+    const kernelState = resp.ignition_result.kernel_state;
+    const cockpitActivated = resp.cockpit_activated;
+    const operatorControl = resp.operator_control;
+
+    setHint(`Kernel ignition: ${kernelState} | Cockpit: ${cockpitActivated ? 'ACTIVATED' : 'STANDBY'} | Control: ${operatorControl}`);
+    setPill("kernelIgnitionStatus", kernelState, kernelState === "IGNITION_COMPLETE");
+
+    console.log("Kernel ignition result:", resp);
+
+  } catch (e) {
+    setHint(`Kernel ignition failed: ${e.message}`);
+  }
+}
+
+function showTaskMatrixControls() {
+  const section = $("taskMatrixSection");
+  if (section) section.style.display = "block";
+  setPill("taskMatrixStatus", "Active", true);
+}
+
+function hideTaskMatrixControls() {
+  const section = $("taskMatrixSection");
+  if (section) section.style.display = "none";
+  setPill("taskMatrixStatus", "Inactive", false);
+}
+
+function showKernelIgnitionControls() {
+  const section = $("kernelIgnitionSection");
+  if (section) section.style.display = "block";
+  setPill("kernelIgnitionStatus", "Standby", false);
+}
+
+function hideKernelIgnitionControls() {
+  const section = $("kernelIgnitionSection");
+  if (section) section.style.display = "none";
+  setPill("kernelIgnitionStatus", "Inactive", false);
+}
+
+function showCommandCenterControls() {
+  const section = $("commandCenterSection");
+  if (section) section.style.display = "block";
+  setPill("commandCenterStatus", "Active", true);
+}
+
+function hideCommandCenterControls() {
+  const section = $("commandCenterSection");
+  if (section) section.style.display = "none";
+  setPill("commandCenterStatus", "Inactive", false);
+}
+
+async function loadCommandCenterState() {
+  try {
+    const data = await apiFetch("/v1/command-center/state");
+    renderCommandCenterOutput(data);
+    const autonomy = data && data.autonomy ? data.autonomy : {};
+    const levelInput = $("autonomyLevelInput");
+    if (levelInput && autonomy.level !== undefined) {
+      levelInput.value = autonomy.level;
+    }
+  } catch (e) {
+    renderCommandCenterOutput({ ok: false, error: e.message });
+  }
+}
+
+async function setAutonomyDial() {
+  const input = $("autonomyLevelInput");
+  const level = Number(input?.value ?? 35);
+  if (Number.isNaN(level) || level < 0 || level > 100) {
+    setHint("Autonomy level must be between 0 and 100.");
+    return;
+  }
+  try {
+    const out = await apiFetch("/v1/command-center/autonomy", {
+      method: "POST",
+      body: JSON.stringify({ level }),
+    });
+    setHint(`Autonomy updated to ${out.autonomy.level} (${out.autonomy.mode}).`);
+    await loadCommandCenterState();
+  } catch (e) {
+    setHint(`Autonomy update failed: ${e.message}`);
+  }
+}
+
+async function setShadowMode() {
+  const enabled = $("shadowEnabledSelect")?.value === "true";
+  const lane = ($("shadowLaneInput")?.value || "mirror").trim() || "mirror";
+  try {
+    const out = await apiFetch("/v1/command-center/shadow", {
+      method: "POST",
+      body: JSON.stringify({ enabled, lane }),
+    });
+    setHint(`Shadow mode ${out.shadow_mode.enabled ? "enabled" : "disabled"} on lane ${out.shadow_mode.lane}.`);
+    await loadCommandCenterState();
+  } catch (e) {
+    setHint(`Shadow mode update failed: ${e.message}`);
+  }
+}
+
+async function promotePartner() {
+  const partnerId = ($("promotePartnerInput")?.value || "").trim();
+  if (!partnerId) {
+    setHint("Enter partner_id to promote.");
+    return;
+  }
+  try {
+    const out = await apiFetch("/v1/command-center/evolution/promote", {
+      method: "POST",
+      body: JSON.stringify({ partner_id: partnerId, reason: "manual_console_promote" }),
+    });
+    setHint(`Partner ${out.partner.partner_id} promoted to ${out.partner.tier}.`);
+    await loadCommandCenterState();
+  } catch (e) {
+    setHint(`Evolution promotion failed: ${e.message}`);
+  }
+}
+
+async function publishMarketplaceListing() {
+  const missionType = ($("listingTypeInput")?.value || "").trim();
+  const title = ($("listingTitleInput")?.value || "").trim();
+  const rewardPoints = Number($("listingRewardInput")?.value || 0);
+  if (!missionType || !title) {
+    setHint("Mission type and listing title are required.");
+    return;
+  }
+  try {
+    const out = await apiFetch("/v1/command-center/marketplace/publish", {
+      method: "POST",
+      body: JSON.stringify({
+        mission_type: missionType,
+        title,
+        reward_points: Math.max(0, rewardPoints),
+        tags: ["operator"],
+      }),
+    });
+    setHint(`Marketplace listing created: ${out.listing.listing_id}.`);
+    await loadCommandCenterState();
+  } catch (e) {
+    setHint(`Marketplace publish failed: ${e.message}`);
+  }
+}
+
+async function loadMarketplace() {
+  try {
+    const out = await apiFetch("/v1/command-center/marketplace/list");
+    renderCommandCenterOutput(out);
+    setHint(`Marketplace loaded (${out.count} listings).`);
+  } catch (e) {
+    setHint(`Marketplace load failed: ${e.message}`);
+  }
+}
+
+function clearIgnitionState() {
+  const input = $("ignitionStateInput");
+  if (input) input.value = "";
+  setHint("Ignition state cleared");
+}
+
 function boot() {
   const baseUrlEl = $("baseUrl");
   if (baseUrlEl) {
@@ -366,8 +756,47 @@ function boot() {
   $("refreshAuditBtn")?.addEventListener("click", () => loadAudit());
   $("dispatchBtn")?.addEventListener("click", () => dispatchNow());
 
-  if (state.token) setPairStatus("Paired", true);
-  else setPairStatus("Not paired", false);
+  // Ignition controls
+  $("executeCommandBtn")?.addEventListener("click", () => executeOperatorCommand());
+  $("validateKernelBtn")?.addEventListener("click", () => validateKernel());
+  $("operatorCommand")?.addEventListener("change", () => updateCommandFields());
+
+  // Meta-selector controls
+  $("makeSovereignDecisionBtn")?.addEventListener("click", () => makeSovereignDecision());
+  $("applySovereignControlBtn")?.addEventListener("click", () => applySovereignControl());
+  $("checkLatticeStatusBtn")?.addEventListener("click", () => checkLatticeStatus());
+
+  // Task matrix controls
+  $("processTaskMatrixBtn")?.addEventListener("click", () => processTaskMatrix());
+  $("getIgnitionStatusBtn")?.addEventListener("click", () => getIgnitionStatus());
+
+  // Kernel ignition controls
+  $("executeKernelIgnitionBtn")?.addEventListener("click", () => executeKernelIgnition());
+  $("clearIgnitionStateBtn")?.addEventListener("click", () => clearIgnitionState());
+
+  // Command center controls
+  $("refreshCommandCenterBtn")?.addEventListener("click", () => loadCommandCenterState());
+  $("setAutonomyBtn")?.addEventListener("click", () => setAutonomyDial());
+  $("setShadowModeBtn")?.addEventListener("click", () => setShadowMode());
+  $("promotePartnerBtn")?.addEventListener("click", () => promotePartner());
+  $("publishListingBtn")?.addEventListener("click", () => publishMarketplaceListing());
+  $("loadMarketplaceBtn")?.addEventListener("click", () => loadMarketplace());
+
+  if (state.token) {
+    setPairStatus("Paired", true);
+    showIgnitionControls();
+    showMetaControls();
+    showTaskMatrixControls();
+    showKernelIgnitionControls();
+    showCommandCenterControls();
+  } else {
+    setPairStatus("Not paired", false);
+    hideIgnitionControls();
+    hideMetaControls();
+    hideTaskMatrixControls();
+    hideKernelIgnitionControls();
+    hideCommandCenterControls();
+  }
 
   wirePwaInstall();
   registerServiceWorker();

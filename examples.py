@@ -1,4 +1,4 @@
-﻿# SWARMZ Source Available License
+# SWARMZ Source Available License
 # Commercial use, hosting, and resale prohibited.
 # See LICENSE file for details.
 #!/usr/bin/env python3
@@ -223,6 +223,11 @@ result = {{
     print(f"\nStatistics:")
     for key, value in stats.items():
         print(f"  {key}: {value:.2f}" if isinstance(value, float) else f"  {key}: {value}")
+
+
+def show_examples():
+    """Minimal scaffold for examples."""
+    pass
 
 
 def main():

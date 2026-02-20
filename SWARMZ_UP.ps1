@@ -90,9 +90,10 @@ if ($lan) {
 Start-Process ("http://127.0.0.1:{0}/" -f $Port) | Out-Null
 
 # Start server
+
 if (Test-Path (Join-Path $PSScriptRoot "run_server.py")) {
   Write-Host ("Starting server via run_server.py on {0}:{1}" -f $HostBind, $Port) -ForegroundColor Green
-  & $venvPy (Join-Path $PSScriptRoot "run_server.py")
+  & $venvPy (Join-Path $PSScriptRoot "run_server.py") --host $HostBind --port $Port
   exit $LASTEXITCODE
 }
 

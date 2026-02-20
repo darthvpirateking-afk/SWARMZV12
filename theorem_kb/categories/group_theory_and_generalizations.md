@@ -1,0 +1,60 @@
+# Group theory and generalizations
+
+**56 theorems**
+
+- **Alperin-Brauer-Gorenstein theorem** -- finite groups
+- **Bass-Guirvarc'h formula** -- group theory
+- **Bass-Serre theorem** -- group theory
+- **Borel-Bott-Weil theorem** -- representation theory
+- **Borel-Weil theorem** -- representation theory
+- **Brauer's theorem** -- number theory
+- **Brauer's theorem on induced characters** -- representation theory of finite groups
+- **Brauer-Nesbitt theorem** -- representation theory of finite groups
+- **Brauer-Suzuki theorem** -- finite groups
+- **Brauer-Suzuki-Wall theorem** -- group theory
+- **Burnside's theorem** -- group theory
+- **Cartan-Dieudonne theorem** -- group theory
+- **Cauchy's theorem** -- finite groups
+- **Cayley's theorem** -- group theory
+- **Chevalley-Shephard-Todd theorem** -- finite group
+- **Classification of finite simple groups** -- group theory
+- **Feit-Thompson theorem** -- finite groups
+- **Fitting's theorem** -- group theory
+- **Flat torus theorem** -- geometric group theory
+- **Focal subgroup theorem** -- abstract algebra
+- **Frobenius determinant theorem** -- group theory
+- **Frobenius reciprocity theorem** -- group representations
+- **Frucht's theorem** -- graph theory
+- **Great orthogonality theorem** -- group theory
+- **Gromov's theorem on groups of polynomial growth** -- geometric group theory
+- **Grushko theorem** -- group theory
+- **Higman's embedding theorem** -- group theory
+- **Isoperimetric gap** -- geometric group theory, metric geometry
+- **Jordan's theorem (multiply transitive groups)** -- group theory
+- **Jordan-Holder theorem** -- group theory
+- **Jordan-Schur theorem** -- group theory
+- **Krull-Schmidt theorem** -- group theory
+- **Kurosh subgroup theorem** -- group theory
+- **L-balance theorem** -- finite groups
+- **Lagrange's theorem** -- group theory
+- **Lie-Kolchin theorem** -- algebraic groups, representation theory
+- **Maschke's theorem** -- group representations
+- **Moufang's theorem** -- loop theory
+- **Nagao's theorem** -- group theory
+- **Nielsen-Schreier theorem** -- free groups
+- **Orbit-stabilizer theorem** -- group theory
+- **Schreier refinement theorem** -- group theory
+- **Schur's lemma** -- representation theory
+- **Schur-Zassenhaus theorem** -- group theory
+- **Sela's theorem** -- hyperbolic groups
+- **Stallings theorem about ends of groups** -- group theory
+- **Superrigidity theorem** -- algebraic groups
+- **Svarc-Milnor lemma** -- geometric group theory
+- **Sylow theorems** -- group theory
+- **Thompson transitivity theorem** -- finite groups
+- **Thompson uniqueness theorem** -- finite groups
+- **Tits alternative** -- geometric group theory
+- **Trichotomy theorem** -- finite groups
+- **Walter theorem** -- finite groups
+- **Z* theorem** -- finite groups
+- **ZJ theorem** -- finite groups

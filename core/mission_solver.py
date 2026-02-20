@@ -1,4 +1,4 @@
-﻿# SWARMZ Source Available License
+# SWARMZ Source Available License
 # Commercial use, hosting, and resale prohibited.
 # See LICENSE file for details.
 """
@@ -61,7 +61,7 @@ def solve(mission: Dict[str, Any]) -> Dict[str, Any]:
     mission_id = mission.get("mission_id", "unknown")
     intent = mission.get("intent", mission.get("goal", "unknown"))
     spec = mission.get("spec", {})
-    now = datetime.utcnow().isoformat() + "Z"
+    now = datetime.now(timezone.utc).isoformat()
 
     # Ensure output dir
     action_dir = PREPARED_DIR / mission_id
@@ -146,7 +146,7 @@ def _write_plan(action_dir: Path, plan_text: str, source: str) -> None:
     (action_dir / "plan.md").write_text(plan_text, encoding="utf-8")
     meta = {
         "source": source,
-        "generated_at": datetime.utcnow().isoformat() + "Z",
+        "generated_at": datetime.now(timezone.utc).isoformat(),
     }
     (action_dir / "metadata.json").write_text(json.dumps(meta, indent=2), encoding="utf-8")
 

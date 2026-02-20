@@ -1,0 +1,44 @@
+# Real functions
+
+**40 theorems**
+
+- **Anderson's theorem** -- real analysis
+- **Bernstein's theorem** -- functional analysis
+- **Bohr-Mollerup theorem** -- gamma function
+- **Bolzano's theorem** -- real analysis, calculus
+- **Constant rank theorem** -- multivariate calculus
+- **Cousin's lemma** -- real analysis
+- **Danskin's theorem** -- convex analysis
+- **Darboux's theorem** -- real analysis
+- **Denjoy-Carleman theorem** -- functional analysis
+- **Denjoy-Young-Saks theorem** -- real analysis
+- **Dini's theorem** -- analysis
+- **Divergence theorem** -- vector calculus
+- **Fermat's theorem (stationary points)** -- real analysis
+- **Frankova-Helly selection theorem** -- mathematical analysis
+- **Froda's theorem** -- mathematical analysis
+- **Fubini's theorem on differentiation** -- real analysis
+- **Fundamental theorem of calculus** -- calculus
+- **Gauss theorem** -- vector calculus
+- **Gradient theorem** -- vector calculus
+- **Green's theorem** -- vector calculus
+- **Helly's selection theorem** -- mathematical analysis
+- **Implicit function theorem** -- vector calculus
+- **Increment theorem** -- mathematical analysis
+- **Intermediate value theorem** -- calculus
+- **Inverse function theorem** -- vector calculus
+- **Kolmogorov-Arnold representation theorem** -- real analysis, approximation theory
+- **Lebesgue differentiation theorem** -- real analysis
+- **Luzin's theorem** -- real analysis
+- **Malgrange preparation theorem** -- singularity theory
+- **Mean value theorem** -- calculus
+- **Monotone convergence theorem** -- mathematical analysis
+- **Muntz-Szasz theorem** -- functional analysis
+- **Rademacher's theorem** -- mathematical analysis
+- **Rising sun lemma** -- real analysis
+- **Rolle's theorem** -- calculus
+- **Squeeze theorem** -- mathematical analysis
+- **Stokes's theorem** -- vector calculus, differential topology
+- **Titchmarsh convolution theorem** -- complex analysis
+- **Whitney extension theorem** -- mathematical analysis
+- **Zahorski theorem** -- real analysis

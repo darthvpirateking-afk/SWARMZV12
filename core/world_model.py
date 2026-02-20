@@ -1,9 +1,9 @@
-﻿# SWARMZ Source Available License
+# SWARMZ Source Available License
 # Commercial use, hosting, and resale prohibited.
 # See LICENSE file for details.
 import json
 import time
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, Any, List
 
@@ -131,7 +131,7 @@ class WorldModel:
             "idle_vs_execution_ratio": perf.get("throughput", 0.0) / max(perf.get("throughput", 1.0) + 1, 1),
             "strategy_variance": self._strategy_variance(),
             "trend_vector": self._trend_vector(),
-            "last_updated": datetime.utcnow().isoformat() + "Z",
+            "last_updated": datetime.now(timezone.utc).isoformat(),
         }
         with open(self.state_file, "w", encoding="utf-8") as f:
             json.dump(state, f, indent=2)

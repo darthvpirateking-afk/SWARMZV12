@@ -1,8 +1,8 @@
-﻿# SWARMZ Source Available License
+# SWARMZ Source Available License
 # Commercial use, hosting, and resale prohibited.
 # See LICENSE file for details.
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -66,7 +66,7 @@ class CounterfactualEngine:
         personality_vector: Dict[str, Any],
     ) -> None:
         entry = {
-            "timestamp": datetime.utcnow().isoformat() + "Z",
+            "timestamp": datetime.now(timezone.utc).isoformat(),
             "inputs_hash": inputs_hash,
             "state_of_life_hash": state_of_life_hash,
             "personality_vector": personality_vector,
@@ -104,7 +104,7 @@ class CounterfactualEngine:
         surprise_score = abs(predicted_vs_actual_delta)
 
         log_entry = {
-            "timestamp": datetime.utcnow().isoformat() + "Z",
+            "timestamp": datetime.now(timezone.utc).isoformat(),
             "mission_id": mission_id,
             "inputs_hash": inputs_hash,
             "selected_strategy": selected_strategy,
@@ -181,7 +181,7 @@ class CounterfactualEngine:
         reliable = self._most_reliable()
 
         lines = []
-        lines.append(f"Decision Quality Report @ {datetime.utcnow().isoformat()}Z")
+        lines.append(f"Decision Quality Report @ {datetime.now(timezone.utc).isoformat()}")
         lines.append(f"Missions evaluated: {len(entries)}")
         lines.append(f"Average regret: {round(avg_regret, 4)}")
         lines.append(f"Prediction accuracy trend (positive improves): {round(accuracy_trend, 4)}")

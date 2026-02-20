@@ -1,4 +1,11 @@
-﻿# SWARMZ Source Available License
+# --- SWARMZ Orchestrator Activation (additive-only) ---
+try:
+    from kernel_runtime.orchestrator import SwarmzOrchestrator
+    orchestrator = SwarmzOrchestrator()
+    orchestrator.activate()
+except ImportError:
+    pass  # Orchestrator not available; continue as normal
+# SWARMZ Source Available License
 # Commercial use, hosting, and resale prohibited.
 # See LICENSE file for details.
 #!/usr/bin/env python3

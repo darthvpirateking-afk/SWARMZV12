@@ -1,4 +1,4 @@
-﻿# SWARMZ Source Available License
+# SWARMZ Source Available License
 # Commercial use, hosting, and resale prohibited.
 # See LICENSE file for details.
 import os, json, hashlib, time
@@ -120,4 +120,9 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+# Minimal scaffold for TOOLS_REPO_MAP.py
+
+def get_tools_repo_map():
+    pass
 

@@ -1,4 +1,4 @@
-﻿# SWARMZ Source Available License
+# SWARMZ Source Available License
 # Commercial use, hosting, and resale prohibited.
 # See LICENSE file for details.
 #!/usr/bin/env python3
@@ -250,4 +250,9 @@ def run_loop():
 if __name__ == "__main__":
     print("[SWARM RUNNER] Starting standalone runner loop...")
     run_loop()
+
+# Minimal scaffold for swarm_runner.py
+
+def run_swarm():
+    pass
 

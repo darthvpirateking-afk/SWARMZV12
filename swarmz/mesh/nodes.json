@@ -1,0 +1,4 @@
+[
+    {"id": "node1", "type": "compute", "status": "active"},
+    {"id": "node2", "type": "storage", "status": "active"}
+]

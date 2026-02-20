@@ -1,4 +1,4 @@
-﻿import os
+import os
 import urllib.request
 
 AUTH_URL = "https://raw.githubusercontent.com/darthvpirateking/swarmz/main/project_authority.txt"

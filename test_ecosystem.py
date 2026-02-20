@@ -1,4 +1,4 @@
-﻿# SWARMZ Source Available License
+# SWARMZ Source Available License
 # Commercial use, hosting, and resale prohibited.
 # See LICENSE file for details.
 #!/usr/bin/env python3
@@ -199,6 +199,10 @@ class TestEcosystemEndpoints(unittest.TestCase):
         self.assertEqual(r.status_code, 200)
         self.assertIn("mission", r.json())
         self.assertIn("audit", r.json())
+
+
+def test_ecosystem():
+    pass
 
 
 def run_tests():

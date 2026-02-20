@@ -1,4 +1,4 @@
-﻿# SWARMZ Source Available License
+# SWARMZ Source Available License
 # Commercial use, hosting, and resale prohibited.
 # See LICENSE file for details.
 """Entry FastAPI app for SWARMZ (phone/PC ready).
@@ -287,7 +287,12 @@ async def ai_status():
 
     # Add QUARANTINE state
     from swarmz_server import compute_phase
-    missions, _, _ = read_jsonl(MISSIONS_FILE)
+    try:
+        missions, _, _ = read_jsonl(MISSIONS_FILE)
+    except Exception:
+        missions = []
+    if not isinstance(missions, list):
+        missions = []
     success_count = sum(1 for m in missions if m.get("status") == "SUCCESS")
     phase = compute_phase(len(missions), success_count)
     status["phase"] = phase
@@ -416,7 +421,7 @@ try:
 except Exception:
     pass  # fail-open: forensics API unavailable
 
-# â”€â”€ Shell Module â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# â”€â”€ Shell Module â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 try:
     from fastapi.responses import FileResponse as _ShellFileResponse
 
@@ -458,5 +463,33 @@ except Exception:
     pass  # fail-open: zapier bridge unavailable
 
 
+# Minimal scaffold for server.py
+
+def start_server():
+    pass
+
+
 __all__ = ["app"]
+
+# Import routers from their respective modules
+from swarmz_runtime.api.system import router as system_router
+from swarmz_runtime.api.admin import router as admin_router
+from swarmz_runtime.api.factory_routes import router as factory_routes_router
+from swarmz_runtime.api.meta_routes import router as meta_routes_router
+from addons.api.addons_router import router as addons_router
+from addons.api.guardrails_router import router as guardrails_router
+
+# Register all routers in the FastAPI app
+app.include_router(system_router, prefix="/v1/system", tags=["system"])
+app.include_router(admin_router, prefix="/v1/admin", tags=["admin"])
+app.include_router(factory_routes_router, prefix="/v1/factory", tags=["factory"])
+app.include_router(meta_routes_router, prefix="/v1/meta", tags=["meta"])
+app.include_router(addons_router, prefix="/v1/addons", tags=["addons"])
+app.include_router(guardrails_router, prefix="/v1/guardrails", tags=["guardrails"])
+
+# Import the companion_state handler from the new module
+from swarmz_runtime.api.companion_state import companion_state
+
+# Register the companion_state endpoint
+app.add_api_route("/v1/companion/state", companion_state, methods=["GET"], tags=["companion"])
 

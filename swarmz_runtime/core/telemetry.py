@@ -1,4 +1,4 @@
-﻿# SWARMZ Source Available License
+# SWARMZ Source Available License
 # Commercial use, hosting, and resale prohibited.
 # See LICENSE file for details.
 import json
@@ -38,7 +38,7 @@ def _append(path: Path, obj: Dict[str, Any]) -> None:
 
 def record_event(name: str, payload: Optional[Dict[str, Any]] = None) -> None:
     evt = {
-        "ts": datetime.utcnow().isoformat() + "Z",
+        "ts": datetime.now(timezone.utc).isoformat(),
         "type": name,
         "payload": payload or {},
     }
@@ -48,7 +48,7 @@ def record_event(name: str, payload: Optional[Dict[str, Any]] = None) -> None:
 
 def record_duration(name: str, duration_ms: float, context: Optional[Dict[str, Any]] = None) -> None:
     evt = {
-        "ts": datetime.utcnow().isoformat() + "Z",
+        "ts": datetime.now(timezone.utc).isoformat(),
         "type": name,
         "duration_ms": round(duration_ms, 3),
         "context": context or {},
@@ -59,7 +59,7 @@ def record_duration(name: str, duration_ms: float, context: Optional[Dict[str, A
 
 def record_failure(name: str, error: str, context: Optional[Dict[str, Any]] = None) -> None:
     evt = {
-        "ts": datetime.utcnow().isoformat() + "Z",
+        "ts": datetime.now(timezone.utc).isoformat(),
         "type": name,
         "error": error,
         "context": context or {},

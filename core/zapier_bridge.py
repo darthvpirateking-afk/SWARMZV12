@@ -1,4 +1,4 @@
-﻿# SWARMZ Source Available License
+# SWARMZ Source Available License
 # Commercial use, hosting, and resale prohibited.
 # See LICENSE file for details.
 """
@@ -138,7 +138,7 @@ def register_zapier_bridge(app: FastAPI) -> None:
         _check_secret(zcfg_live, x_swarmz_secret)
 
         event_id = str(uuid.uuid4())
-        now = datetime.utcnow().isoformat() + "Z"
+        now = datetime.now(timezone.utc).isoformat()
 
         # dedupe
         _prune_dedupe()
@@ -155,7 +155,7 @@ def register_zapier_bridge(app: FastAPI) -> None:
             _DEDUPE[body.dedupe_key] = time.time()
 
         # create mission (same schema as /v1/missions/create)
-        mission_id = f"mission_{int(datetime.utcnow().timestamp() * 1000)}"
+        mission_id = f"mission_{int(datetime.now(timezone.utc).timestamp() * 1000)}"
         mission = {
             "mission_id": mission_id,
             "goal": f"[zapier] {body.type}: {json.dumps(body.payload)[:200]}",
@@ -199,7 +199,7 @@ def register_zapier_bridge(app: FastAPI) -> None:
         _check_secret(zcfg_live, x_swarmz_secret)
 
         event_id = str(uuid.uuid4())
-        now = datetime.utcnow().isoformat() + "Z"
+        now = datetime.now(timezone.utc).isoformat()
         hook_url = zcfg_live.get("zapier_catch_hook_url", "")
 
         if not hook_url:

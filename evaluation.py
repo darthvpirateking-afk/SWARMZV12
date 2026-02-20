@@ -29,5 +29,10 @@
 # # Print evaluation results
 # print("Evaluation Results:", eval_results)
 
+# Minimal scaffold for evaluation.py
+
+def evaluate():
+    pass
+
 # Placeholder for future evaluation framework integration
 print("Evaluation framework will be integrated when agent_framework is available")

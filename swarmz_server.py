@@ -1,4 +1,4 @@
-﻿# SWARMZ Source Available License
+# SWARMZ Source Available License
 # Commercial use, hosting, and resale prohibited.
 # See LICENSE file for details.
 #!/usr/bin/env python3
@@ -14,7 +14,7 @@ import socket
 import json
 import logging
 import traceback
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, Optional
 
@@ -64,6 +64,10 @@ def get_lan_ip() -> str:
         return lan_ip
     except Exception:
         return "127.0.0.1"
+
+
+def _utc_now_iso_z() -> str:
+    return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
 
 
 SERVER_PORT = int(os.environ.get("PORT", "8012"))
@@ -148,8 +152,8 @@ async def create_mission(req: MissionCreateRequest):
     """Create a new mission."""
     missions_file = Path("data/missions.jsonl")
     audit_file = Path("data/audit.jsonl")
-    mission_id = f"mission_{int(datetime.utcnow().timestamp()*1000)}"
-    created_at = datetime.utcnow().isoformat() + "Z"
+    mission_id = f"mission_{int(datetime.now(timezone.utc).timestamp()*1000)}"
+    created_at = _utc_now_iso_z()
     mission = {
         "mission_id": mission_id,
         "goal": req.goal,
@@ -183,7 +187,7 @@ async def list_missions():
     """List all missions."""
     missions_file = Path("data/missions.jsonl")
     missions, skipped, quarantined = read_jsonl(missions_file)
-    now = datetime.utcnow().isoformat() + "Z"
+    now = _utc_now_iso_z()
     for m in missions:
         if "updated_at" not in m:
             m["updated_at"] = m.get("created_at", now)
@@ -206,7 +210,7 @@ async def run_mission(mission_id: str = None):
     mission = next((m for m in missions if m.get("mission_id") == mission_id), None)
     if not mission:
         return {"ok": False, "error": f"mission_id {mission_id} not found"}
-    started_at = datetime.utcnow().isoformat() + "Z"
+    started_at = _utc_now_iso_z()
     mission["status"] = "RUNNING"
     mission["started_at"] = started_at
     missions_file.write_text("")
@@ -257,7 +261,7 @@ async def ui_state():
     last_events = audit_events[-10:] if audit_events else []
     phase = compute_phase(len(missions), success_count)
     
-    now = datetime.utcnow().isoformat() + "Z"
+    now = _utc_now_iso_z()
     return {
         "ok": True,
         "server": {

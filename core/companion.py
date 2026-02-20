@@ -1,4 +1,4 @@
-﻿# SWARMZ Source Available License
+# SWARMZ Source Available License
 # Commercial use, hosting, and resale prohibited.
 # See LICENSE file for details.
 """
@@ -161,7 +161,7 @@ def chat(user_text: str) -> Dict[str, Any]:
     Returns: {"ok": bool, "reply": str, "source": "ai"|"rule_engine"|"offline",
               "provider"?: str, "model"?: str, "latencyMs"?: int}
     """
-    now = datetime.utcnow().isoformat() + "Z"
+    now = datetime.now(timezone.utc).isoformat()
     mem = load_memory()
 
     # â”€â”€ Offline / no-key fallback â”€â”€

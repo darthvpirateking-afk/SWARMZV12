@@ -1,4 +1,4 @@
-﻿# SWARMZ Source Available License
+# SWARMZ Source Available License
 # Commercial use, hosting, and resale prohibited.
 # See LICENSE file for details.
 from fastapi import APIRouter, HTTPException, Request
@@ -12,6 +12,31 @@ def _require_operator(request: Request):
     header_key = request.headers.get("X-Operator-Key")
     if not header_key:
         raise HTTPException(status_code=401, detail="operator key required")
+
+
+@router.post("/v1/verify/kernel")
+def verify_kernel(strict: bool = True, request: Request = None):
+    """Validate kernel integrity with strict gate checking."""
+    try:
+        # Run comprehensive kernel validation
+        kernel_status = runner.verify_kernel_integrity(strict=strict)
+
+        if strict and not kernel_status.get("integrity_passed", False):
+            raise HTTPException(
+                status_code=500,
+                detail=f"Kernel integrity validation failed: {kernel_status.get('issues', [])}"
+            )
+
+        return {
+            "status": "kernel_validated",
+            "integrity_passed": kernel_status.get("integrity_passed", False),
+            "issues": kernel_status.get("issues", []),
+            "checks_performed": kernel_status.get("checks", []),
+            "strict_mode": strict,
+            "timestamp": kernel_status.get("timestamp")
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Kernel validation error: {str(e)}")
 
 
 @router.get("/v1/verify/status")

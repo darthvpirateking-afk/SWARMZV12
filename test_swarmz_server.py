@@ -1,4 +1,4 @@
-﻿# SWARMZ Source Available License
+# SWARMZ Source Available License
 # Commercial use, hosting, and resale prohibited.
 # See LICENSE file for details.
 #!/usr/bin/env python3
@@ -142,6 +142,11 @@ class TestWebServer(unittest.TestCase):
         self.assertIn("openapi", data)
         self.assertIn("info", data)
         self.assertEqual(data["info"]["title"], "SWARMZ API")
+
+
+def test_swarmz_server():
+    """Minimal scaffold for test_swarmz_server.py."""
+    pass
 
 
 def main():

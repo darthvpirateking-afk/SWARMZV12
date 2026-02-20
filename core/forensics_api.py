@@ -1,4 +1,4 @@
-﻿# SWARMZ Source Available License
+# SWARMZ Source Available License
 # Commercial use, hosting, and resale prohibited.
 # See LICENSE file for details.
 """
@@ -31,7 +31,7 @@ FORENSICS_LOG = DATA_DIR / "audit_forensics.jsonl"
 
 def _audit(event: str, payload: Dict[str, Any]) -> None:
     entry = {
-        "timestamp": datetime.utcnow().isoformat() + "Z",
+        "timestamp": datetime.now(timezone.utc).isoformat(),
         "event": event,
         "payload": payload,
     }

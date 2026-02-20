@@ -1,4 +1,4 @@
-﻿# SWARMZ Source Available License
+# SWARMZ Source Available License
 # Commercial use, hosting, and resale prohibited.
 # See LICENSE file for details.
 """
@@ -95,7 +95,7 @@ def _load_audit_events() -> List[Dict[str, Any]]:
 
 def _safe_iso(ts: str | None) -> str:
     if not ts:
-        return datetime.utcnow().isoformat() + "Z"
+        return datetime.now(timezone.utc).isoformat()
     return ts
 
 
@@ -284,7 +284,7 @@ def compute_alerts(topology: Dict[str, Any]) -> Dict[str, Any]:
 
 def _audit(event: str, payload: Dict[str, Any]) -> None:
     entry = {
-        "timestamp": datetime.utcnow().isoformat() + "Z",
+        "timestamp": datetime.now(timezone.utc).isoformat(),
         "event": event,
         "payload": payload,
     }

@@ -1,4 +1,4 @@
-﻿# SWARMZ Source Available License
+# SWARMZ Source Available License
 # Commercial use, hosting, and resale prohibited.
 # See LICENSE file for details.
 """
@@ -56,28 +56,19 @@ class AutoLoopManager:
     # â”€â”€ public API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     def start(self, tick_interval: int = 30) -> None:
-        with self._lock:
-            if self._running:
-                return
-            self._tick_interval = max(5, tick_interval)
-            self._running = True
-            self._thread = threading.Thread(
-                target=self._loop, daemon=True, name="swarmz-autoloop"
-            )
+        if self._thread is None:
+            self._thread = threading.Thread(target=self._loop)
             self._thread.start()
-            self._persist_state()
 
     def stop(self) -> None:
-        with self._lock:
-            self._running = False
         if self._thread is not None:
-            self._thread.join(timeout=self._tick_interval + 5)
+            self._thread.join()
             self._thread = None
         self._persist_state()
 
     def single_step(
         self,
-        operator_goal: str = "make money",
+        operator_goal: str,
         constraints: Optional[Dict[str, Any]] = None,
         results: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:

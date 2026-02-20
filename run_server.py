@@ -1,4 +1,4 @@
-﻿from core.license_guard import enforce
+from core.license_guard import enforce
 enforce()
 # SWARMZ Source Available License
 # Commercial use, hosting, and resale prohibited.

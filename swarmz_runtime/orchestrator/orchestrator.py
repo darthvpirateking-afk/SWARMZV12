@@ -1,4 +1,4 @@
-﻿# SWARMZ Source Available License
+# SWARMZ Source Available License
 # Commercial use, hosting, and resale prohibited.
 # See LICENSE file for details.
 from __future__ import annotations
@@ -75,7 +75,8 @@ class OpenAIResponsesClient:
         self.retries = int(os.getenv("SWARMZ_RETRIES", "2"))
 
     def enabled(self) -> bool:
-        return bool(self.api_key)
+        live_flag = os.getenv("SWARMZ_ENABLE_LIVE_LLM", "0")
+        return bool(self.api_key) and live_flag not in {"0", "false", "False", ""}
 
     def create_response(self, prompt: str) -> Dict[str, Any]:
         url = f"{self.base_url}/responses"

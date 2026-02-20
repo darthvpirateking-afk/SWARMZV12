@@ -1,0 +1,44 @@
+# Operator theory
+
+**40 theorems**
+
+- **Aronszajn-Smith theorem** -- functional analysis
+- **Atiyah-Singer index theorem** -- elliptic differential operators, harmonic analysis
+- **Atkinson's theorem** -- operator theory
+- **Babuska-Lax-Milgram theorem** -- partial differential equations
+- **Banach-Stone theorem** -- operator theory
+- **Bauer-Fike theorem** -- spectral theory
+- **Bounded inverse theorem** -- operator theory
+- **Browder-Minty theorem** -- operator theory
+- **Choi's theorem on completely positive maps** -- operator theory
+- **Commutation theorem** -- von Neumann algebra
+- **Fuglede's theorem** -- functional analysis
+- **Gelfand-Mazur theorem** -- Banach algebra
+- **Gelfand-Naimark theorem** -- functional analysis
+- **Hardy-Littlewood maximal theorem** -- real analysis
+- **Hellinger-Toeplitz theorem** -- functional analysis
+- **Hilbert-Schmidt theorem** -- functional analysis
+- **Hille-Yosida theorem** -- functional analysis
+- **Kaplansky density theorem** -- von Neumann algebra
+- **Kuiper's theorem** -- operator theory, topology
+- **Lax-Milgram theorem** -- partial differential equations
+- **Lions-Lax-Milgram theorem** -- partial differential equations
+- **Lumer-Phillips theorem** -- semigroup theory
+- **Marcinkiewicz theorem** -- functional analysis
+- **Mazur-Ulam theorem** -- normed spaces
+- **Mercer's theorem** -- functional analysis
+- **Min-max theorem** -- functional analysis
+- **Moreau's theorem** -- convex analysis
+- **Nash-Moser theorem** -- mathematical analysis
+- **Open mapping theorem** -- functional analysis
+- **Peetre theorem** -- functional analysis
+- **Riesz-Thorin theorem** -- functional analysis
+- **Ryll-Nardzewski fixed-point theorem** -- functional analysis
+- **Sazonov's theorem** -- functional analysis
+- **Schroder-Bernstein theorems for operator algebras** -- operator algebras
+- **Stinespring factorization theorem** -- operator theory
+- **Stone's theorem on one-parameter unitary groups** -- functional analysis
+- **Sz.-Nagy's dilation theorem** -- operator theory
+- **Tomita's theorem** -- operator algebras
+- **Von Neumann bicommutant theorem** -- functional analysis
+- **Von Neumann's theorem** -- operator theory

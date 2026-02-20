@@ -1,4 +1,4 @@
-﻿# SWARMZ Source Available License
+# SWARMZ Source Available License
 # Commercial use, hosting, and resale prohibited.
 # See LICENSE file for details.
 #!/usr/bin/env python3
@@ -111,6 +111,10 @@ class TestUIApiInfo(unittest.TestCase):
         data = resp.json()
         self.assertIn("info", data)
         self.assertIn("platform", data["info"])
+
+
+def test_ui():
+    pass
 
 
 if __name__ == "__main__":

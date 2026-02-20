@@ -1,2 +1,0 @@
-{"ts":"2026-02-17T03:27:02.060265Z","direction":"outbound","event_id":"f5f17772-2063-41f0-9a5d-2b015849d4ff","source":"swarmz","type":"swarmz.test","payload":{"msg":"hello emit"},"ok":false,"error":"no zapier_catch_hook_url configured"}
-{"ts":"2026-02-17T03:27:18.812511Z","direction":"outbound","event_id":"222a35ca-73ae-4319-84a9-f75bca21414c","source":"swarmz","type":"swarmz.test","payload":{"test":true},"ok":false,"error":"no zapier_catch_hook_url configured"}

@@ -1,8 +1,8 @@
-﻿# SWARMZ Source Available License
+# SWARMZ Source Available License
 # Commercial use, hosting, and resale prohibited.
 # See LICENSE file for details.
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, Any
 
@@ -18,7 +18,7 @@ class PerfLedger:
     def append(self, mission_id: str, runtime_ms: float, success_bool: bool, cost_estimate: float,
                agent_work_time: float = 0.0, agent_wait_time: float = 0.0) -> None:
         record: Dict[str, Any] = {
-            "timestamp": datetime.utcnow().isoformat() + "Z",
+            "timestamp": datetime.now(timezone.utc).isoformat(),
             "mission_id": mission_id,
             "runtime_ms": runtime_ms,
             "success_bool": bool(success_bool),

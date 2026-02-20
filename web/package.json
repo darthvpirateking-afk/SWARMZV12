@@ -1,0 +1,7 @@
+{
+  "name": "swarmz-web",
+  "private": true,
+  "scripts": {
+    "dev": "node dev-server.cjs"
+  }
+}

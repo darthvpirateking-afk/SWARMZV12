@@ -1,0 +1,11 @@
+exclude .DS_Store
+exclude *.log
+recursive-exclude tests *
+recursive-exclude swarmz-mobile *
+recursive-exclude node_modules *
+recursive-exclude build *
+recursive-exclude dist *
+prune tests
+prune swarmz-mobile
+prune build
+prune dist

@@ -1,4 +1,4 @@
-﻿# SWARMZ Source Available License
+# SWARMZ Source Available License
 # Commercial use, hosting, and resale prohibited.
 # See LICENSE file for details.
 #!/usr/bin/env python3
@@ -272,6 +272,11 @@ def example_custom_workers():
     print(f"  Next Action: {result.next_action}")
     
     print("\n" + "=" * 70 + "\n")
+
+
+def example_usage():
+    """Minimal scaffold for companion_examples.py."""
+    pass
 
 
 def main():

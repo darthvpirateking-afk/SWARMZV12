@@ -1,4 +1,4 @@
-﻿# SWARMZ Source Available License
+# SWARMZ Source Available License
 # Commercial use, hosting, and resale prohibited.
 # See LICENSE file for details.
 #!/usr/bin/env python3
@@ -137,6 +137,10 @@ def test_galileo_endpoints():
         print(f"  Storage dir does not exist")
     
     return True
+
+
+def test_galileo():
+    pass
 
 
 if __name__ == "__main__":

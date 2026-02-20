@@ -1,8 +1,8 @@
-﻿# SWARMZ Source Available License
+# SWARMZ Source Available License
 # Commercial use, hosting, and resale prohibited.
 # See LICENSE file for details.
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, Any
 
@@ -76,7 +76,7 @@ class EntropyMonitor:
         else:
             metrics["mode"] = "EXPAND"
         self.state = metrics
-        event = {"timestamp": datetime.utcnow().isoformat() + "Z", **metrics}
+        event = {"timestamp": datetime.now(timezone.utc).isoformat(), **metrics}
         with open(self.log_file, "a", encoding="utf-8") as f:
             f.write(json.dumps(event, separators=(",", ":")) + "\n")
         return self.state

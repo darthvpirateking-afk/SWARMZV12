@@ -304,3 +304,9 @@ class TestArenaAPI:
         client = self._get_client()
         resp = client.get("/v1/arena/runs/nonexistent_id")
         assert resp.status_code == 404
+
+
+# Minimal scaffold for test_arena.py
+
+def test_arena():
+    pass

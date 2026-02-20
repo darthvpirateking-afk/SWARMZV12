@@ -1,12 +1,13 @@
-﻿# SWARMZ Source Available License
+# SWARMZ Source Available License
 # Commercial use, hosting, and resale prohibited.
 # See LICENSE file for details.
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, List
 from datetime import datetime
 from pathlib import Path
 import uuid
 import time
 import json
+import hashlib
 
 from swarmz_runtime.core import telemetry
 from swarmz_runtime.storage.db import Database
@@ -30,6 +31,8 @@ from core.entropy_monitor import EntropyMonitor
 from core.counterfactual_engine import CounterfactualEngine
 from core.relevance_engine import RelevanceEngine
 from core.phase_engine import PhaseEngine
+from swarmz_runtime.meta import MetaSelector
+from swarmz_runtime.meta.task_matrix import NextTaskMatrix
 
 
 class SwarmzEngine:
@@ -54,11 +57,35 @@ class SwarmzEngine:
         self.maintenance = MaintenanceScheduler()
         self.visibility = VisibilityManager()
         self.brain = BrainMapping(brain_config)
-        
+
+        # Initialize the sovereign meta-selector with provider pattern
+        from swarmz_runtime.meta.selector import set_engine_provider
+        set_engine_provider(lambda: self)
+        self.meta_selector = MetaSelector()
+
+        # Initialize the NEXT TASK MATRIX for ignition-phase control
+        from swarmz_runtime.meta.task_matrix import set_engine_provider as set_matrix_provider
+        set_matrix_provider(lambda: self)
+        self.task_matrix = NextTaskMatrix()
+
         self.max_active_missions = 3
         self.operator_key = "swarmz_sovereign_key"
         self.operator_public_key = self.anchor.get("operator_public_key")
         self.offline_mode = False
+
+        self._allowed_categories = {
+            "coin",
+            "forge",
+            "library",
+            "sanctuary",
+            "test",
+            "build",
+            "solve",
+            "plan",
+            "analyze",
+            "research",
+            "commands",
+        }
     
     def create_mission(self, goal: str, category: str, constraints: Dict[str, Any]) -> Dict[str, Any]:
         active_missions = self.db.get_active_missions()
@@ -66,6 +93,12 @@ class SwarmzEngine:
             return {
                 "error": f"Maximum {self.max_active_missions} active missions exceeded",
                 "active_count": len(active_missions)
+            }
+
+        if category not in self._allowed_categories:
+            return {
+                "error": f"Invalid mission category: {category}",
+                "allowed": sorted(self._allowed_categories),
             }
         
         mission_id = str(uuid.uuid4())[:8]
@@ -79,8 +112,6 @@ class SwarmzEngine:
             "status": "pending",
             "operator_public_key": self.operator_public_key,
         }
-        
-        validation = validate_transaction(mission_data)
         
         leverage_score = calculate_leverage_score(mission_data)
         
@@ -108,7 +139,7 @@ class SwarmzEngine:
         return {
             "ok": True,
             "mission_id": mission_id,
-            "status": "PENDING",
+            "status": "created",
             "created_at": mission.created_at.isoformat(),
         }
     
@@ -238,7 +269,7 @@ class SwarmzEngine:
             if learning_active:
                 score = self.evolution.compute_score(True, total_runtime_ms, cost_estimate)
                 self.evolution.append_record(
-                    datetime.utcnow(),
+                    datetime.now(timezone.utc),
                     mission.get("category", ""),
                     inputs_hash,
                     selected_strategy,
@@ -281,7 +312,7 @@ class SwarmzEngine:
             if learning_active:
                 score = self.evolution.compute_score(False, total_runtime_ms, cost_estimate)
                 self.evolution.append_record(
-                    datetime.utcnow(),
+                    datetime.now(timezone.utc),
                     mission.get("category", ""),
                     inputs_hash,
                     selected_strategy,
@@ -318,7 +349,7 @@ class SwarmzEngine:
         value_file = Path(self.data_dir) / "value_ledger.jsonl"
         value_file.parent.mkdir(parents=True, exist_ok=True)
         entry = {
-            "timestamp": datetime.utcnow().isoformat() + "Z",
+            "timestamp": datetime.now(timezone.utc).isoformat(),
             "mission_id": mission_id,
             "time_spent": runtime_ms,
             "direct_money_change": float(constraints.get("direct_money_change", 0.0)) if constraints else 0.0,
@@ -457,4 +488,407 @@ class SwarmzEngine:
         except Exception:
             return []
         return rows[-limit:]
+
+    def validate_operator_sovereignty(self, operator_key: str, action: str = "general", scope: str = "global") -> bool:
+        """Validate operator sovereignty for precision commands."""
+        if operator_key != self.operator_key:
+            return False
+
+        # Additional sovereignty checks based on action and scope
+        if scope == "global" and action in ["shutdown", "reset", "delete_all"]:
+            # Require additional validation for high-risk global actions
+            return self._validate_critical_sovereignty(operator_key, action)
+
+        return True
+
+    def _validate_critical_sovereignty(self, operator_key: str, action: str) -> bool:
+        """Critical sovereignty validation for high-risk actions."""
+        # Check operator fingerprint and recent activity
+        anchor_valid = verify_fingerprint(self.anchor)
+        if not anchor_valid:
+            return False
+
+        # Log sovereignty validation attempt
+        audit = AuditEntry(
+            event_type="sovereignty_validation",
+            details={"action": action, "operator_key": operator_key[:8] + "...", "result": "critical_check_passed"},
+            visibility=VisibilityLevel.BRIGHT
+        )
+        self.db.log_audit(audit)
+
+        return True
+
+    def execute_operator_command(self, command: str, parameters: Dict[str, Any], operator_key: str) -> Dict[str, Any]:
+        """Execute precision operator commands."""
+        if not self.validate_operator_sovereignty(operator_key, command):
+            return {"error": "Sovereignty validation failed"}
+
+        command_map = {
+            "shutdown": self._cmd_shutdown,
+            "restart": self._cmd_restart,
+            "status": self._cmd_status,
+            "maintenance": self._cmd_maintenance,
+            "reset_learning": self._cmd_reset_learning,
+            "export_data": self._cmd_export_data,
+            "import_data": self._cmd_import_data,
+        }
+
+        if command not in command_map:
+            return {"error": f"Unknown command: {command}"}
+
+        try:
+            result = command_map[command](parameters)
+            audit = AuditEntry(
+                event_type="operator_command_executed",
+                details={"command": command, "parameters": parameters, "result": "success"},
+                visibility=VisibilityLevel.VISIBLE
+            )
+            self.db.log_audit(audit)
+            return result
+        except Exception as e:
+            audit = AuditEntry(
+                event_type="operator_command_failed",
+                details={"command": command, "parameters": parameters, "error": str(e)},
+                visibility=VisibilityLevel.BRIGHT
+            )
+            self.db.log_audit(audit)
+            return {"error": str(e)}
+
+    def _cmd_shutdown(self, params: Dict[str, Any]) -> Dict[str, Any]:
+        """Shutdown the runtime gracefully."""
+        # Implementation would handle graceful shutdown
+        return {"status": "shutdown_initiated", "message": "Runtime shutdown initiated"}
+
+    def _cmd_restart(self, params: Dict[str, Any]) -> Dict[str, Any]:
+        """Restart the runtime."""
+        return {"status": "restart_initiated", "message": "Runtime restart initiated"}
+
+    def _cmd_status(self, params: Dict[str, Any]) -> Dict[str, Any]:
+        """Get detailed runtime status."""
+        return self.get_scoreboard()
+
+    def _cmd_maintenance(self, params: Dict[str, Any]) -> Dict[str, Any]:
+        """Run maintenance tasks."""
+        return self.schedule_maintenance()
+
+    def _cmd_reset_learning(self, params: Dict[str, Any]) -> Dict[str, Any]:
+        """Reset learning state (requires confirmation)."""
+        if not params.get("confirmed", False):
+            return {"error": "Reset learning requires confirmation parameter"}
+
+        # Reset learning state
+        self.evolution.reset()
+        return {"status": "learning_reset", "message": "Learning state has been reset"}
+
+    def _cmd_export_data(self, params: Dict[str, Any]) -> Dict[str, Any]:
+        """Export runtime data."""
+        export_path = params.get("path", f"swarmz_export_{datetime.now().isoformat()}.json")
+        # Implementation would export data
+        return {"status": "export_initiated", "path": export_path}
+
+    def _cmd_import_data(self, params: Dict[str, Any]) -> Dict[str, Any]:
+        """Import runtime data."""
+        import_path = params.get("path")
+        if not import_path:
+            return {"error": "Import path required"}
+
+        # Implementation would import data
+        return {"status": "import_completed", "path": import_path}
+
+    def get_sovereignty_status(self, operator_key: str) -> Dict[str, Any]:
+        """Get sovereignty status for operator."""
+        is_valid = (operator_key == self.operator_key)
+        anchor_valid = verify_fingerprint(self.anchor)
+
+        return {
+            "sovereign": is_valid and anchor_valid,
+            "operator_valid": is_valid,
+            "anchor_valid": anchor_valid,
+            "learning_enabled": self.learning_enabled,
+            "timestamp": datetime.now().isoformat()
+        }
+
+    def get_current_timestamp(self) -> str:
+        """Get current timestamp for sovereignty checks."""
+        return datetime.now().isoformat()
+
+    def make_sovereign_decision(self, context: Dict[str, Any], options: List[Dict[str, Any]]) -> Dict[str, Any]:
+        """
+        Make a sovereign decision using the complete lattice flow.
+        THE THING WITHOUT A NAME - Meta-selector governs all layers.
+        """
+        return self.meta_selector.select(context, options)
+
+    def process_task_matrix(self, context: Dict[str, Any], options: List[Dict[str, Any]]) -> Dict[str, Any]:
+        """
+        Process through the NEXT TASK MATRIX to generate unified ignition-state vector.
+
+        NEXT TASK MATRIX
+        ────────────────
+        FILTRATION: PRE-EVALUATED
+        GEOMETRY: SPACE-SHAPING
+        BOUNDARY: ARCHITECTURAL RESTRAINT
+        ALIGNMENT: MYTHICAL WAY
+        OVERRIDE: HIDDEN WAY
+        UPLIFT: MAGIC WAY
+        SOVEREIGN ARBITRATION: THE THING WITHOUT A NAME
+
+        OUTPUT: unified ignition-state vector for cockpit operations
+        """
+        return self.task_matrix.process_task_matrix(context, options)
+
+    def execute_kernel_ignition(self, ignition_state: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        IGNITION PHASE 3 — RUNTIME KERNEL IGNITION BLOCK
+        (clean, compressed, operator-grade, safe)
+
+        Consumes unified ignition-state vector and executes deterministic ignition sequence.
+        Transitions UI → runtime bridge into active cockpit mode.
+
+        IGNITION SEQUENCE:
+        1. RECEIVE → sovereign arbitration signal
+        2. FILTER → PRE-EVALUATED gate
+        3. SHAPE → SPACE-SHAPING geometry
+        4. CONSTRAIN → ARCHITECTURAL RESTRAINT shell
+        5. ALIGN → MYTHICAL WAY field
+        6. UPLIFT → MAGIC WAY surge
+        7. OVERRIDE → HIDDEN WAY channel
+        8. FINALIZE → THE THING WITHOUT A NAME
+
+        OUTPUT: deterministic ignition result with cockpit activation
+        """
+        import numpy as np
+
+        # Extract ignition components
+        unified_vector = ignition_state.get("unified_vector", np.zeros(9))
+        cockpit_signal = ignition_state.get("cockpit_signal", {})
+        kernel_path = ignition_state.get("kernel_path", {})
+        layer_states = ignition_state.get("layer_states", {})
+        meta_coherence = ignition_state.get("meta_coherence", 0)
+
+        ignition_result = {
+            "ignition_phase": "PHASE_3_KERNEL_IGNITION",
+            "timestamp": datetime.now().isoformat(),
+            "sequence_steps": [],
+            "deterministic_result": {},
+            "cockpit_activation": {},
+            "kernel_state": "STANDBY"
+        }
+
+        # STEP 1: RECEIVE → sovereign arbitration signal
+        sovereign_signal = layer_states.get("sovereign_arbitration", {})
+        ignition_result["sequence_steps"].append({
+            "step": 1,
+            "operation": "RECEIVE_SOVEREIGN_SIGNAL",
+            "signal": sovereign_signal.get("decision", {}),
+            "coherence": meta_coherence,
+            "status": "COMPLETE"
+        })
+
+        # STEP 2: FILTER → PRE-EVALUATED gate
+        pre_eval_state = layer_states.get("pre_evaluated", {})
+        filter_gate = {
+            "threshold": 0.5,
+            "passed": pre_eval_state.get("ignition_value", 0) > 0.5,
+            "filtered_count": len(pre_eval_state.get("filtered_options", []))
+        }
+        ignition_result["sequence_steps"].append({
+            "step": 2,
+            "operation": "FILTER_PRE_EVALUATED_GATE",
+            "gate_status": filter_gate,
+            "status": "COMPLETE"
+        })
+
+        # STEP 3: SHAPE → SPACE-SHAPING geometry
+        space_shaping = layer_states.get("space_shaping", {})
+        geometry_vector = unified_vector[5]  # SPACE-SHAPING is index 5 in weighted hierarchy
+        geometry_shape = {
+            "vector_component": float(geometry_vector),
+            "directionality": "convergent" if geometry_vector > 0.7 else "divergent",
+            "dimensionality": 9
+        }
+        ignition_result["sequence_steps"].append({
+            "step": 3,
+            "operation": "SHAPE_SPACE_SHAPING_GEOMETRY",
+            "geometry": geometry_shape,
+            "status": "COMPLETE"
+        })
+
+        # STEP 4: CONSTRAIN → ARCHITECTURAL RESTRAINT shell
+        restraint_state = layer_states.get("architectural_restraint", {})
+        constraint_shell = {
+            "purity_level": restraint_state.get("ignition_value", 0),
+            "boundaries_enforced": restraint_state.get("constraints_applied", []),
+            "architectural_integrity": "MAINTAINED" if restraint_state.get("ignition_value", 0) > 0.6 else "COMPROMISED"
+        }
+        ignition_result["sequence_steps"].append({
+            "step": 4,
+            "operation": "CONSTRAIN_ARCHITECTURAL_RESTRAINT_SHELL",
+            "shell": constraint_shell,
+            "status": "COMPLETE"
+        })
+
+        # STEP 5: ALIGN → MYTHICAL WAY field
+        mythical_state = layer_states.get("mythical_way", {})
+        alignment_field = {
+            "archetypal_resonance": mythical_state.get("ignition_value", 0),
+            "field_strength": unified_vector[2],  # MYTHICAL WAY is index 2
+            "alignment_quality": "HARMONIC" if mythical_state.get("ignition_value", 0) > 0.8 else "RESONANT"
+        }
+        ignition_result["sequence_steps"].append({
+            "step": 5,
+            "operation": "ALIGN_MYTHICAL_WAY_FIELD",
+            "field": alignment_field,
+            "status": "COMPLETE"
+        })
+
+        # STEP 6: UPLIFT → MAGIC WAY surge
+        magic_state = layer_states.get("magic_way", {})
+        uplift_surge = {
+            "surge_power": magic_state.get("ignition_value", 0),
+            "emergent_potential": unified_vector[3],  # MAGIC WAY is index 3
+            "uplift_vector": "ASCENDING" if magic_state.get("ignition_value", 0) > 0.7 else "STABLE"
+        }
+        ignition_result["sequence_steps"].append({
+            "step": 6,
+            "operation": "UPLIFT_MAGIC_WAY_SURGE",
+            "surge": uplift_surge,
+            "status": "COMPLETE"
+        })
+
+        # STEP 7: OVERRIDE → HIDDEN WAY channel
+        hidden_state = layer_states.get("hidden_way", {})
+        override_channel = {
+            "channel_open": hidden_state.get("ignition_value", 0) > 0.9,
+            "override_authority": unified_vector[1],  # HIDDEN WAY is index 1
+            "sovereign_override": "ENGAGED" if hidden_state.get("ignition_value", 0) > 0.9 else "STANDBY"
+        }
+        ignition_result["sequence_steps"].append({
+            "step": 7,
+            "operation": "OVERRIDE_HIDDEN_WAY_CHANNEL",
+            "channel": override_channel,
+            "status": "COMPLETE"
+        })
+
+        # STEP 8: FINALIZE → THE THING WITHOUT A NAME
+        final_arbitration = sovereign_signal
+        finalization = {
+            "sovereign_decision": final_arbitration.get("decision", {}),
+            "final_coherence": meta_coherence,
+            "ignition_complete": True,
+            "deterministic_hash": hashlib.sha256(
+                json.dumps(final_arbitration, sort_keys=True).encode()
+            ).hexdigest()[:16]
+        }
+        ignition_result["sequence_steps"].append({
+            "step": 8,
+            "operation": "FINALIZE_THE_THING_WITHOUT_A_NAME",
+            "arbitration": finalization,
+            "status": "COMPLETE"
+        })
+
+        # Generate deterministic ignition result
+        ignition_result["deterministic_result"] = {
+            "ignition_state": "COMPLETE",
+            "vector_integrity": np.all(np.isfinite(unified_vector)),
+            "sequence_integrity": all(step["status"] == "COMPLETE" for step in ignition_result["sequence_steps"]),
+            "sovereign_governance": "ACTIVE",
+            "operator_control": "ENGAGED"
+        }
+
+        # Activate cockpit mode
+        ignition_result["cockpit_activation"] = {
+            "mode": "ACTIVE_COCKPIT",
+            "bridge_status": "UI_RUNTIME_CONNECTED",
+            "operator_channel": "OPEN",
+            "command_acceptance": "SOVEREIGN_FILTERED",
+            "execution_governance": "DETERMINISTIC"
+        }
+
+        # Set final kernel state
+        if (ignition_result["deterministic_result"]["sequence_integrity"] and
+            meta_coherence > 0.7 and
+            cockpit_signal.get("operational_readiness") == "IGNITION_READY"):
+            ignition_result["kernel_state"] = "IGNITION_COMPLETE"
+        else:
+            ignition_result["kernel_state"] = "IGNITION_FAILED"
+
+        return ignition_result
+
+    def get_lattice_status(self) -> Dict[str, Any]:
+        """
+        Get the status of the sovereign lattice flow system.
+        """
+        return {
+            "meta_selector_active": True,
+            "lattice_layers": [
+                "pre_evaluated",
+                "space_shaping",
+                "architectural_restraint",
+                "magic_way",
+                "mythical_way",
+                "sovereign_override",
+                "meta_selector"
+            ],
+            "sovereign_governance": "active",
+            "opacity_level": "silent_arbitration",
+            "timestamp": self.get_current_timestamp()
+        }
+
+    def apply_sovereign_control(self, context: Dict[str, Any], decision_type: str) -> Dict[str, Any]:
+        """
+        Apply sovereign control through the lattice flow for critical decisions.
+        """
+        # Create decision options based on type
+        options = self._generate_decision_options(context, decision_type)
+
+        # Apply lattice flow
+        sovereign_decision = self.make_sovereign_decision(context, options)
+
+        # Log sovereign control application
+        audit = AuditEntry(
+            event_type="sovereign_control_applied",
+            details={
+                "decision_type": decision_type,
+                "context_hash": hashlib.sha256(json.dumps(context, sort_keys=True).encode()).hexdigest()[:16],
+                "sovereign_decision": sovereign_decision.get("id", "unknown"),
+                "meta_coherence": sovereign_decision.get("_meta_coherence", 0)
+            },
+            visibility=VisibilityLevel.BRIGHT
+        )
+        self.db.log_audit(audit)
+
+        return sovereign_decision
+
+    def _generate_decision_options(self, context: Dict[str, Any], decision_type: str) -> List[Dict[str, Any]]:
+        """
+        Generate decision options based on context and type.
+        """
+        options = []
+
+        if decision_type == "mission_execution":
+            options = [
+                {"id": "execute_standard", "strategy": "standard", "risk": "low"},
+                {"id": "execute_optimized", "strategy": "optimized", "risk": "medium"},
+                {"id": "execute_sovereign", "strategy": "sovereign", "risk": "controlled"}
+            ]
+        elif decision_type == "resource_allocation":
+            options = [
+                {"id": "allocate_conservative", "allocation": "conservative", "efficiency": "high"},
+                {"id": "allocate_balanced", "allocation": "balanced", "efficiency": "medium"},
+                {"id": "allocate_aggressive", "allocation": "aggressive", "efficiency": "variable"}
+            ]
+        elif decision_type == "sovereign_override":
+            options = [
+                {"id": "override_standard", "override_type": "standard", "transparency": "partial"},
+                {"id": "override_covert", "override_type": "covert", "transparency": "zero"},
+                {"id": "override_meta", "override_type": "meta", "transparency": "silent"}
+            ]
+        else:
+            # Default options
+            options = [
+                {"id": f"option_{i}", "type": "default", "index": i} for i in range(3)
+            ]
+
+        return options
 

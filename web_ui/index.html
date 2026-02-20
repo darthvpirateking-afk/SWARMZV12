@@ -50,6 +50,176 @@
       <div class="hint" id="pairHint">Enter the PIN from the host console. Base URL defaults to this page.</div>
     </section>
 
+    <section id="ignitionSection" class="card" style="display: none;">
+      <div class="card-header">
+        <div>
+          <div class="eyebrow">Ignition</div>
+          <div class="card-title">Operator Controls</div>
+        </div>
+        <div class="pill" id="ignitionStatus">Inactive</div>
+      </div>
+
+      <div class="field">
+        <label for="operatorCommand">Command</label>
+        <select id="operatorCommand">
+          <option value="status">Status Check</option>
+          <option value="maintenance">Run Maintenance</option>
+          <option value="kernel_validate">Validate Kernel</option>
+          <option value="execute_artifact">Execute Artifact</option>
+        </select>
+      </div>
+
+      <div class="field" id="artifactField" style="display: none;">
+        <label for="artifactId">Artifact ID</label>
+        <input id="artifactId" type="text" placeholder="artifact_id" />
+      </div>
+
+      <div class="actions">
+        <button class="primary" id="executeCommandBtn">Execute</button>
+        <button class="ghost" id="validateKernelBtn">Validate Kernel</button>
+      </div>
+
+      <div class="hint" id="ignitionHint">Operator sovereignty required for ignition controls</div>
+    </section>
+
+    <section id="metaSection" class="card" style="display: none;">
+      <div class="card-header">
+        <div>
+          <div class="eyebrow">Meta Sovereignty</div>
+          <div class="card-title">THE THING WITHOUT A NAME</div>
+        </div>
+        <div class="pill" id="metaStatus">Inactive</div>
+      </div>
+
+      <div class="field">
+        <label for="decisionContext">Decision Context</label>
+        <textarea id="decisionContext" rows="3" placeholder='{"domain": "sovereign", "critical": true}'></textarea>
+      </div>
+
+      <div class="field">
+        <label for="decisionOptions">Decision Options (JSON)</label>
+        <textarea id="decisionOptions" rows="4" placeholder='[{"id": "option1", "strategy": "safe"}, {"id": "option2", "strategy": "optimal"}]'></textarea>
+      </div>
+
+      <div class="actions">
+        <button class="primary" id="makeSovereignDecisionBtn">Make Sovereign Decision</button>
+        <button class="ghost" id="applySovereignControlBtn">Apply Sovereign Control</button>
+        <button class="ghost" id="checkLatticeStatusBtn">Check Lattice Status</button>
+      </div>
+
+      <div class="hint" id="metaHint">Silent arbitration through the lattice flow - meta-coherence governs all layers</div>
+    </section>
+
+    <section id="taskMatrixSection" class="card" style="display: none;">
+      <div class="card-header">
+        <div>
+          <div class="eyebrow">NEXT TASK MATRIX</div>
+          <div class="card-title">Ignition-Phase Control Surface</div>
+        </div>
+        <div class="pill" id="taskMatrixStatus">Inactive</div>
+      </div>
+
+      <div class="field">
+        <label for="taskContext">Task Context</label>
+        <textarea id="taskContext" rows="3" placeholder='{"domain": "ignition", "phase": "activation"}'></textarea>
+      </div>
+
+      <div class="field">
+        <label for="taskOptions">Task Options (JSON)</label>
+        <textarea id="taskOptions" rows="4" placeholder='[{"id": "task1", "complexity": "low"}, {"id": "task2", "complexity": "high"}]'></textarea>
+      </div>
+
+      <div class="actions">
+        <button class="primary" id="processTaskMatrixBtn">Process Task Matrix</button>
+        <button class="ghost" id="getIgnitionStatusBtn">Get Ignition Status</button>
+      </div>
+
+      <div class="hint" id="taskMatrixHint">
+        FILTRATION • GEOMETRY • BOUNDARY • ALIGNMENT • OVERRIDE • UPLIFT • SOVEREIGN ARBITRATION
+      </div>
+    </section>
+
+    <section id="kernelIgnitionSection" class="card" style="display: none;">
+      <div class="card-header">
+        <div>
+          <div class="eyebrow">KERNEL IGNITION</div>
+          <div class="card-title">Phase 3 Runtime Ignition Block</div>
+        </div>
+        <div class="pill" id="kernelIgnitionStatus">Standby</div>
+      </div>
+
+      <div class="field">
+        <label for="ignitionStateInput">Ignition State Vector (JSON)</label>
+        <textarea id="ignitionStateInput" rows="6" placeholder='Paste ignition state from Task Matrix processing...'></textarea>
+      </div>
+
+      <div class="actions">
+        <button class="primary" id="executeKernelIgnitionBtn">Execute Kernel Ignition</button>
+        <button class="ghost" id="clearIgnitionStateBtn">Clear State</button>
+      </div>
+
+      <div class="hint" id="kernelIgnitionHint">
+        RECEIVE • FILTER • SHAPE • CONSTRAIN • ALIGN • UPLIFT • OVERRIDE • FINALIZE
+      </div>
+    </section>
+
+    <section id="commandCenterSection" class="card" style="display: none;">
+      <div class="card-header">
+        <div>
+          <div class="eyebrow">Command Center</div>
+          <div class="card-title">Cockpit · Shadow · Evolution · Marketplace</div>
+        </div>
+        <div class="pill" id="commandCenterStatus">Inactive</div>
+      </div>
+
+      <div class="grid command-grid">
+        <div>
+          <div class="eyebrow">Autonomy Dial</div>
+          <div class="actions">
+            <input id="autonomyLevelInput" type="number" min="0" max="100" value="35" />
+            <button class="primary" id="setAutonomyBtn">Set</button>
+          </div>
+        </div>
+
+        <div>
+          <div class="eyebrow">Shadow Mode</div>
+          <div class="actions">
+            <select id="shadowEnabledSelect">
+              <option value="false">Disabled</option>
+              <option value="true">Enabled</option>
+            </select>
+            <input id="shadowLaneInput" type="text" value="mirror" placeholder="lane" />
+            <button class="ghost" id="setShadowModeBtn">Apply</button>
+          </div>
+        </div>
+
+        <div>
+          <div class="eyebrow">Evolution Tree</div>
+          <div class="actions">
+            <input id="promotePartnerInput" type="text" placeholder="partner_id" />
+            <button class="ghost" id="promotePartnerBtn">Promote</button>
+          </div>
+        </div>
+
+        <div>
+          <div class="eyebrow">Marketplace</div>
+          <div class="actions">
+            <input id="listingTypeInput" type="text" placeholder="mission_type" />
+            <input id="listingTitleInput" type="text" placeholder="listing title" />
+            <input id="listingRewardInput" type="number" min="0" value="100" />
+            <button class="ghost" id="publishListingBtn">Publish</button>
+            <button class="ghost" id="loadMarketplaceBtn">List</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="primary" id="refreshCommandCenterBtn">Refresh Cockpit</button>
+      </div>
+
+      <div id="commandCenterOutput" class="log" style="margin-top: 10px; max-height: 240px;">Command center state will appear here.</div>
+    </section>
+
     <section class="grid">
       <div class="card">
         <div class="card-header">

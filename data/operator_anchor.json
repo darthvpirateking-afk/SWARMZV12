@@ -1,6 +1,6 @@
 {
   "machine_fingerprint": "e4e4b47e2e3a6dbf8d3438aa0a6aed4776481d29ede54572bcfce5d90512a234",
-  "birth_timestamp": "2026-02-16T10:48:37.236375Z",
-  "operator_private_key": "REDACTED",
-  "operator_public_key": "3d52677582f0f0852165582d34db413bf7a94df4bc8f9e81297e6b47249e0d55"
+  "birth_timestamp": "2026-02-19T09:02:48.391884+00:00Z",
+  "operator_private_key": "9f9521b4ff5eddfbea55843b23305a7949995cba73f2de5fc840d47894f27d48",
+  "operator_public_key": "0462a0494fb0179ba97b3bcac5998d482c22710f0e872087b5e05ccc9cfb7177"
 }

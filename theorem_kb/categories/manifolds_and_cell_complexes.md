@@ -1,0 +1,41 @@
+# Manifolds and cell complexes
+
+**37 theorems**
+
+- **Atiyah-Bott fixed-point theorem** -- differential topology
+- **Bing's recognition theorem** -- geometric topology
+- **Birman short exact sequence** -- geometric topology
+- **Classification of compact surfaces** -- topology
+- **De Rham's theorem** -- differential topology
+- **Dehn-Nielsen-Baer theorem** -- geometric topology
+- **Donaldson's theorem** -- differential topology
+- **Ehresmann's theorem** -- differential topology
+- **Fary-Milnor theorem** -- knot theory
+- **Fenchel's theorem** -- differential geometry
+- **H-cobordism theorem** -- differential topology
+- **Hirzebruch signature theorem** -- topology, algebraic geometry
+- **Jordan-Schonflies theorem** -- geometric topology
+- **JSJ theorem** -- 3-manifolds
+- **Lickorish twist theorem** -- geometric topology
+- **Lickorish-Wallace theorem** -- 3-manifolds
+- **Nielsen realization problem** -- geometric topology
+- **Nielsen-Thurston classification** -- low-dimensional topology
+- **Novikov's compact leaf theorem** -- foliations
+- **Perelman's Geometrization theorem** -- 3-manifolds
+- **Poincare conjecture** -- topology
+- **Poincare-Hopf theorem** -- differential topology
+- **Preimage theorem** -- differential topology
+- **Reeb sphere theorem** -- foliations
+- **Reidemeister-Singer Theorem** -- geometric topology
+- **Riemann-Roch theorem for smooth manifolds** -- differential topology
+- **Rokhlin's theorem** -- geometric topology
+- **S-cobordism theorem** -- differential topology
+- **Sard's theorem** -- differential geometry
+- **Scott core theorem** -- 3-manifolds
+- **Swan's theorem** -- module theory
+- **Tameness theorem** -- 3-manifolds
+- **Thom transversality theorem** -- differential topology
+- **Thurston's geometrization theorem** -- 3-manifolds
+- **Waldhausen's theorem** -- geometric topology
+- **Whitney embedding theorem** -- differential manifolds
+- **Whitney immersion theorem** -- differential topology

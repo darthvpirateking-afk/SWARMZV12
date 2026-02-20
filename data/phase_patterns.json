@@ -5,7 +5,7 @@
     "recent": []
   },
   "abandoned": {
-    "count": 21,
+    "count": 16,
     "confidence": 1.0,
     "recent": [
       "stabilizing",
@@ -22,7 +22,7 @@
     "recent": []
   },
   "recoveries": {
-    "count": 75,
+    "count": 66,
     "confidence": 1.0,
     "recent": [
       "stabilizing",
