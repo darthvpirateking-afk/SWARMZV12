@@ -76,3 +76,22 @@ tools/prune_logs.py
 
 # Ignore operator_anchor.json
 data/operator_anchor.json
+
+# Accidental root artifacts
+/0
+/0.2
+/0.3
+/0.4
+/0.5
+/0.6
+/0.7
+/bool
+/float
+/str
+/Dict[[]str
+/np.ndarray
+/base64.b64decode(
+/BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB.txt
+
+# Generated preemptive plans
+prepared_actions/preemptive/plan_*.json

@@ -1,7 +1,0 @@
-{
-  "timestamp": "2026-02-16T18:30:49.775454+00:00Z",
-  "detected_pattern": "abandoned",
-  "probable_outcome": "abandoned",
-  "preventive_action": "recommit to top project and freeze branching",
-  "confidence": 1.0
-}
