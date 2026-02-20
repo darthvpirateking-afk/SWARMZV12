@@ -170,12 +170,6 @@ def _infer_type(source: str, tags: List[str]) -> str:
     return "UTILITY"
 
 
-@router.get("/operator-os/prime-state")
-def prime_state():
-    slate = _load_primal_state_slate()
-    return {"ok": True, **slate}
-
-
 @router.get("/riftwalk/trace")
 def riftwalk_trace(
     mission_id: Optional[str] = Query(default=None),

@@ -75,7 +75,7 @@ def create_app() -> FastAPI:
     app.include_router(factory_routes_router, prefix="/v1/factory", tags=["factory"])
     app.include_router(meta_routes_router, prefix="/v1/meta", tags=["meta"])
     app.include_router(operational_routes_router, prefix="/v1", tags=["operational"])
-    app.include_router(operator_ecosystem_routes_router, prefix="/v1", tags=["ecosystem"])
+    app.include_router(operator_ecosystem_routes_router, prefix="/v1", tags=["operator-os"])
     app.include_router(federation_routes_router, prefix="/v1", tags=["federation"])
     app.include_router(charter_routes_router, prefix="/v1", tags=["charter"])
     app.include_router(fusion_routes_router, prefix="/v1", tags=["fusion"])

@@ -127,6 +127,11 @@
         </div>
       </div>
 
+      <h2 class="panel-title mt-12">Prime State</h2>
+      <div id="prime-state-panel" class="mission-list">
+        <pre id="prime-state-json">Loading...</pre>
+      </div>
+
       <!-- GUIDANCE: context-aware suggestions for the operator -->
       <h2 class="panel-title mt-12">GUIDANCE</h2>
       <div class="mission-list" id="guidancePanel">
@@ -174,5 +179,21 @@
 </div><!-- /coreFrame -->
 
 <script src="/web/app.js"></script>
+<script>
+async function loadPrimeState() {
+  try {
+    const res = await fetch("/v1/operator-os/prime-state");
+    if (!res.ok) throw new Error("Failed to load prime state");
+    const data = await res.json();
+    document.getElementById("prime-state-json").textContent =
+      JSON.stringify(data, null, 2);
+  } catch (e) {
+    document.getElementById("prime-state-json").textContent =
+      "Error loading prime state: " + e.message;
+  }
+}
+
+window.addEventListener("load", loadPrimeState);
+</script>
 </body>
 </html>
