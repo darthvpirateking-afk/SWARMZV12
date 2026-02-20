@@ -1,6 +1,8 @@
 # SWARMZ - Operator-Sovereign "Do Anything" System
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+**License:** SWARMZ Source Available License (see `LICENSE`).
+
+**Copyright:** Copyright (c) 2026 SWARMZ. Commercial use, hosting, and resale prohibited unless explicitly licensed.
 
 ## Overview
 
@@ -86,8 +88,9 @@ python run_server.py
 
 # Access at:
 # Local:  http://localhost:8000
-# LAN:    http://192.168.x.x:8000 (shown on startup)
-# API Docs: http://localhost:8000/docs
+# Local:  http://localhost:8012
+# LAN:    http://192.168.x.x:8012 (shown on startup)
+# API Docs: http://localhost:8012/docs
 ```
 
 ### CLI Usage
