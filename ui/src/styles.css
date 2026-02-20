@@ -1,0 +1,126 @@
+:root {
+  font-family: Inter, Segoe UI, Arial, sans-serif;
+  color: #e8ecf1;
+  background: #0f141a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #0f141a;
+}
+
+.app-shell {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.chat-card {
+  width: min(860px, 100%);
+  background: #171d24;
+  border: 1px solid #2a3440;
+  border-radius: 16px;
+  padding: 18px;
+  display: grid;
+  gap: 14px;
+}
+
+.chat-header h1 {
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.chat-header p {
+  margin: 6px 0 0;
+  color: #9cb0c5;
+  font-size: 0.9rem;
+}
+
+.messages {
+  display: grid;
+  gap: 10px;
+  max-height: 56vh;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.message {
+  padding: 12px;
+  border-radius: 10px;
+}
+
+.message-user {
+  background: #25374a;
+}
+
+.message-assistant {
+  background: #222a33;
+}
+
+.message-role {
+  margin: 0 0 6px;
+  color: #8fb7df;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+}
+
+.message-text {
+  margin: 0;
+  white-space: pre-wrap;
+  line-height: 1.4;
+}
+
+.composer {
+  display: grid;
+  gap: 10px;
+}
+
+.composer-input {
+  width: 100%;
+  resize: vertical;
+  border-radius: 10px;
+  border: 1px solid #314253;
+  background: #121922;
+  color: #e8ecf1;
+  padding: 10px;
+  font: inherit;
+}
+
+.composer-button {
+  justify-self: end;
+  border: 1px solid #3a6d9f;
+  background: #21496b;
+  color: #eef6ff;
+  border-radius: 9px;
+  padding: 8px 14px;
+  font: inherit;
+  cursor: pointer;
+}
+
+.composer-button[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.chat-error {
+  margin: 0;
+  color: #ff8f8f;
+  font-size: 0.92rem;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}

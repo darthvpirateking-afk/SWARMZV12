@@ -1,28 +1,33 @@
 # SWARMZ Desktop App Shortcut Creator
-# Creates a desktop shortcut that opens SWARMZ in the browser with a custom icon.
+# Creates a desktop shortcut that starts SWARMZ (RUN.ps1) with a custom icon.
 
 $ErrorActionPreference = "Stop"
 
 $repoRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
 $iconPath = Join-Path $repoRoot "web_ui\icons\icon-512.png"
 $desktop = [Environment]::GetFolderPath("Desktop")
-$shortcutPath = Join-Path $desktop "SWARMZ.url"
+$shortcutPath = Join-Path $desktop "SWARMZ Start.lnk"
+$runScript = Join-Path $repoRoot "RUN.ps1"
 
 if (-not (Test-Path $iconPath)) {
     Write-Host "ERROR: Icon not found at $iconPath" -ForegroundColor Red
     exit 1
 }
 
-$content = @"
-[InternetShortcut]
-URL=http://localhost:8012/
-IconFile=$iconPath
-IconIndex=0
-"@
+if (-not (Test-Path $runScript)) {
+    Write-Host "ERROR: RUN.ps1 not found at $runScript" -ForegroundColor Red
+    exit 1
+}
 
-Set-Content -Path $shortcutPath -Value $content -Encoding ASCII
+$wsh = New-Object -ComObject WScript.Shell
+$shortcut = $wsh.CreateShortcut($shortcutPath)
+$shortcut.TargetPath = "powershell.exe"
+$shortcut.Arguments = "-ExecutionPolicy Bypass -NoProfile -File `"$runScript`""
+$shortcut.WorkingDirectory = $repoRoot
+$shortcut.IconLocation = "$iconPath,0"
+$shortcut.Save()
 
 Write-Host "SWARMZ shortcut created:" -ForegroundColor Green
 Write-Host "  $shortcutPath"
 Write-Host ""
-Write-Host "Start SWARMZ first with RUN.ps1, then open the SWARMZ desktop icon."
+Write-Host "Double-click this shortcut to run full SWARMZ startup."
