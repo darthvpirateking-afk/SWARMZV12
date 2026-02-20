@@ -1,0 +1,21 @@
+# Keep core SWARMZ runtime image clean
+.git
+.gitignore
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Build/test artifacts
+build/
+dist/
+*.egg-info/
+.pytest_cache/
+
+# Node/web artifacts
+node_modules/
+**/node_modules/
+**/dist/
+
+# Explicitly exclude Play Store game app from SWARMZ backend image
+apps/gate-link/

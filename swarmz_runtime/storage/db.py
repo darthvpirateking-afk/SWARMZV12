@@ -6,6 +6,7 @@ from typing import List, Dict, Any, Optional
 from datetime import datetime
 from pathlib import Path
 from swarmz_runtime.storage.schema import Mission, AuditEntry, Rune, MissionStatus
+from swarmz_runtime.storage.jsonl_utils import write_jsonl
 
 
 class Database:
@@ -45,11 +46,30 @@ class Database:
     
     def load_all_missions(self) -> List[Dict[str, Any]]:
         missions = []
+        bad_rows: List[str] = []
         if self.missions_file.exists():
             with open(self.missions_file, "r") as f:
                 for line in f:
-                    if line.strip():
-                        missions.append(json.loads(line))
+                    row = line.strip()
+                    if not row:
+                        continue
+                    try:
+                        payload = json.loads(row)
+                    except json.JSONDecodeError:
+                        bad_rows.append(row)
+                        continue
+                    if isinstance(payload, dict):
+                        missions.append(payload)
+                    else:
+                        bad_rows.append(row)
+
+        if bad_rows:
+            self._quarantine_bad_rows(bad_rows, str(self.missions_file))
+
+        self._last_missions_parse_stats = {
+            "loaded": len(missions),
+            "quarantined": len(bad_rows),
+        }
         return missions
     
     def get_mission(self, mission_id: str) -> Optional[Dict[str, Any]]:
@@ -69,11 +89,30 @@ class Database:
     
     def load_audit_log(self, limit: int = 100) -> List[Dict[str, Any]]:
         entries = []
+        bad_rows: List[str] = []
         if self.audit_file.exists():
             with open(self.audit_file, "r") as f:
                 for line in f:
-                    if line.strip():
-                        entries.append(json.loads(line))
+                    row = line.strip()
+                    if not row:
+                        continue
+                    try:
+                        payload = json.loads(row)
+                    except json.JSONDecodeError:
+                        bad_rows.append(row)
+                        continue
+                    if isinstance(payload, dict):
+                        entries.append(payload)
+                    else:
+                        bad_rows.append(row)
+
+        if bad_rows:
+            self._quarantine_bad_rows(bad_rows, str(self.audit_file))
+
+        self._last_audit_parse_stats = {
+            "loaded": len(entries),
+            "quarantined": len(bad_rows),
+        }
         return entries[-limit:]
 
     def _quarantine_bad_rows(self, bad_rows, source):

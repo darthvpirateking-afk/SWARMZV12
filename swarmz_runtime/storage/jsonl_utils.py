@@ -16,16 +16,16 @@ from pathlib import Path
 from typing import Any, Dict, List
 
 
-def read_jsonl(path: str | Path) -> tuple[list[dict], int, int]:
+def read_jsonl(path: str | Path) -> list[dict]:
     """Read a JSONL file, skipping blank lines and quarantining bad rows.
 
     Returns:
-        tuple: (list of successfully parsed dicts, 0, 0) for legacy compatibility.
+        List[dict]: successfully parsed JSON objects.
         Never raises on missing file or malformed content.
     """
     path = Path(path)
     if not path.exists():
-        return [], 0, 0
+        return []
 
     records: List[Dict[str, Any]] = []
     quarantined_lines: List[str] = []
@@ -41,12 +41,12 @@ def read_jsonl(path: str | Path) -> tuple[list[dict], int, int]:
                 except (json.JSONDecodeError, ValueError):
                     quarantined_lines.append(f"line {lineno}: {line}")
     except OSError:
-        return [], 0, 0
+        return []
 
     if quarantined_lines:
         _quarantine_log(path, quarantined_lines)
 
-    return records, 0, 0
+    return records
 
 
 def write_jsonl(path: str | Path, records: List[Dict[str, Any]]) -> None:

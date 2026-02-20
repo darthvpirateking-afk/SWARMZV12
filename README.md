@@ -76,6 +76,12 @@ All under your control.
 - 🚀 **Cross-Platform** - Windows, Linux, macOS, and Android (Termux)
 - 📦 **Easy Configuration** - JSON-based configuration
 
+## Runtime Boundary
+
+- `apps/gate-link` is an isolated game project for separate Play Store packaging.
+- Core SWARMZ backend/runtime builds and deploys do not load or bundle `apps/gate-link`.
+- Keep game release pipeline separate from SWARMZ runtime release pipeline.
+
 ## Quick Start
 
 ### Fastest Windows Start (Canonical)
@@ -92,6 +98,17 @@ All under your control.
 ```
 
 Then double-click the `SWARMZ` icon on your desktop.
+
+### Phone Mode (Same Wi-Fi)
+
+```powershell
+# One-click phone-ready launcher
+./PHONE_MODE.ps1
+
+# Or double-click PHONE_MODE.cmd
+```
+
+Then open the printed LAN URL on your phone (example: `http://192.168.x.x:8012/`).
 
 ### Web Server (Recommended)
 
@@ -250,6 +267,26 @@ Linux
 macOS
 
 Android (Termux)
+
+Render (recommended config):
+
+- Build command: `pip install -r requirements.txt`
+- Start command: `python run_server.py --host 0.0.0.0 --port $PORT`
+- Health check path: `/v1/health`
+- Required env vars for live model routing:
+  - `OPENAI_API_KEY=<your key>` (if using OpenAI provider)
+  - `ANTHROPIC_API_KEY=<your key>` (if using Anthropic provider)
+  - `OFFLINE_MODE=false`
+  - `MODEL_PROVIDER=openai` or `MODEL_PROVIDER=anthropic`
+- Optional env vars:
+  - `SWARMZ_MODEL=gpt-4.1` (or your allowed model)
+  - `OPENAI_BASE_URL=https://api.openai.com/v1`
+
+Post-deploy verification:
+
+```bash
+python tools/render_post_deploy_check.py --base https://swarmzV10-.onrender.com
+```
 
 Project Position
 

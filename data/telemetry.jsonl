@@ -1,0 +1,4 @@
+{"ts":"2026-02-20T12:24:27.377737+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"127.0.0.1","timestamp":"2026-02-20T12:24:27.377726"}}
+{"ts":"2026-02-20T12:24:27.602927+00:00","type":"mission_created","payload":{"mission_id":"17887593","goal":"E2E dispatch test","category":"forge"}}
+{"ts":"2026-02-20T12:24:48.019316+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"127.0.0.1","timestamp":"2026-02-20T12:24:48.019303"}}
+{"ts":"2026-02-20T12:24:48.175287+00:00","type":"mission_created","payload":{"mission_id":"3b099b40","goal":"E2E dispatch test","category":"forge"}}

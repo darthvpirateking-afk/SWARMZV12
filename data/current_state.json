@@ -1,9 +1,9 @@
 {
-  "throughput": 4.7178486851745465,
+  "throughput": 4.845013465803544,
   "failure_rate": 0.0,
-  "latency": 76.08695652173913,
-  "resource_usage": 0.005217391304347826,
+  "latency": 77.08333333333333,
+  "resource_usage": 0.005416666666666667,
   "strategy_variance": 0.0,
   "recent_trend_vector": 0.0,
-  "last_updated": "2026-02-20T12:15:23.446317+00:00Z"
+  "last_updated": "2026-02-20T12:24:48.238112+00:00Z"
 }

@@ -5,10 +5,16 @@ from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel, Field
 
 from swarmz_runtime.core.operator_ecosystem import OperatorEcosystem
+from swarmz_runtime.core.primal_state import load_primal_state_slate
 
 
 router = APIRouter()
 _ecosystem = OperatorEcosystem(Path(__file__).resolve().parent.parent.parent)
+
+
+@router.get("/operator-os/prime-state")
+def get_prime_state():
+    return load_primal_state_slate()
 
 
 class TimelineEventRequest(BaseModel):
