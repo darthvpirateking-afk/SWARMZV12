@@ -41,6 +41,14 @@ This codifies the architecture doctrine as enforceable runtime checks.
 
 This does not replace existing policy engine checks; it adds a doctrine-level gate to preserve immutable history, replayability, and operator sovereignty.
 
+## Doctrine Extension: PRIMAL_BLOCK
+
+- Loaded Doctrine: `SWARMZ//GATELINK_PRIMAL_DOCTRINE`
+- Canonical Lattice Spec: `config/doctrine_primal_block.json`
+- Ready Slate: `docs/READY_SLATE_PRIMAL.md`
+
+This extension binds the renamed system lattice (`PARTNER_PRIME`, `LEGION_UMBRA`, `FORGE_HEARTH`, `RIFTWALK`, `SIGILSTACK`, `NEXUSFRAME`, `DATAVEIN`) to doctrine-safe channels and deterministic sequencing while preserving existing runtime safety guarantees.
+
 ## SWARMZ Software-Builder Architecture
 
 All safe, all powerful, all actionable. Let's lock it in.

@@ -1,0 +1,48 @@
+{
+  "doctrineId": "SWARMZ//GATELINK_PRIMAL_DOCTRINE",
+  "loadCommand": "LOAD_DOCTRINE: PRIMAL_BLOCK",
+  "status": "READY",
+  "systems": {
+    "PARTNER_PRIME": "partner intelligence core",
+    "LEGION_UMBRA": "shadow legion execution core",
+    "FORGE_HEARTH": "base and build progression core",
+    "RIFTWALK": "gate and mission traversal core",
+    "SIGILSTACK": "chip and ability composition core",
+    "NEXUSFRAME": "interface and presentation core",
+    "DATAVEIN": "data storage and schema continuity core"
+  },
+  "channels": {
+    "MINDLINE": "partner cognition + planning channel",
+    "CODELINE": "logic and execution channel",
+    "SIGHTLINE": "ui and observability channel",
+    "PATHLINE": "mission and routing channel",
+    "GHOSTLINE": "shadow and tactical fallback channel"
+  },
+  "artifacts": {
+    "PRIME_SHARDS": "primary progression shard artifact",
+    "UMBRA_MARKS": "shadow progression mark artifact",
+    "GRID_RUINS": "gate-map residue artifact",
+    "ARCHON_SLATES": "doctrine and command tablet artifact"
+  },
+  "opsCommands": {
+    "PRIME_WAKE": "initialize partner prime state",
+    "UMBRA_FOLD": "compact shadow pathways and rebind",
+    "VOID_CYCLE": "full maintenance + reset cycle",
+    "SEEDRUN": "bootstrap deterministic seed run",
+    "RIFT_SCAN": "scan gate lattice integrity"
+  },
+  "operationalLattice": {
+    "binding": [
+      "PARTNER_PRIME->MINDLINE",
+      "LEGION_UMBRA->GHOSTLINE",
+      "FORGE_HEARTH->CODELINE",
+      "RIFTWALK->PATHLINE",
+      "SIGILSTACK->CODELINE",
+      "NEXUSFRAME->SIGHTLINE",
+      "DATAVEIN->CODELINE"
+    ],
+    "latticeMode": "single_operational_lattice",
+    "deterministicSequencing": true,
+    "doctrineAligned": true
+  }
+}
