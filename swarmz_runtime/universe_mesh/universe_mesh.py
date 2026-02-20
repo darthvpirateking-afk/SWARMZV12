@@ -5,6 +5,7 @@ class WorldNode:
         self.missions = missions or []
         self.swarm_clusters = swarm_clusters or []
 
+
 class MeshLink:
     def __init__(self, source, target, bidirectional=False):
         self.source = source
@@ -15,6 +16,7 @@ class MeshLink:
     def validate(self, governor):
         self.validated = governor.validate_link(self)
         return self.validated
+
 
 class MeshRouter:
     def __init__(self):

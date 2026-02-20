@@ -15,6 +15,6 @@ class PermissionsLayer(BaseLayer):
 
     def collect(self) -> list[dict]:
         current = self._state.get_value("permissions.access_scope", 50)
-        return [self._make_record("permissions.access_scope", current,
-                                  units="scope_units")]
-
+        return [
+            self._make_record("permissions.access_scope", current, units="scope_units")
+        ]

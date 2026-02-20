@@ -6,9 +6,9 @@ tests/test_companion_master.py â€” Tests for core/companion_master.py (Comm
 """
 
 
-
 def test_ensure_master():
     from core.companion_master import ensure_master
+
     m = ensure_master()
     assert m["identity"] == "MASTER_SWARMZ"
     assert m["policy"] == "prepare_only"
@@ -17,6 +17,7 @@ def test_ensure_master():
 
 def test_record_mission_observed():
     from core.companion_master import ensure_master, record_mission_observed
+
     before = ensure_master()
     count_before = before.get("total_missions_witnessed", 0)
     record_mission_observed("test_m1", "smoke", "SUCCESS", "test summary")
@@ -27,6 +28,7 @@ def test_record_mission_observed():
 
 def test_record_insight():
     from core.companion_master import record_insight, ensure_master
+
     record_insight("Pattern detected: increasing efficiency")
     m = ensure_master()
     assert "increasing efficiency" in m.get("last_insight", "")
@@ -34,6 +36,7 @@ def test_record_insight():
 
 def test_get_composite_context():
     from core.companion_master import get_composite_context
+
     ctx = get_composite_context()
     assert "master_identity" in ctx
     assert "confidence_level" in ctx
@@ -44,7 +47,7 @@ def test_get_composite_context():
 
 def test_self_assessment():
     from core.companion_master import self_assessment
+
     text = self_assessment()
     assert "MASTER_SWARMZ" in text
     assert "Policy:" in text
-

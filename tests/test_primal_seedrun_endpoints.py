@@ -8,15 +8,25 @@ from swarmz_runtime.core.operator_ecosystem import OperatorEcosystem
 
 def _set_isolated_primal_runtime(monkeypatch, tmp_path):
     primal_routes = importlib.import_module("swarmz_runtime.api.primal_routes")
-    ecosystem_routes = importlib.import_module("swarmz_runtime.api.operator_ecosystem_routes")
+    ecosystem_routes = importlib.import_module(
+        "swarmz_runtime.api.operator_ecosystem_routes"
+    )
     fusion_routes = importlib.import_module("swarmz_runtime.api.fusion_routes")
 
     eco = OperatorEcosystem(Path(tmp_path))
     registry = FusionRegistry(Path(tmp_path))
 
     monkeypatch.setattr(primal_routes, "_ROOT_DIR", Path(tmp_path))
-    monkeypatch.setattr(primal_routes, "_DOCTRINE_PATH", Path(tmp_path) / "config" / "doctrine_primal_block.json")
-    monkeypatch.setattr(primal_routes, "_STATE_SLATE_PATH", Path(tmp_path) / "config" / "primal_state_slate.json")
+    monkeypatch.setattr(
+        primal_routes,
+        "_DOCTRINE_PATH",
+        Path(tmp_path) / "config" / "doctrine_primal_block.json",
+    )
+    monkeypatch.setattr(
+        primal_routes,
+        "_STATE_SLATE_PATH",
+        Path(tmp_path) / "config" / "primal_state_slate.json",
+    )
     monkeypatch.setattr(primal_routes, "_ecosystem", eco)
     monkeypatch.setattr(primal_routes, "_fusion_registry", registry)
 

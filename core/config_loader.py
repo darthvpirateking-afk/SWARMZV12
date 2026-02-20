@@ -89,4 +89,3 @@ def is_offline() -> bool:
     if env in ("1", "true", "yes"):
         return True
     return bool(load().get("offlineMode", False))
-

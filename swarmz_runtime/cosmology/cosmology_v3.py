@@ -14,6 +14,7 @@ class DynamicNode:
     def add_link(self, target_node):
         self.links.append(target_node)
 
+
 class CosmologyTicker:
     def __init__(self):
         self.nodes = {}
@@ -35,4 +36,7 @@ class CosmologyTicker:
             node.update_energy(max(0, node.energy - 1))
 
     def get_node_states(self):
-        return {node_id: {"state": node.state, "energy": node.energy} for node_id, node in self.nodes.items()}
+        return {
+            node_id: {"state": node.state, "energy": node.energy}
+            for node_id, node in self.nodes.items()
+        }

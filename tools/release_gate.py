@@ -51,7 +51,10 @@ def _check_runtime_config() -> Tuple[bool, str]:
     if missing:
         return False, f"config/runtime.json missing keys: {', '.join(missing)}"
 
-    return True, f"apiBaseUrl={data.get('apiBaseUrl')} bind={data.get('bind')} port={data.get('port')}"
+    return (
+        True,
+        f"apiBaseUrl={data.get('apiBaseUrl')} bind={data.get('bind')} port={data.get('port')}",
+    )
 
 
 def _run_smoke() -> int:
@@ -62,7 +65,11 @@ def _run_smoke() -> int:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="SWARMZ release gate")
-    parser.add_argument("--smoke", action="store_true", help="Run tools/release_smoke.py as part of gate")
+    parser.add_argument(
+        "--smoke",
+        action="store_true",
+        help="Run tools/release_smoke.py as part of gate",
+    )
     args = parser.parse_args()
 
     print("== SWARMZ RELEASE GATE ==")

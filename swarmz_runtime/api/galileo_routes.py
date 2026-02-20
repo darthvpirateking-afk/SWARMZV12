@@ -7,7 +7,11 @@ from typing import Optional, List, Dict, Any
 
 from galileo.run import run_galileo
 from galileo.storage import ensure_storage
-from swarmz_runtime.api.galileo_storage_shim import read_hypotheses, read_experiments, read_runs
+from swarmz_runtime.api.galileo_storage_shim import (
+    read_hypotheses,
+    read_experiments,
+    read_runs,
+)
 
 router = APIRouter(prefix="/v1/galileo", tags=["galileo"])
 
@@ -21,7 +25,9 @@ class GalileoRunBody(BaseModel):
 @router.post("/run")
 def galileo_run(body: GalileoRunBody) -> Dict[str, Any]:
     ensure_storage()
-    result = run_galileo(domain=body.domain, seed=body.seed, n_hypotheses=body.n_hypotheses)
+    result = run_galileo(
+        domain=body.domain, seed=body.seed, n_hypotheses=body.n_hypotheses
+    )
 
     # Expect run_galileo to return a dict-like result.
     return {
@@ -32,7 +38,9 @@ def galileo_run(body: GalileoRunBody) -> Dict[str, Any]:
 
 
 @router.get("/hypotheses")
-def galileo_hypotheses(domain: Optional[str] = None, status: Optional[str] = None) -> List[Dict[str, Any]]:
+def galileo_hypotheses(
+    domain: Optional[str] = None, status: Optional[str] = None
+) -> List[Dict[str, Any]]:
     ensure_storage()
     items = read_hypotheses()
     if domain:
@@ -59,4 +67,3 @@ def galileo_run_get(run_id: str) -> Dict[str, Any]:
         if r.get("run_id") == run_id:
             return r
     raise HTTPException(status_code=404, detail="run_id not found")
-

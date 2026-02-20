@@ -23,7 +23,6 @@ from core.trials import (
     compute_survival_scores,
 )
 
-
 _WORKER_RUNNING = False
 _WORKER_THREAD: Optional[threading.Thread] = None
 _CHECK_INTERVAL_SEC = 30  # check every 30 seconds
@@ -67,10 +66,14 @@ def evaluate_trial(trial: dict) -> Optional[dict]:
 
     if metric_after is None:
         # Can't evaluate â€” skip this cycle, will retry next time
-        _audit_event("evaluation_skipped", trial_id, {
-            "reason": "metric_after is None",
-            "metric_name": metric_name,
-        })
+        _audit_event(
+            "evaluation_skipped",
+            trial_id,
+            {
+                "reason": "metric_after is None",
+                "metric_name": metric_name,
+            },
+        )
         return None
 
     metric_before = trial.get("metric_before")
@@ -109,12 +112,16 @@ def evaluate_trial(trial: dict) -> Optional[dict]:
 
     result = update_trial(trial_id, updates, reason="trial_evaluated")
 
-    _audit_event("trial_evaluated", trial_id, {
-        "metric_before": metric_before,
-        "metric_after": metric_after,
-        "expected_delta": expected_delta,
-        "survived": survived,
-    })
+    _audit_event(
+        "trial_evaluated",
+        trial_id,
+        {
+            "metric_before": metric_before,
+            "metric_after": metric_after,
+            "expected_delta": expected_delta,
+            "survived": survived,
+        },
+    )
 
     return result
 
@@ -131,10 +138,14 @@ def check_due_trials() -> int:
 
         level_state = compute_level()
         if level_state.get("level", 0) < 2:
-            _audit_event("auto_check_skipped_low_level", "SYSTEM", {
-                "level": level_state.get("level", 0),
-                "reason": "Auto-check scheduler unlocks at LV2 (CHAMPION)",
-            })
+            _audit_event(
+                "auto_check_skipped_low_level",
+                "SYSTEM",
+                {
+                    "level": level_state.get("level", 0),
+                    "reason": "Auto-check scheduler unlocks at LV2 (CHAMPION)",
+                },
+            )
             return 0
     except Exception:
         # If hologram is unavailable or misconfigured, fall back to
@@ -179,10 +190,14 @@ def _worker_loop():
         try:
             count = check_due_trials()
             if count > 0:
-                _audit_event("worker_cycle", "SYSTEM", {
-                    "trials_evaluated": count,
-                    "timestamp": _now_iso(),
-                })
+                _audit_event(
+                    "worker_cycle",
+                    "SYSTEM",
+                    {
+                        "trials_evaluated": count,
+                        "timestamp": _now_iso(),
+                    },
+                )
         except Exception:
             pass  # fail-open: never crash the worker
         time.sleep(_CHECK_INTERVAL_SEC)
@@ -196,7 +211,9 @@ def start_worker() -> bool:
         return False  # already running
 
     _WORKER_RUNNING = True
-    _WORKER_THREAD = threading.Thread(target=_worker_loop, daemon=True, name="trials-worker")
+    _WORKER_THREAD = threading.Thread(
+        target=_worker_loop, daemon=True, name="trials-worker"
+    )
     _WORKER_THREAD.start()
     return True
 
@@ -211,7 +228,8 @@ def worker_status() -> dict:
     """Return worker status."""
     global _WORKER_RUNNING, _WORKER_THREAD
     return {
-        "running": _WORKER_RUNNING and _WORKER_THREAD is not None and _WORKER_THREAD.is_alive(),
+        "running": _WORKER_RUNNING
+        and _WORKER_THREAD is not None
+        and _WORKER_THREAD.is_alive(),
         "interval_sec": _CHECK_INTERVAL_SEC,
     }
-

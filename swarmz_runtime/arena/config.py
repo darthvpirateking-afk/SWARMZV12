@@ -7,9 +7,8 @@ Provides load/validate/defaults for arena config.
 from __future__ import annotations
 
 import json
-import os
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import List, Tuple
 
 from .schema import ArenaConfig
 

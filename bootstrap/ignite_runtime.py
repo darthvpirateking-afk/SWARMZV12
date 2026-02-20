@@ -5,6 +5,7 @@ SWARMZ Runtime Ignition
 Starts the Python backend (uvicorn) and the React cockpit UI (vite)
 in parallel, streams their combined logs, and tears both down on Ctrl-C.
 """
+
 import subprocess
 import sys
 import time
@@ -61,7 +62,17 @@ def main():
 
     # 2. Backend
     backend = run(
-        [sys.executable, "-m", "uvicorn", "src.main:app", "--reload", "--host", "0.0.0.0", "--port", "8000"],
+        [
+            sys.executable,
+            "-m",
+            "uvicorn",
+            "src.main:app",
+            "--reload",
+            "--host",
+            "0.0.0.0",
+            "--port",
+            "8000",
+        ],
         cwd=ROOT,
     )
     print("[backend] starting  →  http://localhost:8000")

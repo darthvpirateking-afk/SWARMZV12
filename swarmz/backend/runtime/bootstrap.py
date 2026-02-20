@@ -2,6 +2,7 @@
 
 from backend.runtime.engine import Engine
 
+
 def bootstrap():
     engine = Engine()
     engine.load_config()
@@ -13,6 +14,7 @@ def bootstrap():
 
     # Launch cockpit UI (placeholder)
     print("Launching cockpit UI...")
+
 
 if __name__ == "__main__":
     bootstrap()

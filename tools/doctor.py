@@ -45,7 +45,9 @@ def get_runtime_status(timeout: float = 5.0):
 
 def run_cmd(cmd):
     try:
-        proc = subprocess.run(cmd, capture_output=True, text=True, timeout=120, cwd=ROOT)
+        proc = subprocess.run(
+            cmd, capture_output=True, text=True, timeout=120, cwd=ROOT
+        )
         out = (proc.stdout or "") + (proc.stderr or "")
         return proc.returncode, out
     except Exception as exc:
@@ -133,4 +135,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

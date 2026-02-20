@@ -2,6 +2,7 @@
 
 import time
 
+
 class AutoLoop:
     def __init__(self, interval):
         self.interval = interval

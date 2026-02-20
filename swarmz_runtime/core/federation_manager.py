@@ -46,14 +46,18 @@ class FederationManager:
         return rows
 
     @staticmethod
-    def _latest_by_id(rows: List[Dict[str, Any]], key: str = "id") -> Dict[str, Dict[str, Any]]:
+    def _latest_by_id(
+        rows: List[Dict[str, Any]], key: str = "id"
+    ) -> Dict[str, Dict[str, Any]]:
         latest: Dict[str, Dict[str, Any]] = {}
         for row in rows:
             if key in row:
                 latest[row[key]] = row
         return latest
 
-    def create_organism(self, name: str, owner_id: str, config_json: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    def create_organism(
+        self, name: str, owner_id: str, config_json: Optional[Dict[str, Any]] = None
+    ) -> Dict[str, Any]:
         organism_id = f"org-{secrets.token_hex(4)}"
         organism = {
             "id": organism_id,
@@ -61,7 +65,16 @@ class FederationManager:
             "owner_id": owner_id,
             "status": "active",
             "created_at": self._now(),
-            "partner": {"tier": 0, "traits": {"logic": 10, "precision": 10, "empathy": 10, "initiative": 10, "stability": 10}},
+            "partner": {
+                "tier": 0,
+                "traits": {
+                    "logic": 10,
+                    "precision": 10,
+                    "empathy": 10,
+                    "initiative": 10,
+                    "stability": 10,
+                },
+            },
             "shadow": {"tier": "Dormant", "risk_profile": "strict"},
             "autonomy": {"dial": 10},
             "ledger_mode": "isolated",
@@ -71,7 +84,8 @@ class FederationManager:
         cfg = {
             "id": f"cfg-{secrets.token_hex(4)}",
             "organism_id": organism_id,
-            "config_json": config_json or {"mode": "prime", "policy_profile": "default"},
+            "config_json": config_json
+            or {"mode": "prime", "policy_profile": "default"},
             "created_at": self._now(),
         }
         self._append_jsonl(self._configs, cfg)
@@ -99,23 +113,43 @@ class FederationManager:
         latest = self._latest_by_id(self._read_jsonl(self._organisms))
         return list(latest.values())
 
-    def pause_organism(self, organism_id: str, reason: str = "operator_command") -> Optional[Dict[str, Any]]:
+    def pause_organism(
+        self, organism_id: str, reason: str = "operator_command"
+    ) -> Optional[Dict[str, Any]]:
         organism = self.get_organism(organism_id)
         if not organism:
             return None
-        organism = {**organism, "status": "paused", "paused_reason": reason, "updated_at": self._now()}
+        organism = {
+            **organism,
+            "status": "paused",
+            "paused_reason": reason,
+            "updated_at": self._now(),
+        }
         self._append_jsonl(self._organisms, organism)
         return organism
 
-    def retire_organism(self, organism_id: str, reason: str = "operator_retire") -> Optional[Dict[str, Any]]:
+    def retire_organism(
+        self, organism_id: str, reason: str = "operator_retire"
+    ) -> Optional[Dict[str, Any]]:
         organism = self.get_organism(organism_id)
         if not organism:
             return None
-        organism = {**organism, "status": "retired", "retired_reason": reason, "updated_at": self._now()}
+        organism = {
+            **organism,
+            "status": "retired",
+            "retired_reason": reason,
+            "updated_at": self._now(),
+        }
         self._append_jsonl(self._organisms, organism)
         return organism
 
-    def evolve_organism(self, organism_id: str, mission_success: bool, incidents: int, policy_compliance: bool) -> Optional[Dict[str, Any]]:
+    def evolve_organism(
+        self,
+        organism_id: str,
+        mission_success: bool,
+        incidents: int,
+        policy_compliance: bool,
+    ) -> Optional[Dict[str, Any]]:
         organism = self.get_organism(organism_id)
         if not organism:
             return None
@@ -165,7 +199,9 @@ class FederationManager:
 
         avg_autonomy = 0.0
         if organisms:
-            avg_autonomy = sum(float(o.get("autonomy", {}).get("dial", 0)) for o in organisms) / len(organisms)
+            avg_autonomy = sum(
+                float(o.get("autonomy", {}).get("dial", 0)) for o in organisms
+            ) / len(organisms)
 
         return {
             "organism_count": len(organisms),
@@ -176,20 +212,44 @@ class FederationManager:
             "metric_events": len(metrics),
         }
 
-    def generate_nightly_insights(self, outcomes: Optional[List[Dict[str, Any]]] = None) -> Dict[str, Any]:
+    def generate_nightly_insights(
+        self, outcomes: Optional[List[Dict[str, Any]]] = None
+    ) -> Dict[str, Any]:
         rows = outcomes or []
-        winners = sorted(rows, key=lambda r: (float(r.get("margin", 0.0)), float(r.get("conversion", 0.0))), reverse=True)[:5]
-        failures = sorted(rows, key=lambda r: (float(r.get("refund_rate", 0.0)), -float(r.get("sla_adherence", 0.0))), reverse=True)[:5]
+        winners = sorted(
+            rows,
+            key=lambda r: (
+                float(r.get("margin", 0.0)),
+                float(r.get("conversion", 0.0)),
+            ),
+            reverse=True,
+        )[:5]
+        failures = sorted(
+            rows,
+            key=lambda r: (
+                float(r.get("refund_rate", 0.0)),
+                -float(r.get("sla_adherence", 0.0)),
+            ),
+            reverse=True,
+        )[:5]
 
         insight = {
             "id": f"ins-{secrets.token_hex(4)}",
             "generated_at": self._now(),
             "safe_insights": [
-                {"type": "winner_pattern", "subject_id": w.get("subject_id"), "suggestion": "test +5-10% price band"}
+                {
+                    "type": "winner_pattern",
+                    "subject_id": w.get("subject_id"),
+                    "suggestion": "test +5-10% price band",
+                }
                 for w in winners
             ],
             "safe_warnings": [
-                {"type": "failure_pattern", "subject_id": f.get("subject_id"), "warning": "high refund-risk pattern"}
+                {
+                    "type": "failure_pattern",
+                    "subject_id": f.get("subject_id"),
+                    "warning": "high refund-risk pattern",
+                }
                 for f in failures
             ],
             "privacy_mode": "no_customer_data",

@@ -86,7 +86,9 @@ def verify_pack(mission_id: str) -> Dict[str, Any]:
         return {"valid": False, "error": "No metadata found"}
     meta = json.loads(meta_f.read_text())
     expected = set(meta.get("files", []))
-    actual = {f.name for f in pack_dir.iterdir() if f.is_file() and f.name != "_meta.json"}
+    actual = {
+        f.name for f in pack_dir.iterdir() if f.is_file() and f.name != "_meta.json"
+    }
     missing = expected - actual
     extra = actual - expected
     return {
@@ -97,4 +99,3 @@ def verify_pack(mission_id: str) -> Dict[str, Any]:
         "missing": sorted(missing),
         "extra": sorted(extra),
     }
-

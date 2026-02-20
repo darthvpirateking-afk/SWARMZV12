@@ -35,7 +35,9 @@ def _hash_entry(entry: Dict[str, Any], prev_hash: str) -> str:
     return hashlib.sha256(raw.encode("utf-8")).hexdigest()
 
 
-def append_audit(event: str, details: Dict[str, Any] | None = None, path: Path = AUDIT_FILE) -> Dict[str, Any]:
+def append_audit(
+    event: str, details: Dict[str, Any] | None = None, path: Path = AUDIT_FILE
+) -> Dict[str, Any]:
     details = details or {}
     path.parent.mkdir(parents=True, exist_ok=True)
     prev = _last_hash(path)
@@ -65,7 +67,14 @@ def verify_chain(path: Path = AUDIT_FILE) -> Tuple[bool, int]:
                 if not line.strip():
                     continue
                 obj = json.loads(line)
-                expected = _hash_entry({k: v for k, v in obj.items() if k not in {"hash", "prev_hash", "seal"}}, prev)
+                expected = _hash_entry(
+                    {
+                        k: v
+                        for k, v in obj.items()
+                        if k not in {"hash", "prev_hash", "seal"}
+                    },
+                    prev,
+                )
                 if obj.get("hash") != expected or obj.get("prev_hash") != prev:
                     return False, count
                 prev = obj.get("hash", prev)
@@ -73,4 +82,3 @@ def verify_chain(path: Path = AUDIT_FILE) -> Tuple[bool, int]:
     except Exception:
         return False, count
     return True, count
-

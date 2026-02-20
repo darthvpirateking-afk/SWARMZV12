@@ -14,6 +14,7 @@ Outputs (overwritten in-place):
 Also patches lines that accidentally start with "urn {" to "return {" in
 server.py and run_server.py if those files exist.
 """
+
 from __future__ import annotations
 
 import socket
@@ -59,16 +60,16 @@ def patch_typo(target: Path) -> None:
 def main() -> None:
     lan = _lan_ip()
 
-    ps_up = f"""#!/usr/bin/env pwsh
+    ps_up = """#!/usr/bin/env pwsh
 param([string]$Host = "0.0.0.0", [int]$Port = 8012)
 $ErrorActionPreference = "Stop"
 $root = Split-Path -Parent $MyInvocation.MyCommand.Path
 Set-Location $root
 
 Write-Host "SWARMZ_UP" -ForegroundColor Cyan
-if (Test-Path "tools/self_check.py") {{
-  try {{ python tools/self_check.py }} catch {{ Write-Host "self_check failed (continuing)" -ForegroundColor Yellow }}
-}}
+if (Test-Path "tools/self_check.py") {
+  try { python tools/self_check.py } catch { Write-Host "self_check failed (continuing)" -ForegroundColor Yellow }
+}
 
 Write-Host "Starting server on $Host:$Port" -ForegroundColor Green
 python run_server.py --host $Host --port $Port
@@ -88,22 +89,22 @@ python run_server.py --host %HOST% --port %PORT%
 endlocal
 """
 
-    ps_smoke = f"""#!/usr/bin/env pwsh
+    ps_smoke = """#!/usr/bin/env pwsh
 $ErrorActionPreference = "Stop"
 $root = Split-Path -Parent $MyInvocation.MyCommand.Path
 Set-Location $root
 $url = "http://127.0.0.1:8012/v1/health"
 Write-Host "SWARMZ_SMOKE" -ForegroundColor Cyan
-try {{
+try {
   $res = Invoke-RestMethod -Uri $url -TimeoutSec 5
-  if ($res.ok -eq $true) {{ Write-Host "Health OK" -ForegroundColor Green; exit 0 }}
+  if ($res.ok -eq $true) { Write-Host "Health OK" -ForegroundColor Green; exit 0 }
   Write-Host "Health endpoint returned unexpected body" -ForegroundColor Yellow
   $res | ConvertTo-Json
   exit 1
-}} catch {{
+} catch {
   Write-Host "Health check failed: $_" -ForegroundColor Red
   exit 1
-}}
+}
 """
 
     cmd_smoke = r"""@echo off

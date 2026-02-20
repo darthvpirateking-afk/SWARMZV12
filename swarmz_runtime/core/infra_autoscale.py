@@ -113,4 +113,3 @@ def compute_autoscale_recommendations(
         },
         "nodes": plan_nodes,
     }
-

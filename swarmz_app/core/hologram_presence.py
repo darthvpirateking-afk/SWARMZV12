@@ -6,6 +6,7 @@
 
 from typing import Dict, Any
 
+
 def get_hologram_state() -> Dict[str, str]:
     """
     Retrieve the current state of the hologram.
@@ -13,6 +14,7 @@ def get_hologram_state() -> Dict[str, str]:
         dict: The current state of the hologram.
     """
     return {"state": "active"}
+
 
 def get_personality_vector() -> Dict[str, Any]:
     """
@@ -22,6 +24,7 @@ def get_personality_vector() -> Dict[str, Any]:
     """
     return {"traits": ["adaptive", "supportive", "analytical"]}
 
+
 def get_current_phase() -> str:
     """
     Retrieve the current phase of the hologram.
@@ -29,6 +32,7 @@ def get_current_phase() -> str:
         str: The current phase.
     """
     return "operational"
+
 
 def get_entropy_level() -> float:
     """
@@ -38,6 +42,7 @@ def get_entropy_level() -> float:
     """
     return 0.42
 
+
 def get_operator_binding_status() -> bool:
     """
     Retrieve the operator binding status of the hologram.
@@ -45,6 +50,7 @@ def get_operator_binding_status() -> bool:
         bool: True if bound to an operator, False otherwise.
     """
     return True
+
 
 def get_trajectory_info() -> Dict[str, Any]:
     """
@@ -54,13 +60,19 @@ def get_trajectory_info() -> Dict[str, Any]:
     """
     return {"trajectory": "stable", "vector": [0.1, 0.2, 0.3]}
 
+
 def get_last_mission_summary() -> Dict[str, Any]:
     """
     Retrieve the summary of the last mission.
     Returns:
         dict: The last mission summary.
     """
-    return {"mission_id": "12345", "status": "success", "details": "Mission completed successfully."}
+    return {
+        "mission_id": "12345",
+        "status": "success",
+        "details": "Mission completed successfully.",
+    }
+
 
 def get_hologram_payload() -> Dict[str, Any]:
     """

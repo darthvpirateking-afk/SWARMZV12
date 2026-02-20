@@ -40,6 +40,7 @@ from addons.security import (
 
 try:
     from swarmz import SwarmzCore
+
     _swarmz_core = SwarmzCore()
 except Exception:
     _swarmz_core = None
@@ -47,10 +48,59 @@ except Exception:
 # Import NEXUSMON router for conversational interface
 try:
     from core.nexusmon_router import router as nexusmon_router
+
     _nexusmon_available = True
 except Exception as e:
     _nexusmon_available = False
     print(f"Warning: NEXUSMON router not available: {e}")
+
+try:
+    from api.bootstrap_routes import router as bootstrap_router
+
+    _bootstrap_router_available = True
+except Exception as e:
+    _bootstrap_router_available = False
+    print(f"Warning: bootstrap router not available: {e}")
+
+try:
+    from api.foundation_routes import build_foundation_router
+
+    _foundation_router_available = True
+except Exception as e:
+    _foundation_router_available = False
+    print(f"Warning: foundation router not available: {e}")
+
+try:
+    from api.database_routes import router as database_router
+
+    _database_router_available = True
+except Exception as e:
+    _database_router_available = False
+    print(f"Warning: database router not available: {e}")
+
+try:
+    from api.operator_auth_routes import router as operator_auth_router
+
+    _operator_auth_router_available = True
+except Exception as e:
+    _operator_auth_router_available = False
+    print(f"Warning: operator auth router not available: {e}")
+
+try:
+    from api.companion_core_routes import router as companion_core_router
+
+    _companion_core_router_available = True
+except Exception as e:
+    _companion_core_router_available = False
+    print(f"Warning: companion core router not available: {e}")
+
+try:
+    from api.build_milestones_routes import router as build_milestones_router
+
+    _build_milestones_router_available = True
+except Exception as e:
+    _build_milestones_router_available = False
+    print(f"Warning: build milestones router not available: {e}")
 
 
 def get_lan_ip() -> str:
@@ -60,7 +110,13 @@ def get_lan_ip() -> str:
         s.connect(("8.8.8.8", 80))
         lan_ip = s.getsockname()[0]
         s.close()
-        record_event({"event": "lan_ip_discovery", "ip": lan_ip, "timestamp": datetime.now().isoformat()})
+        record_event(
+            {
+                "event": "lan_ip_discovery",
+                "ip": lan_ip,
+                "timestamp": datetime.now().isoformat(),
+            }
+        )
         return lan_ip
     except Exception:
         return "127.0.0.1"
@@ -107,7 +163,7 @@ app = FastAPI(
     description="Operator-Sovereign 'Do Anything' System - REST API",
     version="1.0.0",
     docs_url="/docs",
-    openapi_url="/docs/openapi.json"
+    openapi_url="/docs/openapi.json",
 )
 
 # Core security middlewares (all conservative / opt-out via config):
@@ -129,11 +185,34 @@ app.add_middleware(
 if _nexusmon_available:
     app.include_router(nexusmon_router)
 
+if _bootstrap_router_available:
+    app.include_router(bootstrap_router)
+
+if _foundation_router_available:
+    app.include_router(build_foundation_router(app))
+
+if _database_router_available:
+    app.include_router(database_router)
+
+if _operator_auth_router_available:
+    app.include_router(operator_auth_router)
+
+if _companion_core_router_available:
+    app.include_router(companion_core_router)
+
+if _build_milestones_router_available:
+    app.include_router(build_milestones_router)
+
 # Setup logging
-logging.basicConfig(filename="data/server_live.log", level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+logging.basicConfig(
+    filename="data/server_live.log",
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(message)s",
+)
 
 # Global state for exception tracking
 last_exception_traceback = None
+
 
 @app.exception_handler(Exception)
 async def json_exception_handler(request: Request, exc: Exception):
@@ -145,6 +224,7 @@ async def json_exception_handler(request: Request, exc: Exception):
         status_code=500,
         content={"ok": False, "error": str(exc), "traceback": tb.splitlines()[-5:]},
     )
+
 
 # --- Mission endpoints ---
 @app.post("/v1/missions/create")
@@ -161,7 +241,7 @@ async def create_mission(req: MissionCreateRequest):
         "constraints": req.constraints,
         "results": req.results,
         "status": "PENDING",
-        "created_at": created_at
+        "created_at": created_at,
     }
     write_jsonl(missions_file, mission)
     audit_event = {
@@ -169,7 +249,7 @@ async def create_mission(req: MissionCreateRequest):
         "mission_id": mission_id,
         "timestamp": created_at,
         "goal": req.goal,
-        "category": req.category
+        "category": req.category,
     }
     write_jsonl(audit_file, audit_event)
     return {
@@ -178,7 +258,7 @@ async def create_mission(req: MissionCreateRequest):
         "status": "PENDING",
         "created_at": created_at,
         "goal": req.goal,
-        "category": req.category
+        "category": req.category,
     }
 
 
@@ -196,7 +276,7 @@ async def list_missions():
         "missions": missions,
         "count": len(missions),
         "skipped_empty": skipped,
-        "quarantined": quarantined
+        "quarantined": quarantined,
     }
 
 
@@ -220,10 +300,15 @@ async def run_mission(mission_id: str = None):
     audit_event = {
         "event": "mission_run",
         "mission_id": mission_id,
-        "timestamp": started_at
+        "timestamp": started_at,
     }
     write_jsonl(audit_file, audit_event)
-    return {"ok": True, "mission_id": mission_id, "status": "RUNNING", "started_at": started_at}
+    return {
+        "ok": True,
+        "mission_id": mission_id,
+        "status": "RUNNING",
+        "started_at": started_at,
+    }
 
 
 # --- UI state endpoint ---
@@ -249,7 +334,7 @@ async def ui_state():
     audit_file = Path("data/audit.jsonl")
     missions, _, _ = read_jsonl(missions_file)
     audit_events, _, _ = read_jsonl(audit_file)
-    
+
     status_counts = {}
     success_count = 0
     for m in missions:
@@ -257,10 +342,10 @@ async def ui_state():
         status_counts[status] = status_counts.get(status, 0) + 1
         if status == "SUCCESS":
             success_count += 1
-    
+
     last_events = audit_events[-10:] if audit_events else []
     phase = compute_phase(len(missions), success_count)
-    
+
     now = _utc_now_iso_z()
     return {
         "ok": True,
@@ -268,14 +353,11 @@ async def ui_state():
             "version": "1.0.0",
             "now": now,
             "lan_url": f"http://{LAN_IP}:{SERVER_PORT}",
-            "local_url": f"http://127.0.0.1:{SERVER_PORT}"
+            "local_url": f"http://127.0.0.1:{SERVER_PORT}",
         },
-        "missions": {
-            "count_total": len(missions),
-            "count_by_status": status_counts
-        },
+        "missions": {"count_total": len(missions), "count_by_status": status_counts},
         "last_events": last_events,
-        "phase": phase
+        "phase": phase,
     }
 
 
@@ -284,7 +366,7 @@ async def traceback_last():
     """Get the last exception traceback."""
     return {
         "ok": True,
-        "traceback": last_exception_traceback or "No exception recorded"
+        "traceback": last_exception_traceback or "No exception recorded",
     }
 
 
@@ -320,16 +402,16 @@ async def manifest():
                 "src": "/icon.svg",
                 "type": "image/svg+xml",
                 "sizes": "any",
-                "purpose": "any maskable"
+                "purpose": "any maskable",
             },
             {
                 "src": "/apple-touch-icon.svg",
                 "type": "image/svg+xml",
-                "sizes": "180x180"
-            }
+                "sizes": "180x180",
+            },
         ],
         "categories": ["productivity", "utilities", "developer tools"],
-        "screenshots": []
+        "screenshots": [],
     }
     return JSONResponse(content=manifest_data)
 
@@ -348,11 +430,20 @@ async def pwa_manifest():
         "theme_color": "#6366f1",
         "orientation": "portrait-primary",
         "icons": [
-            {"src": "/icon.svg", "type": "image/svg+xml", "sizes": "any", "purpose": "any maskable"},
-            {"src": "/apple-touch-icon.svg", "type": "image/svg+xml", "sizes": "180x180"}
+            {
+                "src": "/icon.svg",
+                "type": "image/svg+xml",
+                "sizes": "any",
+                "purpose": "any maskable",
+            },
+            {
+                "src": "/apple-touch-icon.svg",
+                "type": "image/svg+xml",
+                "sizes": "180x180",
+            },
         ],
         "categories": ["productivity", "utilities"],
-        "screenshots": []
+        "screenshots": [],
     }
     return JSONResponse(content=manifest_data)
 
@@ -547,7 +638,11 @@ async def auth_login(payload: LoginRequest, request: Request):
     """
 
     expected_key = os.environ.get("OPERATOR_KEY") or ""
-    if payload.username != "operator" or not expected_key or payload.password != expected_key:
+    if (
+        payload.username != "operator"
+        or not expected_key
+        or payload.password != expected_key
+    ):
         append_security_event(
             "login_failed",
             {
@@ -654,41 +749,41 @@ async def galileo_run(
 ):
     """
     Execute Galileo harness pipeline (deterministic hypothesis generation + testing).
-    
+
     OPERATOR GATE: This endpoint is gated - ensure you understand the implications before calling.
     No external API calls are made; all operations are local.
-    
+
     Args:
         domain: Domain for hypothesis generation (e.g., "biology", "physics")
         seed: Random seed for reproducibility
         n_hypotheses: Number of hypotheses to generate
-        
+
     Returns:
         JSON with run_id, accepted_hypothesis_ids, file paths
     """
     from galileo.run import run_galileo
-    
+
     try:
         result = run_galileo(
             domain=domain,
             seed=seed,
             n_hypotheses=n_hypotheses,
             llm_client=None,  # No LLM integration yet; uses synthetic
-            use_synthetic=True
+            use_synthetic=True,
         )
         return {
             "ok": True,
-            "run_id": result['run_id'],
-            "accepted_hypothesis_ids": result['accepted_hypothesis_ids'],
-            "total_hypotheses": result['total_hypotheses'],
-            "total_accepted": result['total_accepted'],
-            "paths": result['paths']
+            "run_id": result["run_id"],
+            "accepted_hypothesis_ids": result["accepted_hypothesis_ids"],
+            "total_hypotheses": result["total_hypotheses"],
+            "total_accepted": result["total_accepted"],
+            "paths": result["paths"],
         }
     except Exception as e:
         return {
             "ok": False,
             "error": str(e),
-            "traceback": traceback.format_exc().splitlines()[-5:]
+            "traceback": traceback.format_exc().splitlines()[-5:],
         }
 
 
@@ -696,32 +791,29 @@ async def galileo_run(
 async def galileo_hypotheses(domain: str = None, status: str = None):
     """
     List hypotheses from Galileo storage.
-    
+
     Args:
         domain: Optional domain filter
         status: Optional status filter (PROPOSED, ACCEPTED, REJECTED)
-        
+
     Returns:
         JSON with hypotheses list
     """
     from galileo.storage import load_hypotheses
-    
+
     try:
         hypotheses = load_hypotheses(domain=domain)
         if status:
-            hypotheses = [h for h in hypotheses if h.get('status') == status]
+            hypotheses = [h for h in hypotheses if h.get("status") == status]
         return {
             "ok": True,
             "hypotheses": hypotheses,
             "count": len(hypotheses),
             "domain_filter": domain,
-            "status_filter": status
+            "status_filter": status,
         }
     except Exception as e:
-        return {
-            "ok": False,
-            "error": str(e)
-        }
+        return {"ok": False, "error": str(e)}
 
 
 # Honeypot routes (log-only; always behave as if missing)
@@ -741,95 +833,87 @@ async def admin_secret_honeypot(request: Request):
 async def galileo_experiments(status: str = None):
     """
     List experiments from Galileo storage.
-    
+
     Args:
         status: Optional status filter (DESIGNED, RUNNING, COMPLETED)
-        
+
     Returns:
         JSON with experiments list
     """
     from galileo.storage import load_experiments
-    
+
     try:
         experiments = load_experiments(status=status)
         return {
             "ok": True,
             "experiments": experiments,
             "count": len(experiments),
-            "status_filter": status
+            "status_filter": status,
         }
     except Exception as e:
-        return {
-            "ok": False,
-            "error": str(e)
-        }
+        return {"ok": False, "error": str(e)}
 
 
 @app.get("/v1/galileo/runs/{run_id}")
 async def galileo_run_details(run_id: str):
     """
     Get details of a specific Galileo run.
-    
+
     Args:
         run_id: Run ID (e.g., G-20260216-144000-abc12345)
-        
+
     Returns:
         JSON with run record and artifacts
     """
     from galileo.storage import load_runs
     from pathlib import Path
-    
+
     try:
         runs = load_runs()
-        run = next((r for r in runs if r.get('run_id') == run_id), None)
-        
+        run = next((r for r in runs if r.get("run_id") == run_id), None)
+
         if not run:
-            return {
-                "ok": False,
-                "error": f"Run {run_id} not found"
-            }
-        
+            return {"ok": False, "error": f"Run {run_id} not found"}
+
         # Load associated artifacts
         packs_dir = Path(__file__).parent / "packs" / "galileo" / run_id
         artifacts = {}
-        
+
         if packs_dir.exists():
-            for json_file in ['manifest.json', 'hypotheses.json', 'experiments.json', 'scores.json']:
+            for json_file in [
+                "manifest.json",
+                "hypotheses.json",
+                "experiments.json",
+                "scores.json",
+            ]:
                 file_path = packs_dir / json_file
                 if file_path.exists():
                     try:
-                        with open(file_path, 'r') as f:
+                        with open(file_path, "r") as f:
                             artifacts[json_file] = json.load(f)
                     except:
                         pass
-        
-        return {
-            "ok": True,
-            "run": run,
-            "artifacts": artifacts
-        }
+
+        return {"ok": True, "run": run, "artifacts": artifacts}
     except Exception as e:
-        return {
-            "ok": False,
-            "error": str(e)
-        }
+        return {"ok": False, "error": str(e)}
 
 
 @app.post("/v1/galileo/experiments/{experiment_id}/run")
 async def galileo_run_experiment(experiment_id: str, operator_key: str = None):
     """
     OPERATOR-GATED endpoint to run/execute a specific experiment.
-    
+
     Requirements:
     - Must include operator_key header (stub implementation)
     - Experiment must exist and be in DESIGNED status
     - Only local/synthetic runners are available (no external calls)
     - Function is a stub for v0.1; full runner implementation deferred
-    
+
     Args:
         experiment_id: Experiment ID from Galileo
         operator_key: Operator authorization key (stub)
-        
+
     Returns:
         JSON with execution status (or stub response)
     """
@@ -839,27 +923,26 @@ async def galileo_run_experiment(experiment_id: str, operator_key: str = None):
             return {
                 "ok": False,
                 "error": "Operator authorization required (operator_key header)",
-                "status": "DENIED"
+                "status": "DENIED",
             }
-        
+
         from galileo.storage import load_experiments
-        
+
         # Load experiment
         experiments = load_experiments()
-        experiment = next((e for e in experiments if e.get('experiment_id') == experiment_id), None)
-        
+        experiment = next(
+            (e for e in experiments if e.get("experiment_id") == experiment_id), None
+        )
+
         if not experiment:
+            return {"ok": False, "error": f"Experiment {experiment_id} not found"}
+
+        if experiment.get("status") != "DESIGNED":
             return {
                 "ok": False,
-                "error": f"Experiment {experiment_id} not found"
+                "error": f"Experiment must be in DESIGNED status, current: {experiment.get('status')}",
             }
-        
-        if experiment.get('status') != 'DESIGNED':
-            return {
-                "ok": False,
-                "error": f"Experiment must be in DESIGNED status, current: {experiment.get('status')}"
-            }
-        
+
         # V0.1 STUB: Local synthetic runner (no actual execution)
         # Full runner implementation deferred to later version
         stub_result = {
@@ -867,23 +950,25 @@ async def galileo_run_experiment(experiment_id: str, operator_key: str = None):
             "experiment_id": experiment_id,
             "status": "STUB_COMPLETED",
             "note": "v0.1 stub runner - full execution deferred",
-            "seed": experiment.get('repro', {}).get('seed'),
-            "run_command": experiment.get('repro', {}).get('run_command'),
-            "expected_artifacts": experiment.get('repro', {}).get('expected_artifacts', []),
+            "seed": experiment.get("repro", {}).get("seed"),
+            "run_command": experiment.get("repro", {}).get("run_command"),
+            "expected_artifacts": experiment.get("repro", {}).get(
+                "expected_artifacts", []
+            ),
             "synthetic_result": {
                 "success_rate": 0.85,
                 "effect_size": 0.42,
-                "p_value": 0.038
-            }
+                "p_value": 0.038,
+            },
         }
-        
+
         return stub_result
-    
+
     except Exception as e:
         return {
             "ok": False,
             "error": str(e),
-            "traceback": traceback.format_exc().splitlines()[-5:]
+            "traceback": traceback.format_exc().splitlines()[-5:],
         }
 
 
@@ -891,17 +976,17 @@ async def galileo_run_experiment(experiment_id: str, operator_key: str = None):
 async def galileo_selfcheck():
     """
     Determinism self-check endpoint.
-    
+
     Runs /v1/galileo/run twice with identical inputs and verifies:
     - Same accepted_hypothesis_ids
     - Byte-for-byte identical JSON outputs
-    
+
     Returns:
         JSON with selfcheck results and determinism verification
     """
     from galileo.run import run_galileo
     from galileo.determinism import stableStringify
-    
+
     try:
         # Run once
         result1 = run_galileo(
@@ -909,38 +994,43 @@ async def galileo_selfcheck():
             seed=42,
             n_hypotheses=3,
             llm_client=None,
-            use_synthetic=True
+            use_synthetic=True,
         )
-        
+
         # Run again with identical inputs
         result2 = run_galileo(
             domain="test_domain",
             seed=42,
             n_hypotheses=3,
             llm_client=None,
-            use_synthetic=True
+            use_synthetic=True,
         )
-        
+
         # Compare key outputs
-        ids_match = set(result1['accepted_hypothesis_ids']) == set(result2['accepted_hypothesis_ids'])
-        totals_match = (result1['total_hypotheses'] == result2['total_hypotheses'] and
-                       result1['total_accepted'] == result2['total_accepted'])
-        
+        ids_match = set(result1["accepted_hypothesis_ids"]) == set(
+            result2["accepted_hypothesis_ids"]
+        )
+        totals_match = (
+            result1["total_hypotheses"] == result2["total_hypotheses"]
+            and result1["total_accepted"] == result2["total_accepted"]
+        )
+
         # Try loading and comparing JSON files
         import json as json_module
+
         json_match = True
         try:
-            with open(result1['paths']['hypotheses'], 'r') as f:
+            with open(result1["paths"]["hypotheses"], "r") as f:
                 hyp1 = json_module.load(f)
-            with open(result2['paths']['hypotheses'], 'r') as f:
+            with open(result2["paths"]["hypotheses"], "r") as f:
                 hyp2 = json_module.load(f)
             # Stable stringify comparison
             json_match = stableStringify(hyp1) == stableStringify(hyp2)
         except:
             json_match = None  # Unable to verify
-        
+
         deterministic = ids_match and totals_match and (json_match is not False)
-        
+
         return {
             "ok": True,
             "deterministic": deterministic,
@@ -948,20 +1038,24 @@ async def galileo_selfcheck():
                 "ids_match": ids_match,
                 "totals_match": totals_match,
                 "json_match": json_match,
-                "run1_id": result1['run_id'],
-                "run2_id": result2['run_id'],
-                "run1_accepted": result1['accepted_hypothesis_ids'],
-                "run2_accepted": result2['accepted_hypothesis_ids']
+                "run1_id": result1["run_id"],
+                "run2_id": result2["run_id"],
+                "run1_accepted": result1["accepted_hypothesis_ids"],
+                "run2_accepted": result2["accepted_hypothesis_ids"],
             },
-            "detail": "Both runs produced identical results - determinism verified" if deterministic else "Runs differ - check implementation"
+            "detail": (
+                "Both runs produced identical results - determinism verified"
+                if deterministic
+                else "Runs differ - check implementation"
+            ),
         }
-    
+
     except Exception as e:
         return {
             "ok": False,
             "error": str(e),
             "deterministic": False,
-            "traceback": traceback.format_exc().splitlines()[-5:]
+            "traceback": traceback.format_exc().splitlines()[-5:],
         }
 
 
@@ -978,11 +1072,14 @@ async def companion_message(request: Request):
         data = await request.json()
         user_message = data.get("text", "").strip()
         if not user_message:
-            return JSONResponse({"ok": False, "error": "Empty message."}, status_code=400)
+            return JSONResponse(
+                {"ok": False, "error": "Empty message."}, status_code=400
+            )
 
         # Route through the full AI companion
         try:
             from core.companion import chat as companion_chat
+
             result = companion_chat(user_message)
             resp = {
                 "ok": True,
@@ -1009,12 +1106,14 @@ async def companion_message(request: Request):
                 reply = "Use BUILD mode to create and dispatch missions."
             else:
                 reply = "ACKNOWLEDGED: " + user_message[:120]
-            return JSONResponse({
-                "ok": True,
-                "reply": reply,
-                "source": "inline_fallback",
-                "warning": f"core.companion unavailable: {str(companion_err)[:100]}",
-            })
+            return JSONResponse(
+                {
+                    "ok": True,
+                    "reply": reply,
+                    "source": "inline_fallback",
+                    "warning": f"core.companion unavailable: {str(companion_err)[:100]}",
+                }
+            )
     except Exception as e:
         return JSONResponse({"ok": False, "error": str(e)}, status_code=500)
 
@@ -1029,18 +1128,18 @@ def main():
     """Main entry point for the web server."""
     import uvicorn
     import sys
-    
+
     # Ensure UTF-8 encoding for stdout
-    if sys.stdout.encoding and sys.stdout.encoding.lower() != 'utf-8':
-        sys.stdout.reconfigure(encoding='utf-8')
-    
+    if sys.stdout.encoding and sys.stdout.encoding.lower() != "utf-8":
+        sys.stdout.reconfigure(encoding="utf-8")
+
     # Get host and port
     host = "0.0.0.0"
     port = int(os.environ.get("PORT", SERVER_PORT))
-    
+
     # Get LAN IP
     lan_ip = get_lan_ip()
-    
+
     # Print startup information
     print("=" * 70)
     print("[*] SWARMZ Web Server Starting...")
@@ -1055,16 +1154,10 @@ def main():
     print("[+] Access SWARMZ from any device on your network using the LAN URL")
     print("=" * 70)
     print()
-    
+
     # Start the server
-    uvicorn.run(
-        app,
-        host=host,
-        port=port,
-        log_level="info"
-    )
+    uvicorn.run(app, host=host, port=port, log_level="info")
 
 
 if __name__ == "__main__":
     main()
-

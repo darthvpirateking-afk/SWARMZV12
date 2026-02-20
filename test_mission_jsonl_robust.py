@@ -14,9 +14,6 @@ from __future__ import annotations
 import json
 import os
 import sys
-import tempfile
-
-import pytest
 
 _DIR = os.path.dirname(os.path.abspath(__file__))
 if _DIR not in sys.path:
@@ -24,10 +21,10 @@ if _DIR not in sys.path:
 
 from swarmz_runtime.storage.jsonl_utils import read_jsonl, write_jsonl, append_jsonl
 
-
 # ---------------------------------------------------------------------------
 # JSONL utility tests
 # ---------------------------------------------------------------------------
+
 
 class TestReadJsonl:
     def test_missing_file(self, tmp_path):
@@ -89,18 +86,22 @@ class TestAppendJsonl:
 # Database robustness tests
 # ---------------------------------------------------------------------------
 
+
 class TestDatabaseRobustJsonl:
     def test_load_missions_with_corrupted_file(self, tmp_path):
         from swarmz_runtime.storage.db import Database
+
         db = Database(str(tmp_path / "data"))
         # Write a corrupted missions file
-        db.missions_file.write_text('{"id":"m1","goal":"g","category":"coin","constraints":{},'
-                                     '"expiry":null,"status":"pending","created_at":"2025-01-01",'
-                                     '"updated_at":"2025-01-01","leverage_score":0,"revisit_interval":3600}\n'
-                                     'GARBAGE_LINE\n'
-                                     '{"id":"m2","goal":"g2","category":"forge","constraints":{},'
-                                     '"expiry":null,"status":"active","created_at":"2025-01-01",'
-                                     '"updated_at":"2025-01-01","leverage_score":0,"revisit_interval":3600}\n')
+        db.missions_file.write_text(
+            '{"id":"m1","goal":"g","category":"coin","constraints":{},'
+            '"expiry":null,"status":"pending","created_at":"2025-01-01",'
+            '"updated_at":"2025-01-01","leverage_score":0,"revisit_interval":3600}\n'
+            "GARBAGE_LINE\n"
+            '{"id":"m2","goal":"g2","category":"forge","constraints":{},'
+            '"expiry":null,"status":"active","created_at":"2025-01-01",'
+            '"updated_at":"2025-01-01","leverage_score":0,"revisit_interval":3600}\n'
+        )
         missions = db.load_all_missions()
         assert len(missions) == 2
         assert missions[0]["id"] == "m1"
@@ -108,12 +109,14 @@ class TestDatabaseRobustJsonl:
 
     def test_load_missions_missing_file(self, tmp_path):
         from swarmz_runtime.storage.db import Database
+
         db = Database(str(tmp_path / "data"))
         db.missions_file.unlink(missing_ok=True)
         assert db.load_all_missions() == []
 
     def test_load_audit_log_corrupted(self, tmp_path):
         from swarmz_runtime.storage.db import Database
+
         db = Database(str(tmp_path / "data"))
         db.audit_file.write_text('BAD\n{"event_type":"test"}\nBAD\n')
         entries = db.load_audit_log()
@@ -124,9 +127,11 @@ class TestDatabaseRobustJsonl:
 # Engine mission create tests
 # ---------------------------------------------------------------------------
 
+
 class TestMissionCreate:
     def test_create_valid(self, tmp_path):
         from swarmz_runtime.core.engine import SwarmzEngine
+
         engine = SwarmzEngine(data_dir=str(tmp_path / "data"))
         result = engine.create_mission(goal="test", category="coin", constraints={})
         assert "mission_id" in result
@@ -134,13 +139,17 @@ class TestMissionCreate:
 
     def test_create_invalid_category_returns_error(self, tmp_path):
         from swarmz_runtime.core.engine import SwarmzEngine
+
         engine = SwarmzEngine(data_dir=str(tmp_path / "data"))
-        result = engine.create_mission(goal="test", category="invalid_cat", constraints={})
+        result = engine.create_mission(
+            goal="test", category="invalid_cat", constraints={}
+        )
         assert "error" in result
         assert "mission_id" not in result
 
     def test_list_after_create(self, tmp_path):
         from swarmz_runtime.core.engine import SwarmzEngine
+
         engine = SwarmzEngine(data_dir=str(tmp_path / "data"))
         engine.create_mission(goal="m1", category="coin", constraints={})
         engine.create_mission(goal="m2", category="forge", constraints={})
@@ -152,14 +161,18 @@ class TestMissionCreate:
 # Smoke test against a running server (optional, run as script)
 # ---------------------------------------------------------------------------
 
+
 def _smoke_test():
     """Quick smoke test against a running server at localhost:8012."""
     import requests
+
     base = "http://localhost:8012"
 
     # 1. Mission create
-    r = requests.post(f"{base}/v1/missions/create",
-                      json={"goal": "smoke", "category": "coin", "constraints": {}})
+    r = requests.post(
+        f"{base}/v1/missions/create",
+        json={"goal": "smoke", "category": "coin", "constraints": {}},
+    )
     assert r.status_code == 200, f"create failed: {r.status_code} {r.text}"
     data = r.json()
     assert "mission_id" in data

@@ -15,7 +15,13 @@ def test_operator_os_timeline_and_missions(client, monkeypatch, tmp_path):
 
     ev = client.post(
         "/v1/operator-os/timeline/event",
-        json={"event_type": "mission_started", "domain": "missions", "risk": "medium", "money_impact_cents": 0, "details": {"agent": "planner"}},
+        json={
+            "event_type": "mission_started",
+            "domain": "missions",
+            "risk": "medium",
+            "money_impact_cents": 0,
+            "details": {"agent": "planner"},
+        },
     )
     assert ev.status_code == 200
     assert ev.json()["ok"] is True
@@ -52,7 +58,9 @@ def test_prime_state_endpoint(client):
     assert "CHANNELS" in data
 
 
-def test_identity_policy_decision_logs_active_profile_and_rules(client, monkeypatch, tmp_path):
+def test_identity_policy_decision_logs_active_profile_and_rules(
+    client, monkeypatch, tmp_path
+):
     _set_isolated_ecosystem(monkeypatch, tmp_path)
 
     profile = client.post(
@@ -86,7 +94,12 @@ def test_identity_policy_decision_logs_active_profile_and_rules(client, monkeypa
         json={
             "operator_id": operator_id,
             "action": "publish_offer",
-            "context": {"margin": 10.0, "spend": 0, "refund_rate": 0.0, "approved": False},
+            "context": {
+                "margin": 10.0,
+                "spend": 0,
+                "refund_rate": 0.0,
+                "approved": False,
+            },
         },
     )
     assert decision.status_code == 200
@@ -101,22 +114,42 @@ def test_vault_lineage_and_patterns(client, monkeypatch, tmp_path):
 
     bp = client.post(
         "/v1/vault/blueprints",
-        json={"blueprint_id": "bp-1", "name": "Pack", "version": 1, "manifest": {"artifact": "a.zip"}},
+        json={
+            "blueprint_id": "bp-1",
+            "name": "Pack",
+            "version": 1,
+            "manifest": {"artifact": "a.zip"},
+        },
     )
     assert bp.status_code == 200
 
     off = client.post(
         "/v1/vault/offers",
-        json={"offer_id": "of-1", "blueprint_id": "bp-1", "sku": "sku-1", "channel": "store", "margin_percent": 45.0},
+        json={
+            "offer_id": "of-1",
+            "blueprint_id": "bp-1",
+            "sku": "sku-1",
+            "channel": "store",
+            "margin_percent": 45.0,
+        },
     )
     assert off.status_code == 200
 
-    listing = client.post("/v1/vault/listings", json={"listing_id": "li-1", "offer_id": "of-1", "status": "published"})
+    listing = client.post(
+        "/v1/vault/listings",
+        json={"listing_id": "li-1", "offer_id": "of-1", "status": "published"},
+    )
     assert listing.status_code == 200
 
     order = client.post(
         "/v1/vault/orders",
-        json={"order_id": "ord-1", "offer_id": "of-1", "total_cents": 2500, "refund_rate": 1.0, "supplier": "digital"},
+        json={
+            "order_id": "ord-1",
+            "offer_id": "of-1",
+            "total_cents": 2500,
+            "refund_rate": 1.0,
+            "supplier": "digital",
+        },
     )
     assert order.status_code == 200
 

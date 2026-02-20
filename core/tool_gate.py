@@ -103,4 +103,3 @@ def gate(
     )
 
     return {"ok": True, "proposal_dir": proposal_dir, "category": category}
-

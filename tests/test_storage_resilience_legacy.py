@@ -66,7 +66,11 @@ def test_storage_resilience_legacy(tmp_path, monkeypatch):
         assert post_run_list.status_code == 200
         post_run_body = post_run_list.json()
         post_run = next(
-            (m for m in post_run_body["missions"] if m.get("mission_id") == mission_id_1),
+            (
+                m
+                for m in post_run_body["missions"]
+                if m.get("mission_id") == mission_id_1
+            ),
             None,
         )
         assert post_run is not None

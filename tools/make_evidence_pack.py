@@ -8,6 +8,7 @@ Tool to create evidence packs for claims.
 import json
 from core.evidence_pack import create_evidence_pack
 
+
 def generate_evidence_pack(claim, filter_criteria, output_file):
     # Placeholder: Load events based on filter_criteria
     events = []  # Replace with actual event filtering logic
@@ -17,6 +18,7 @@ def generate_evidence_pack(claim, filter_criteria, output_file):
     evidence_pack = create_evidence_pack(claim, events, stats, suggested_fix)
     with open(output_file, "w") as outfile:
         outfile.write(json.dumps(evidence_pack, indent=4))
+
 
 if __name__ == "__main__":
     import argparse

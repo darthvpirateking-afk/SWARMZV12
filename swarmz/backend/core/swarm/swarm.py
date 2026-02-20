@@ -1,10 +1,12 @@
 # swarm.py
 # Implements the Swarm Engine components.
 
+
 class Unit:
     def __init__(self, unit_id, capabilities):
         self.unit_id = unit_id
         self.capabilities = capabilities
+
 
 class UnitRegistry:
     def __init__(self):
@@ -18,15 +20,18 @@ class UnitRegistry:
         """Retrieve a unit by ID."""
         return self.units.get(unit_id)
 
+
 class BehaviorEngine:
     def execute_behavior(self, unit, behavior):
         """Execute a behavior for a unit."""
         return f"Unit {unit.unit_id} executed {behavior}"
 
+
 class FormationEngine:
     def create_formation(self, units, formation_type):
         """Create a formation with units."""
         return f"Formation {formation_type} created with units {[unit.unit_id for unit in units]}"
+
 
 # Example usage
 if __name__ == "__main__":

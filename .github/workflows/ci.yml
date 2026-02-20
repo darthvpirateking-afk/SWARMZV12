@@ -9,6 +9,9 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -41,6 +44,222 @@ jobs:
       - name: Run release gate (quick)
         run: |
           python tools/release_gate.py
+
+  detector-artifacts:
+    name: Detector Results (Required)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Post checkout repository
+        run: |
+          mkdir -p artifacts
+          python - <<'PY'
+          import json
+          import os
+          from datetime import datetime, timezone
+
+          data = {
+              "source": "github-actions",
+              "event": os.getenv("GITHUB_EVENT_NAME"),
+              "repository": os.getenv("GITHUB_REPOSITORY"),
+              "sha": os.getenv("GITHUB_SHA"),
+              "ref": os.getenv("GITHUB_REF"),
+              "run_id": os.getenv("GITHUB_RUN_ID"),
+              "run_number": os.getenv("GITHUB_RUN_NUMBER"),
+              "generated_at": datetime.now(timezone.utc).isoformat(),
+          }
+          with open("artifacts/post_checkout_repository.json", "w", encoding="utf-8") as f:
+              json.dump(data, f, indent=2)
+          PY
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install detector dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pip-audit
+
+      - name: Run auto find agent
+        continue-on-error: true
+        run: |
+          mkdir -p artifacts
+          python tools/find_import_cycles.py . --dot artifacts/autofind_import_graph.dot > artifacts/autofind_agent.stdout.txt 2> artifacts/autofind_agent.stderr.txt && echo 0 > /tmp/autofind_exit.txt || echo 1 > /tmp/autofind_exit.txt
+          python - <<'PY'
+          import json
+          import os
+          from datetime import datetime, timezone
+
+          exit_code = int(open("/tmp/autofind_exit.txt").read().strip())
+          stderr = ""
+          try:
+              with open("artifacts/autofind_agent.stderr.txt", "r", encoding="utf-8", errors="replace") as f:
+                  stderr = f.read().strip()
+          except FileNotFoundError:
+              stderr = "stderr not captured"
+
+          if exit_code == 0:
+              data = {
+                  "status": "success",
+                  "source": "tools/find_import_cycles.py",
+                  "command": "python tools/find_import_cycles.py . --dot artifacts/autofind_import_graph.dot",
+                  "event": os.getenv("GITHUB_EVENT_NAME"),
+                  "repository": os.getenv("GITHUB_REPOSITORY"),
+                  "sha": os.getenv("GITHUB_SHA"),
+                  "ref": os.getenv("GITHUB_REF"),
+                  "generated_at": datetime.now(timezone.utc).isoformat(),
+                  "stdout_file": "autofind_agent.stdout.txt",
+                  "stderr_file": "autofind_agent.stderr.txt",
+                  "dot_file": "autofind_import_graph.dot",
+              }
+          else:
+              data = {
+                  "status": "error",
+                  "source": "tools/find_import_cycles.py",
+                  "error_type": "autofind_failed",
+                  "message": "Auto find agent failed",
+                  "command": "python tools/find_import_cycles.py . --dot artifacts/autofind_import_graph.dot",
+                  "event": os.getenv("GITHUB_EVENT_NAME"),
+                  "repository": os.getenv("GITHUB_REPOSITORY"),
+                  "sha": os.getenv("GITHUB_SHA"),
+                  "ref": os.getenv("GITHUB_REF"),
+                  "generated_at": datetime.now(timezone.utc).isoformat(),
+                  "stderr": stderr,
+              }
+
+          with open("artifacts/autofind_agent_result.json", "w", encoding="utf-8") as f:
+              json.dump(data, f, indent=2)
+          PY
+
+      - name: Run security detector
+        continue-on-error: true
+        run: |
+          mkdir -p artifacts
+          python -m pip_audit -r requirements.txt --format json --output artifacts/security_detector_raw.json > artifacts/security_detector.stdout.txt 2> artifacts/security_detector.stderr.txt && echo 0 > /tmp/secdet_exit.txt || echo 1 > /tmp/secdet_exit.txt
+          python - <<'PY'
+          import json
+          import os
+          from datetime import datetime, timezone
+
+          exit_code = int(open("/tmp/secdet_exit.txt").read().strip())
+          stderr = ""
+          try:
+              with open("artifacts/security_detector.stderr.txt", "r", encoding="utf-8", errors="replace") as f:
+                  stderr = f.read().strip()
+          except FileNotFoundError:
+              stderr = "stderr not captured"
+
+          if exit_code == 0:
+              raw = {}
+              try:
+                  with open("artifacts/security_detector_raw.json", "r", encoding="utf-8") as f:
+                      raw = json.load(f)
+              except Exception:
+                  raw = {}
+
+              deps = raw.get("dependencies") if isinstance(raw, dict) else []
+              vuln_count = 0
+              if isinstance(deps, list):
+                  for dep in deps:
+                      vulns = dep.get("vulns", []) if isinstance(dep, dict) else []
+                      if isinstance(vulns, list):
+                          vuln_count += len(vulns)
+
+              data = {
+                  "status": "success",
+                  "source": "pip-audit",
+                  "command": "python -m pip_audit -r requirements.txt --format json --output artifacts/security_detector_raw.json",
+                  "event": os.getenv("GITHUB_EVENT_NAME"),
+                  "repository": os.getenv("GITHUB_REPOSITORY"),
+                  "sha": os.getenv("GITHUB_SHA"),
+                  "ref": os.getenv("GITHUB_REF"),
+                  "generated_at": datetime.now(timezone.utc).isoformat(),
+                  "dependency_count": len(deps) if isinstance(deps, list) else 0,
+                  "vulnerability_count": vuln_count,
+                  "raw_result_file": "security_detector_raw.json",
+                  "stdout_file": "security_detector.stdout.txt",
+                  "stderr_file": "security_detector.stderr.txt",
+              }
+          else:
+              data = {
+                  "status": "error",
+                  "source": "pip-audit",
+                  "error_type": "security_detector_failed",
+                  "message": "Security detector failed",
+                  "command": "python -m pip_audit -r requirements.txt --format json --output artifacts/security_detector_raw.json",
+                  "event": os.getenv("GITHUB_EVENT_NAME"),
+                  "repository": os.getenv("GITHUB_REPOSITORY"),
+                  "sha": os.getenv("GITHUB_SHA"),
+                  "ref": os.getenv("GITHUB_REF"),
+                  "generated_at": datetime.now(timezone.utc).isoformat(),
+                  "stderr": stderr,
+              }
+
+          with open("artifacts/security_detector_result.json", "w", encoding="utf-8") as f:
+              json.dump(data, f, indent=2)
+          PY
+
+      - name: Upload detector artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: detector-results
+          path: artifacts/
+          if-no-files-found: error
+
+      - name: Enforce detector status
+        if: always()
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          result_files = [
+              Path("artifacts/autofind_agent_result.json"),
+              Path("artifacts/security_detector_result.json"),
+          ]
+
+          failures = []
+          statuses = {}
+
+          for rf in result_files:
+            if not rf.exists():
+              failures.append(f"missing result file: {rf}")
+              continue
+            try:
+              data = json.loads(rf.read_text(encoding="utf-8"))
+            except Exception as exc:
+              failures.append(f"invalid json in {rf}: {exc}")
+              continue
+
+            status = str(data.get("status", "")).lower().strip()
+            statuses[str(rf)] = status or "unknown"
+            if status != "success":
+              failures.append(f"{rf}: status={status or 'unknown'}")
+
+          summary_path = os.getenv("GITHUB_STEP_SUMMARY")
+          overall_status = "pass" if not failures else "fail"
+          summary_lines = [f"Detector gate: {overall_status}"]
+          if failures:
+            summary_lines.append(f"Issues: {len(failures)} (see logs and artifacts)")
+
+          if summary_path:
+            Path(summary_path).write_text("\n".join(summary_lines) + "\n", encoding="utf-8")
+
+          if failures:
+            print("::group::Detector gate failures")
+            print("Detector status gate failed:")
+            for item in failures:
+              print(f" - {item}")
+            print("::endgroup::")
+            raise SystemExit(1)
+
+          print("Detector status gate passed.")
+          PY
 
   gate-link:
     runs-on: ubuntu-latest
@@ -128,6 +347,266 @@ jobs:
         if: steps.changes.outputs.frontend != 'true'
         run: |
           echo "Skipping frontend checks: no relevant changes detected."
+
+  lint-typecheck:
+    name: Lint + Type Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install Python lint/type dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-dev.txt
+
+      - name: Run ruff
+        run: |
+          ruff check .
+
+      - name: Run mypy
+        run: |
+          mypy --ignore-missing-imports swarmz_runtime core addons
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install root Node dependencies
+        run: |
+          npm ci
+
+      - name: Root TypeScript check
+        run: |
+          npm run typecheck
+
+      - name: Install frontend Node dependencies
+        run: |
+          npm --prefix frontend ci
+
+      - name: Frontend TypeScript check
+        run: |
+          npm --prefix frontend run typecheck
+
+      - name: Install gate-link Node dependencies
+        run: |
+          npm --prefix apps/gate-link ci
+
+      - name: Gate-link TypeScript check
+        run: |
+          npm --prefix apps/gate-link run typecheck
+
+  tests:
+    name: Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install Python test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-dev.txt
+
+      - name: Initialize database
+        run: |
+          python scripts/init_db.py
+
+      - name: Run backend tests
+        run: |
+          python -m pytest tests/ -v --tb=short
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run root JS tests
+        run: |
+          npm ci
+          npm run test:ci
+
+      - name: Run frontend Vitest (placeholder-safe)
+        run: |
+          npm --prefix frontend ci
+          npm --prefix frontend run test
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Build backend package
+        run: |
+          python -m pip install --upgrade pip
+          pip install build
+          python -m build
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Build root TypeScript package
+        run: |
+          npm ci
+          npm run build
+
+      - name: Build frontend
+        run: |
+          npm --prefix frontend ci
+          npm --prefix frontend run build
+
+      - name: Build gate-link
+        run: |
+          npm --prefix apps/gate-link ci
+          npm --prefix apps/gate-link run build
+
+  security-audit:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Python dependency audit
+        run: |
+          python -m pip install --upgrade pip
+          pip install pip-audit
+          python -m pip_audit -r requirements.txt
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: npm audit (critical only)
+        run: |
+          npm ci
+          npm audit --audit-level=critical
+          npm --prefix frontend ci
+          npm --prefix frontend audit --audit-level=critical
+          npm --prefix apps/gate-link ci
+          npm --prefix apps/gate-link audit --audit-level=critical
+
+  format:
+    name: Format Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Check Python formatting
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-dev.txt
+          black --check .
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Check frontend formatting
+        run: |
+          npm --prefix frontend ci
+          npm --prefix frontend run format:check
+
+      - name: Check gate-link formatting
+        run: |
+          npm --prefix apps/gate-link ci
+          npm --prefix apps/gate-link run format:check
+
+  commit-branch-policy:
+    name: Commit + Branch Policy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Lint commit message
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            MSG="$PR_TITLE"
+          else
+            MSG="$(git log -1 --pretty=%s)"
+          fi
+
+          echo "Commit/PR subject: $MSG"
+          if ! echo "$MSG" | grep -Eq '^(feat|fix|build|chore|docs|refactor|test|ci)(\(.+\))?: .+'; then
+            echo "Commit message policy failed."
+            echo "Expected Conventional Commit style, e.g. 'fix(api): handle null value'."
+            exit 1
+          fi
+
+      - name: Enforce branch naming
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          HEAD_REF: ${{ github.head_ref }}
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            BRANCH="$HEAD_REF"
+          else
+            BRANCH="$REF_NAME"
+          fi
+
+          if [ "$BRANCH" = "main" ] || echo "$BRANCH" | grep -Eq '^copilot/'; then
+            echo "Branch naming check skipped for protected/system branch: $BRANCH"
+            exit 0
+          fi
+
+          if ! echo "$BRANCH" | grep -Eq '^(feature|fix|build)/'; then
+            echo "Branch naming policy failed for branch: $BRANCH"
+            echo "Expected prefix: feature/, fix/, or build/."
+            exit 1
+          fi
+
+  preview-deploy:
+    name: Preview Deploy
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Preview deploy placeholder
+        run: |
+          echo "Preview deploy job is enabled as a placeholder."
+          echo "Wire your provider hook here (Vercel/Netlify/Render/etc.) to create PR previews."
 
   # Optional deploy job: wire this to your serverless platform
   # (Vercel, Netlify, AWS Lambda via Serverless Framework, etc.)

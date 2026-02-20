@@ -48,9 +48,13 @@ def main() -> int:
     # â”€â”€ 2. Core system â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     print("\n[2] Core system")
     from swarmz import SwarmzCore
+
     core = SwarmzCore()
     check("SwarmzCore init", lambda: core is not None)
-    check("echo task", lambda: core.execute("echo", message="selfcheck") == "Echo: selfcheck")
+    check(
+        "echo task",
+        lambda: core.execute("echo", message="selfcheck") == "Echo: selfcheck",
+    )
     check("system_info", lambda: "platform" in core.execute("system_info"))
     check("capabilities", lambda: len(core.list_capabilities()) >= 3)
     check("audit log", lambda: isinstance(core.get_audit_log(), list))
@@ -85,6 +89,7 @@ def main() -> int:
     # â”€â”€ 4. Config â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     print("\n[4] Config")
     from addons.config_ext import load_addon_config
+
     cfg = load_addon_config()
     check("config loads", lambda: isinstance(cfg, dict))
     check("schema_version default", lambda: cfg.get("schema_version") == 1)
@@ -93,17 +98,23 @@ def main() -> int:
     # â”€â”€ 5. Schema version â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     print("\n[5] Schema versioning")
     from addons.schema_version import CURRENT_SCHEMA_VERSION
+
     check("schema version defined", lambda: CURRENT_SCHEMA_VERSION >= 1)
 
     # â”€â”€ 6. Encrypted storage â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     print("\n[6] Encrypted storage")
     from addons.encrypted_storage import encrypt_blob, decrypt_blob
+
     blob = encrypt_blob(b"hello swarmz", "testkey")
-    check("encrypt+decrypt roundtrip", lambda: decrypt_blob(blob, "testkey") == b"hello swarmz")
+    check(
+        "encrypt+decrypt roundtrip",
+        lambda: decrypt_blob(blob, "testkey") == b"hello swarmz",
+    )
 
     # â”€â”€ 7. Swarm protocol â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     print("\n[7] Swarm protocol")
     from addons.swarm_protocol import SwarmPacket, PacketBus
+
     pkt = SwarmPacket("agent_a", "agent_b", "intent", intent="test")
     bus = PacketBus()
     bus.send(pkt)
@@ -113,6 +124,7 @@ def main() -> int:
     # â”€â”€ 8. Memory boundaries â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     print("\n[8] Memory boundaries")
     from addons.memory_boundaries import put, get, list_keys
+
     put("skills", "_selfcheck", "ok")
     check("memory put+get", lambda: get("skills", "_selfcheck") == "ok")
     check("memory list_keys", lambda: "_selfcheck" in list_keys("skills"))
@@ -120,6 +132,7 @@ def main() -> int:
     # â”€â”€ 9. Budget â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     print("\n[9] Budget")
     from addons.budget import get_budget, simulate_burn
+
     check("budget loads", lambda: isinstance(get_budget(), dict))
     sim = simulate_burn(1.0)
     check("burn sim", lambda: "would_breach" in sim)
@@ -127,34 +140,61 @@ def main() -> int:
     # â”€â”€ 10. Operator contract â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     print("\n[10] Operator contract")
     from addons.operator_contract import get_active_contract, validate_action
+
     contract = get_active_contract()
     check("contract loads", lambda: "version" in contract)
-    check("action validation", lambda: validate_action("create_mission").get("allowed") is True)
+    check(
+        "action validation",
+        lambda: validate_action("create_mission").get("allowed") is True,
+    )
 
     # â”€â”€ 11. Quarantine â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     print("\n[11] Quarantine")
     from addons.quarantine import get_quarantine_status
+
     check("quarantine status", lambda: "quarantined" in get_quarantine_status())
 
     # â”€â”€ 12. Guardrails â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     print("\n[12] Guardrails (Bucket B)")
     from addons.guardrails import (
-        record_baseline, record_pressure, record_interference,
-        stability_check, record_silence, should_avoid
+        record_baseline,
+        record_pressure,
+        record_interference,
+        stability_check,
+        record_silence,
+        should_avoid,
     )
+
     check("baseline recording", lambda: "delta" in record_baseline("test", 1.0, 1.5))
-    check("pressure recording", lambda: "pressure_score" in record_pressure("test", 100.0, 200.0))
-    check("interference recording", lambda: "effect" in record_interference("A", "B", -0.5))
-    check("stability check", lambda: "stable" in stability_check("test", {"a": 1}, [{"a": 1}, {"a": 1}]))
+    check(
+        "pressure recording",
+        lambda: "pressure_score" in record_pressure("test", 100.0, 200.0),
+    )
+    check(
+        "interference recording",
+        lambda: "effect" in record_interference("A", "B", -0.5),
+    )
+    check(
+        "stability check",
+        lambda: "stable" in stability_check("test", {"a": 1}, [{"a": 1}, {"a": 1}]),
+    )
     check("silence recording", lambda: "signal" in record_silence("week1", "revenue"))
-    check("negative zone avoidance", lambda: isinstance(should_avoid("test_zone"), bool))
+    check(
+        "negative zone avoidance", lambda: isinstance(should_avoid("test_zone"), bool)
+    )
 
     # â”€â”€ 13. Red-team basic â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     print("\n[13] Red-team basics")
-    check("reject unknown task", lambda: _expect_error(lambda: core.execute("nonexistent_task")))
-    check("encrypted tamper detection", lambda: _expect_error(
-        lambda: decrypt_blob(encrypt_blob(b"data", "key1"), "wrong_key")
-    ))
+    check(
+        "reject unknown task",
+        lambda: _expect_error(lambda: core.execute("nonexistent_task")),
+    )
+    check(
+        "encrypted tamper detection",
+        lambda: _expect_error(
+            lambda: decrypt_blob(encrypt_blob(b"data", "key1"), "wrong_key")
+        ),
+    )
 
     # â”€â”€ Summary â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     total = CHECKS_PASSED + CHECKS_FAILED
@@ -180,4 +220,3 @@ def _expect_error(fn) -> bool:
 
 if __name__ == "__main__":
     sys.exit(main())
-

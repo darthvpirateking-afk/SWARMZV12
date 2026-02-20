@@ -87,4 +87,3 @@ def load_infra_state() -> Dict[str, Any]:
             return json.load(f)
     except (OSError, json.JSONDecodeError):
         return {}
-

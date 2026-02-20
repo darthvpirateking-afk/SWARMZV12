@@ -42,6 +42,7 @@ _DEDUPE_TTL = 600  # 10 minutes
 
 # â”€â”€ helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
+
 def _load_zapier_config() -> Dict[str, Any]:
     """Load the integrations.zapier block from config/runtime.json."""
     try:
@@ -95,10 +96,13 @@ def _check_secret(zcfg: Dict[str, Any], header_val: Optional[str]) -> None:
     if not secret:
         return  # no secret configured â†’ open (dev mode)
     if header_val != secret:
-        raise HTTPException(status_code=401, detail="invalid or missing X-SWARMZ-SECRET")
+        raise HTTPException(
+            status_code=401, detail="invalid or missing X-SWARMZ-SECRET"
+        )
 
 
 # â”€â”€ request models â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
 
 class ZapierInboundBody(BaseModel):
     source: str = "zapier"
@@ -113,6 +117,7 @@ class ZapierEmitBody(BaseModel):
 
 
 # â”€â”€ registration â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
 
 def register_zapier_bridge(app: FastAPI) -> None:
     """Mount /v1/zapier/* endpoints on the FastAPI app. Fail-open."""
@@ -143,13 +148,26 @@ def register_zapier_bridge(app: FastAPI) -> None:
         # dedupe
         _prune_dedupe()
         if body.dedupe_key and body.dedupe_key in _DEDUPE:
-            _append_log(_INBOUND_LOG, {
-                "ts": now, "direction": "inbound", "event_id": event_id,
-                "source": body.source, "type": body.type,
-                "payload": body.payload, "ok": True, "error": None,
+            _append_log(
+                _INBOUND_LOG,
+                {
+                    "ts": now,
+                    "direction": "inbound",
+                    "event_id": event_id,
+                    "source": body.source,
+                    "type": body.type,
+                    "payload": body.payload,
+                    "ok": True,
+                    "error": None,
+                    "dedupe": "skipped",
+                },
+            )
+            return {
+                "ok": True,
+                "event_id": event_id,
+                "mission_id": None,
                 "dedupe": "skipped",
-            })
-            return {"ok": True, "event_id": event_id, "mission_id": None, "dedupe": "skipped"}
+            }
 
         if body.dedupe_key:
             _DEDUPE[body.dedupe_key] = time.time()
@@ -168,19 +186,29 @@ def register_zapier_bridge(app: FastAPI) -> None:
             "zapier_type": body.type,
         }
         _write_mission(mission)
-        _write_audit({
-            "event": "zapier_inbound",
-            "mission_id": mission_id,
-            "timestamp": now,
-            "source": body.source,
-            "type": body.type,
-        })
+        _write_audit(
+            {
+                "event": "zapier_inbound",
+                "mission_id": mission_id,
+                "timestamp": now,
+                "source": body.source,
+                "type": body.type,
+            }
+        )
 
-        _append_log(_INBOUND_LOG, {
-            "ts": now, "direction": "inbound", "event_id": event_id,
-            "source": body.source, "type": body.type,
-            "payload": body.payload, "ok": True, "error": None,
-        })
+        _append_log(
+            _INBOUND_LOG,
+            {
+                "ts": now,
+                "direction": "inbound",
+                "event_id": event_id,
+                "source": body.source,
+                "type": body.type,
+                "payload": body.payload,
+                "ok": True,
+                "error": None,
+            },
+        )
 
         return {"ok": True, "event_id": event_id, "mission_id": mission_id}
 
@@ -203,14 +231,22 @@ def register_zapier_bridge(app: FastAPI) -> None:
         hook_url = zcfg_live.get("zapier_catch_hook_url", "")
 
         if not hook_url:
-            _append_log(_OUTBOUND_LOG, {
-                "ts": now, "direction": "outbound", "event_id": event_id,
-                "source": "swarmz", "type": body.type,
-                "payload": body.payload, "ok": False,
-                "error": "no zapier_catch_hook_url configured",
-            })
+            _append_log(
+                _OUTBOUND_LOG,
+                {
+                    "ts": now,
+                    "direction": "outbound",
+                    "event_id": event_id,
+                    "source": "swarmz",
+                    "type": body.type,
+                    "payload": body.payload,
+                    "ok": False,
+                    "error": "no zapier_catch_hook_url configured",
+                },
+            )
             return {
-                "ok": False, "event_id": event_id,
+                "ok": False,
+                "event_id": event_id,
                 "delivered": False,
                 "error": "no zapier_catch_hook_url configured",
             }
@@ -219,12 +255,14 @@ def register_zapier_bridge(app: FastAPI) -> None:
         delivered = False
         error_str: Optional[str] = None
         try:
-            data = json.dumps({
-                "event_id": event_id,
-                "type": body.type,
-                "payload": body.payload,
-                "ts": now,
-            }).encode("utf-8")
+            data = json.dumps(
+                {
+                    "event_id": event_id,
+                    "type": body.type,
+                    "payload": body.payload,
+                    "ts": now,
+                }
+            ).encode("utf-8")
             req = urllib.request.Request(
                 hook_url,
                 data=data,
@@ -236,12 +274,19 @@ def register_zapier_bridge(app: FastAPI) -> None:
         except Exception as exc:
             error_str = str(exc)[:300]
 
-        _append_log(_OUTBOUND_LOG, {
-            "ts": now, "direction": "outbound", "event_id": event_id,
-            "source": "swarmz", "type": body.type,
-            "payload": body.payload, "ok": delivered,
-            "error": error_str,
-        })
+        _append_log(
+            _OUTBOUND_LOG,
+            {
+                "ts": now,
+                "direction": "outbound",
+                "event_id": event_id,
+                "source": "swarmz",
+                "type": body.type,
+                "payload": body.payload,
+                "ok": delivered,
+                "error": error_str,
+            },
+        )
 
         return {
             "ok": delivered,
@@ -249,4 +294,3 @@ def register_zapier_bridge(app: FastAPI) -> None:
             "delivered": delivered,
             "error": error_str,
         }
-

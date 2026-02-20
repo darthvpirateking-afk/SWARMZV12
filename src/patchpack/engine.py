@@ -4,6 +4,7 @@ import json
 
 PATCHPACK_DIR = Path("patchpacks")
 
+
 class PatchpackEngine:
     def __init__(self):
         PATCHPACK_DIR.mkdir(exist_ok=True)

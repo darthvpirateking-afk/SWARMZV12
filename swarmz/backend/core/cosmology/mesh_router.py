@@ -1,9 +1,11 @@
 # Mesh Router module for SWARMZ cosmology
 
+
 class MeshRouter:
     """
     Routes missions and swarm units across the mesh.
     """
+
     def __init__(self, nodes, links):
         self.nodes = nodes
         self.links = links

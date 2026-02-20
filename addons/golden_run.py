@@ -75,7 +75,9 @@ def replay_and_verify(
         return {"error": "Golden run not found"}
 
     replay_hash = _state_hash(replay_state_after)
-    outputs_match = json.dumps(golden["outputs"], sort_keys=True) == json.dumps(replay_outputs, sort_keys=True)
+    outputs_match = json.dumps(golden["outputs"], sort_keys=True) == json.dumps(
+        replay_outputs, sort_keys=True
+    )
     state_match = golden["state_hash_after"] == replay_hash
 
     result = {
@@ -107,4 +109,3 @@ def _load_runs() -> List[Dict[str, Any]]:
 
 def list_golden_runs() -> List[Dict[str, Any]]:
     return _load_runs()
-
