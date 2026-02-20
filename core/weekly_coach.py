@@ -9,7 +9,7 @@ class WeeklyCoach:
         try:
             # Example coaching logic
             return []  # Default fail-open
-        except Exception as e:
+        except Exception:
             return []  # Fail-open: Return empty suggestions
 
     def get_weekly_summary(self):

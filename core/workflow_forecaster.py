@@ -28,7 +28,7 @@ class WorkflowForecaster:
         try:
             # Example forecasting logic
             return {"predicted_actions": [], "predicted_tasks": [], "predicted_files": [], "confidence": 0}
-        except Exception as e:
+        except Exception:
             return {"predicted_actions": [], "predicted_tasks": [], "predicted_files": [], "confidence": 0}  # Fail-open
 
     def get_forecast_summary(self):

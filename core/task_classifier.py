@@ -11,7 +11,7 @@ class TaskClassifier:
         try:
             # Example classification logic
             return "unknown"  # Default fail-open
-        except Exception as e:
+        except Exception:
             return "unknown"  # Fail-open: Default to "unknown"
 
     def summarize_tasks(self, events):
@@ -23,5 +23,5 @@ class TaskClassifier:
             with open("data/context/tasks.json", "w") as f:
                 json.dump(summary, f)
             return summary
-        except Exception as e:
+        except Exception:
             return {}  # Fail-open: Return empty summary

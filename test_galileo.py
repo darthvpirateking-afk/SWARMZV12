@@ -79,13 +79,13 @@ def test_galileo_endpoints():
             )
             result = response.json()
             if result.get('ok'):
-                print(f"  OK: Retrieved run details")
+                print("  OK: Retrieved run details")
             else:
                 print(f"  FAIL: {result.get('error')}")
         except Exception as e:
             print(f"  FAIL: {e}")
     else:
-        print(f"\n[4/6] SKIPPED (no run_id from test 1)")
+        print("\n[4/6] SKIPPED (no run_id from test 1)")
     
     # Test 5: POST /v1/galileo/experiments/{id}/run (operator-gated)
     print("\n[5/6] Testing POST /v1/galileo/experiments/{id}/run (authorization gate)...")
@@ -97,7 +97,7 @@ def test_galileo_endpoints():
         )
         result = response.json()
         if not result.get('ok') and 'authorization' in result.get('error', '').lower():
-            print(f"  OK: Operator gate working (denied as expected)")
+            print("  OK: Operator gate working (denied as expected)")
         else:
             print(f"  WARNING: Expected authorization denial, got: {result.get('error')}")
     except Exception as e:
@@ -113,9 +113,9 @@ def test_galileo_endpoints():
         result = response.json()
         deterministic = result.get('deterministic', False)
         if deterministic:
-            print(f"  OK: Determinism verified! (runs produce identical outputs)")
+            print("  OK: Determinism verified! (runs produce identical outputs)")
         else:
-            print(f"  FAIL: Determinism check failed")
+            print("  FAIL: Determinism check failed")
             print(f"       Results: {result.get('selfcheck_results')}")
     except Exception as e:
         print(f"  FAIL: {e}")
@@ -126,7 +126,7 @@ def test_galileo_endpoints():
     
     # Verify storage files exist
     storage_dir = Path(__file__).parent / "data" / "galileo"
-    print(f"\n[Storage Check]")
+    print("\n[Storage Check]")
     print(f"  Storage dir: {storage_dir}")
     if storage_dir.exists():
         files = list(storage_dir.glob("*.jsonl"))
@@ -134,7 +134,7 @@ def test_galileo_endpoints():
         for f in files:
             print(f"    - {f.name}")
     else:
-        print(f"  Storage dir does not exist")
+        print("  Storage dir does not exist")
     
     return True
 

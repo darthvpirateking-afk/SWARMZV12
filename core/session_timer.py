@@ -13,7 +13,7 @@ class SessionTimer:
     def tick(self):
         try:
             self.timers["active"] += 1
-        except Exception as e:
+        except Exception:
             pass  # Fail-open: Skip on error
 
     def get_timer_state(self):
@@ -24,5 +24,5 @@ class SessionTimer:
         try:
             with open("data/context/timer.json", "w") as f:
                 json.dump(self.timers, f)
-        except Exception as e:
+        except Exception:
             pass  # Fail-open

@@ -12,13 +12,13 @@ class KnowledgeGraph:
     def add_node(self, type, id, metadata):
         try:
             self.nodes[id] = {"type": type, "metadata": metadata}
-        except Exception as e:
+        except Exception:
             pass  # Fail-open: Skip silently on write failure
 
     def add_edge(self, from_id, to_id, relation):
         try:
             self.edges.append({"from": from_id, "to": to_id, "relation": relation})
-        except Exception as e:
+        except Exception:
             pass  # Fail-open: Skip silently on write failure
 
     def query_graph(self, criteria):
@@ -28,5 +28,5 @@ class KnowledgeGraph:
     def export_graph(self):
         try:
             return {"nodes": self.nodes, "edges": self.edges}
-        except Exception as e:
+        except Exception:
             return {}  # Fail-open: Return empty graph on error
