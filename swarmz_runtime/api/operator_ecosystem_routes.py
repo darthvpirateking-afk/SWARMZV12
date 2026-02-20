@@ -14,7 +14,7 @@ _ecosystem = OperatorEcosystem(Path(__file__).resolve().parent.parent.parent)
 
 @router.get("/operator-os/prime-state")
 def get_prime_state():
-    return load_primal_state_slate()
+    return {"ok": True, "PRIMAL_STATE_SLATE": load_primal_state_slate()}
 
 
 class TimelineEventRequest(BaseModel):

@@ -47,9 +47,11 @@ def test_prime_state_endpoint(client):
     resp = client.get("/v1/operator-os/prime-state")
     assert resp.status_code == 200
     data = resp.json()
-    assert "SYSTEM_STATUS" in data
-    assert "SYSTEMS" in data
-    assert "CHANNELS" in data
+    assert data["ok"] is True
+    slate = data["PRIMAL_STATE_SLATE"]
+    assert "SYSTEM_STATUS" in slate
+    assert "SYSTEMS" in slate
+    assert "CHANNELS" in slate
 
 
 def test_identity_policy_decision_logs_active_profile_and_rules(client, monkeypatch, tmp_path):

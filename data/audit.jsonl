@@ -42,3 +42,12 @@
 {"ts": "2026-02-20T03:31:31.221365Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-033131-e4c0eb11"}
 {"ts": "2026-02-20T03:39:47.851488Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-033947-f0afc9c9"}
 {"ts": "2026-02-20T03:39:47.883813Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-033947-6c54fd1b"}
+{"timestamp": "2026-02-20T06:53:15.194647", "event_type": "mission_created", "mission_id": "8d473ebf", "details": {"goal": "E2E dispatch test", "category": "forge"}, "visibility": "visible"}
+{"ts": "2026-02-20T06:53:15.198192Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-065315-14d8bb19"}
+{"ts": "2026-02-20T06:53:15.212097Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-065315-a0bf3b02"}
+{"timestamp": "2026-02-20T06:55:01.864464", "event_type": "mission_created", "mission_id": "61d6f63b", "details": {"goal": "E2E dispatch test", "category": "forge"}, "visibility": "visible"}
+{"ts": "2026-02-20T06:55:01.867982Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-065501-087b3e62"}
+{"ts": "2026-02-20T06:55:01.882316Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-065501-3923e5b8"}
+{"timestamp": "2026-02-20T06:55:37.507956", "event_type": "mission_created", "mission_id": "db4b19ae", "details": {"goal": "E2E dispatch test", "category": "forge"}, "visibility": "visible"}
+{"ts": "2026-02-20T06:55:37.511522Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-065537-6d2769cd"}
+{"ts": "2026-02-20T06:55:37.525873Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-065537-a0105234"}

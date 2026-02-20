@@ -1,0 +1,7 @@
+{"ts":"2026-02-20T06:53:09.559602+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"127.0.0.1","timestamp":"2026-02-20T06:53:09.559592"}}
+{"ts":"2026-02-20T06:53:15.037925+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"127.0.0.1","timestamp":"2026-02-20T06:53:15.037914"}}
+{"ts":"2026-02-20T06:53:15.194570+00:00","type":"mission_created","payload":{"mission_id":"8d473ebf","goal":"E2E dispatch test","category":"forge"}}
+{"ts":"2026-02-20T06:55:01.712592+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"127.0.0.1","timestamp":"2026-02-20T06:55:01.712581"}}
+{"ts":"2026-02-20T06:55:01.864389+00:00","type":"mission_created","payload":{"mission_id":"61d6f63b","goal":"E2E dispatch test","category":"forge"}}
+{"ts":"2026-02-20T06:55:37.355881+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"127.0.0.1","timestamp":"2026-02-20T06:55:37.355870"}}
+{"ts":"2026-02-20T06:55:37.507876+00:00","type":"mission_created","payload":{"mission_id":"db4b19ae","goal":"E2E dispatch test","category":"forge"}}
