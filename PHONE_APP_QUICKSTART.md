@@ -20,6 +20,20 @@ Yes — SWARMZ can be installed as a PWA app (home-screen app).
 
 That creates an app-like icon and full-screen launcher.
 
+## Publish to Play Store / App Store (native wrapper)
+
+Yes — now set up in this repo:
+- Wrapper folder: `mobile/app_store_wrapper/`
+- One-command Android setup: `APP_STORE_BUILD.cmd`
+
+Manual commands (from `mobile/app_store_wrapper`):
+- `npm install`
+- `npm run android:add`
+- `npm run cap:sync`
+- `npm run android:open`
+
+Then build signed bundle in Android Studio for Play Store upload.
+
 ## If Phone Can't Connect
 - Confirm phone and PC are on the same Wi-Fi
 - Re-open one-button starter

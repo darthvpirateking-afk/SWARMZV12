@@ -1,0 +1,19 @@
+{
+  "name": "swarmz-app-store-wrapper",
+  "version": "0.1.0",
+  "private": true,
+  "description": "SWARMZ native wrapper for App Store / Play Store submission",
+  "scripts": {
+    "cap:sync": "npx cap sync",
+    "android:add": "npx cap add android",
+    "android:open": "npx cap open android",
+    "ios:add": "npx cap add ios",
+    "ios:open": "npx cap open ios"
+  },
+  "dependencies": {
+    "@capacitor/android": "^6.1.2",
+    "@capacitor/cli": "^6.1.2",
+    "@capacitor/core": "^6.1.2",
+    "@capacitor/ios": "^6.1.2"
+  }
+}
