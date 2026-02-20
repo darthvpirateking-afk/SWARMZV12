@@ -1,6 +1,11 @@
 # Bootstrap module for SWARMZ runtime
 
+import logging
+
 from backend.runtime.engine import Engine
+
+_log = logging.getLogger("swarmz.bootstrap")
+
 
 def bootstrap():
     engine = Engine()
@@ -9,10 +14,10 @@ def bootstrap():
     engine.initialize_components()
 
     # Start API server (placeholder)
-    print("Starting API server...")
+    _log.info("Starting API server...")
 
     # Launch cockpit UI (placeholder)
-    print("Launching cockpit UI...")
+    _log.info("Launching cockpit UI...")
 
 if __name__ == "__main__":
     bootstrap()
