@@ -257,6 +257,12 @@ macOS
 
 Android (Termux)
 
+Render (recommended config):
+
+- Build command: `pip install -r requirements.txt`
+- Start command: `python run_server.py --host 0.0.0.0 --port $PORT`
+- Health check path: `/v1/health`
+
 Project Position
 
 This repository provides a controllable execution runtime.
