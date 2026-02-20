@@ -88,7 +88,7 @@ jobs:
         continue-on-error: true
         run: |
           mkdir -p artifacts
-          python tools/find_import_cycles.py . --dot artifacts/autofind_import_graph.dot > artifacts/autofind_agent.stdout.txt 2> artifacts/autofind_agent.stderr.txt && echo 0 > /tmp/autofind_exit.txt || echo 1 > /tmp/autofind_exit.txt
+          python tools/find_import_cycles.py . --dot artifacts/autofind_import_graph.dot > artifacts/autofind_agent.stdout.txt 2> artifacts/autofind_agent.stderr.txt; echo $? > /tmp/autofind_exit.txt
           python - <<'PY'
           import json
           import os
@@ -102,7 +102,8 @@ jobs:
           except FileNotFoundError:
               stderr = "stderr not captured"
 
-          if exit_code == 0:
+          # exit_code 0 = no cycles; exit_code 2 = cycles found (tool ran successfully)
+          if exit_code in (0, 2):
               data = {
                   "status": "success",
                   "source": "tools/find_import_cycles.py",
@@ -112,6 +113,7 @@ jobs:
                   "sha": os.getenv("GITHUB_SHA"),
                   "ref": os.getenv("GITHUB_REF"),
                   "generated_at": datetime.now(timezone.utc).isoformat(),
+                  "cycles_found": exit_code == 2,
                   "stdout_file": "autofind_agent.stdout.txt",
                   "stderr_file": "autofind_agent.stderr.txt",
                   "dot_file": "autofind_import_graph.dot",
