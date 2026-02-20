@@ -52,6 +52,48 @@ except Exception as e:
     _nexusmon_available = False
     print(f"Warning: NEXUSMON router not available: {e}")
 
+try:
+    from api.bootstrap_routes import router as bootstrap_router
+    _bootstrap_router_available = True
+except Exception as e:
+    _bootstrap_router_available = False
+    print(f"Warning: bootstrap router not available: {e}")
+
+try:
+    from api.foundation_routes import build_foundation_router
+    _foundation_router_available = True
+except Exception as e:
+    _foundation_router_available = False
+    print(f"Warning: foundation router not available: {e}")
+
+try:
+    from api.database_routes import router as database_router
+    _database_router_available = True
+except Exception as e:
+    _database_router_available = False
+    print(f"Warning: database router not available: {e}")
+
+try:
+    from api.operator_auth_routes import router as operator_auth_router
+    _operator_auth_router_available = True
+except Exception as e:
+    _operator_auth_router_available = False
+    print(f"Warning: operator auth router not available: {e}")
+
+try:
+    from api.companion_core_routes import router as companion_core_router
+    _companion_core_router_available = True
+except Exception as e:
+    _companion_core_router_available = False
+    print(f"Warning: companion core router not available: {e}")
+
+try:
+    from api.build_milestones_routes import router as build_milestones_router
+    _build_milestones_router_available = True
+except Exception as e:
+    _build_milestones_router_available = False
+    print(f"Warning: build milestones router not available: {e}")
+
 
 def get_lan_ip() -> str:
     """Best-effort LAN IP discovery (fallback to loopback)."""
@@ -128,6 +170,24 @@ app.add_middleware(
 # Include NEXUSMON conversational interface router
 if _nexusmon_available:
     app.include_router(nexusmon_router)
+
+if _bootstrap_router_available:
+    app.include_router(bootstrap_router)
+
+if _foundation_router_available:
+    app.include_router(build_foundation_router(app))
+
+if _database_router_available:
+    app.include_router(database_router)
+
+if _operator_auth_router_available:
+    app.include_router(operator_auth_router)
+
+if _companion_core_router_available:
+    app.include_router(companion_core_router)
+
+if _build_milestones_router_available:
+    app.include_router(build_milestones_router)
 
 # Setup logging
 logging.basicConfig(filename="data/server_live.log", level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")

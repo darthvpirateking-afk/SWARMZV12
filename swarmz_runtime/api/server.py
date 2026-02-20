@@ -3,6 +3,7 @@
 # See LICENSE file for details.
 
 
+import logging
 import os
 import json
 import socket
@@ -20,6 +21,8 @@ from pydantic import BaseModel, Field
 from zoneinfo import ZoneInfo
 
 from contextlib import asynccontextmanager
+
+logger = logging.getLogger("swarmz.server")
 
 from swarmz_runtime.core.engine import SwarmzEngine
 from jsonl_utils import read_jsonl
@@ -43,6 +46,7 @@ from .template_sync_routes import router as template_sync_routes_router
 from .system_primitives_routes import router as system_primitives_routes_router
 from swarmz_runtime.core.system_primitives import SystemPrimitivesRuntime
 from addons.api.addons_router import router as addons_router
+from addons.api.guardrails_router import router as guardrails_router
 from .companion_state import companion_state
 
 # ---- cheap constants only (NO orchestrator creation here) ----
@@ -83,9 +87,7 @@ def create_app() -> FastAPI:
     app.include_router(template_sync_routes_router, prefix="/v1", tags=["template-sync"])
     app.include_router(system_primitives_routes_router, prefix="/v1", tags=["system-primitives"])
     app.include_router(addons_router, prefix="/v1/addons", tags=["addons"])
-
-    if "guardrails_router" in globals() and guardrails_router is not None:
-        app.include_router(guardrails_router, prefix="/v1/guardrails", tags=["guardrails"])
+    app.include_router(guardrails_router, prefix="/v1/guardrails", tags=["guardrails"])
 
     return app
 
@@ -381,7 +383,7 @@ def _load_operator_pin() -> Dict[str, Any]:
         pin_source = "generated"
         generated = True
         pin_file.write_text(pin)
-        print(f"[SWARMZ] Generated operator PIN; saved to {pin_file}")
+        logger.info("Generated operator PIN; saved to %s", pin_file)
 
     return {"pin": pin, "source": pin_source, "file": pin_file, "generated": generated}
 
@@ -1077,17 +1079,10 @@ def _file_in_ui(filename: str):
     from pathlib import Path
     return Path("ui") / filename
 
-# Temporary fallback definitions for debugging
-try:
-    from addons.api.guardrails_router import router as guardrails_router
-except ImportError:
-    print("Fallback: guardrails_router not imported")
-    guardrails_router = None
-
 try:
     from swarmz_runtime.api.companion_state import companion_state
 except ImportError:
-    print("Fallback: companion_state not imported")
+    logger.warning("Fallback: companion_state not imported")
     def companion_state():
         return {"status": "Fallback companion state"}
 

@@ -42,3 +42,9 @@
 {"ts": "2026-02-20T03:31:31.221365Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-033131-e4c0eb11"}
 {"ts": "2026-02-20T03:39:47.851488Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-033947-f0afc9c9"}
 {"ts": "2026-02-20T03:39:47.883813Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-033947-6c54fd1b"}
+{"timestamp": "2026-02-20T20:43:48.853204", "event_type": "mission_created", "mission_id": "f9fb4b46", "details": {"goal": "E2E dispatch test", "category": "forge"}, "visibility": "visible"}
+{"ts": "2026-02-20T09:43:48.869853Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-094348-c6421c2e"}
+{"ts": "2026-02-20T09:43:48.904699Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-094348-3f5bda15"}
+{"timestamp": "2026-02-21T00:46:44.197444", "event_type": "mission_created", "mission_id": "fd326146", "details": {"goal": "E2E dispatch test", "category": "forge"}, "visibility": "visible"}
+{"ts": "2026-02-20T13:46:44.215594Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-134644-5aea5d42"}
+{"ts": "2026-02-20T13:46:44.255066Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-134644-d9b4baa6"}
