@@ -71,6 +71,12 @@ def step_load_kernels(state: RuntimeIgnitionState):
 def step_load_patchpacks(state: RuntimeIgnitionState):
     state.record("load_patchpacks", {"status": "ok"})
 
+def step_load_decision_ledger(state: RuntimeIgnitionState):
+    state.record("load_decision_ledger", {"status": "ok"})
+
+def step_load_contract_validator(state: RuntimeIgnitionState):
+    state.record("load_contract_validator", {"status": "ok"})
+
 def step_load_missions(state: RuntimeIgnitionState):
     state.record("load_missions", {"status": "ok"})
 
@@ -79,5 +85,7 @@ def build_default_ignition() -> RuntimeIgnition:
     ign = RuntimeIgnition()
     ign.register_step(step_load_kernels)
     ign.register_step(step_load_patchpacks)
+    ign.register_step(step_load_decision_ledger)
+    ign.register_step(step_load_contract_validator)
     ign.register_step(step_load_missions)
     return ign

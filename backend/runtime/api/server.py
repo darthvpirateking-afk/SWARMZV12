@@ -1,6 +1,6 @@
 # SWARMZ API server
 
-from backend.runtime.core.engine import SwarmzEngine, MissionEngine, SwarmEngine
+from backend.runtime.core.engine import MissionEngine, SwarmEngine
 from backend.runtime.core.telemetry import Telemetry
 from backend.runtime.core.autoloop import AutoLoop
 from backend.runtime.storage.db import Database
@@ -21,7 +21,7 @@ if __name__ == "__main__":
     loader = Loader()
     validator = Validator()
 
-    swarmz_engine = SwarmzEngine()
+    swarmz_engine = MissionEngine()
     mission_engine = MissionEngine()
     swarm_engine = SwarmEngine()
 

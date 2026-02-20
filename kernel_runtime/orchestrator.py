@@ -18,12 +18,16 @@ class SwarmzOrchestrator:
         self.avatar: Optional[Any] = None
         self.api: Optional[Any] = None
         self.cockpit: Optional[Any] = None
+        self.decision_ledger: Optional[Any] = None
+        self.contract_validator: Optional[Any] = None
 
     def activate(self) -> None:
         self.mesh = self.load_mesh()
         self.governor = self.start_governor()
         self.patchpack = self.start_patchpack()
         self.session = self.start_session()
+        self.decision_ledger = self.start_decision_ledger()
+        self.contract_validator = self.start_contract_validator()
         self.mission_engine = self.start_mission_engine()
         self.swarm_engine = self.start_swarm_engine()
         self.avatar = self.start_avatar()
@@ -71,6 +75,16 @@ class SwarmzOrchestrator:
         except ImportError:
             print("[orchestrator] Session subsystem not implemented, using stub.")
             return object()
+
+    def start_decision_ledger(self) -> Any:
+        print("[orchestrator] Starting decision ledger...")
+        from swarmz_runtime.decision_ledger.decision_ledger import DecisionLedger
+        return DecisionLedger()
+
+    def start_contract_validator(self) -> Any:
+        print("[orchestrator] Starting contract validator...")
+        from swarmz_runtime.contract_validator.contract_validator import ContractValidator
+        return ContractValidator()
 
     def start_mission_engine(self) -> Any:
         print("[orchestrator] Starting mission engine...")
