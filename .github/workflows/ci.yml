@@ -428,6 +428,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements-dev.txt
 
+      - name: Initialize database
+        run: |
+          python scripts/init_db.py
+
       - name: Run backend tests
         run: |
           python -m pytest tests/ -v --tb=short
