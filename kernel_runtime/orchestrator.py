@@ -3,7 +3,10 @@ SWARMZ Orchestrator: Centralized activation logic for all subsystems.
 Additive-only. Does not modify or overwrite any existing files.
 """
 
+import logging
 from typing import Optional, Dict, Any
+
+_log = logging.getLogger("swarmz.orchestrator")
 
 class SwarmzOrchestrator:
     """Central orchestrator for SWARMZ activation sequence."""
@@ -29,85 +32,85 @@ class SwarmzOrchestrator:
         self.avatar = self.start_avatar()
         self.api = self.start_api()
         self.cockpit = self.launch_cockpit()
-        print("All subsystems activated.")
+        _log.info("All subsystems activated.")
 
     def load_config(self) -> Dict[str, Any]:
-        print("[orchestrator] Loading config...")
+        _log.info("Loading config...")
         # TODO: Replace with real config loader if available
         return {}
 
     def load_mesh(self) -> Any:
-        print("[orchestrator] Loading mesh...")
+        _log.info("Loading mesh...")
         try:
             from backend.core.cosmology.mesh_router import MeshRouter
             return MeshRouter()
         except ImportError:
-            print("[orchestrator] Mesh subsystem not implemented, using stub.")
+            _log.info("Mesh subsystem not implemented, using stub.")
             return object()
 
     def start_governor(self) -> Any:
-        print("[orchestrator] Starting governor...")
+        _log.info("Starting governor...")
         try:
             from backend.governor import Governor
             return Governor()
         except ImportError:
-            print("[orchestrator] Governor subsystem not implemented, using stub.")
+            _log.info("Governor subsystem not implemented, using stub.")
             return object()
 
     def start_patchpack(self) -> Any:
-        print("[orchestrator] Starting patchpack...")
+        _log.info("Starting patchpack...")
         try:
             from backend.patchpack import Patchpack
             return Patchpack()
         except ImportError:
-            print("[orchestrator] Patchpack subsystem not implemented, using stub.")
+            _log.info("Patchpack subsystem not implemented, using stub.")
             return object()
 
     def start_session(self) -> Any:
-        print("[orchestrator] Starting session...")
+        _log.info("Starting session...")
         try:
             from swarmz_runtime.session import operator_session
             return operator_session
         except ImportError:
-            print("[orchestrator] Session subsystem not implemented, using stub.")
+            _log.info("Session subsystem not implemented, using stub.")
             return object()
 
     def start_mission_engine(self) -> Any:
-        print("[orchestrator] Starting mission engine...")
+        _log.info("Starting mission engine...")
         try:
             from swarmz_runtime.mission_engine import mission_engine
             return mission_engine
         except ImportError:
-            print("[orchestrator] Mission engine not implemented, using stub.")
+            _log.info("Mission engine not implemented, using stub.")
             return object()
 
     def start_swarm_engine(self) -> Any:
-        print("[orchestrator] Starting swarm engine...")
+        _log.info("Starting swarm engine...")
         try:
             from swarmz_runtime.swarm_engine import behaviors
             return behaviors
         except ImportError:
-            print("[orchestrator] Swarm engine not implemented, using stub.")
+            _log.info("Swarm engine not implemented, using stub.")
             return object()
 
     def start_avatar(self) -> Any:
-        print("[orchestrator] Starting avatar...")
+        _log.info("Starting avatar...")
         try:
             from swarmz_runtime.avatar import avatar_omega
             return avatar_omega
         except ImportError:
-            print("[orchestrator] Avatar subsystem not implemented, using stub.")
+            _log.info("Avatar subsystem not implemented, using stub.")
             return object()
 
     def start_api(self) -> Optional[Any]:
-        print("[orchestrator] API startup is now managed by the server. No action taken.")
+        _log.info("API startup is now managed by the server. No action taken.")
         return None
 
     def launch_cockpit(self) -> Any:
-        print("[orchestrator] Launching cockpit...")
+        _log.info("Launching cockpit...")
         try:
             from swarmz_runtime.ui import cockpit
             return cockpit
         except ImportError:
-            print("[orchestrator] Cockpit subsystem not implemented, using stub.")
+            _log.info("Cockpit subsystem not implemented, using stub.")
             return object()

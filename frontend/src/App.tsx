@@ -1,4 +1,11 @@
 import { FormEvent, useMemo, useState, type CSSProperties } from "react";
+import { apiPost } from "./api/client";
+import { BootstrapPage } from "./pages/BootstrapPage";
+import { ApiFoundationPage } from "./pages/ApiFoundationPage";
+import { DatabaseLayerPage } from "./pages/DatabaseLayerPage";
+import { OperatorAuthPage } from "./pages/OperatorAuthPage";
+import { CompanionCorePage } from "./pages/CompanionCorePage";
+import { BuildMilestonesPage } from "./pages/BuildMilestonesPage";
 
 type Role = "user" | "assistant";
 
@@ -46,29 +53,10 @@ export default function App() {
     setMessages((prev) => [...prev, makeMessage("user", outbound)]);
 
     try {
-      const operatorKey = import.meta.env.VITE_OPERATOR_KEY;
+      const payload = await apiPost<CompanionResponse>("/v1/companion/message", { text: outbound });
 
-      const headers: HeadersInit = {
-        "Content-Type": "application/json",
-      };
-
-      if (operatorKey && operatorKey.trim() !== "") {
-        headers["x-operator-key"] = operatorKey;
-      }
-
-      const response = await fetch(
-        "https://https-swarmzv10-onrender-com.onrender.com/v1/companion/message",
-        {
-          method: "POST",
-          headers,
-          body: JSON.stringify({ text: outbound }),
-        }
-      );
-
-      const payload = (await response.json().catch(() => ({}))) as CompanionResponse;
-
-      if (!response.ok || payload.ok === false) {
-        throw new Error(payload.error || payload.detail || `Request failed (${response.status})`);
+      if (payload.ok === false) {
+        throw new Error(payload.error || payload.detail || "Request failed");
       }
 
       const replyText = typeof payload.reply === "string" ? payload.reply : "No reply returned.";
@@ -88,6 +76,13 @@ export default function App() {
           <h1 style={styles.title}>SWARMZ Frontend Chat</h1>
           <p style={styles.subtitle}>Companion endpoint: /v1/companion/message</p>
         </header>
+
+        <BootstrapPage />
+        <ApiFoundationPage />
+        <DatabaseLayerPage />
+        <OperatorAuthPage />
+        <CompanionCorePage />
+        <BuildMilestonesPage />
 
         <section style={styles.messages}>
           {messages.map((message) => (

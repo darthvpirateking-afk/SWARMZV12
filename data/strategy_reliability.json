@@ -1,9 +1,9 @@
 {
   "baseline": {
-    "count": 23,
+    "count": 25,
     "accurate": 0,
     "overconfident": 0,
-    "squared_error": 23.0,
+    "squared_error": 25.0,
     "last_predicted": 0.0,
     "last_actual": 1.0,
     "last_surprise": 1.0,
