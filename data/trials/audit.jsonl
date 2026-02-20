@@ -76,3 +76,6 @@
 {"event_id":"f0da2000-0b1b-4f94-946d-1e6cc761676a","ts":"2026-02-20T16:01:35.564719Z","event_type":"drift_detected","trial_id":"NONE","payload":{"metric_name":"conv","context":"ctx","drift_magnitude":131.2899,"older_mean":0.5045,"recent_mean":0.902,"older_std":0.003}}
 {"event_id":"db05e408-2ab5-4a1f-8b7c-7dcbdd52a81c","ts":"2026-02-20T16:01:35.571056Z","event_type":"followup_suggestions_generated","trial_id":"NONE","payload":{"context":"ctx","limit":5,"count":0}}
 {"event_id":"5fb0d8df-5884-4edb-8b19-a665c8c3e9b4","ts":"2026-02-20T16:01:35.571921Z","event_type":"followup_suggestions_generated","trial_id":"NONE","payload":{"context":"","limit":5,"count":2}}
+{"event_id":"a1eadb7b-0f98-496f-a53e-13d00ee16acd","ts":"2026-02-20T16:08:59.272425Z","event_type":"drift_detected","trial_id":"NONE","payload":{"metric_name":"conv","context":"ctx","drift_magnitude":131.2899,"older_mean":0.5045,"recent_mean":0.902,"older_std":0.003}}
+{"event_id":"cfaba797-8852-4da7-be69-6c77315f8801","ts":"2026-02-20T16:08:59.279537Z","event_type":"followup_suggestions_generated","trial_id":"NONE","payload":{"context":"ctx","limit":5,"count":0}}
+{"event_id":"4b534f94-6528-4545-bfb1-212cdfdbe152","ts":"2026-02-20T16:08:59.280350Z","event_type":"followup_suggestions_generated","trial_id":"NONE","payload":{"context":"","limit":5,"count":2}}
