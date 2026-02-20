@@ -1,0 +1,65 @@
+{
+  "PRIMAL_STATE_SLATE": {
+    "SYSTEM_STATUS": "READY",
+    "SYSTEMS": {
+      "PARTNER_PRIME": {
+        "runtime_path": "swarmz_runtime/core/brain.py",
+        "state": "LINKED"
+      },
+      "LEGION_UMBRA": {
+        "runtime_path": "swarmz_runtime/shadow_ledger/shadow_ledger.py",
+        "state": "LINKED"
+      },
+      "FORGE_HEARTH": {
+        "runtime_path": "swarmz_runtime/api/operator_ecosystem_routes.py",
+        "state": "LINKED"
+      },
+      "RIFTWALK": {
+        "runtime_path": "swarmz_runtime/core/mission_engine_v4.py",
+        "state": "LINKED"
+      },
+      "SIGILSTACK": {
+        "runtime_path": "swarmz_runtime/api/fusion_routes.py",
+        "state": "LINKED"
+      },
+      "NEXUSFRAME": {
+        "runtime_path": "web/index.html",
+        "state": "LINKED"
+      },
+      "DATAVEIN": {
+        "runtime_path": "swarmz_runtime/storage/db.py",
+        "state": "LINKED"
+      }
+    },
+    "CHANNELS": {
+      "MINDLINE": "LOGIC_PORT:8012",
+      "CODELINE": "DATA_PORT:8012",
+      "SIGHTLINE": "UI_PORT:8012",
+      "PATHLINE": "MISSION_PORT:8012",
+      "GHOSTLINE": "SIM_PORT:8012"
+    },
+    "ARTIFACTS": {
+      "PRIME_SHARDS": "operational_runtime.py, template_sync.py, blueprint outputs",
+      "UMBRA_MARKS": "data/audit.jsonl, data/telemetry.jsonl, operator_ecosystem_routes.py",
+      "GRID_RUINS": "test_arena.py, test_mission_jsonl_robust.py, tests/test_operational_runtime.py",
+      "ARCHON_SLATES": "config/doctrine_primal_block.json, docs/SYSTEM_DOCTRINE.md, charter routes"
+    },
+    "ENDPOINTS": {
+      "health": "/v1/health",
+      "dispatch": "/v1/dispatch",
+      "runtime_status": "/v1/runtime/status",
+      "runtime_scoreboard": "/v1/runtime/scoreboard",
+      "operator_ecosystem": "/v1/operator-os/*",
+      "template_sync": "/v1/template-sync/*",
+      "prime_state": "/v1/operator-os/prime-state",
+      "riftwalk_trace": "/v1/riftwalk/trace",
+      "sigilstack_registry": "/v1/sigilstack/registry"
+    },
+    "WARNINGS": [],
+    "NEXT_ACTIONS": [
+      "SEEDRUN_01",
+      "SEEDRUN_02",
+      "SEEDRUN_03"
+    ]
+  }
+}

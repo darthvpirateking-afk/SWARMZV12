@@ -49,6 +49,15 @@ This does not replace existing policy engine checks; it adds a doctrine-level ga
 
 This extension binds the renamed system lattice (`PARTNER_PRIME`, `LEGION_UMBRA`, `FORGE_HEARTH`, `RIFTWALK`, `SIGILSTACK`, `NEXUSFRAME`, `DATAVEIN`) to doctrine-safe channels and deterministic sequencing while preserving existing runtime safety guarantees.
 
+### PRIMAL_RULE: EXECUTION_CYCLE
+
+The PRIMAL execution cycle is canonical and defined in `config/doctrine_primal_block.json` under `executionCycleRule`.
+
+- Start: load doctrine, bind identifiers, run `PRIME_WAKE`, emit `PRIMAL_READY_SLATE`, run introspection.
+- Operate: accept only `SEEDRUN`, `RIFT_SCAN`, `VOID_CYCLE`, `UMBRA_FOLD`; maintain channel/system/artifact integrity.
+- Evolve: execute `SEEDRUN` missions, expand PRIMAL systems, emit `EVOLUTION_SLATE` after major expansions.
+- Finish: run `UMBRA_FOLD`, persist DATAVEIN logs/artifacts, emit `FINAL_SLATE`, await next `PRIME_WAKE`.
+
 ## SWARMZ Software-Builder Architecture
 
 All safe, all powerful, all actionable. Let's lock it in.

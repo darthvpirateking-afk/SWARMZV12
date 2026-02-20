@@ -25,10 +25,12 @@ from swarmz_runtime.core.engine import SwarmzEngine
 from jsonl_utils import read_jsonl
 from kernel_runtime.orchestrator import SwarmzOrchestrator
 from swarmz_runtime.api import missions, system, admin, ecosystem
+from . import arena as arena_api
 from .runtime_endpoints import runtime_scoreboard
 from .missions import router as missions_router
 from .system import router as system_router
 from .admin import router as admin_router
+from .arena import router as arena_router
 from .factory_routes import router as factory_routes_router
 from .meta_routes import router as meta_routes_router
 from .operational_routes import router as operational_routes_router
@@ -36,6 +38,7 @@ from .operator_ecosystem_routes import router as operator_ecosystem_routes_route
 from .federation_routes import router as federation_routes_router
 from .charter_routes import router as charter_routes_router
 from .fusion_routes import router as fusion_routes_router
+from .primal_routes import router as primal_routes_router
 from .template_sync_routes import router as template_sync_routes_router
 from .system_primitives_routes import router as system_primitives_routes_router
 from swarmz_runtime.core.system_primitives import SystemPrimitivesRuntime
@@ -68,6 +71,7 @@ def create_app() -> FastAPI:
     app.include_router(missions_router, prefix="/v1/missions", tags=["missions"])
     app.include_router(system_router, prefix="/v1/system", tags=["system"])
     app.include_router(admin_router, prefix="/v1/admin", tags=["admin"])
+    app.include_router(arena_router, prefix="/v1/arena", tags=["arena"])
     app.include_router(factory_routes_router, prefix="/v1/factory", tags=["factory"])
     app.include_router(meta_routes_router, prefix="/v1/meta", tags=["meta"])
     app.include_router(operational_routes_router, prefix="/v1", tags=["operational"])
@@ -75,6 +79,7 @@ def create_app() -> FastAPI:
     app.include_router(federation_routes_router, prefix="/v1", tags=["federation"])
     app.include_router(charter_routes_router, prefix="/v1", tags=["charter"])
     app.include_router(fusion_routes_router, prefix="/v1", tags=["fusion"])
+    app.include_router(primal_routes_router, prefix="/v1", tags=["primal"])
     app.include_router(template_sync_routes_router, prefix="/v1", tags=["template-sync"])
     app.include_router(system_primitives_routes_router, prefix="/v1", tags=["system-primitives"])
     app.include_router(addons_router, prefix="/v1/addons", tags=["addons"])
@@ -403,6 +408,7 @@ def get_engine():
 system.get_engine = get_engine
 admin.get_engine = get_engine
 ecosystem.set_engine_provider(get_engine)
+arena_api.get_engine = get_engine
 
 
 
@@ -422,6 +428,19 @@ def companion_history(tail: int = 10):
 @app.get("/health")
 def health():
     return {"ok": True, "status": "ok"}
+
+
+@app.get("/arena", response_class=HTMLResponse)
+def arena_page():
+        return """
+        <!doctype html>
+        <html>
+            <head><title>SWARMZ Arena</title></head>
+            <body>
+                <h1>SWARMZ Arena</h1>
+            </body>
+        </html>
+        """
 
 
 @app.get("/v1/health")

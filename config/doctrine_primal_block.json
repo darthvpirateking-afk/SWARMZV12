@@ -44,5 +44,33 @@
     "latticeMode": "single_operational_lattice",
     "deterministicSequencing": true,
     "doctrineAligned": true
+  },
+  "executionCycleRule": {
+    "ruleId": "PRIMAL_RULE: EXECUTION_CYCLE",
+    "start": [
+      "Load PRIMAL_BLOCK doctrine",
+      "Bind PRIMAL identifiers to runtime modules",
+      "Run PRIME_WAKE (IGNITE_LINK) to clean, sync, test, and align",
+      "Emit PRIMAL_READY_SLATE",
+      "Run PRIMAL_INTROSPECTION to map the organism"
+    ],
+    "operate": [
+      "Accept Operator directives only (SEEDRUN, RIFT_SCAN, VOID_CYCLE, UMBRA_FOLD)",
+      "Maintain CHANNEL integrity (MINDLINE -> GHOSTLINE)",
+      "Maintain SYSTEM integrity (PARTNER_PRIME -> DATAVEIN)",
+      "Maintain ARTIFACT integrity (PRIME_SHARDS -> ARCHON_SLATES)"
+    ],
+    "evolve": [
+      "Execute SEEDRUN missions to build new surfaces",
+      "Expand PARTNER_PRIME, LEGION_UMBRA, RIFTWALK, SIGILSTACK, FORGE_HEARTH, NEXUSFRAME, DATAVEIN",
+      "Update doctrine only through PRIMAL_BLOCK revisions",
+      "Emit EVOLUTION_SLATE after each major expansion"
+    ],
+    "finish": [
+      "Run UMBRA_FOLD to suspend safely",
+      "Persist all DATAVEIN logs and artifacts",
+      "Emit FINAL_SLATE",
+      "Await next PRIME_WAKE"
+    ]
   }
 }
