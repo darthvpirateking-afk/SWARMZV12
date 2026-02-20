@@ -8,20 +8,6 @@
       "intent": "smoke",
       "status": "SUCCESS",
       "summary": "test summary",
-      "timestamp": "2026-02-20T02:30:22.447630+00:00Z"
-    },
-    {
-      "mission_id": "test_ap",
-      "intent": "smoke",
-      "status": "SUCCESS",
-      "summary": "test",
-      "timestamp": "2026-02-20T02:30:22.727357+00:00Z"
-    },
-    {
-      "mission_id": "test_m1",
-      "intent": "smoke",
-      "status": "SUCCESS",
-      "summary": "test summary",
       "timestamp": "2026-02-20T02:30:54.517193+00:00Z"
     },
     {
@@ -352,9 +338,23 @@
       "status": "SUCCESS",
       "summary": "test",
       "timestamp": "2026-02-20T09:29:47.031291+00:00Z"
+    },
+    {
+      "mission_id": "test_m1",
+      "intent": "smoke",
+      "status": "SUCCESS",
+      "summary": "test summary",
+      "timestamp": "2026-02-20T09:33:34.510621+00:00Z"
+    },
+    {
+      "mission_id": "test_m1",
+      "intent": "smoke",
+      "status": "SUCCESS",
+      "summary": "test summary",
+      "timestamp": "2026-02-20T09:33:41.820724+00:00Z"
     }
   ],
   "learned_constraints": [],
-  "version": 53,
-  "updated_at": "2026-02-20T09:29:47.031646+00:00Z"
+  "version": 55,
+  "updated_at": "2026-02-20T09:33:41.820817+00:00Z"
 }
