@@ -73,3 +73,12 @@
 - Confirm paired state and token in the Pairing section
 - Re-open with `SWARMZ_UP.ps1`
 - Use `python tools/swarmz_doctor.py` for diagnostics
+
+## Release Readiness Commands
+
+- Quick release gate (files + config):
+	- `python tools/release_gate.py`
+- Full smoke gate (health + dispatch):
+	- `python tools/release_gate.py --smoke`
+- Smoke only:
+	- `python tools/release_smoke.py`

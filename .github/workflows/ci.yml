@@ -34,6 +34,14 @@ jobs:
         run: |
           python -m pytest tests/ -v
 
+      - name: Build package artifacts
+        run: |
+          python -m build
+
+      - name: Run release gate (quick)
+        run: |
+          python tools/release_gate.py
+
   # Optional deploy job: wire this to your serverless platform
   # (Vercel, Netlify, AWS Lambda via Serverless Framework, etc.)
   #
