@@ -62,4 +62,3 @@
 {"timestamp":"2026-02-20T04:21:35.412350+00:00","mission_id":"test_engine_pl","runtime_ms":100,"success_bool":true,"cost_estimate":0.01,"agent_work_time":0.0,"agent_wait_time":0.0}
 {"timestamp":"2026-02-20T04:26:30.169213+00:00","mission_id":"test_ap","runtime_ms":50,"success_bool":true,"cost_estimate":0.0,"agent_work_time":0.0,"agent_wait_time":0.0}
 {"timestamp":"2026-02-20T04:26:30.861083+00:00","mission_id":"test_engine_pl","runtime_ms":100,"success_bool":true,"cost_estimate":0.01,"agent_work_time":0.0,"agent_wait_time":0.0}
-{"timestamp":"2026-02-20T04:30:55.359340+00:00","mission_id":"test_engine_pl","runtime_ms":100,"success_bool":true,"cost_estimate":0.01,"agent_work_time":0.0,"agent_wait_time":0.0}

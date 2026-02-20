@@ -6,9 +6,9 @@
     "payload": {
       "cmd": "ls -la"
     },
-    "gated_at": "2026-02-20T04:30:55.612698Z"
+    "gated_at": "2026-02-20T04:26:31.947054Z"
   },
   "risk_level": "medium",
-  "prepared_at": "2026-02-20T04:30:55.612821Z",
+  "prepared_at": "2026-02-20T04:26:31.947968Z",
   "executed": false
 }
