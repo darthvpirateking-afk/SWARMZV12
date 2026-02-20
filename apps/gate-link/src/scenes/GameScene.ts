@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import { applyGateRewards, loadProgress, type PlayerProgress } from "../state/progression";
+import { applyGateRewards, loadProgress, resetProgress, type PlayerProgress } from "../state/progression";
 import { createMission, resolveMissionReward, type GateMission } from "../systems/mission";
 
 const GRID_SIZE = 5;
@@ -85,7 +85,7 @@ export class GameScene extends Phaser.Scene {
     });
 
     this.input.keyboard?.on("keydown-R", () => {
-      localStorage.removeItem("gate_link_progress_v1");
+      resetProgress();
       this.setMessage("Progress reset. Rebooting profile...");
       this.time.delayedCall(400, () => this.scene.restart());
     });
