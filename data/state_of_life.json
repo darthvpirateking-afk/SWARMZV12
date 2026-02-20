@@ -1,11 +1,9 @@
 {
-  "time_allocation": 2.6666666666666665,
-  "active_projects": 165,
-  "financial_flow": 0.005,
-  "commitment_load": 96,
+  "time_allocation": 2.7083333333333335,
+  "active_projects": 91,
+  "financial_flow": 0.005076923076923077,
+  "commitment_load": 91,
   "recent_outputs": [
-    "sovereign_dispatch:M-20260220-041836-7039615e",
-    "sovereign_dispatch:M-20260220-041836-cfe180d9",
     "sovereign_dispatch:M-20260220-041856-3b955b76",
     "sovereign_dispatch:M-20260220-041856-3250b203",
     "sovereign_dispatch:M-20260220-041955-8dd5e184",
@@ -13,10 +11,12 @@
     "sovereign_dispatch:M-20260220-042135-b40c2fdb",
     "sovereign_dispatch:M-20260220-042135-683568e1",
     "sovereign_dispatch:M-20260220-042630-0cdb3d0e",
-    "sovereign_dispatch:M-20260220-042630-9e5b6c8e"
+    "sovereign_dispatch:M-20260220-042630-9e5b6c8e",
+    "sovereign_dispatch:M-20260220-043055-8a0420a0",
+    "sovereign_dispatch:M-20260220-043055-b1cd8025"
   ],
-  "idle_vs_execution_ratio": 0.7272727272727273,
+  "idle_vs_execution_ratio": 0.7303370786516854,
   "strategy_variance": 0.0,
   "trend_vector": 0.0,
-  "last_updated": "2026-02-20T04:26:31.030333+00:00"
+  "last_updated": "2026-02-20T04:30:55.370987+00:00"
 }

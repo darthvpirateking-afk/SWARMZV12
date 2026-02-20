@@ -4,13 +4,6 @@
   "preferences": {},
   "mission_outcomes": [
     {
-      "mission_id": "test_m1",
-      "intent": "smoke",
-      "status": "SUCCESS",
-      "summary": "test summary",
-      "timestamp": "2026-02-20T02:41:23.033103+00:00Z"
-    },
-    {
       "mission_id": "test_ap",
       "intent": "smoke",
       "status": "SUCCESS",
@@ -352,9 +345,16 @@
       "status": "SUCCESS",
       "summary": "test",
       "timestamp": "2026-02-20T04:26:30.222018+00:00Z"
+    },
+    {
+      "mission_id": "test_m1",
+      "intent": "smoke",
+      "status": "SUCCESS",
+      "summary": "test summary",
+      "timestamp": "2026-02-20T04:30:55.223933+00:00Z"
     }
   ],
   "learned_constraints": [],
-  "version": 67,
-  "updated_at": "2026-02-20T04:26:30.222383+00:00Z"
+  "version": 68,
+  "updated_at": "2026-02-20T04:30:55.224014+00:00Z"
 }
