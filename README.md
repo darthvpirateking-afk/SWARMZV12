@@ -1,8 +1,8 @@
 # SWARMZ - Operator-Sovereign "Do Anything" System
 
-**License:** SWARMZ Source Available License (see `LICENSE`).
+**License:** Proprietary - All Rights Reserved (see `LICENSE`).
 
-**Copyright:** Copyright (c) 2026 SWARMZ. Commercial use, hosting, and resale prohibited unless explicitly licensed.
+**Copyright:** Copyright (c) 2026 SWARMZ. No use, copying, modification, distribution, hosting, resale, or derivative works without explicit written permission.
 
 ## Overview
 
