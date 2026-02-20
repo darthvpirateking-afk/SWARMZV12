@@ -8,6 +8,14 @@ version = "0.1.0"
 description = "SWARMZ runtime"
 readme = "README.md"
 requires-python = ">=3.10"
+dependencies = [
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.34.0",
+    "pydantic>=2.0.0",
+    "numpy>=2.1.0",
+    "PyYAML>=6.0.0",
+    "PyJWT>=2.11.0",
+]
 
 [tool.setuptools]
 include-package-data = false

@@ -2,7 +2,7 @@
 # Commercial use, hosting, and resale prohibited.
 # See LICENSE file for details.
 
-
+import logging
 import os
 import json
 import socket
@@ -20,6 +20,8 @@ from pydantic import BaseModel, Field
 from zoneinfo import ZoneInfo
 
 from contextlib import asynccontextmanager
+
+logger = logging.getLogger("swarmz.server")
 
 from swarmz_runtime.core.engine import SwarmzEngine
 from jsonl_utils import read_jsonl
@@ -381,7 +383,7 @@ def _load_operator_pin() -> Dict[str, Any]:
         pin_source = "generated"
         generated = True
         pin_file.write_text(pin)
-        print(f"[SWARMZ] Generated operator PIN; saved to {pin_file}")
+        logger.info("Generated operator PIN; saved to %s", pin_file)
 
     return {"pin": pin, "source": pin_source, "file": pin_file, "generated": generated}
 
@@ -1081,13 +1083,13 @@ def _file_in_ui(filename: str):
 try:
     from addons.api.guardrails_router import router as guardrails_router
 except ImportError:
-    print("Fallback: guardrails_router not imported")
+    logger.warning("Fallback: guardrails_router not imported")
     guardrails_router = None
 
 try:
     from swarmz_runtime.api.companion_state import companion_state
 except ImportError:
-    print("Fallback: companion_state not imported")
+    logger.warning("Fallback: companion_state not imported")
     def companion_state():
         return {"status": "Fallback companion state"}
 
