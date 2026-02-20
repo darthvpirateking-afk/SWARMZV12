@@ -7,5 +7,6 @@ recursive-exclude build *
 recursive-exclude dist *
 prune tests
 prune swarmz-mobile
+prune apps/gate-link
 prune build
 prune dist

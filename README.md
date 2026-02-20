@@ -76,6 +76,12 @@ All under your control.
 - 🚀 **Cross-Platform** - Windows, Linux, macOS, and Android (Termux)
 - 📦 **Easy Configuration** - JSON-based configuration
 
+## Runtime Boundary
+
+- `apps/gate-link` is an isolated game project for separate Play Store packaging.
+- Core SWARMZ backend/runtime builds and deploys do not load or bundle `apps/gate-link`.
+- Keep game release pipeline separate from SWARMZ runtime release pipeline.
+
 ## Quick Start
 
 ### Fastest Windows Start (Canonical)
