@@ -63,6 +63,26 @@ SWARMZ_OPERATING_MATRIX = {
 }
 
 
+FUTURE_CHANGE_VECTOR = {
+    "stability": "increases",
+    "anticipation": "emerges",
+    "parallelism": "expands",
+    "federation": "activates",
+    "operator_leverage": "compounds",
+}
+
+
+FUTURE_INVARIANTS = [
+    "doctrine",
+    "architecture",
+    "sovereignty",
+    "safety",
+    "determinism",
+    "event_driven_nature",
+    "immutable_history",
+]
+
+
 @dataclass
 class CharterDecision:
     mode: str
@@ -123,8 +143,18 @@ def doctrine_document() -> Dict[str, Any]:
         "system_primitives": SYSTEM_PRIMITIVES,
         "runtime_refactor_requirements": RUNTIME_REFACTOR_REQUIREMENTS,
         "operating_matrix": SWARMZ_OPERATING_MATRIX,
+        "future_change_vector": FUTURE_CHANGE_VECTOR,
+        "future_invariants": FUTURE_INVARIANTS,
         "primary_task": "control_change_flow",
         "primary_safety_mechanism": "immutable_audit + external_validation + replayability",
+    }
+
+
+def future_contract() -> Dict[str, Any]:
+    return {
+        "changes": FUTURE_CHANGE_VECTOR,
+        "does_not_change": FUTURE_INVARIANTS,
+        "constraint": "all future upgrades must preserve doctrine and deterministic event-driven immutable execution",
     }
 
 

@@ -7,6 +7,7 @@ from swarmz_runtime.core.operator_charter import (
     evaluate_change_flow,
     evaluate_operating_matrix,
     evaluate_prime_directive,
+    future_contract,
 )
 
 
@@ -51,6 +52,11 @@ def get_charter():
 @router.get("/charter/doctrine")
 def get_doctrine():
     return {"ok": True, "doctrine": doctrine_document()}
+
+
+@router.get("/charter/future-contract")
+def get_future_contract():
+    return {"ok": True, "future_contract": future_contract()}
 
 
 @router.post("/charter/evaluate")

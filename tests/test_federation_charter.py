@@ -142,6 +142,8 @@ def test_charter_doctrine_document_and_change_flow_eval(client):
     assert doc.status_code == 200
     payload = doc.json()["doctrine"]
     assert payload["system_primitives"]["truth"] == "immutable_event_log"
+    assert payload["future_change_vector"]["stability"] == "increases"
+    assert "immutable_history" in payload["future_invariants"]
 
     blocked = client.post(
         "/v1/charter/evaluate/change-flow",
@@ -177,6 +179,14 @@ def test_charter_doctrine_document_and_change_flow_eval(client):
     )
     assert aligned.status_code == 200
     assert aligned.json()["decision"]["allowed"] is True
+
+
+def test_charter_future_contract_endpoint(client):
+    resp = client.get("/v1/charter/future-contract")
+    assert resp.status_code == 200
+    body = resp.json()["future_contract"]
+    assert body["changes"]["parallelism"] == "expands"
+    assert "determinism" in body["does_not_change"]
 
 
 def test_charter_operating_matrix_eval(client):
