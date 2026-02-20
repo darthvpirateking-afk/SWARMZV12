@@ -91,6 +91,18 @@ All under your control.
 ./CREATE_SWARMZ_APP_ICON.ps1
 ```
 
+`RUN.ps1` and `RUN.cmd` now execute deterministic runtime preflight automatically via:
+
+```powershell
+python tools/swarmz_runtime_boot.py boot --activate
+```
+
+Manual shutdown marker command:
+
+```powershell
+python tools/swarmz_runtime_boot.py shutdown
+```
+
 Then double-click the `SWARMZ` icon on your desktop.
 
 ### Web Server (Recommended)

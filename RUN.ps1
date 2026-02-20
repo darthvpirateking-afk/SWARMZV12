@@ -52,6 +52,17 @@ if ($LASTEXITCODE -ne 0) {
 Write-Host "✓ Dependencies installed successfully" -ForegroundColor Green
 Write-Host ""
 
+# Runtime boot preflight
+Write-Host "Running SWARMZ runtime boot preflight..." -ForegroundColor Yellow
+python tools\swarmz_runtime_boot.py boot --activate
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "✗ ERROR: Runtime boot preflight failed" -ForegroundColor Red
+    Read-Host "Press Enter to exit"
+    exit 1
+}
+Write-Host "✓ Runtime preflight completed" -ForegroundColor Green
+Write-Host ""
+
 # Start the server
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host "Starting SWARMZ Server..." -ForegroundColor Cyan
@@ -65,3 +76,5 @@ if ($LASTEXITCODE -ne 0) {
     Write-Host "✗ ERROR: Server stopped with error code $LASTEXITCODE" -ForegroundColor Red
     Read-Host "Press Enter to exit"
 }
+
+python tools\swarmz_runtime_boot.py shutdown

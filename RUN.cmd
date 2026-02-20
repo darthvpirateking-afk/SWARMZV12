@@ -49,6 +49,17 @@ if %errorlevel% neq 0 (
 )
 echo.
 
+REM Runtime boot preflight
+echo Running SWARMZ runtime boot preflight...
+python tools\swarmz_runtime_boot.py boot --activate
+if %errorlevel% neq 0 (
+    echo ERROR: Runtime boot preflight failed
+    pause
+    exit /b 1
+)
+echo Runtime preflight completed
+echo.
+
 REM Start the server
 echo ========================================
 echo Starting SWARMZ Server...
@@ -62,3 +73,5 @@ if %errorlevel% neq 0 (
     echo ERROR: Server stopped with error code %errorlevel%
     pause
 )
+
+python tools\swarmz_runtime_boot.py shutdown

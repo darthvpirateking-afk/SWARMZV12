@@ -8,118 +8,6 @@
       "intent": "smoke",
       "status": "SUCCESS",
       "summary": "test summary",
-      "timestamp": "2026-02-19T09:02:48.213096+00:00Z"
-    },
-    {
-      "mission_id": "test_ap",
-      "intent": "smoke",
-      "status": "SUCCESS",
-      "summary": "test",
-      "timestamp": "2026-02-19T09:02:48.686969+00:00Z"
-    },
-    {
-      "mission_id": "test_m1",
-      "intent": "smoke",
-      "status": "SUCCESS",
-      "summary": "test summary",
-      "timestamp": "2026-02-20T02:30:22.447630+00:00Z"
-    },
-    {
-      "mission_id": "test_ap",
-      "intent": "smoke",
-      "status": "SUCCESS",
-      "summary": "test",
-      "timestamp": "2026-02-20T02:30:22.727357+00:00Z"
-    },
-    {
-      "mission_id": "test_m1",
-      "intent": "smoke",
-      "status": "SUCCESS",
-      "summary": "test summary",
-      "timestamp": "2026-02-20T02:30:54.517193+00:00Z"
-    },
-    {
-      "mission_id": "test_ap",
-      "intent": "smoke",
-      "status": "SUCCESS",
-      "summary": "test",
-      "timestamp": "2026-02-20T02:30:54.749322+00:00Z"
-    },
-    {
-      "mission_id": "test_m1",
-      "intent": "smoke",
-      "status": "SUCCESS",
-      "summary": "test summary",
-      "timestamp": "2026-02-20T02:31:05.710463+00:00Z"
-    },
-    {
-      "mission_id": "test_ap",
-      "intent": "smoke",
-      "status": "SUCCESS",
-      "summary": "test",
-      "timestamp": "2026-02-20T02:31:06.023047+00:00Z"
-    },
-    {
-      "mission_id": "test_m1",
-      "intent": "smoke",
-      "status": "SUCCESS",
-      "summary": "test summary",
-      "timestamp": "2026-02-20T02:31:34.393272+00:00Z"
-    },
-    {
-      "mission_id": "test_ap",
-      "intent": "smoke",
-      "status": "SUCCESS",
-      "summary": "test",
-      "timestamp": "2026-02-20T02:31:34.615853+00:00Z"
-    },
-    {
-      "mission_id": "test_m1",
-      "intent": "smoke",
-      "status": "SUCCESS",
-      "summary": "test summary",
-      "timestamp": "2026-02-20T02:33:49.319232+00:00Z"
-    },
-    {
-      "mission_id": "test_ap",
-      "intent": "smoke",
-      "status": "SUCCESS",
-      "summary": "test",
-      "timestamp": "2026-02-20T02:33:49.557010+00:00Z"
-    },
-    {
-      "mission_id": "test_m1",
-      "intent": "smoke",
-      "status": "SUCCESS",
-      "summary": "test summary",
-      "timestamp": "2026-02-20T02:34:00.113714+00:00Z"
-    },
-    {
-      "mission_id": "test_ap",
-      "intent": "smoke",
-      "status": "SUCCESS",
-      "summary": "test",
-      "timestamp": "2026-02-20T02:34:00.333158+00:00Z"
-    },
-    {
-      "mission_id": "test_m1",
-      "intent": "smoke",
-      "status": "SUCCESS",
-      "summary": "test summary",
-      "timestamp": "2026-02-20T02:41:10.596912+00:00Z"
-    },
-    {
-      "mission_id": "test_ap",
-      "intent": "smoke",
-      "status": "SUCCESS",
-      "summary": "test",
-      "timestamp": "2026-02-20T02:41:10.885654+00:00Z"
-    },
-    {
-      "mission_id": "test_m1",
-      "intent": "smoke",
-      "status": "SUCCESS",
-      "summary": "test summary",
       "timestamp": "2026-02-20T02:41:23.033103+00:00Z"
     },
     {
@@ -324,9 +212,149 @@
       "status": "SUCCESS",
       "summary": "test",
       "timestamp": "2026-02-20T03:39:47.471454+00:00Z"
+    },
+    {
+      "mission_id": "test_m1",
+      "intent": "smoke",
+      "status": "SUCCESS",
+      "summary": "test summary",
+      "timestamp": "2026-02-20T03:46:30.179080+00:00Z"
+    },
+    {
+      "mission_id": "test_ap",
+      "intent": "smoke",
+      "status": "SUCCESS",
+      "summary": "test",
+      "timestamp": "2026-02-20T03:46:30.415421+00:00Z"
+    },
+    {
+      "mission_id": "test_m1",
+      "intent": "smoke",
+      "status": "SUCCESS",
+      "summary": "test summary",
+      "timestamp": "2026-02-20T03:50:35.420501+00:00Z"
+    },
+    {
+      "mission_id": "test_ap",
+      "intent": "smoke",
+      "status": "SUCCESS",
+      "summary": "test",
+      "timestamp": "2026-02-20T03:50:35.660038+00:00Z"
+    },
+    {
+      "mission_id": "test_m1",
+      "intent": "smoke",
+      "status": "SUCCESS",
+      "summary": "test summary",
+      "timestamp": "2026-02-20T03:50:44.526151+00:00Z"
+    },
+    {
+      "mission_id": "test_ap",
+      "intent": "smoke",
+      "status": "SUCCESS",
+      "summary": "test",
+      "timestamp": "2026-02-20T03:50:44.752284+00:00Z"
+    },
+    {
+      "mission_id": "test_m1",
+      "intent": "smoke",
+      "status": "SUCCESS",
+      "summary": "test summary",
+      "timestamp": "2026-02-20T03:58:37.046834+00:00Z"
+    },
+    {
+      "mission_id": "test_ap",
+      "intent": "smoke",
+      "status": "SUCCESS",
+      "summary": "test",
+      "timestamp": "2026-02-20T03:58:37.265599+00:00Z"
+    },
+    {
+      "mission_id": "test_m1",
+      "intent": "smoke",
+      "status": "SUCCESS",
+      "summary": "test summary",
+      "timestamp": "2026-02-20T04:06:13.362926+00:00Z"
+    },
+    {
+      "mission_id": "test_ap",
+      "intent": "smoke",
+      "status": "SUCCESS",
+      "summary": "test",
+      "timestamp": "2026-02-20T04:06:13.592168+00:00Z"
+    },
+    {
+      "mission_id": "test_m1",
+      "intent": "smoke",
+      "status": "SUCCESS",
+      "summary": "test summary",
+      "timestamp": "2026-02-20T04:18:35.688091+00:00Z"
+    },
+    {
+      "mission_id": "test_ap",
+      "intent": "smoke",
+      "status": "SUCCESS",
+      "summary": "test",
+      "timestamp": "2026-02-20T04:18:35.934057+00:00Z"
+    },
+    {
+      "mission_id": "test_m1",
+      "intent": "smoke",
+      "status": "SUCCESS",
+      "summary": "test summary",
+      "timestamp": "2026-02-20T04:18:55.488244+00:00Z"
+    },
+    {
+      "mission_id": "test_ap",
+      "intent": "smoke",
+      "status": "SUCCESS",
+      "summary": "test",
+      "timestamp": "2026-02-20T04:18:55.712350+00:00Z"
+    },
+    {
+      "mission_id": "test_m1",
+      "intent": "smoke",
+      "status": "SUCCESS",
+      "summary": "test summary",
+      "timestamp": "2026-02-20T04:19:54.605510+00:00Z"
+    },
+    {
+      "mission_id": "test_ap",
+      "intent": "smoke",
+      "status": "SUCCESS",
+      "summary": "test",
+      "timestamp": "2026-02-20T04:19:54.829771+00:00Z"
+    },
+    {
+      "mission_id": "test_m1",
+      "intent": "smoke",
+      "status": "SUCCESS",
+      "summary": "test summary",
+      "timestamp": "2026-02-20T04:21:34.611366+00:00Z"
+    },
+    {
+      "mission_id": "test_ap",
+      "intent": "smoke",
+      "status": "SUCCESS",
+      "summary": "test",
+      "timestamp": "2026-02-20T04:21:34.833833+00:00Z"
+    },
+    {
+      "mission_id": "test_m1",
+      "intent": "smoke",
+      "status": "SUCCESS",
+      "summary": "test summary",
+      "timestamp": "2026-02-20T04:26:29.977338+00:00Z"
+    },
+    {
+      "mission_id": "test_ap",
+      "intent": "smoke",
+      "status": "SUCCESS",
+      "summary": "test",
+      "timestamp": "2026-02-20T04:26:30.222018+00:00Z"
     }
   ],
   "learned_constraints": [],
-  "version": 47,
-  "updated_at": "2026-02-20T03:39:47.471802+00:00Z"
+  "version": 67,
+  "updated_at": "2026-02-20T04:26:30.222383+00:00Z"
 }

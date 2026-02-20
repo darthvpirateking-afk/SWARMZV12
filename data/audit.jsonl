@@ -42,3 +42,57 @@
 {"ts": "2026-02-20T03:31:31.221365Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-033131-e4c0eb11"}
 {"ts": "2026-02-20T03:39:47.851488Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-033947-f0afc9c9"}
 {"ts": "2026-02-20T03:39:47.883813Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-033947-6c54fd1b"}
+{"ts": "2026-02-20T03:46:30.748213Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-034630-c5f12785"}
+{"ts": "2026-02-20T03:46:30.781366Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-034630-2337f121"}
+{"timestamp": "2026-02-20T03:46:34.963327Z", "event": "quarantine_blocked", "pending_count": 46, "total": 69, "success_rate": 0.0}
+{"timestamp": "2026-02-20T03:46:35.964904Z", "event": "quarantine_blocked", "pending_count": 46, "total": 69, "success_rate": 0.0}
+{"timestamp": "2026-02-20T03:46:36.968046Z", "event": "quarantine_blocked", "pending_count": 46, "total": 69, "success_rate": 0.0}
+{"timestamp": "2026-02-20T03:46:37.971385Z", "event": "quarantine_blocked", "pending_count": 46, "total": 69, "success_rate": 0.0}
+{"timestamp": "2026-02-20T03:46:38.973756Z", "event": "quarantine_blocked", "pending_count": 46, "total": 69, "success_rate": 0.0}
+{"timestamp": "2026-02-20T03:46:39.978627Z", "event": "quarantine_blocked", "pending_count": 46, "total": 69, "success_rate": 0.0}
+{"timestamp": "2026-02-20T03:46:40.984707Z", "event": "quarantine_blocked", "pending_count": 46, "total": 69, "success_rate": 0.0}
+{"timestamp": "2026-02-20T03:46:41.990796Z", "event": "quarantine_blocked", "pending_count": 46, "total": 69, "success_rate": 0.0}
+{"timestamp": "2026-02-20T03:46:42.997198Z", "event": "quarantine_blocked", "pending_count": 46, "total": 69, "success_rate": 0.0}
+{"timestamp": "2026-02-20T03:46:44.004998Z", "event": "quarantine_blocked", "pending_count": 46, "total": 69, "success_rate": 0.0}
+{"timestamp": "2026-02-20T03:46:45.007423Z", "event": "quarantine_blocked", "pending_count": 46, "total": 69, "success_rate": 0.0}
+{"timestamp": "2026-02-20T03:46:46.009357Z", "event": "quarantine_blocked", "pending_count": 46, "total": 69, "success_rate": 0.0}
+{"timestamp": "2026-02-20T03:46:47.014429Z", "event": "quarantine_blocked", "pending_count": 46, "total": 69, "success_rate": 0.0}
+{"timestamp": "2026-02-20T03:46:48.020287Z", "event": "quarantine_blocked", "pending_count": 46, "total": 69, "success_rate": 0.0}
+{"timestamp": "2026-02-20T03:46:49.026267Z", "event": "quarantine_blocked", "pending_count": 46, "total": 69, "success_rate": 0.0}
+{"timestamp": "2026-02-20T03:46:50.032179Z", "event": "quarantine_blocked", "pending_count": 46, "total": 69, "success_rate": 0.0}
+{"timestamp": "2026-02-20T03:46:51.037766Z", "event": "quarantine_blocked", "pending_count": 46, "total": 69, "success_rate": 0.0}
+{"timestamp": "2026-02-20T03:46:52.041666Z", "event": "quarantine_blocked", "pending_count": 46, "total": 69, "success_rate": 0.0}
+{"timestamp": "2026-02-20T03:46:53.044556Z", "event": "quarantine_blocked", "pending_count": 46, "total": 69, "success_rate": 0.0}
+{"timestamp": "2026-02-20T03:46:54.049287Z", "event": "quarantine_blocked", "pending_count": 46, "total": 69, "success_rate": 0.0}
+{"timestamp": "2026-02-20T03:46:55.055898Z", "event": "quarantine_blocked", "pending_count": 46, "total": 69, "success_rate": 0.0}
+{"timestamp": "2026-02-20T03:46:56.061574Z", "event": "quarantine_blocked", "pending_count": 46, "total": 69, "success_rate": 0.0}
+{"timestamp": "2026-02-20T03:46:57.065168Z", "event": "quarantine_blocked", "pending_count": 46, "total": 69, "success_rate": 0.0}
+{"timestamp": "2026-02-20T03:46:58.068786Z", "event": "quarantine_blocked", "pending_count": 46, "total": 69, "success_rate": 0.0}
+{"timestamp": "2026-02-20T03:46:59.070902Z", "event": "quarantine_blocked", "pending_count": 46, "total": 69, "success_rate": 0.0}
+{"timestamp": "2026-02-20T03:47:00.073798Z", "event": "quarantine_blocked", "pending_count": 46, "total": 69, "success_rate": 0.0}
+{"timestamp": "2026-02-20T03:47:01.079016Z", "event": "quarantine_blocked", "pending_count": 46, "total": 69, "success_rate": 0.0}
+{"timestamp": "2026-02-20T03:47:02.083560Z", "event": "quarantine_blocked", "pending_count": 46, "total": 69, "success_rate": 0.0}
+{"timestamp": "2026-02-20T03:47:03.085591Z", "event": "quarantine_blocked", "pending_count": 46, "total": 69, "success_rate": 0.0}
+{"timestamp": "2026-02-20T03:47:04.088034Z", "event": "quarantine_blocked", "pending_count": 46, "total": 69, "success_rate": 0.0}
+{"timestamp": "2026-02-20T03:47:05.091593Z", "event": "quarantine_blocked", "pending_count": 46, "total": 69, "success_rate": 0.0}
+{"timestamp": "2026-02-20T03:47:06.094593Z", "event": "quarantine_blocked", "pending_count": 46, "total": 69, "success_rate": 0.0}
+{"timestamp": "2026-02-20T03:47:07.099785Z", "event": "quarantine_blocked", "pending_count": 46, "total": 69, "success_rate": 0.0}
+{"timestamp": "2026-02-20T03:47:08.103151Z", "event": "quarantine_blocked", "pending_count": 46, "total": 69, "success_rate": 0.0}
+{"ts": "2026-02-20T03:50:36.061070Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-035036-92358afc"}
+{"ts": "2026-02-20T03:50:36.099871Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-035036-86fd7c4c"}
+{"ts": "2026-02-20T03:50:45.139020Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-035045-9d2e524f"}
+{"ts": "2026-02-20T03:50:45.174567Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-035045-aef86ec4"}
+{"ts": "2026-02-20T03:58:37.610530Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-035837-067d90f6"}
+{"ts": "2026-02-20T03:58:37.643294Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-035837-d4e02cfc"}
+{"ts": "2026-02-20T04:06:13.983493Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-040613-d2b50587"}
+{"ts": "2026-02-20T04:06:14.015885Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-040614-15fb19aa"}
+{"ts": "2026-02-20T04:18:36.340099Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-041836-7039615e"}
+{"ts": "2026-02-20T04:18:36.380778Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-041836-cfe180d9"}
+{"ts": "2026-02-20T04:18:56.087055Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-041856-3b955b76"}
+{"ts": "2026-02-20T04:18:56.121190Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-041856-3250b203"}
+{"ts": "2026-02-20T04:19:55.212916Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-041955-8dd5e184"}
+{"ts": "2026-02-20T04:19:55.246524Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-041955-74cd7aab"}
+{"ts": "2026-02-20T04:21:35.215196Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-042135-b40c2fdb"}
+{"ts": "2026-02-20T04:21:35.250951Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-042135-683568e1"}
+{"ts": "2026-02-20T04:26:30.650031Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-042630-0cdb3d0e"}
+{"ts": "2026-02-20T04:26:30.688696Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-042630-9e5b6c8e"}
