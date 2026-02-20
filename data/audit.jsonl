@@ -42,3 +42,7 @@
 {"ts": "2026-02-20T03:31:31.221365Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-033131-e4c0eb11"}
 {"ts": "2026-02-20T03:39:47.851488Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-033947-f0afc9c9"}
 {"ts": "2026-02-20T03:39:47.883813Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-033947-6c54fd1b"}
+{"ts": "2026-02-20T12:14:22.697948Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-121422-b4ab2256"}
+{"ts": "2026-02-20T12:14:22.713455Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-121422-cbc253e5"}
+{"ts": "2026-02-20T12:15:23.389195Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-121523-3c7b9adb"}
+{"ts": "2026-02-20T12:15:23.403732Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-121523-fe33d926"}

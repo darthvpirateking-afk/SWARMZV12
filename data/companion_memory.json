@@ -324,9 +324,23 @@
       "status": "SUCCESS",
       "summary": "test",
       "timestamp": "2026-02-20T03:39:47.471454+00:00Z"
+    },
+    {
+      "mission_id": "test_m1",
+      "intent": "smoke",
+      "status": "SUCCESS",
+      "summary": "test summary",
+      "timestamp": "2026-02-20T12:14:22.588310+00:00Z"
+    },
+    {
+      "mission_id": "test_m1",
+      "intent": "smoke",
+      "status": "SUCCESS",
+      "summary": "test summary",
+      "timestamp": "2026-02-20T12:15:23.297715+00:00Z"
     }
   ],
   "learned_constraints": [],
-  "version": 47,
-  "updated_at": "2026-02-20T03:39:47.471802+00:00Z"
+  "version": 49,
+  "updated_at": "2026-02-20T12:15:23.297795+00:00Z"
 }
