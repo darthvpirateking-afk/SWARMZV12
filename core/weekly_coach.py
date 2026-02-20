@@ -4,12 +4,13 @@
 # SWARMZ Weekly Coach
 # Purpose: Generate actionable weekly suggestions.
 
+
 class WeeklyCoach:
     def generate_weekly_coaching(self):
         try:
             # Example coaching logic
             return []  # Default fail-open
-        except Exception as e:
+        except Exception:
             return []  # Fail-open: Return empty suggestions
 
     def get_weekly_summary(self):

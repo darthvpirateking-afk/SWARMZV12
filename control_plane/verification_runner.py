@@ -63,8 +63,15 @@ STATUS_EXPIRED = "EXPIRED"
 STATUS_CANCELLED = "CANCELLED"
 STATUS_DEADLETTERED = "DEADLETTERED"
 
-_TERMINAL = frozenset({STATUS_PASSED, STATUS_FAILED, STATUS_EXPIRED,
-                       STATUS_CANCELLED, STATUS_DEADLETTERED})
+_TERMINAL = frozenset(
+    {
+        STATUS_PASSED,
+        STATUS_FAILED,
+        STATUS_EXPIRED,
+        STATUS_CANCELLED,
+        STATUS_DEADLETTERED,
+    }
+)
 
 # Default limits
 DEFAULT_MAX_ATTEMPTS = 3
@@ -85,6 +92,7 @@ _STATE_JSONL = os.path.join(_DIR, "data", "state.jsonl")
 # Helpers
 # ---------------------------------------------------------------------------
 
+
 def _sha256(*parts: str) -> str:
     """Deterministic hash of pipe-joined string parts."""
     return hashlib.sha256("|".join(parts).encode()).hexdigest()
@@ -98,8 +106,7 @@ def _now_iso() -> str:
     return _now_utc().isoformat()
 
 
-def _make_dedupe_key(decision_id: str, action_id: str,
-                     verify_spec_hash: str) -> str:
+def _make_dedupe_key(decision_id: str, action_id: str, verify_spec_hash: str) -> str:
     return _sha256(decision_id, action_id, verify_spec_hash)
 
 
@@ -137,6 +144,7 @@ def _read_state_records_from_offset(
 # In-memory job store (dev/test fallback – no Postgres required)
 # ---------------------------------------------------------------------------
 
+
 class _InMemoryJobStore:
     """Dict-backed job store used when Postgres is unavailable.
 
@@ -145,10 +153,11 @@ class _InMemoryJobStore:
     """
 
     def __init__(self):
-        self._jobs: dict[str, dict] = {}          # job_id → job
-        self._dedupe: dict[str, str] = {}          # dedupe_key → job_id
+        self._jobs: dict[str, dict] = {}  # job_id → job
+        self._dedupe: dict[str, str] = {}  # dedupe_key → job_id
         self._outcomes: list[dict] = []
         import threading
+
         self._lock = threading.Lock()
 
     # -- enqueue (idempotent) -----------------------------------------------
@@ -188,8 +197,9 @@ class _InMemoryJobStore:
 
     # -- claim due jobs -----------------------------------------------------
 
-    def claim_due(self, runner_id: str, lease_seconds: int,
-                  now: datetime | None = None) -> list[dict]:
+    def claim_due(
+        self, runner_id: str, lease_seconds: int, now: datetime | None = None
+    ) -> list[dict]:
         now = now or _now_utc()
         claimed: list[dict] = []
         with self._lock:
@@ -216,17 +226,23 @@ class _InMemoryJobStore:
 
     # -- finalize -----------------------------------------------------------
 
-    def finalize(self, job_id: str, runner_id: str, status: str,
-                 event_type: str, error: str | None = None) -> bool:
+    def finalize(
+        self,
+        job_id: str,
+        runner_id: str,
+        status: str,
+        event_type: str,
+        error: str | None = None,
+    ) -> bool:
         """Set final outcome (exactly-once guard)."""
         with self._lock:
             j = self._jobs.get(job_id)
             if not j:
                 return False
             if j.get("final_outcome_emitted_at"):
-                return False          # already finalized
+                return False  # already finalized
             if j.get("lease_owner") != runner_id:
-                return False          # not our lease
+                return False  # not our lease
             j["status"] = status
             j["final_status"] = status
             j["final_outcome_emitted_at"] = _now_iso()
@@ -238,14 +254,15 @@ class _InMemoryJobStore:
 
     # -- rollback guard -----------------------------------------------------
 
-    def mark_rollback_triggered(self, job_id: str, runner_id: str,
-                                rollback_action_id: str) -> bool:
+    def mark_rollback_triggered(
+        self, job_id: str, runner_id: str, rollback_action_id: str
+    ) -> bool:
         with self._lock:
             j = self._jobs.get(job_id)
             if not j:
                 return False
             if j.get("rollback_triggered_at"):
-                return False          # already triggered
+                return False  # already triggered
             if j.get("lease_owner") != runner_id:
                 return False
             j["rollback_triggered_at"] = _now_iso()
@@ -255,8 +272,7 @@ class _InMemoryJobStore:
 
     # -- record rollback result ---------------------------------------------
 
-    def record_rollback_result(self, rollback_action_id: str,
-                               result: dict) -> bool:
+    def record_rollback_result(self, rollback_action_id: str, result: dict) -> bool:
         with self._lock:
             for j in self._jobs.values():
                 if j.get("rollback_action_id") == rollback_action_id:
@@ -267,10 +283,10 @@ class _InMemoryJobStore:
 
     # -- dead-letter --------------------------------------------------------
 
-    def dead_letter(self, job_id: str, runner_id: str,
-                    error: str) -> bool:
-        return self.finalize(job_id, runner_id, STATUS_DEADLETTERED,
-                             "DEADLETTERED", error=error)
+    def dead_letter(self, job_id: str, runner_id: str, error: str) -> bool:
+        return self.finalize(
+            job_id, runner_id, STATUS_DEADLETTERED, "DEADLETTERED", error=error
+        )
 
     # -- append outcome -----------------------------------------------------
 
@@ -285,8 +301,11 @@ class _InMemoryJobStore:
 
     def pending_count(self) -> int:
         with self._lock:
-            return sum(1 for j in self._jobs.values()
-                       if j["status"] in (STATUS_QUEUED, STATUS_WAITING))
+            return sum(
+                1
+                for j in self._jobs.values()
+                if j["status"] in (STATUS_QUEUED, STATUS_WAITING)
+            )
 
     def stats(self) -> dict[str, int]:
         with self._lock:
@@ -299,6 +318,7 @@ class _InMemoryJobStore:
 # ---------------------------------------------------------------------------
 # Postgres-backed job store
 # ---------------------------------------------------------------------------
+
 
 class _PgJobStore:
     """Postgres-backed job store using asyncpg.
@@ -328,8 +348,11 @@ class _PgJobStore:
                 ON CONFLICT (dedupe_key) DO NOTHING
                 RETURNING job_id, status, created_at
                 """,
-                job["dedupe_key"], job["decision_id"], job["action_id"],
-                job["action_type"], job.get("config_hash", ""),
+                job["dedupe_key"],
+                job["decision_id"],
+                job["action_id"],
+                job["action_type"],
+                job.get("config_hash", ""),
                 job.get("trace_id"),
                 datetime.fromisoformat(job["selected_at"]),
                 datetime.fromisoformat(job["deadline_at"]),
@@ -344,12 +367,12 @@ class _PgJobStore:
             )
             if row:
                 job["job_id"] = str(row["job_id"])
-                await conn.execute("SELECT pg_notify('vr_jobs', $1)",
-                                   job["job_id"])
+                await conn.execute("SELECT pg_notify('vr_jobs', $1)", job["job_id"])
             else:
                 existing = await conn.fetchrow(
-                    "SELECT job_id FROM verification_jobs "
-                    "WHERE dedupe_key = $1", job["dedupe_key"])
+                    "SELECT job_id FROM verification_jobs " "WHERE dedupe_key = $1",
+                    job["dedupe_key"],
+                )
                 job["job_id"] = str(existing["job_id"]) if existing else None
         return job
 
@@ -359,13 +382,15 @@ class _PgJobStore:
         async with self._pool.acquire() as conn:
             row = await conn.fetchrow(
                 "SELECT MIN(deadline_at) AS d FROM verification_jobs "
-                "WHERE status IN ('QUEUED','WAITING')")
+                "WHERE status IN ('QUEUED','WAITING')"
+            )
             return row["d"] if row and row["d"] else None
 
     # -- claim due jobs (SKIP LOCKED) ---------------------------------------
 
-    async def claim_due(self, runner_id: str, lease_seconds: int,
-                        now: datetime | None = None) -> list[dict]:
+    async def claim_due(
+        self, runner_id: str, lease_seconds: int, now: datetime | None = None
+    ) -> list[dict]:
         now = now or _now_utc()
         lease_until = now + timedelta(seconds=lease_seconds)
         async with self._pool.acquire() as conn:
@@ -387,13 +412,23 @@ class _PgJobStore:
                      FOR UPDATE SKIP LOCKED
                  )
                  RETURNING *
-                """, runner_id, lease_until, now)
+                """,
+                runner_id,
+                lease_until,
+                now,
+            )
             return [dict(r) for r in rows]
 
     # -- finalize (exactly-once) --------------------------------------------
 
-    async def finalize(self, job_id: str, runner_id: str, status: str,
-                       event_type: str, error: str | None = None) -> bool:
+    async def finalize(
+        self,
+        job_id: str,
+        runner_id: str,
+        status: str,
+        event_type: str,
+        error: str | None = None,
+    ) -> bool:
         async with self._pool.acquire() as conn:
             result = await conn.execute(
                 """
@@ -406,13 +441,20 @@ class _PgJobStore:
                  WHERE job_id = $1::uuid
                    AND lease_owner = $2
                    AND final_outcome_emitted_at IS NULL
-                """, job_id, runner_id, status, event_type, error)
+                """,
+                job_id,
+                runner_id,
+                status,
+                event_type,
+                error,
+            )
             return result == "UPDATE 1"
 
     # -- rollback guard (exactly-once) --------------------------------------
 
-    async def mark_rollback_triggered(self, job_id: str, runner_id: str,
-                                      rollback_action_id: str) -> bool:
+    async def mark_rollback_triggered(
+        self, job_id: str, runner_id: str, rollback_action_id: str
+    ) -> bool:
         async with self._pool.acquire() as conn:
             result = await conn.execute(
                 """
@@ -422,29 +464,36 @@ class _PgJobStore:
                  WHERE job_id = $1::uuid
                    AND lease_owner = $2
                    AND rollback_triggered_at IS NULL
-                """, job_id, runner_id, rollback_action_id)
+                """,
+                job_id,
+                runner_id,
+                rollback_action_id,
+            )
             return result == "UPDATE 1"
 
     # -- record rollback result ---------------------------------------------
 
-    async def record_rollback_result(self, rollback_action_id: str,
-                                     result: dict) -> bool:
+    async def record_rollback_result(
+        self, rollback_action_id: str, result: dict
+    ) -> bool:
         async with self._pool.acquire() as conn:
             res = await conn.execute(
                 """
                 UPDATE verification_jobs
                    SET target = target || $2::jsonb
                  WHERE rollback_action_id = $1
-                """, rollback_action_id,
-                json.dumps({"rollback_result": result}))
+                """,
+                rollback_action_id,
+                json.dumps({"rollback_result": result}),
+            )
             return res == "UPDATE 1"
 
     # -- dead-letter --------------------------------------------------------
 
-    async def dead_letter(self, job_id: str, runner_id: str,
-                          error: str) -> bool:
-        return await self.finalize(job_id, runner_id, STATUS_DEADLETTERED,
-                                   "DEADLETTERED", error=error)
+    async def dead_letter(self, job_id: str, runner_id: str, error: str) -> bool:
+        return await self.finalize(
+            job_id, runner_id, STATUS_DEADLETTERED, "DEADLETTERED", error=error
+        )
 
     # -- append outcome (append-only ledger) --------------------------------
 
@@ -456,9 +505,12 @@ class _PgJobStore:
                     (job_id, decision_id, action_id, status, payload)
                 VALUES ($1::uuid, $2, $3, $4, $5)
                 """,
-                outcome["job_id"], outcome["decision_id"],
-                outcome["action_id"], outcome["status"],
-                json.dumps(outcome.get("payload", {})))
+                outcome["job_id"],
+                outcome["decision_id"],
+                outcome["action_id"],
+                outcome["status"],
+                json.dumps(outcome.get("payload", {})),
+            )
 
     # -- query helpers ------------------------------------------------------
 
@@ -466,20 +518,22 @@ class _PgJobStore:
         async with self._pool.acquire() as conn:
             row = await conn.fetchrow(
                 "SELECT count(*) AS c FROM verification_jobs "
-                "WHERE status IN ('QUEUED','WAITING')")
+                "WHERE status IN ('QUEUED','WAITING')"
+            )
             return row["c"]
 
     async def stats(self) -> dict[str, int]:
         async with self._pool.acquire() as conn:
             rows = await conn.fetch(
-                "SELECT status, count(*) AS c FROM verification_jobs "
-                "GROUP BY status")
+                "SELECT status, count(*) AS c FROM verification_jobs " "GROUP BY status"
+            )
             return {r["status"]: r["c"] for r in rows}
 
 
 # ---------------------------------------------------------------------------
 # Delta evaluator
 # ---------------------------------------------------------------------------
+
 
 class DeltaEvaluator:
     """Evaluates verification metric deltas from ``state.jsonl``.
@@ -502,7 +556,8 @@ class DeltaEvaluator:
         # Read records after baseline offset
         records = _read_state_records_from_offset(offset, self._path)
         metric_vals = [
-            r["value"] for r in records
+            r["value"]
+            for r in records
             if r.get("variable") == metric and r.get("value") is not None
         ]
 
@@ -546,6 +601,7 @@ class DeltaEvaluator:
 # VerificationRunner (unified: in-memory or Postgres)
 # ---------------------------------------------------------------------------
 
+
 class VerificationRunner:
     """Verifies executed actions and triggers rollback on failure.
 
@@ -579,13 +635,17 @@ class VerificationRunner:
         self._lease_seconds = lease_seconds
         self._decision_logger = decision_logger or DecisionLogger()
         self._evaluator = DeltaEvaluator(
-            state_path=store.path if hasattr(store, 'path') else _STATE_JSONL
+            state_path=store.path if hasattr(store, "path") else _STATE_JSONL
         )
 
         # Metrics counters
         self._metrics: dict[str, int] = {
-            "enqueued": 0, "passed": 0, "failed": 0,
-            "expired": 0, "deadlettered": 0, "rollbacks": 0,
+            "enqueued": 0,
+            "passed": 0,
+            "failed": 0,
+            "expired": 0,
+            "deadlettered": 0,
+            "rollbacks": 0,
         }
 
         # Choose job store backend
@@ -620,8 +680,7 @@ class VerificationRunner:
         dedupe_key = _make_dedupe_key(decision_id, action_id, spec_hash)
 
         now = _now_utc()
-        deadline = now + timedelta(
-            seconds=vspec.get("deadline_seconds", 30))
+        deadline = now + timedelta(seconds=vspec.get("deadline_seconds", 30))
 
         baseline_offset = _state_file_offset(self._evaluator._path)
         baseline_value = self._state.get_value(vspec["metric"])
@@ -665,14 +724,15 @@ class VerificationRunner:
             return
         rb_aid = result.get("action_id", "")
         if self._async_mode:
-            asyncio.ensure_future(
-                self._jobs.record_rollback_result(rb_aid, result))
+            asyncio.ensure_future(self._jobs.record_rollback_result(rb_aid, result))
         else:
             self._jobs.record_rollback_result(rb_aid, result)
         # Defer event emission to avoid re-entrant lock in EventDebouncer
         import threading
+
         threading.Timer(
-            0, self._bus.publish,
+            0,
+            self._bus.publish,
             args=("ROLLBACK_RESULT_RECORDED", result),
         ).start()
 
@@ -683,12 +743,10 @@ class VerificationRunner:
     def check_pending(self):
         """Claim and evaluate all due jobs (synchronous, in-process mode)."""
         if self._async_mode:
-            raise RuntimeError(
-                "Use run_async() for Postgres-backed mode")
+            raise RuntimeError("Use run_async() for Postgres-backed mode")
 
         now = _now_utc()
-        claimed = self._jobs.claim_due(
-            self._runner_id, self._lease_seconds, now)
+        claimed = self._jobs.claim_due(self._runner_id, self._lease_seconds, now)
 
         for job in claimed:
             max_att = job.get("max_attempts", self._max_attempts)
@@ -737,7 +795,8 @@ class VerificationRunner:
         rb_action_id = f"rb-{job['job_id']}-{uuid.uuid4().hex[:8]}"
 
         marked = self._jobs.mark_rollback_triggered(
-            job["job_id"], self._runner_id, rb_action_id)
+            job["job_id"], self._runner_id, rb_action_id
+        )
         if not marked:
             return  # Already triggered
 
@@ -762,8 +821,7 @@ class VerificationRunner:
     # Decision log + calibration
     # ------------------------------------------------------------------
 
-    def _build_outcome_payload(self, job: dict, result: dict,
-                               outcome: str) -> dict:
+    def _build_outcome_payload(self, job: dict, result: dict, outcome: str) -> dict:
         spec = job["verify_spec"]
         return {
             "job_id": job["job_id"],
@@ -787,18 +845,20 @@ class VerificationRunner:
         }
 
     def _log_decision(self, job: dict, payload: dict, outcome: str):
-        self._decision_logger.log({
-            "event": outcome,
-            "job_id": job["job_id"],
-            "action_id": job["action_id"],
-            "decision_id": job["decision_id"],
-            "config_hash": job.get("config_hash", ""),
-            "outcome": outcome,
-            "metric": payload.get("metric"),
-            "baseline": payload.get("baseline"),
-            "actual": payload.get("actual"),
-            "delta": payload.get("delta"),
-        })
+        self._decision_logger.log(
+            {
+                "event": outcome,
+                "job_id": job["job_id"],
+                "action_id": job["action_id"],
+                "decision_id": job["decision_id"],
+                "config_hash": job.get("config_hash", ""),
+                "outcome": outcome,
+                "metric": payload.get("metric"),
+                "baseline": payload.get("baseline"),
+                "actual": payload.get("actual"),
+                "delta": payload.get("delta"),
+            }
+        )
 
     def _emit_calibration(self, job: dict, payload: dict, outcome: str):
         cal_id = _sha256(
@@ -835,8 +895,7 @@ class VerificationRunner:
         heartbeat = {
             "runner_id": self._runner_id,
             "time": _now_iso(),
-            "pending": stats.get(STATUS_QUEUED, 0)
-                       + stats.get(STATUS_WAITING, 0),
+            "pending": stats.get(STATUS_QUEUED, 0) + stats.get(STATUS_WAITING, 0),
             "passed": self._metrics["passed"],
             "failed": self._metrics["failed"],
             "deadlettered": self._metrics["deadlettered"],
@@ -861,7 +920,7 @@ class VerificationRunner:
             raise RuntimeError("run_async requires pg_pool")
 
         try:
-            import asyncpg
+            import asyncpg  # noqa: F401
         except ImportError:
             raise RuntimeError("asyncpg is required for Postgres mode")
 
@@ -876,22 +935,21 @@ class VerificationRunner:
             while True:
                 next_dl = await self._jobs.next_deadline()
                 if next_dl:
-                    wait_secs = max(
-                        0, (next_dl - _now_utc()).total_seconds())
+                    wait_secs = max(0, (next_dl - _now_utc()).total_seconds())
                 else:
                     wait_secs = HEARTBEAT_INTERVAL_SECONDS
 
                 # Sleep until deadline or wakeup
                 self._wakeup.clear()
                 try:
-                    await asyncio.wait_for(
-                        self._wakeup.wait(), timeout=wait_secs)
+                    await asyncio.wait_for(self._wakeup.wait(), timeout=wait_secs)
                 except asyncio.TimeoutError:
                     pass
 
                 # Claim and process due jobs
                 claimed = await self._jobs.claim_due(
-                    self._runner_id, self._lease_seconds)
+                    self._runner_id, self._lease_seconds
+                )
                 for job in claimed:
                     if job["attempts"] > self._max_attempts:
                         await self._async_dead_letter(job)
@@ -917,19 +975,24 @@ class VerificationRunner:
         payload = self._build_outcome_payload(job, result, outcome_status)
 
         finalized = await self._jobs.finalize(
-            str(job["job_id"]), self._runner_id,
-            outcome_status, event_type,
-            error=result.get("failure_reason"))
+            str(job["job_id"]),
+            self._runner_id,
+            outcome_status,
+            event_type,
+            error=result.get("failure_reason"),
+        )
         if not finalized:
             return
 
-        await self._jobs.append_outcome({
-            "job_id": str(job["job_id"]),
-            "decision_id": job["decision_id"],
-            "action_id": job["action_id"],
-            "status": outcome_status,
-            "payload": payload,
-        })
+        await self._jobs.append_outcome(
+            {
+                "job_id": str(job["job_id"]),
+                "decision_id": job["decision_id"],
+                "action_id": job["action_id"],
+                "status": outcome_status,
+                "payload": payload,
+            }
+        )
 
         self._bus.publish(event_type, payload)
         self._vstore.log(payload)
@@ -945,15 +1008,19 @@ class VerificationRunner:
     async def _async_dead_letter(self, job: dict):
         reason = "max_attempts_exceeded"
         success = await self._jobs.dead_letter(
-            str(job["job_id"]), self._runner_id, reason)
+            str(job["job_id"]), self._runner_id, reason
+        )
         if not success:
             return
         self._metrics["deadlettered"] += 1
-        self._bus.publish("DEADLETTERED", {
-            "job_id": str(job["job_id"]),
-            "action_id": job["action_id"],
-            "reason": reason,
-        })
+        self._bus.publish(
+            "DEADLETTERED",
+            {
+                "job_id": str(job["job_id"]),
+                "action_id": job["action_id"],
+                "reason": reason,
+            },
+        )
 
     # ------------------------------------------------------------------
     # Properties
@@ -972,19 +1039,23 @@ class VerificationRunner:
 # CLI entry-point
 # ---------------------------------------------------------------------------
 
+
 def main():
-    parser = argparse.ArgumentParser(
-        description="Swarmz Verification Runner Service")
+    parser = argparse.ArgumentParser(description="Swarmz Verification Runner Service")
     parser.add_argument(
-        "--pg-dsn", default=os.environ.get("VR_PG_DSN"),
-        help="Postgres DSN (default: $VR_PG_DSN).  "
-             "Omit for in-process mode.")
+        "--pg-dsn",
+        default=os.environ.get("VR_PG_DSN"),
+        help="Postgres DSN (default: $VR_PG_DSN).  " "Omit for in-process mode.",
+    )
     parser.add_argument(
-        "--loop", action="store_true",
-        help="Run continuously (in-process mode)")
+        "--loop", action="store_true", help="Run continuously (in-process mode)"
+    )
     parser.add_argument(
-        "--interval", type=float, default=2.0,
-        help="Check interval in seconds (in-process mode)")
+        "--interval",
+        type=float,
+        default=2.0,
+        help="Check interval in seconds (in-process mode)",
+    )
     args = parser.parse_args()
 
     bus = EventDebouncer(window=0.5)
@@ -995,16 +1066,15 @@ def main():
     if args.pg_dsn:
         # Postgres-backed async mode
         import asyncio
+
         try:
             import asyncpg
         except ImportError:
-            sys.exit("asyncpg is required for Postgres mode: "
-                     "pip install asyncpg")
+            sys.exit("asyncpg is required for Postgres mode: " "pip install asyncpg")
 
         async def _run():
             pool = await asyncpg.create_pool(args.pg_dsn)
-            runner = VerificationRunner(
-                store, vstore, bus, adapter, pg_pool=pool)
+            runner = VerificationRunner(store, vstore, bus, adapter, pg_pool=pool)
             await runner.run_async()
 
         print("[verify] starting Postgres-backed async scheduler")
@@ -1029,4 +1099,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

@@ -186,5 +186,5 @@ def pwa_manifest():
 @router.get("/pwa/sw.js")
 def pwa_sw():
     from starlette.responses import Response
-    return Response(content=_SW_JS, media_type="application/javascript")
 
+    return Response(content=_SW_JS, media_type="application/javascript")

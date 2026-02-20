@@ -18,7 +18,6 @@ from typing import Any, Dict, List
 
 from swarmz_runtime.storage.infra_state import append_infra_event, load_infra_events
 
-
 _METRIC_FIELDS = ("cpu", "memory", "gpu", "disk", "net_rx", "net_tx")
 
 
@@ -86,7 +85,9 @@ def build_infra_overview(limit: int = 500) -> Dict[str, Any]:
     for node_id, samples in per_node.items():
         agg: Dict[str, Any] = {"node_id": node_id, "samples": len(samples)}
         for field in _METRIC_FIELDS:
-            values = [s[field] for s in samples if isinstance(s.get(field), (int, float))]
+            values = [
+                s[field] for s in samples if isinstance(s.get(field), (int, float))
+            ]
             if values:
                 agg[f"avg_{field}"] = sum(values) / len(values)
         nodes_summary.append(agg)
@@ -97,4 +98,3 @@ def build_infra_overview(limit: int = 500) -> Dict[str, Any]:
         "total_nodes": len(nodes_summary),
         "last_ts": last_ts,
     }
-

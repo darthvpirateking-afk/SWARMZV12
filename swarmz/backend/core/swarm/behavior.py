@@ -1,6 +1,7 @@
 # behavior.py
 # Executes unit behaviors.
 
+
 class BehaviorEngine:
     def execute_behavior(self, unit, behavior):
         """Execute a behavior for a unit."""

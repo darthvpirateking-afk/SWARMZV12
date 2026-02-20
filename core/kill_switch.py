@@ -8,12 +8,14 @@ Implements the Kill Switch + Safe Halt layer to ensure safe shutdown.
 import os
 import sys
 
+
 def activate_kill_switch():
     """
     Activates the kill switch to halt all operations.
     """
     print("Kill switch activated. Halting all operations.")
     sys.exit(1)
+
 
 def safe_halt():
     """

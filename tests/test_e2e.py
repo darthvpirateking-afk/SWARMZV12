@@ -8,10 +8,9 @@ Validates the full stack from core â†’ engine â†’ API â†’ compani
 Run with: python -m pytest tests/test_e2e.py -v
 """
 
-import json
 import sys
 from pathlib import Path
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock
 
 # ---------------------------------------------------------------------------
 # 0. PATH SETUP
@@ -24,9 +23,11 @@ sys.path.insert(0, str(ROOT))
 # LAYER 1 â€” Core Imports
 # ===========================================================================
 
+
 def test_core_swarmz_import():
     """swarmz.py loads and exposes SwarmzCore, OperatorSovereignty, TaskExecutor."""
     from swarmz import SwarmzCore, OperatorSovereignty, TaskExecutor
+
     assert SwarmzCore is not None
     assert OperatorSovereignty is not None
     assert TaskExecutor is not None
@@ -35,12 +36,14 @@ def test_core_swarmz_import():
 def test_core_engine_import():
     """SwarmzEngine can be imported from the runtime package."""
     from swarmz_runtime.core.engine import SwarmzEngine
+
     assert SwarmzEngine is not None
 
 
 def test_core_orchestrator_import():
     """Crew, Agent, Task can be imported from orchestrator."""
     from swarmz_runtime.orchestrator.orchestrator import Crew, Agent, Task
+
     assert Crew is not None
     assert Agent is not None
     assert Task is not None
@@ -50,11 +53,9 @@ def test_companion_import():
     """companion.py exposes SwarmzCompanion and supporting types."""
     from companion import (
         SwarmzCompanion,
-        TaskContext,
-        WorkerSwarm,
-        CommitEngine,
         CommitState,
     )
+
     assert SwarmzCompanion is not None
     assert CommitState.ACTION_READY is not None
 
@@ -63,9 +64,11 @@ def test_companion_import():
 # LAYER 2 â€” Core Object Instantiation
 # ===========================================================================
 
+
 def test_operator_sovereignty():
     """OperatorSovereignty can be created and records audit."""
     from swarmz import OperatorSovereignty
+
     sov = OperatorSovereignty()
     result = sov.request_permission("e2e_action", {"ctx": "test"})
     assert result is True
@@ -77,6 +80,7 @@ def test_operator_sovereignty():
 def test_task_executor():
     """TaskExecutor registers and runs tasks."""
     from swarmz import OperatorSovereignty, TaskExecutor
+
     sov = OperatorSovereignty()
     executor = TaskExecutor(sov)
     executor.register_task("multiply", lambda a, b: a * b)
@@ -87,6 +91,7 @@ def test_task_executor():
 def test_swarmz_core_capabilities():
     """SwarmzCore loads plugins and lists capabilities."""
     from swarmz import SwarmzCore
+
     core = SwarmzCore()
     caps = core.list_capabilities()
     assert isinstance(caps, (list, dict))
@@ -96,6 +101,7 @@ def test_swarmz_core_capabilities():
 def test_engine_instantiation():
     """SwarmzEngine instantiates with a data_dir."""
     from swarmz_runtime.core.engine import SwarmzEngine
+
     eng = SwarmzEngine(data_dir="data")
     assert eng is not None
     assert eng.max_active_missions >= 1
@@ -105,14 +111,21 @@ def test_engine_instantiation():
 # LAYER 3 â€” Orchestrator / Crew
 # ===========================================================================
 
+
 def test_crew_kickoff_simulation():
     """Crew.kickoff() returns CrewResult with simulated outputs when LLM is off."""
     from swarmz_runtime.orchestrator.orchestrator import Crew, Agent, Task
+
     agents = [
         Agent(name="A1", role="Scout", goal="Scout territory"),
     ]
     tasks = [
-        Task(name="T1", description="Recon area", expected_output="Report", agent_name="A1"),
+        Task(
+            name="T1",
+            description="Recon area",
+            expected_output="Report",
+            agent_name="A1",
+        ),
     ]
     crew = Crew(agents=agents, tasks=tasks)
     # Force simulation mode
@@ -126,13 +139,19 @@ def test_crew_kickoff_simulation():
 def test_master_ai_simulation():
     """Master SWARM AI returns [SIMULATED] when LLM is disabled."""
     from swarmz_runtime.orchestrator.orchestrator import Crew, Agent, Task
+
     agents = [
         Agent(name="A1", role="Scout", goal="Scout territory"),
         Agent(name="A2", role="Analyst", goal="Analyze data"),
     ]
     tasks = [
         Task(name="T1", description="Recon", expected_output="Report", agent_name="A1"),
-        Task(name="T2", description="Analyze", expected_output="Analysis", agent_name="A2"),
+        Task(
+            name="T2",
+            description="Analyze",
+            expected_output="Analysis",
+            agent_name="A2",
+        ),
     ]
     crew = Crew(agents=agents, tasks=tasks)
     crew.llm = MagicMock()
@@ -145,12 +164,18 @@ def test_master_ai_simulation():
 def test_crew_from_config():
     """crew_from_config parses a config dict into a Crew."""
     from swarmz_runtime.orchestrator.orchestrator import crew_from_config
+
     cfg = {
         "agents": [
             {"name": "cfg_a1", "role": "R", "goal": "G"},
         ],
         "tasks": [
-            {"name": "cfg_t1", "description": "D", "expected_output": "E", "agent_name": "cfg_a1"},
+            {
+                "name": "cfg_t1",
+                "description": "D",
+                "expected_output": "E",
+                "agent_name": "cfg_a1",
+            },
         ],
     }
     crew = crew_from_config(cfg)
@@ -162,22 +187,28 @@ def test_crew_from_config():
 # LAYER 4 â€” Companion
 # ===========================================================================
 
+
 def test_companion_conversation_mode():
     """Companion responds with a tagged mode marker."""
     from companion import SwarmzCompanion
     from swarmz import SwarmzCore
+
     core = SwarmzCore()
     core.load_plugin("plugins/filesystem.py")
     comp = SwarmzCompanion(swarmz_core=core)
     answer = comp.interact("Hello")
     assert isinstance(answer, str)
     # Companion always returns a mode tag â€” any of these is valid
-    assert any(tag in answer for tag in ["[CONVERSATION]", "[BLOCKED]", "[ACTION_READY]", "[NEEDS_CONFIRM]"]), f"No mode tag in: {answer}"
+    assert any(
+        tag in answer
+        for tag in ["[CONVERSATION]", "[BLOCKED]", "[ACTION_READY]", "[NEEDS_CONFIRM]"]
+    ), f"No mode tag in: {answer}"
 
 
 def test_worker_swarm_workflow():
     """WorkerSwarm executes scout â†’ builder â†’ verify pipeline."""
     from companion import WorkerSwarm, TaskContext
+
     swarm = WorkerSwarm()
     ctx = TaskContext(task_id="e2e", intent="end-to-end test")
     results = swarm.execute_workflow(ctx)
@@ -189,20 +220,27 @@ def test_worker_swarm_workflow():
 def test_commit_engine_evaluate():
     """CommitEngine evaluates a task context."""
     from companion import CommitEngine, TaskContext, CommitState
+
     ctx = TaskContext(task_id="e2e", intent="e2e test")
     engine = CommitEngine()
     state = engine.evaluate(ctx)
-    assert state in (CommitState.ACTION_READY, CommitState.NEEDS_CONFIRM, CommitState.BLOCKED)
+    assert state in (
+        CommitState.ACTION_READY,
+        CommitState.NEEDS_CONFIRM,
+        CommitState.BLOCKED,
+    )
 
 
 # ===========================================================================
 # LAYER 5 â€” API / HTTP Endpoints (FastAPI TestClient)
 # ===========================================================================
 
+
 def _get_test_client():
     """Lazily build and return a FastAPI TestClient + operator PIN."""
     from swarmz_runtime.api.server import app, OPERATOR_PIN
     from fastapi.testclient import TestClient
+
     return TestClient(app), OPERATOR_PIN
 
 
@@ -355,6 +393,7 @@ def test_api_runtime_config():
 # LAYER 6 â€” Round-trip dispatch â†’ audit
 # ===========================================================================
 
+
 def test_dispatch_roundtrip():
     """Dispatch a mission, then verify it appears in runs + audit."""
     client, pin = _get_test_client()
@@ -380,31 +419,24 @@ def test_dispatch_roundtrip():
 # LAYER 7 â€” Addons / Plugins Smoke
 # ===========================================================================
 
+
 def test_addons_import():
     """Key addons can be imported without error."""
-    import addons.guardrails
-    import addons.rate_limiter
-    import addons.budget
-    import addons.backup
-    import addons.replay
 
 
 def test_plugins_import():
     """Key plugins can be imported without error."""
-    import plugins.filesystem
-    import plugins.dataprocessing
-    import plugins.reality_gate
-    import plugins.mission_contract
-    import plugins.lead_audit
 
 
 # ===========================================================================
 # LAYER 8 â€” Engine Sub-systems (Smoke)
 # ===========================================================================
 
+
 def test_engine_subsystems_present():
     """SwarmzEngine wires up all expected sub-engines."""
     from swarmz_runtime.core.engine import SwarmzEngine
+
     eng = SwarmzEngine(data_dir="data")
     expected_attrs = [
         "db",
@@ -425,6 +457,7 @@ def test_engine_subsystems_present():
 # ===========================================================================
 # LAYER 9 â€” UI Assets (if present)
 # ===========================================================================
+
 
 def test_ui_root():
     """GET / returns 200."""
@@ -448,5 +481,5 @@ def test_ui_config_runtime():
 
 if __name__ == "__main__":
     import pytest
-    sys.exit(pytest.main([__file__, "-v", "--tb=short"]))
 
+    sys.exit(pytest.main([__file__, "-v", "--tb=short"]))

@@ -30,9 +30,7 @@ class ApproveMissionRequest(BaseModel):
 @router.post("/create")
 def create_mission(request: CreateMissionRequest):
     result = get_engine().create_mission(
-        goal=request.goal,
-        category=request.category,
-        constraints=request.constraints
+        goal=request.goal, category=request.category, constraints=request.constraints
     )
     if "error" in result:
         raise HTTPException(status_code=400, detail=result["error"])
@@ -42,8 +40,7 @@ def create_mission(request: CreateMissionRequest):
 @router.post("/run")
 def run_mission(request: RunMissionRequest):
     result = get_engine().run_mission(
-        mission_id=request.mission_id,
-        operator_key=request.operator_key
+        mission_id=request.mission_id, operator_key=request.operator_key
     )
     if "error" in result:
         raise HTTPException(status_code=400, detail=result["error"])
@@ -59,10 +56,8 @@ def list_missions(status: Optional[str] = None):
 @router.post("/approve")
 def approve_mission(request: ApproveMissionRequest):
     result = get_engine().approve_mission(
-        mission_id=request.mission_id,
-        operator_key=request.operator_key
+        mission_id=request.mission_id, operator_key=request.operator_key
     )
     if "error" in result:
         raise HTTPException(status_code=403, detail=result["error"])
     return result
-

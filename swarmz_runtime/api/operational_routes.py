@@ -6,7 +6,6 @@ from pydantic import BaseModel, Field
 
 from swarmz_runtime.core.operational_runtime import OperationalRuntime
 
-
 router = APIRouter()
 _runtime = OperationalRuntime(Path(__file__).resolve().parent.parent.parent)
 
@@ -53,7 +52,12 @@ def policy_rules():
 
 @router.post("/blueprints")
 def create_blueprint(payload: BlueprintCreateRequest):
-    return {"ok": True, "blueprint": _runtime.create_blueprint(payload.name, payload.spec, payload.owner)}
+    return {
+        "ok": True,
+        "blueprint": _runtime.create_blueprint(
+            payload.name, payload.spec, payload.owner
+        ),
+    }
 
 
 @router.post("/blueprints/{blueprint_id}/validate")

@@ -6,17 +6,20 @@ router = APIRouter()
 session_store = SessionStore()
 current_session = None
 
+
 @router.post("/session/start")
 def start_session(operator_id: str):
     global current_session
     current_session = OperatorSession(operator_id=operator_id, session_id="session_001")
     return {"message": "Session started", "session_id": current_session.session_id}
 
+
 @router.get("/session/state")
 def get_session_state():
     if current_session:
         return current_session.end_session()
     return {"message": "No active session"}
+
 
 @router.post("/session/end")
 def end_session():

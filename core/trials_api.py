@@ -9,11 +9,11 @@ to mount all trial endpoints under /v1/trials/*.
 """
 
 from typing import Optional, List
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from fastapi import FastAPI, HTTPException
 
-
 # â”€â”€ Request/Response Models â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
 
 class CreateTrialRequest(BaseModel):
     action: str
@@ -57,6 +57,7 @@ def register_trials_api(app: FastAPI) -> None:
     async def create_trial(payload: CreateTrialRequest):
         try:
             from core.trials import new_trial
+
             trial = new_trial(
                 created_by=payload.created_by,
                 context=payload.context,
@@ -78,6 +79,7 @@ def register_trials_api(app: FastAPI) -> None:
         """Gate endpoint: forces a Trial for a meaningful change."""
         try:
             from core.trials import require_trial
+
             trial = require_trial(
                 action=payload.action,
                 context=payload.context,
@@ -99,6 +101,7 @@ def register_trials_api(app: FastAPI) -> None:
         """Mark a change as non-trial (admin-only, with reason)."""
         try:
             from core.trials import require_trial
+
             result = require_trial(
                 action=payload.action,
                 context=payload.context,
@@ -120,7 +123,13 @@ def register_trials_api(app: FastAPI) -> None:
         tab: pending | needs_review | completed | all
         """
         try:
-            from core.trials import inbox_pending, inbox_needs_review, inbox_completed, inbox_counts
+            from core.trials import (
+                inbox_pending,
+                inbox_needs_review,
+                inbox_completed,
+                inbox_counts,
+            )
+
             counts = inbox_counts()
 
             if tab == "pending":
@@ -149,6 +158,7 @@ def register_trials_api(app: FastAPI) -> None:
     async def trials_counts():
         try:
             from core.trials import inbox_counts
+
             return {"ok": True, **inbox_counts()}
         except Exception as e:
             return {"ok": False, "error": str(e)[:300]}
@@ -159,6 +169,7 @@ def register_trials_api(app: FastAPI) -> None:
     async def trial_detail(trial_id: str):
         try:
             from core.trials import get_trial, get_audit_trail
+
             trial = get_trial(trial_id)
             if not trial:
                 raise HTTPException(status_code=404, detail="Trial not found")
@@ -175,6 +186,7 @@ def register_trials_api(app: FastAPI) -> None:
     async def trial_revert(trial_id: str):
         try:
             from core.trials import revert_trial
+
             result = revert_trial(trial_id)
             if not result:
                 raise HTTPException(status_code=404, detail="Trial not found")
@@ -190,6 +202,7 @@ def register_trials_api(app: FastAPI) -> None:
     async def trial_note(trial_id: str, payload: AddNoteRequest):
         try:
             from core.trials import add_note
+
             result = add_note(trial_id, payload.note)
             if not result:
                 raise HTTPException(status_code=404, detail="Trial not found")
@@ -205,6 +218,7 @@ def register_trials_api(app: FastAPI) -> None:
     async def trial_followup(trial_id: str, payload: FollowupRequest):
         try:
             from core.trials import create_followup
+
             overrides = {}
             if payload.action:
                 overrides["action"] = payload.action
@@ -221,7 +235,9 @@ def register_trials_api(app: FastAPI) -> None:
             if payload.notes:
                 overrides["notes"] = payload.notes
 
-            result = create_followup(trial_id, created_by=payload.created_by, **overrides)
+            result = create_followup(
+                trial_id, created_by=payload.created_by, **overrides
+            )
             if not result:
                 raise HTTPException(status_code=404, detail="Trial not found")
             return {"ok": True, "trial": result}
@@ -237,6 +253,7 @@ def register_trials_api(app: FastAPI) -> None:
         """List available metrics and resolve each one."""
         try:
             from core.trials import list_available_metrics, resolve_metric
+
             metrics = list_available_metrics()
             resolved = {}
             for m in metrics:
@@ -244,7 +261,10 @@ def register_trials_api(app: FastAPI) -> None:
                     val, ev = resolve_metric(m, "global")
                     resolved[m] = {"value": val, "evidence": ev}
                 except Exception:
-                    resolved[m] = {"value": None, "evidence": {"error": "resolve failed"}}
+                    resolved[m] = {
+                        "value": None,
+                        "evidence": {"error": "resolve failed"},
+                    }
             return {"ok": True, "metrics": metrics, "resolved": resolved}
         except Exception as e:
             return {"ok": False, "error": str(e)[:300]}
@@ -256,6 +276,7 @@ def register_trials_api(app: FastAPI) -> None:
         """Return survival leaderboard."""
         try:
             from core.trials import get_survival_leaderboard
+
             items = get_survival_leaderboard(limit=limit)
             return {"ok": True, "scores": items}
         except Exception as e:
@@ -267,6 +288,7 @@ def register_trials_api(app: FastAPI) -> None:
     async def trials_audit(trial_id: Optional[str] = None, tail: int = 50):
         try:
             from core.trials import get_audit_trail
+
             events = get_audit_trail(trial_id=trial_id, tail=tail)
             return {"ok": True, "events": events}
         except Exception as e:
@@ -278,6 +300,7 @@ def register_trials_api(app: FastAPI) -> None:
     async def trials_worker_status():
         try:
             from core.trials_worker import worker_status
+
             return {"ok": True, **worker_status()}
         except Exception as e:
             return {"ok": False, "error": str(e)[:300]}
@@ -288,6 +311,7 @@ def register_trials_api(app: FastAPI) -> None:
     async def trials_worker_start():
         try:
             from core.trials_worker import start_worker
+
             started = start_worker()
             return {"ok": True, "started": started}
         except Exception as e:
@@ -300,8 +324,8 @@ def register_trials_api(app: FastAPI) -> None:
         """Manually trigger a check cycle."""
         try:
             from core.trials_worker import check_due_trials
+
             count = check_due_trials()
             return {"ok": True, "evaluated": count}
         except Exception as e:
             return {"ok": False, "error": str(e)[:300]}
-

@@ -1,9 +1,17 @@
 services:
   - type: web
     name: swarmzv10
-    env: python
+    runtime: python
     rootDir: .
     buildCommand: pip install -r requirements.txt
     startCommand: python run_server.py --host 0.0.0.0 --port $PORT
     healthCheckPath: /v1/health
-    autoDeploy: true
+    autoDeployTrigger: commit
+
+  - type: web
+    name: swarmz-frontend
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    autoDeployTrigger: commit

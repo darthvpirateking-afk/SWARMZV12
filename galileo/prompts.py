@@ -9,26 +9,30 @@ Versioned, seeded, deterministic prompts for generator, critic, experimentalist,
 from typing import Dict
 
 
-def get_generator_prompt(domain: str, n_hypotheses: int, domain_pack: Dict = None, seed: int = 0) -> str:
+def get_generator_prompt(
+    domain: str, n_hypotheses: int, domain_pack: Dict = None, seed: int = 0
+) -> str:
     """
     Prompt for hypothesis generator LLM.
     Must output STRICT JSON array of hypothesis objects.
-    
+
     Args:
         domain: Domain name
         n_hypotheses: Number of hypotheses to generate
         domain_pack: Domain configuration
         seed: Random seed (for reproducibility note)
-        
+
     Returns:
         Prompt string
     """
     if domain_pack is None:
         domain_pack = {}
-    
-    allowed_methods = ', '.join(domain_pack.get('allowed_methods', ['simulation', 'ablation']))
-    avail_signals = ', '.join(domain_pack.get('available_signals', ['']))
-    
+
+    allowed_methods = ", ".join(
+        domain_pack.get("allowed_methods", ["simulation", "ablation"])
+    )
+    avail_signals = ", ".join(domain_pack.get("available_signals", [""]))
+
     return f"""You are a scientific hypothesis generator. Your task is to generate {n_hypotheses} novel, falsifiable hypotheses for the domain: {domain}.
 
 CONSTRAINTS:
@@ -58,16 +62,16 @@ def get_critic_prompt(hypothesis: Dict, domain: str = "") -> str:
     """
     Prompt for hypothesis critic LLM.
     Must output STRICT JSON critique object.
-    
+
     Args:
         hypothesis: Hypothesis dict to critique
         domain: Domain (optional context)
-        
+
     Returns:
         Prompt string
     """
-    hyp_json = __import__('json').dumps(hypothesis, indent=2)
-    
+    hyp_json = __import__("json").dumps(hypothesis, indent=2)
+
     return f"""You are a research methods critic. Evaluate this hypothesis for the domain: {domain}
 
 HYPOTHESIS:
@@ -86,21 +90,23 @@ Output STRICT JSON critique (no markdown) with this structure:
 Output exactly one JSON object."""
 
 
-def get_experimentalist_prompt(hypothesis: Dict, domain: str = "", seed: int = 0) -> str:
+def get_experimentalist_prompt(
+    hypothesis: Dict, domain: str = "", seed: int = 0
+) -> str:
     """
     Prompt for experiment design assistant (experimentalist).
     Must output STRICT JSON experiment protocol.
-    
+
     Args:
         hypothesis: Hypothesis dict
         domain: Domain
         seed: Random seed
-        
+
     Returns:
         Prompt string
     """
-    hyp_json = __import__('json').dumps(hypothesis, indent=2)
-    
+    hyp_json = __import__("json").dumps(hypothesis, indent=2)
+
     return f"""You are an experimental design expert for {domain}. Design a local, reproducible experiment to test this hypothesis:
 
 HYPOTHESIS:
@@ -144,11 +150,11 @@ def get_scorer_prompt(hypothesis: Dict, scores_dict: Dict[str, float] = None) ->
     """
     Prompt for scoring reminder (auxiliary, still deterministic rule-based).
     Scorer module does the actual scoring; this is just a rubric reminder.
-    
+
     Args:
         hypothesis: Hypothesis dict
         scores_dict: Scores computed by scorer module
-        
+
     Returns:
         Prompt string (informational, not LLM decision)
     """
@@ -157,7 +163,7 @@ def get_scorer_prompt(hypothesis: Dict, scores_dict: Dict[str, float] = None) ->
         scores_str = "\n".join([f"  {k}: {v:.2f}" for k, v in scores_dict.items()])
     else:
         scores_str = "(Scores not yet computed)"
-    
+
     return f"""GALILEO SCORER RUBRIC (v0.1)
 
 Hypothesis being scored:
@@ -177,4 +183,3 @@ If these criteria are met, STATUS=ACCEPTED.
 Otherwise, STATUS=REJECTED with failure reasons.
 
 This is computed deterministically by scorer.py, not by LLM."""
-

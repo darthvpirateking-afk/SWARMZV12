@@ -3,6 +3,7 @@
 # See LICENSE file for details.
 from core.activity_stream import record_event
 
+
 def observed_write(path, data):
     """Write data to a file and log the operation."""
     try:
@@ -12,6 +13,7 @@ def observed_write(path, data):
     except Exception:
         record_event("system", "file_write", {"path": path, "size": 0, "error": True})
         raise
+
 
 def observed_read(path):
     """Read data from a file and log the operation."""

@@ -1,6 +1,7 @@
 # worker.py
 # Represents a swarm worker.
 
+
 class SwarmWorker:
     def __init__(self, id):
         self.id = id

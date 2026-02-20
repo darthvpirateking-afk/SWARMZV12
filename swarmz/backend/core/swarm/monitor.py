@@ -1,6 +1,7 @@
 # monitor.py
 # Monitors swarm activity.
 
+
 class SwarmMonitor:
     def monitor(self, swarm_manager):
         """Monitor the swarm."""

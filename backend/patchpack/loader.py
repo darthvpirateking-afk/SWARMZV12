@@ -1,5 +1,6 @@
 # Loader module for SWARMZ patchpack
 
+
 class Loader:
     def __init__(self):
         self.patches = []

@@ -24,4 +24,3 @@ def today() -> str:
 def mission_timestamp() -> str:
     """Return a compact msâ€‘precision timestamp suitable for mission IDs."""
     return str(int(datetime.now(timezone.utc).timestamp() * 1000))
-

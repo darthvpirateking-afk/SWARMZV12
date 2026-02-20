@@ -16,11 +16,10 @@ local evidence. No runtime behaviour is changed.
 
 from __future__ import annotations
 
-import json
 from dataclasses import dataclass, asdict
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 
 from jsonl_utils import read_jsonl
 from core.atomic import atomic_append_jsonl
@@ -76,6 +75,7 @@ class CaseFile:
 
 # â”€â”€ Internal loaders (read-only) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
+
 def _load_missions() -> List[Dict[str, Any]]:
     rows, _, _ = read_jsonl(MISSIONS_FILE)
     return rows
@@ -107,6 +107,7 @@ def _load_artifacts(mission_id: str) -> Dict[str, Any]:
 
 # â”€â”€ Timeline reconstruction â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
+
 def build_timeline(mission_id: str) -> List[Dict[str, Any]]:
     """Build a chronological timeline of events for a mission."""
     mission = _find_mission(mission_id)
@@ -116,22 +117,32 @@ def build_timeline(mission_id: str) -> List[Dict[str, Any]]:
 
     if mission:
         created_at = mission.get("created_at") or mission.get("timestamp")
-        out.append(TimelineEvent(
-            timestamp=created_at or "",
-            event="mission_created",
-            mission_id=mission_id,
-            payload={
-                "goal": mission.get("goal"),
-                "category": mission.get("category"),
-                "status": mission.get("status"),
-            },
-        ))
+        out.append(
+            TimelineEvent(
+                timestamp=created_at or "",
+                event="mission_created",
+                mission_id=mission_id,
+                payload={
+                    "goal": mission.get("goal"),
+                    "category": mission.get("category"),
+                    "status": mission.get("status"),
+                },
+            )
+        )
 
     for row in audit_rows:
         ts = str(row.get("timestamp") or "")
         ev = str(row.get("event") or row.get("event_type") or "audit_event")
-        payload = {k: v for k, v in row.items() if k not in ("timestamp", "event", "event_type")}
-        out.append(TimelineEvent(timestamp=ts, event=ev, mission_id=mission_id, payload=payload))
+        payload = {
+            k: v
+            for k, v in row.items()
+            if k not in ("timestamp", "event", "event_type")
+        }
+        out.append(
+            TimelineEvent(
+                timestamp=ts, event=ev, mission_id=mission_id, payload=payload
+            )
+        )
 
     # Sort by timestamp with a stable fallback to original order
     out.sort(key=lambda e: e.timestamp or "")
@@ -146,7 +157,10 @@ def build_timeline(mission_id: str) -> List[Dict[str, Any]]:
 
 # â”€â”€ Case file synthesis (deterministic) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
-def _summarize_what_happened(mission: Optional[Dict[str, Any]], timeline: List[Dict[str, Any]]) -> str:
+
+def _summarize_what_happened(
+    mission: Optional[Dict[str, Any]], timeline: List[Dict[str, Any]]
+) -> str:
     if not mission:
         return "Mission not found in missions.jsonl."
 
@@ -154,7 +168,11 @@ def _summarize_what_happened(mission: Optional[Dict[str, Any]], timeline: List[D
     goal = mission.get("goal") or "(no goal)"
     category = mission.get("category") or "(no category)"
 
-    last_ts = timeline[-1]["timestamp"] if timeline else mission.get("created_at") or "(unknown)"
+    last_ts = (
+        timeline[-1]["timestamp"]
+        if timeline
+        else mission.get("created_at") or "(unknown)"
+    )
     return (
         f"Mission {mission.get('mission_id')} in category '{category}' "
         f"was created to pursue goal '{goal}'. Final status: {status}. "
@@ -166,7 +184,12 @@ def _summarize_changes(timeline: List[Dict[str, Any]]) -> List[str]:
     changes: List[str] = []
     for ev in timeline:
         name = ev.get("event", "")
-        if name in {"mission_created", "mission_run", "mission_completed", "mission_failed"}:
+        if name in {
+            "mission_created",
+            "mission_run",
+            "mission_completed",
+            "mission_failed",
+        }:
             changes.append(f"Event: {name} at {ev.get('timestamp')}")
     return changes
 
@@ -191,7 +214,9 @@ def _summarize_preceding_actions(timeline: List[Dict[str, Any]]) -> List[str]:
     return uniq
 
 
-def _summarize_contributing_factors(mission: Optional[Dict[str, Any]], timeline: List[Dict[str, Any]]) -> List[str]:
+def _summarize_contributing_factors(
+    mission: Optional[Dict[str, Any]], timeline: List[Dict[str, Any]]
+) -> List[str]:
     factors: List[str] = []
     if not mission:
         return factors
@@ -202,7 +227,9 @@ def _summarize_contributing_factors(mission: Optional[Dict[str, Any]], timeline:
     elif status == "FAILURE":
         factors.append("Outcome: FAILURE â€” inspect trials, errors, and rollbacks.")
     elif status == "RUNNING":
-        factors.append("Outcome: RUNNING â€” investigation should focus on stuck states.")
+        factors.append(
+            "Outcome: RUNNING â€” investigation should focus on stuck states."
+        )
 
     # Basic heuristic: count error-like audit events
     error_like = [ev for ev in timeline if "error" in str(ev.get("event", "")).lower()]
@@ -242,6 +269,7 @@ def build_casefile(mission_id: str) -> Optional[Dict[str, Any]]:
 
 # â”€â”€ Self-check / audit helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
+
 def _audit(event: str, payload: Dict[str, Any]) -> None:
     entry = {
         "timestamp": datetime.now(timezone.utc).isoformat(),
@@ -269,4 +297,3 @@ def self_check() -> Dict[str, Any]:
 
     _audit("forensics_self_check", payload)
     return {"ok": True, **payload}
-

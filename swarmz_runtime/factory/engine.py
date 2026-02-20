@@ -54,7 +54,9 @@ def intake(mission: Dict[str, Any]) -> Dict[str, Any]:
         "audit_ref": None,
     }
     _append(FACTORY_FILE, row)
-    provenance.append_audit("factory_intake", {"mission_id": mission_id, "guild": guild})
+    provenance.append_audit(
+        "factory_intake", {"mission_id": mission_id, "guild": guild}
+    )
     return row
 
 
@@ -65,7 +67,7 @@ def list_missions(limit: int = 200) -> List[Dict[str, Any]]:
 
 def get_mission(mid: str) -> Dict[str, Any]:
     for m in rows:
-        if m['id'] == mid:
+        if m["id"] == mid:
             return m
     return {}  # Replace None with an empty dictionary
 
@@ -82,7 +84,10 @@ def record_decision(mission_id: str, chosen: str, reason: str = "") -> Dict[str,
         "ts": time.time(),
     }
     _append(DECISIONS_FILE, decision)
-    provenance.append_audit("decision_recorded", {"mission_id": mission_id, "decision_id": decision["decision_id"]})
+    provenance.append_audit(
+        "decision_recorded",
+        {"mission_id": mission_id, "decision_id": decision["decision_id"]},
+    )
     return decision
 
 
@@ -102,7 +107,12 @@ def mermaid_graph() -> str:
     return "\n".join(lines)
 
 
-def execute_artifact(artifact_id: str, parameters: Dict[str, Any], operator_key: str, safe_mode: bool = True) -> Dict[str, Any]:
+def execute_artifact(
+    artifact_id: str,
+    parameters: Dict[str, Any],
+    operator_key: str,
+    safe_mode: bool = True,
+) -> Dict[str, Any]:
     """Execute an artifact with manifestation and safety checks."""
     # Find the artifact/mission
     mission = get_mission(artifact_id)
@@ -128,45 +138,41 @@ def execute_artifact(artifact_id: str, parameters: Dict[str, Any], operator_key:
         "safe_mode": safe_mode,
         "parameters": parameters,
         "operator_key": operator_key[:8] + "...",  # Mask for security
-        "timestamp": time.time()
+        "timestamp": time.time(),
     }
 
     # Simulate execution based on guild
     if guild == "runtime":
-        execution_result.update({
-            "action": "runtime_update",
-            "result": "Runtime configuration updated"
-        })
+        execution_result.update(
+            {"action": "runtime_update", "result": "Runtime configuration updated"}
+        )
     elif guild == "governance":
-        execution_result.update({
-            "action": "policy_update",
-            "result": "Governance policy applied"
-        })
+        execution_result.update(
+            {"action": "policy_update", "result": "Governance policy applied"}
+        )
     elif guild == "research":
-        execution_result.update({
-            "action": "research_execution",
-            "result": "Research artifact executed"
-        })
+        execution_result.update(
+            {"action": "research_execution", "result": "Research artifact executed"}
+        )
     elif guild == "build":
-        execution_result.update({
-            "action": "build_execution",
-            "result": "Build artifact deployed"
-        })
+        execution_result.update(
+            {"action": "build_execution", "result": "Build artifact deployed"}
+        )
     elif guild == "revenue":
-        execution_result.update({
-            "action": "revenue_optimization",
-            "result": "Revenue optimization applied"
-        })
+        execution_result.update(
+            {"action": "revenue_optimization", "result": "Revenue optimization applied"}
+        )
     elif guild == "verify":
-        execution_result.update({
-            "action": "verification_run",
-            "result": "Verification completed"
-        })
+        execution_result.update(
+            {"action": "verification_run", "result": "Verification completed"}
+        )
     else:
-        execution_result.update({
-            "action": "generic_execution",
-            "result": f"Artifact executed in {guild} guild"
-        })
+        execution_result.update(
+            {
+                "action": "generic_execution",
+                "result": f"Artifact executed in {guild} guild",
+            }
+        )
 
     # Record execution
     execution_log = {
@@ -175,7 +181,7 @@ def execute_artifact(artifact_id: str, parameters: Dict[str, Any], operator_key:
         "timestamp": time.time(),
         "operator_key": operator_key[:8] + "...",
         "safe_mode": safe_mode,
-        "result": execution_result
+        "result": execution_result,
     }
 
     _append(DATA_DIR / "artifact_executions.jsonl", execution_log)
@@ -185,12 +191,15 @@ def execute_artifact(artifact_id: str, parameters: Dict[str, Any], operator_key:
     mission["last_execution"] = time.time()
     _update_mission(artifact_id, mission)
 
-    provenance.append_audit("artifact_executed", {
-        "artifact_id": artifact_id,
-        "execution_id": execution_log["execution_id"],
-        "guild": guild,
-        "safe_mode": safe_mode
-    })
+    provenance.append_audit(
+        "artifact_executed",
+        {
+            "artifact_id": artifact_id,
+            "execution_id": execution_log["execution_id"],
+            "guild": guild,
+            "safe_mode": safe_mode,
+        },
+    )
 
     execution_result["execution_id"] = execution_log["execution_id"]
     execution_result["status"] = "completed"
@@ -211,4 +220,3 @@ def _update_mission(mission_id: str, updated_mission: Dict[str, Any]):
     with FACTORY_FILE.open("w", encoding="utf-8") as f:
         for m in missions:
             f.write(json.dumps(m, separators=(",", ":")) + "\n")
-

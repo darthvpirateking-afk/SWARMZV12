@@ -18,7 +18,6 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional
 
-
 # --- Physical topology ------------------------------------------------------
 
 
@@ -218,4 +217,3 @@ class BlockchainNode:
 # The actual orchestration engines, metrics ingest, and mission wiring live
 # in other modules. This file is intentionally limited to data structures so
 # importing it cannot change behavior on its own.
-

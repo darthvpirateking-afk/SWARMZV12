@@ -6,6 +6,7 @@
 
 import json
 
+
 class SessionTimer:
     def __init__(self):
         self.timers = {"active": 0, "idle": 0, "focused": 0, "loop": 0}
@@ -13,7 +14,7 @@ class SessionTimer:
     def tick(self):
         try:
             self.timers["active"] += 1
-        except Exception as e:
+        except Exception:
             pass  # Fail-open: Skip on error
 
     def get_timer_state(self):
@@ -24,5 +25,5 @@ class SessionTimer:
         try:
             with open("data/context/timer.json", "w") as f:
                 json.dump(self.timers, f)
-        except Exception as e:
+        except Exception:
             pass  # Fail-open

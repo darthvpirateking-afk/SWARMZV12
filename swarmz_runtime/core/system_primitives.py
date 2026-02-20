@@ -9,7 +9,6 @@ from pathlib import Path
 from threading import RLock
 from typing import Any, Deque, Dict, List, Optional
 
-
 ERROR_TAXONOMY: Dict[str, Dict[str, str]] = {
     "constraint_violation": {
         "severity": "high",
@@ -43,7 +42,9 @@ def _now() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 
-def classify_error(code: str, message: str, details: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+def classify_error(
+    code: str, message: str, details: Optional[Dict[str, Any]] = None
+) -> Dict[str, Any]:
     meta = ERROR_TAXONOMY.get(code, ERROR_TAXONOMY["unknown_error"])
     return {
         "code": code if code in ERROR_TAXONOMY else "unknown_error",
@@ -61,7 +62,9 @@ class RealTimeConstraintSolver:
         self._lock = RLock()
 
     @staticmethod
-    def _key(mission_type: str, constraints: Dict[str, Any], facts: Dict[str, Any]) -> str:
+    def _key(
+        mission_type: str, constraints: Dict[str, Any], facts: Dict[str, Any]
+    ) -> str:
         payload = {
             "mission_type": mission_type,
             "constraints": constraints,
@@ -70,7 +73,9 @@ class RealTimeConstraintSolver:
         raw = json.dumps(payload, sort_keys=True, separators=(",", ":"))
         return hashlib.sha256(raw.encode("utf-8")).hexdigest()
 
-    def evaluate(self, mission_type: str, constraints: Dict[str, Any], facts: Dict[str, Any]) -> Dict[str, Any]:
+    def evaluate(
+        self, mission_type: str, constraints: Dict[str, Any], facts: Dict[str, Any]
+    ) -> Dict[str, Any]:
         k = self._key(mission_type, constraints, facts)
         with self._lock:
             if k in self._cache:
@@ -139,7 +144,14 @@ class DecisionLedger:
 
 class ContractValidator:
     ALLOWED_TOP_LEVEL = {"action_type", "payload", "safety", "resources", "meta"}
-    ALLOWED_ACTIONS = {"dispatch", "create_mission", "run_mission", "publish", "fulfill", "sync_template"}
+    ALLOWED_ACTIONS = {
+        "dispatch",
+        "create_mission",
+        "run_mission",
+        "publish",
+        "fulfill",
+        "sync_template",
+    }
 
     def validate(self, action: Dict[str, Any]) -> Dict[str, Any]:
         violations: List[str] = []
@@ -166,7 +178,9 @@ class ContractValidator:
         if not isinstance(safety, dict):
             violations.append("safety_must_be_object")
         else:
-            if bool(safety.get("irreversible", False)) and not bool(safety.get("operator_approved", False)):
+            if bool(safety.get("irreversible", False)) and not bool(
+                safety.get("operator_approved", False)
+            ):
                 violations.append("irreversible_requires_operator_approval")
 
         resources = action.get("resources", {})
@@ -190,7 +204,9 @@ class ContractValidator:
             if not bool(meta.get("weaver_validated", False)):
                 violations.append("weaver_validation_required")
             source = str(meta.get("source", "")).strip().lower()
-            if source.startswith("companion") and not bool(meta.get("weaver_validated", False)):
+            if source.startswith("companion") and not bool(
+                meta.get("weaver_validated", False)
+            ):
                 violations.append("companion_bypass_forbidden")
 
         return {
@@ -202,7 +218,12 @@ class ContractValidator:
 
 class MissionCompiler:
     @staticmethod
-    def compile_mission(intent: str, mission_type: str, constraints: Dict[str, Any], context: Dict[str, Any]) -> Dict[str, Any]:
+    def compile_mission(
+        intent: str,
+        mission_type: str,
+        constraints: Dict[str, Any],
+        context: Dict[str, Any],
+    ) -> Dict[str, Any]:
         if not intent.strip():
             raise ValueError("intent_required")
 
@@ -238,7 +259,9 @@ class RealitySyncLayer:
             "by_type": {},
         }
 
-    def push(self, event_type: str, payload: Dict[str, Any], source: str = "runtime") -> Dict[str, Any]:
+    def push(
+        self, event_type: str, payload: Dict[str, Any], source: str = "runtime"
+    ) -> Dict[str, Any]:
         event = {
             "event_id": f"evt-{secrets.token_hex(6)}",
             "event_type": event_type,
@@ -257,8 +280,12 @@ class RealitySyncLayer:
                 item = self._queue.popleft()
                 consumed.append(item)
                 by_type = self._state_projection.setdefault("by_type", {})
-                by_type[item["event_type"]] = int(by_type.get(item["event_type"], 0)) + 1
-                self._state_projection["events_seen"] = int(self._state_projection.get("events_seen", 0)) + 1
+                by_type[item["event_type"]] = (
+                    int(by_type.get(item["event_type"], 0)) + 1
+                )
+                self._state_projection["events_seen"] = (
+                    int(self._state_projection.get("events_seen", 0)) + 1
+                )
                 self._state_projection["last_event_type"] = item["event_type"]
 
         return {
@@ -279,7 +306,9 @@ class OperatorOverrideShell:
         self._frozen = False
         self._max_autonomy_override: Optional[int] = None
 
-    def execute(self, command: str, args: Dict[str, Any], operator_approved: bool, reason: str) -> Dict[str, Any]:
+    def execute(
+        self, command: str, args: Dict[str, Any], operator_approved: bool, reason: str
+    ) -> Dict[str, Any]:
         if not operator_approved:
             return {
                 "ok": False,
@@ -305,7 +334,10 @@ class OperatorOverrideShell:
                 self._max_autonomy_override = None
                 result = {"max_autonomy_override": None}
             elif command == "replay_checkpoint":
-                result = {"checkpoint": str(args.get("checkpoint", "latest")), "replayed": True}
+                result = {
+                    "checkpoint": str(args.get("checkpoint", "latest")),
+                    "replayed": True,
+                }
             else:
                 return {
                     "ok": False,
@@ -364,22 +396,38 @@ class SystemPrimitivesRuntime:
         with self._event_log.open("a", encoding="utf-8") as fh:
             fh.write(json.dumps(row) + "\n")
 
-    def solve_constraints(self, mission_type: str, constraints: Dict[str, Any], facts: Dict[str, Any]) -> Dict[str, Any]:
+    def solve_constraints(
+        self, mission_type: str, constraints: Dict[str, Any], facts: Dict[str, Any]
+    ) -> Dict[str, Any]:
         decision = self.solver.evaluate(mission_type, constraints, facts)
         self._append_event("constraints_evaluated", decision)
         return decision
 
-    def compile_mission(self, intent: str, mission_type: str, constraints: Dict[str, Any], context: Dict[str, Any]) -> Dict[str, Any]:
+    def compile_mission(
+        self,
+        intent: str,
+        mission_type: str,
+        constraints: Dict[str, Any],
+        context: Dict[str, Any],
+    ) -> Dict[str, Any]:
         try:
-            compiled = self.compiler.compile_mission(intent, mission_type, constraints, context)
+            compiled = self.compiler.compile_mission(
+                intent, mission_type, constraints, context
+            )
         except Exception as exc:
-            error = classify_error("compile_failed", str(exc), {"intent": intent, "mission_type": mission_type})
+            error = classify_error(
+                "compile_failed",
+                str(exc),
+                {"intent": intent, "mission_type": mission_type},
+            )
             self._append_event("mission_compile_failed", error)
             return {"ok": False, "error": error}
         self._append_event("mission_compiled", compiled)
         return {"ok": True, "compiled": compiled}
 
-    def push_reality_event(self, event_type: str, payload: Dict[str, Any], source: str) -> Dict[str, Any]:
+    def push_reality_event(
+        self, event_type: str, payload: Dict[str, Any], source: str
+    ) -> Dict[str, Any]:
         event = self.sync.push(event_type, payload, source)
         self._append_event("reality_event_pushed", event)
         return event
@@ -389,14 +437,20 @@ class SystemPrimitivesRuntime:
         self._append_event("reality_events_drained", {"count": drained.get("count", 0)})
         return drained
 
-    def execute_override(self, command: str, args: Dict[str, Any], operator_approved: bool, reason: str) -> Dict[str, Any]:
+    def execute_override(
+        self, command: str, args: Dict[str, Any], operator_approved: bool, reason: str
+    ) -> Dict[str, Any]:
         result = self.override_shell.execute(command, args, operator_approved, reason)
         self._append_event("operator_override", result)
         return result
 
-    def validate_contract(self, action: Dict[str, Any], regime: str = "default") -> Dict[str, Any]:
+    def validate_contract(
+        self, action: Dict[str, Any], regime: str = "default"
+    ) -> Dict[str, Any]:
         decision = self.validator.validate(action)
-        suppression_reason = None if decision["allowed"] else ";".join(decision["violations"])
+        suppression_reason = (
+            None if decision["allowed"] else ";".join(decision["violations"])
+        )
         ledger_row = self.decision_ledger.append(
             state_snapshot={
                 "override": self.override_shell.state(),

@@ -5,7 +5,6 @@
 Implements the Evidence Pack layer to bundle shareable proof for claims.
 """
 
-import json
 
 def create_evidence_pack(claim, events, stats, suggested_fix):
     """Create an evidence pack for a given claim."""

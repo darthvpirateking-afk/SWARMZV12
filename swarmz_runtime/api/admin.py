@@ -1,8 +1,8 @@
 # SWARMZ Source Available License
 # Commercial use, hosting, and resale prohibited.
 # See LICENSE file for details.
-from fastapi import APIRouter, HTTPException, Depends
-from typing import Callable, Dict, Any, Optional
+from fastapi import APIRouter, HTTPException
+from typing import Callable, Dict, Any
 from pydantic import BaseModel
 from swarmz_runtime.core.engine import SwarmzEngine
 
@@ -30,13 +30,15 @@ def execute_operator_command(request: OperatorCommand):
 
     # Validate operator sovereignty
     if not engine.validate_operator_sovereignty(request.operator_key):
-        raise HTTPException(status_code=403, detail="Operator sovereignty validation failed")
+        raise HTTPException(
+            status_code=403, detail="Operator sovereignty validation failed"
+        )
 
     # Execute command with precision
     result = engine.execute_operator_command(
         command=request.command,
         parameters=request.parameters,
-        operator_key=request.operator_key
+        operator_key=request.operator_key,
     )
 
     if "error" in result:
@@ -51,16 +53,14 @@ def check_operator_sovereignty(request: SovereigntyCheck):
     engine = get_engine()
 
     is_sovereign = engine.validate_operator_sovereignty(
-        request.operator_key,
-        action=request.action,
-        scope=request.scope
+        request.operator_key, action=request.action, scope=request.scope
     )
 
     return {
         "sovereign": is_sovereign,
         "action": request.action,
         "scope": request.scope,
-        "timestamp": engine.get_current_timestamp()
+        "timestamp": engine.get_current_timestamp(),
     }
 
 
@@ -78,4 +78,3 @@ def get_sovereignty_status(operator_key: str):
 def schedule_maintenance():
     result = get_engine().schedule_maintenance()
     return result
-

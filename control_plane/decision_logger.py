@@ -42,4 +42,3 @@ class DecisionLogger:
                 if line:
                     entries.append(json.loads(line))
         return entries
-

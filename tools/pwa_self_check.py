@@ -21,7 +21,9 @@ def fetch(url: str, timeout: float = 5.0):
 
 def main():
     parser = argparse.ArgumentParser(description="PWA self-check")
-    parser.add_argument("--base", default="http://127.0.0.1:8012", help="Base URL for the server")
+    parser.add_argument(
+        "--base", default="http://127.0.0.1:8012", help="Base URL for the server"
+    )
     args = parser.parse_args()
     base = args.base.rstrip("/")
 
@@ -36,7 +38,11 @@ def main():
 
     try:
         status, ctype, body = fetch(f"{base}/app.js")
-        ok = status == 200 and "javascript" in ctype and b"document.addEventListener" in body
+        ok = (
+            status == 200
+            and "javascript" in ctype
+            and b"document.addEventListener" in body
+        )
         checks.append(("GET /app.js", ok, f"status={status} ctype={ctype}"))
     except Exception as exc:  # pragma: no cover
         checks.append(("GET /app.js", False, str(exc)))
@@ -77,4 +83,3 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
-

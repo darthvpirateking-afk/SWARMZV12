@@ -20,6 +20,7 @@ class KernelRegistry:
     def get_kernels(self):
         return self.kernels
 
+
 class FederationRouter:
     def __init__(self, registry):
         self.registry = registry

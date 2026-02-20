@@ -53,7 +53,10 @@ def validate_lever(mission_id: str) -> Dict[str, Any]:
     for e in reversed(entries):
         if e.get("mission_id") == mission_id:
             return {"valid": True, "lever": e.get("lever")}
-    return {"valid": False, "error": "No lever declared for this mission â€” run rejected"}
+    return {
+        "valid": False,
+        "error": "No lever declared for this mission â€” run rejected",
+    }
 
 
 def load_ledger() -> List[Dict[str, Any]]:
@@ -66,4 +69,3 @@ def load_ledger() -> List[Dict[str, Any]]:
             if line.strip():
                 entries.append(json.loads(line))
     return entries
-

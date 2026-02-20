@@ -16,13 +16,19 @@ import os
 from pathlib import Path
 from typing import Dict, List, Set, Tuple, Optional
 
-
 EXCLUDE_DIRS = {
-    ".git", ".hg", ".svn",
+    ".git",
+    ".hg",
+    ".svn",
     "__pycache__",
-    ".venv", "venv", "env",
-    "build", "dist", ".tox",
-    ".mypy_cache", ".pytest_cache",
+    ".venv",
+    "venv",
+    "env",
+    "build",
+    "dist",
+    ".tox",
+    ".mypy_cache",
+    ".pytest_cache",
     ".ruff_cache",
     "site-packages",
 }
@@ -32,7 +38,9 @@ def iter_py_files(root: Path) -> List[Path]:
     files: List[Path] = []
     for dirpath, dirnames, filenames in os.walk(root):
         d = Path(dirpath)
-        dirnames[:] = [dn for dn in dirnames if dn not in EXCLUDE_DIRS and not dn.startswith(".")]
+        dirnames[:] = [
+            dn for dn in dirnames if dn not in EXCLUDE_DIRS and not dn.startswith(".")
+        ]
         for fn in filenames:
             if fn.endswith(".py"):
                 files.append(d / fn)
@@ -49,7 +57,9 @@ def module_name_for_file(file: Path, root: Path) -> str:
     return ".".join(parts)
 
 
-def resolve_from_import(current_mod: str, module: Optional[str], level: int) -> Optional[str]:
+def resolve_from_import(
+    current_mod: str, module: Optional[str], level: int
+) -> Optional[str]:
     """
     Resolve `from ...module import X` to an absolute-ish module name string.
     """
@@ -135,7 +145,7 @@ def tarjans_scc(graph: Dict[str, Set[str]]) -> List[List[str]]:
         stack.append(v)
         on_stack.add(v)
 
-        for w in graph.get(v, ()): 
+        for w in graph.get(v, ()):
             if w not in indices:
                 strongconnect(w)
                 lowlink[v] = min(lowlink[v], lowlink[w])
@@ -187,8 +197,12 @@ def write_dot(graph: Dict[str, Set[str]], out: Path) -> None:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("root", nargs="?", default=".", help="Root directory of source tree to scan")
-    ap.add_argument("--dot", default=None, help="Optional path to write Graphviz .dot output")
+    ap.add_argument(
+        "root", nargs="?", default=".", help="Root directory of source tree to scan"
+    )
+    ap.add_argument(
+        "--dot", default=None, help="Optional path to write Graphviz .dot output"
+    )
     args = ap.parse_args()
 
     root = Path(args.root).resolve()

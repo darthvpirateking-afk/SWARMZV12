@@ -11,6 +11,7 @@ from pathlib import Path
 
 def test_prepare_action_creates_files():
     from core.safe_execution import prepare_action
+
     path = prepare_action(
         category="commands",
         mission_id="test_safe_1",
@@ -31,6 +32,7 @@ def test_prepare_action_creates_files():
 
 def test_list_pending():
     from core.safe_execution import list_pending
+
     items = list_pending("commands")
     assert isinstance(items, list)
     # Should include the item we just created
@@ -40,6 +42,7 @@ def test_list_pending():
 
 def test_mark_executed():
     from core.safe_execution import mark_executed, list_pending
+
     path = Path("prepared_actions/commands/test_safe_1")
     assert mark_executed(str(path)) is True
     # Should no longer be in pending list
@@ -50,6 +53,7 @@ def test_mark_executed():
 
 def test_count_pending():
     from core.safe_execution import count_pending
+
     counts = count_pending()
     assert isinstance(counts, dict)
     assert "commands" in counts
@@ -58,6 +62,7 @@ def test_count_pending():
 
 def test_tool_gate():
     from core.tool_gate import gate, is_allowed
+
     assert is_allowed("shell_command") is True
     result = gate(
         action_type="shell_command",
@@ -73,6 +78,7 @@ def test_tool_gate():
 
 def test_tool_gate_message():
     from core.tool_gate import gate
+
     result = gate(
         action_type="email",
         payload={"to": "test@example.com", "body": "hello"},
@@ -85,6 +91,7 @@ def test_tool_gate_message():
 
 def test_tool_gate_purchase():
     from core.tool_gate import gate
+
     result = gate(
         action_type="purchase",
         payload={"item": "widget", "cost": 9.99},
@@ -94,4 +101,3 @@ def test_tool_gate_purchase():
     )
     assert result["ok"] is True
     assert result["category"] == "purchases"
-
