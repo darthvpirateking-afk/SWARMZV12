@@ -78,6 +78,21 @@ All under your control.
 
 ## Quick Start
 
+### Fastest Windows Start (Canonical)
+
+```powershell
+# 1) Start SWARMZ
+./RUN.ps1
+
+# 2) Open UI
+# http://localhost:8012
+
+# 3) Create desktop app icon shortcut (one-time)
+./CREATE_SWARMZ_APP_ICON.ps1
+```
+
+Then double-click the `SWARMZ` icon on your desktop.
+
 ### Web Server (Recommended)
 
 ```bash
