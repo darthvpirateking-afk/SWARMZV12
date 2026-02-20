@@ -135,3 +135,78 @@ def test_charter_prime_directive_paths(client):
     assert aligned.status_code == 200
     assert aligned.json()["decision"]["allowed"] is True
     assert aligned.json()["decision"]["mode"] == "aligned_execution"
+
+
+def test_charter_doctrine_document_and_change_flow_eval(client):
+    doc = client.get("/v1/charter/doctrine")
+    assert doc.status_code == 200
+    payload = doc.json()["doctrine"]
+    assert payload["system_primitives"]["truth"] == "immutable_event_log"
+
+    blocked = client.post(
+        "/v1/charter/evaluate/change-flow",
+        json={
+            "execution_model": "parallel",
+            "write_mode": "mutable",
+            "history_mutable": True,
+            "uses_polling_loops": True,
+            "uses_file_sync": True,
+            "event_driven": False,
+            "in_memory_passing": False,
+            "replayable_steps": False,
+            "external_verification": False,
+        },
+    )
+    assert blocked.status_code == 200
+    assert blocked.json()["decision"]["allowed"] is False
+    assert "write_mode_must_be_append_only" in blocked.json()["decision"]["violations"]
+
+    aligned = client.post(
+        "/v1/charter/evaluate/change-flow",
+        json={
+            "execution_model": "event_driven",
+            "write_mode": "append_only",
+            "history_mutable": False,
+            "uses_polling_loops": False,
+            "uses_file_sync": False,
+            "event_driven": True,
+            "in_memory_passing": True,
+            "replayable_steps": True,
+            "external_verification": True,
+        },
+    )
+    assert aligned.status_code == 200
+    assert aligned.json()["decision"]["allowed"] is True
+
+
+def test_charter_operating_matrix_eval(client):
+    fail = client.post(
+        "/v1/charter/evaluate/operating-matrix",
+        json={
+            "has_artifact": False,
+            "has_verification": False,
+            "has_outcome": False,
+            "external_verification": False,
+            "replayable_step": False,
+            "irreversible_action": True,
+            "operator_approved": False,
+        },
+    )
+    assert fail.status_code == 200
+    assert fail.json()["decision"]["allowed"] is False
+    assert "irreversible_action_requires_operator" in fail.json()["decision"]["violations"]
+
+    ok = client.post(
+        "/v1/charter/evaluate/operating-matrix",
+        json={
+            "has_artifact": True,
+            "has_verification": True,
+            "has_outcome": True,
+            "external_verification": True,
+            "replayable_step": True,
+            "irreversible_action": True,
+            "operator_approved": True,
+        },
+    )
+    assert ok.status_code == 200
+    assert ok.json()["decision"]["allowed"] is True
