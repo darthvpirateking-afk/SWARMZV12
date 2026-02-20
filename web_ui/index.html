@@ -29,6 +29,33 @@
       <div class="pill" id="lanPill">LAN URL: …</div>
     </section>
 
+    <section id="holoConsoleSection" class="card holo-panel z2">
+      <div class="card-header">
+        <div>
+          <div class="eyebrow">Neon Command Console</div>
+          <div class="card-title">Hologram Prompt Surface</div>
+        </div>
+        <div class="pill" id="consoleModePill">Mode: interactive</div>
+      </div>
+
+      <div id="consoleOutput" class="log console-output">SWARMZ console online. Type <strong>help</strong>.</div>
+
+      <div class="field">
+        <label for="consolePrompt">Prompt</label>
+        <input id="consolePrompt" type="text" placeholder="help | health | runs | audit | dispatch <goal> | pair <pin>" autocomplete="off" />
+      </div>
+
+      <div id="consolePreview" class="console-preview">Awaiting input…</div>
+      <div id="consoleAutocomplete" class="console-autocomplete" aria-live="polite"></div>
+
+      <div class="actions">
+        <button class="primary" id="consoleRunBtn">Run</button>
+        <button class="ghost" id="consoleClearBtn">Clear</button>
+      </div>
+
+      <div class="hint">Token map: <span class="token token-keyword">keyword</span> <span class="token token-flag">--flag</span> <span class="token token-number">123</span> <span class="token token-string">"string"</span></div>
+    </section>
+
     <section id="pairSection" class="card">
       <div class="card-header">
         <div>

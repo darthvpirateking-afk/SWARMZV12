@@ -8,6 +8,19 @@ const state = {
 
 let deferredPrompt = null;
 
+const commandCatalog = [
+  "help",
+  "health",
+  "runs",
+  "audit",
+  "command-center",
+  "dispatch",
+  "pair",
+  "clear",
+];
+
+let audioCtx = null;
+
 function $(id) { return document.getElementById(id); }
 function setText(id, text) { const el = $(id); if (el) el.textContent = text; }
 
@@ -44,6 +57,105 @@ function setPill(id, text, ok) {
 }
 
 function setHint(text) { setText("pairHint", text); }
+
+function ensureAudioCtx() {
+  if (audioCtx || !window.AudioContext) return;
+  audioCtx = new AudioContext();
+}
+
+function playUiTone(type = "ok") {
+  try {
+    ensureAudioCtx();
+    if (!audioCtx) return;
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = "sine";
+    osc.frequency.value = type === "error" ? 180 : type === "dispatch" ? 520 : 420;
+    gain.gain.value = 0.0001;
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    const now = audioCtx.currentTime;
+    gain.gain.exponentialRampToValueAtTime(0.03, now + 0.015);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.12);
+    osc.start(now);
+    osc.stop(now + 0.14);
+  } catch {}
+}
+
+function vibratePattern(type = "ok") {
+  if (!navigator.vibrate) return;
+  if (type === "error") navigator.vibrate([20, 30, 30]);
+  else if (type === "dispatch") navigator.vibrate([15, 25, 15]);
+  else navigator.vibrate(12);
+}
+
+function systemFeel(type = "ok") {
+  playUiTone(type);
+  vibratePattern(type);
+}
+
+function escapeHtml(s) {
+  return String(s)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function appendConsoleLine(message) {
+  const box = $("consoleOutput");
+  if (!box) return;
+  const line = `[${new Date().toLocaleTimeString()}] ${message}`;
+  box.innerHTML = `${box.innerHTML}\n${escapeHtml(line)}`;
+  box.scrollTop = box.scrollHeight;
+}
+
+function highlightCommand(input) {
+  const preview = $("consolePreview");
+  if (!preview) return;
+  const src = (input || "").trim();
+  if (!src) {
+    preview.textContent = "Awaiting input…";
+    return;
+  }
+  const pieces = src.split(/\s+/);
+  const rootCommand = (pieces[0] || "").toLowerCase();
+  const tokens = pieces.map((token, index) => {
+    let cls = "token-keyword";
+    if (/^--/.test(token)) cls = "token-flag";
+    else if (/^[0-9]+$/.test(token)) cls = "token-number";
+    else if ((token.startsWith('"') && token.endsWith('"')) || (token.startsWith("'") && token.endsWith("'"))) cls = "token-string";
+    else if (index > 0 && commandCatalog.includes(rootCommand)) cls = "token-string";
+    return `<span class="token ${cls}">${escapeHtml(token)}</span>`;
+  });
+  preview.innerHTML = tokens.join(" ");
+}
+
+function updateAutocomplete(input) {
+  const box = $("consoleAutocomplete");
+  if (!box) return;
+  const value = (input || "").trim().toLowerCase();
+  const matches = value
+    ? commandCatalog.filter((cmd) => cmd.startsWith(value)).slice(0, 6)
+    : commandCatalog.slice(0, 6);
+  box.innerHTML = "";
+  for (const cmd of matches) {
+    const chip = document.createElement("button");
+    chip.type = "button";
+    chip.className = "suggestion-chip";
+    chip.textContent = cmd;
+    chip.addEventListener("click", () => {
+      const prompt = $("consolePrompt");
+      if (!prompt) return;
+      prompt.value = cmd + " ";
+      prompt.focus();
+      highlightCommand(prompt.value);
+      updateAutocomplete(prompt.value);
+    });
+    box.appendChild(chip);
+  }
+}
 
 function renderCommandCenterOutput(payload) {
   const box = $("commandCenterOutput");
@@ -119,15 +231,6 @@ async function apiFetch(path, opts = {}) {
   }
 
   return data;
-}
-
-function escapeHtml(s) {
-  return String(s)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
 }
 
 function renderRuns() {
@@ -327,10 +430,121 @@ async function dispatchNow() {
     if (offlineNote) setHint(offlineNote);
 
     setHint("Dispatched. Refreshing runs/audit…");
+    systemFeel("dispatch");
     await refreshAll();
   } catch (e) {
+    systemFeel("error");
     setHint(`Dispatch failed: ${e.message}`);
   }
+}
+
+async function runConsolePrompt() {
+  const prompt = $("consolePrompt");
+  const raw = (prompt?.value || "").trim();
+  if (!raw) return;
+
+  appendConsoleLine(`> ${raw}`);
+  const [command, ...rest] = raw.split(/\s+/);
+  const argText = rest.join(" ");
+
+  try {
+    switch (command.toLowerCase()) {
+      case "help":
+        appendConsoleLine("Commands: help, health, runs, audit, command-center, dispatch <goal>, pair <pin>, clear");
+        break;
+      case "health":
+        await refreshHealth();
+        appendConsoleLine("Health refreshed.");
+        break;
+      case "runs":
+        await loadRuns();
+        appendConsoleLine("Runs refreshed.");
+        break;
+      case "audit":
+        await loadAudit();
+        appendConsoleLine("Audit refreshed.");
+        break;
+      case "command-center":
+        await loadCommandCenterState();
+        appendConsoleLine("Command center state refreshed.");
+        break;
+      case "dispatch": {
+        const goal = argText || "status";
+        const resp = await apiFetch("/v1/dispatch", {
+          method: "POST",
+          body: JSON.stringify({ goal, category: "general", constraints: {} }),
+        });
+        appendConsoleLine(`Dispatched: ${(resp && (resp.run_id || resp.mission_id || resp.id)) || "ok"}`);
+        await refreshAll();
+        break;
+      }
+      case "pair": {
+        if (!argText) {
+          appendConsoleLine("Usage: pair <pin>");
+          break;
+        }
+        const pinInput = $("pinInput");
+        if (pinInput) pinInput.value = argText;
+        await pairNow();
+        appendConsoleLine("Pair command executed.");
+        break;
+      }
+      case "clear": {
+        const box = $("consoleOutput");
+        if (box) box.innerHTML = "SWARMZ console cleared.";
+        break;
+      }
+      default:
+        appendConsoleLine(`Unknown command: ${command}`);
+        appendConsoleLine("Type help for available commands.");
+        systemFeel("error");
+        return;
+    }
+    systemFeel("ok");
+  } catch (e) {
+    appendConsoleLine(`ERROR: ${e.message}`);
+    systemFeel("error");
+  }
+}
+
+function wireConsolePrompt() {
+  const prompt = $("consolePrompt");
+  if (!prompt) return;
+
+  prompt.addEventListener("input", () => {
+    highlightCommand(prompt.value);
+    updateAutocomplete(prompt.value);
+  });
+
+  prompt.addEventListener("keydown", async (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      await runConsolePrompt();
+      return;
+    }
+    if (event.key === "Tab") {
+      const raw = prompt.value.trim().toLowerCase();
+      const match = commandCatalog.find((cmd) => cmd.startsWith(raw));
+      if (match) {
+        event.preventDefault();
+        prompt.value = `${match} `;
+        highlightCommand(prompt.value);
+        updateAutocomplete(prompt.value);
+      }
+    }
+  });
+
+  $("consoleRunBtn")?.addEventListener("click", () => runConsolePrompt());
+  $("consoleClearBtn")?.addEventListener("click", () => {
+    const box = $("consoleOutput");
+    if (box) box.innerHTML = "SWARMZ console cleared.";
+    if (prompt) prompt.value = "";
+    highlightCommand("");
+    updateAutocomplete("");
+  });
+
+  highlightCommand("");
+  updateAutocomplete("");
 }
 
 async function refreshAll() {
@@ -800,6 +1014,7 @@ function boot() {
 
   wirePwaInstall();
   registerServiceWorker();
+  wireConsolePrompt();
 
   loadRuntimeConfig()
     .then(() => refreshPairingInfo())
