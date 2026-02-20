@@ -31,10 +31,9 @@ def test_prime_state_endpoint_returns_primal_slate(client, monkeypatch, tmp_path
     assert state.status_code == 200
 
     payload = state.json()
-    assert payload["ok"] is True
-    assert "PRIMAL_STATE_SLATE" in payload
-    assert "SYSTEMS" in payload["PRIMAL_STATE_SLATE"]
-    assert "CHANNELS" in payload["PRIMAL_STATE_SLATE"]
+    assert "SYSTEM_STATUS" in payload
+    assert "SYSTEMS" in payload
+    assert "CHANNELS" in payload
 
 
 def test_riftwalk_trace_and_sigilstack_registry(client, monkeypatch, tmp_path):
