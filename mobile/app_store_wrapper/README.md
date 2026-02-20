@@ -44,3 +44,10 @@ npm run ios:open
 - This wrapper depends on your Render URL being online.
 - For full offline native behavior, you would ship local web assets instead of remote URL.
 - Before store submission, replace placeholder app metadata (name, icons, screenshots, privacy policy links).
+
+## Store prep files (added)
+- Play checklist: `store/PLAY_STORE_RELEASE_CHECKLIST.md`
+- App Store checklist: `store/APP_STORE_CONNECT_RELEASE_CHECKLIST.md`
+- Metadata template: `store/APP_METADATA_TEMPLATE.json`
+- Submission notes: `store/STORE_SUBMISSION_NOTES.md`
+- Privacy policy draft: `../../docs/PRIVACY_POLICY.md`
