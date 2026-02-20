@@ -4,8 +4,25 @@ cd /d %~dp0
 
 echo SWARMZ_UP
 
+set HAS_ENV_HOST=0
+set HAS_ENV_PORT=0
+if not "%HOST%"=="" set HAS_ENV_HOST=1
+if not "%PORT%"=="" set HAS_ENV_PORT=1
+
 set HOSTBIND=0.0.0.0
 if "%PORT%"=="" (set PORT=8012)
+
+rem ---------- runtime config ----------
+if exist "%~dp0config\runtime.json" (
+  for /f "usebackq tokens=1,2,3" %%h in (`powershell -NoProfile -Command "$cfg=Get-Content -Raw 'config/runtime.json' | ConvertFrom-Json; if($cfg){$host=$cfg.bind; if(-not $host){$host='0.0.0.0'}; $port=$cfg.port; if(-not $port){$port=8012}; if($cfg.offlineMode){Write-Output 'OFFLINE_MODE 1'}; Write-Output \"$host $port\"}"`) do (
+    if /i "%%h"=="OFFLINE_MODE" (
+      set OFFLINE_MODE=%%i
+    ) else (
+      if "%HAS_ENV_HOST%"=="0" set HOSTBIND=%%h
+      if "%HAS_ENV_PORT%"=="0" set PORT=%%i
+    )
+  )
+)
 
 rem ---------- port check ----------
 set EXISTPID=

@@ -6,9 +6,20 @@ Set-Location $PSScriptRoot
 
 Write-Host "SWARMZ_UP" -ForegroundColor Cyan
 
-# Config
+# Config (runtime.json as source-of-truth, env vars can override)
 $Port = if ($env:PORT) { [int]$env:PORT } else { 8012 }
-$HostBind = "0.0.0.0"  # DO NOT use $Host (reserved)
+$HostBind = if ($env:HOST) { $env:HOST } else { "0.0.0.0" }  # DO NOT use $Host (reserved)
+$runtimeConfig = Join-Path $PSScriptRoot "config\runtime.json"
+if (Test-Path $runtimeConfig) {
+  try {
+    $cfg = Get-Content $runtimeConfig | ConvertFrom-Json
+    if (-not $env:HOST -and $cfg.bind) { $HostBind = [string]$cfg.bind }
+    if (-not $env:PORT -and $cfg.port) { $Port = [int]$cfg.port }
+    if ($cfg.offlineMode) { $env:OFFLINE_MODE = "1" }
+  } catch {
+    Write-Host "[WARN] Failed to parse config/runtime.json, using defaults/env." -ForegroundColor Yellow
+  }
+}
 
 function Find-Python {
   foreach ($cmd in @("python3", "python")) {

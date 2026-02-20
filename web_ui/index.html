@@ -19,7 +19,7 @@
         <div class="subtitle">LAN runtime · PWA</div>
       </div>
     </div>
-    <button id="installBtn" class="ghost">Install</button>
+    <button id="installBtn" class="ghost">Install App</button>
   </header>
 
   <main>
@@ -49,8 +49,8 @@
       <div id="consoleAutocomplete" class="console-autocomplete" aria-live="polite"></div>
 
       <div class="actions">
-        <button class="primary" id="consoleRunBtn">Run</button>
-        <button class="ghost" id="consoleClearBtn">Clear</button>
+        <button class="primary" id="consoleRunBtn">Run Prompt</button>
+        <button class="ghost" id="consoleClearBtn">Clear Console</button>
       </div>
 
       <div class="hint">Token map: <span class="token token-keyword">keyword</span> <span class="token token-flag">--flag</span> <span class="token token-number">123</span> <span class="token token-string">"string"</span></div>
@@ -73,8 +73,8 @@
         <input id="pinInput" type="tel" inputmode="numeric" pattern="[0-9]*" placeholder="••••••" />
       </div>
       <div class="actions">
-        <button class="primary" id="pairBtn">Pair</button>
-        <button class="ghost" id="refreshInfoBtn">Refresh info</button>
+        <button class="primary" id="pairBtn">Pair Device</button>
+        <button class="ghost" id="refreshInfoBtn">Refresh Pairing Info</button>
       </div>
       <div class="hint" id="pairHint">Enter the PIN from the host console. Base URL defaults to this page.</div>
     </section>
@@ -104,7 +104,7 @@
       </div>
 
       <div class="actions">
-        <button class="primary" id="executeCommandBtn">Execute</button>
+        <button class="primary" id="executeCommandBtn">Run Command</button>
         <button class="ghost" id="validateKernelBtn">Validate Kernel</button>
       </div>
 
@@ -206,7 +206,7 @@
           <div class="eyebrow">Autonomy Dial</div>
           <div class="actions">
             <input id="autonomyLevelInput" type="number" min="0" max="100" value="35" />
-            <button class="primary" id="setAutonomyBtn">Set</button>
+            <button class="primary" id="setAutonomyBtn">Set Autonomy</button>
           </div>
         </div>
 
@@ -218,7 +218,7 @@
               <option value="true">Enabled</option>
             </select>
             <input id="shadowLaneInput" type="text" value="mirror" placeholder="lane" />
-            <button class="ghost" id="setShadowModeBtn">Apply</button>
+            <button class="ghost" id="setShadowModeBtn">Apply Shadow Mode</button>
           </div>
         </div>
 
@@ -226,7 +226,7 @@
           <div class="eyebrow">Evolution Tree</div>
           <div class="actions">
             <input id="promotePartnerInput" type="text" placeholder="partner_id" />
-            <button class="ghost" id="promotePartnerBtn">Promote</button>
+            <button class="ghost" id="promotePartnerBtn">Promote Partner</button>
           </div>
         </div>
 
@@ -236,14 +236,14 @@
             <input id="listingTypeInput" type="text" placeholder="mission_type" />
             <input id="listingTitleInput" type="text" placeholder="listing title" />
             <input id="listingRewardInput" type="number" min="0" value="100" />
-            <button class="ghost" id="publishListingBtn">Publish</button>
-            <button class="ghost" id="loadMarketplaceBtn">List</button>
+            <button class="ghost" id="publishListingBtn">Publish Listing</button>
+            <button class="ghost" id="loadMarketplaceBtn">Load Listings</button>
           </div>
         </div>
       </div>
 
       <div class="actions">
-        <button class="primary" id="refreshCommandCenterBtn">Refresh Cockpit</button>
+        <button class="primary" id="refreshCommandCenterBtn">Refresh Command Center</button>
       </div>
 
       <div id="commandCenterOutput" class="log" style="margin-top: 10px; max-height: 240px;">Command center state will appear here.</div>
@@ -256,7 +256,7 @@
             <div class="eyebrow">Runs</div>
             <div class="card-title">Recent missions</div>
           </div>
-          <button class="ghost" id="refreshRunsBtn">Refresh</button>
+          <button class="ghost" id="refreshRunsBtn">Refresh Runs</button>
         </div>
         <ul id="runsList" class="list"></ul>
       </div>
@@ -271,8 +271,8 @@
         </div>
         <div id="detailBody" class="detail-body">No run selected.</div>
         <div class="actions">
-          <button class="primary" id="dispatchBtn">Dispatch</button>
-          <button class="ghost" id="refreshDetailBtn">Refresh</button>
+          <button class="primary" id="dispatchBtn">Dispatch Mission</button>
+          <button class="ghost" id="refreshDetailBtn">Refresh Run Detail</button>
         </div>
       </div>
 
@@ -282,7 +282,7 @@
             <div class="eyebrow">Audit</div>
             <div class="card-title">Last 50 events</div>
           </div>
-          <button class="ghost" id="refreshAuditBtn">Refresh</button>
+          <button class="ghost" id="refreshAuditBtn">Refresh Audit</button>
         </div>
         <div id="auditList" class="log"></div>
       </div>

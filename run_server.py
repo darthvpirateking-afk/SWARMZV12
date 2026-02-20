@@ -105,7 +105,7 @@ def main():
     except Exception as exc:
         print(f"[SWARM RUNNER] WARNING: Could not start runner â€” {exc}")
 
-    uvicorn.run("server:app", host="0.0.0.0", port=args.port, reload=False, log_level="info")
+    uvicorn.run("server:app", host=args.host, port=args.port, reload=False, log_level="info")
 
 
 if __name__ == "__main__":
