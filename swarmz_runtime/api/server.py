@@ -36,6 +36,7 @@ from .operator_ecosystem_routes import router as operator_ecosystem_routes_route
 from .federation_routes import router as federation_routes_router
 from .charter_routes import router as charter_routes_router
 from .fusion_routes import router as fusion_routes_router
+from .template_sync_routes import router as template_sync_routes_router
 from addons.api.addons_router import router as addons_router
 from .companion_state import companion_state
 
@@ -72,6 +73,7 @@ def create_app() -> FastAPI:
     app.include_router(federation_routes_router, prefix="/v1", tags=["federation"])
     app.include_router(charter_routes_router, prefix="/v1", tags=["charter"])
     app.include_router(fusion_routes_router, prefix="/v1", tags=["fusion"])
+    app.include_router(template_sync_routes_router, prefix="/v1", tags=["template-sync"])
     app.include_router(addons_router, prefix="/v1/addons", tags=["addons"])
 
     if "guardrails_router" in globals() and guardrails_router is not None:
