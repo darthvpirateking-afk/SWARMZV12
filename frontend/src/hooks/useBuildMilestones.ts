@@ -31,31 +31,32 @@ export function useBuildMilestones() {
       const status = await fetchBuildMilestonesStatus();
       setState((prev) => ({ ...prev, status, loading: false, error: null }));
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Failed to load build milestones";
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Failed to load build milestones";
       setState((prev) => ({ ...prev, loading: false, error: message }));
     }
   }, []);
 
-  const promote = useCallback(
-    async (targetStage: number) => {
-      setState((prev) => ({ ...prev, loading: true, error: null }));
-      try {
-        const result = await promoteBuildMilestone(targetStage);
-        const status = await fetchBuildMilestonesStatus();
-        setState((prev) => ({
-          ...prev,
-          status,
-          promoteResult: result,
-          loading: false,
-          error: null,
-        }));
-      } catch (error) {
-        const message = error instanceof Error ? error.message : "Failed to promote build";
-        setState((prev) => ({ ...prev, loading: false, error: message }));
-      }
-    },
-    [],
-  );
+  const promote = useCallback(async (targetStage: number) => {
+    setState((prev) => ({ ...prev, loading: true, error: null }));
+    try {
+      const result = await promoteBuildMilestone(targetStage);
+      const status = await fetchBuildMilestonesStatus();
+      setState((prev) => ({
+        ...prev,
+        status,
+        promoteResult: result,
+        loading: false,
+        error: null,
+      }));
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Failed to promote build";
+      setState((prev) => ({ ...prev, loading: false, error: message }));
+    }
+  }, []);
 
   useEffect(() => {
     void refresh();

@@ -1,5 +1,8 @@
 import type { CSSProperties } from "react";
-import type { ApiFoundationDomains, ApiFoundationStatus } from "../types/apiFoundation";
+import type {
+  ApiFoundationDomains,
+  ApiFoundationStatus,
+} from "../types/apiFoundation";
 
 interface ApiFoundationCardProps {
   status: ApiFoundationStatus | null;
@@ -9,12 +12,23 @@ interface ApiFoundationCardProps {
   onRefresh: () => void;
 }
 
-export function ApiFoundationCard({ status, domains, loading, error, onRefresh }: ApiFoundationCardProps) {
+export function ApiFoundationCard({
+  status,
+  domains,
+  loading,
+  error,
+  onRefresh,
+}: ApiFoundationCardProps) {
   return (
     <section style={styles.card}>
       <header style={styles.header}>
         <h2 style={styles.title}>API Foundation</h2>
-        <button style={styles.button} onClick={onRefresh} disabled={loading} type="button">
+        <button
+          style={styles.button}
+          onClick={onRefresh}
+          disabled={loading}
+          type="button"
+        >
           {loading ? "Refreshing..." : "Refresh"}
         </button>
       </header>
@@ -26,14 +40,18 @@ export function ApiFoundationCard({ status, domains, loading, error, onRefresh }
           <p style={styles.meta}>
             API {status.api_version} · routes {status.route_count}
           </p>
-          <p style={styles.meta}>Capabilities: {status.capabilities.join(", ")}</p>
+          <p style={styles.meta}>
+            Capabilities: {status.capabilities.join(", ")}
+          </p>
         </>
       ) : (
         <p style={styles.meta}>No API status loaded yet.</p>
       )}
 
       <p style={styles.domainLabel}>Domains:</p>
-      <p style={styles.domainText}>{(domains?.domains ?? status?.domains ?? []).join(", ") || "none"}</p>
+      <p style={styles.domainText}>
+        {(domains?.domains ?? status?.domains ?? []).join(", ") || "none"}
+      </p>
     </section>
   );
 }

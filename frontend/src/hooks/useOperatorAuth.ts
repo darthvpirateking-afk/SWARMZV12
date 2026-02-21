@@ -1,6 +1,12 @@
 import { useCallback, useEffect, useState } from "react";
-import { fetchOperatorAuthStatus, verifyOperatorKey } from "../api/operatorAuth";
-import type { OperatorAuthStatus, OperatorAuthVerifyResponse } from "../types/operatorAuth";
+import {
+  fetchOperatorAuthStatus,
+  verifyOperatorKey,
+} from "../api/operatorAuth";
+import type {
+  OperatorAuthStatus,
+  OperatorAuthVerifyResponse,
+} from "../types/operatorAuth";
 
 interface OperatorAuthState {
   status: OperatorAuthStatus | null;
@@ -25,7 +31,10 @@ export function useOperatorAuth() {
       const status = await fetchOperatorAuthStatus();
       setState((prev) => ({ ...prev, status, loading: false, error: null }));
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Failed to load operator auth status";
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Failed to load operator auth status";
       setState((prev) => ({ ...prev, loading: false, error: message }));
     }
   }, []);
@@ -34,9 +43,17 @@ export function useOperatorAuth() {
     setState((prev) => ({ ...prev, loading: true, error: null }));
     try {
       const result = await verifyOperatorKey(operatorKey);
-      setState((prev) => ({ ...prev, verifyResult: result, loading: false, error: null }));
+      setState((prev) => ({
+        ...prev,
+        verifyResult: result,
+        loading: false,
+        error: null,
+      }));
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Operator key verification failed";
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Operator key verification failed";
       setState((prev) => ({ ...prev, loading: false, error: message }));
     }
   }, []);

@@ -93,5 +93,5 @@ data/operator_anchor.json
 /base64.b64decode(
 /BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB.txt
 
-# Generated preemptive plans
-prepared_actions/preemptive/plan_*.json
+# Generated preemptive plans and all runtime action proposals
+prepared_actions/
