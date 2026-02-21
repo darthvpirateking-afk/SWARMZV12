@@ -392,7 +392,7 @@ async def home_page():
             "health": "/health",
             "docs": "/docs",
             "version": "1.0.0",
-            "message": "Backend is running. Deploy frontend separately for full UI."
+            "message": "Backend is running. Deploy frontend separately for full UI.",
         }
 
 
