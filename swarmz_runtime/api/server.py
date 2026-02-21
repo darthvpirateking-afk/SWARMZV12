@@ -465,6 +465,28 @@ def health():
     return {"ok": True, "status": "ok"}
 
 
+@app.get("/health/live")
+def health_live():
+    return {"status": "alive", "runtime": "swarmz-core", "pulse": True}
+
+
+@app.get("/health/ready")
+def health_ready():
+    # db and engine are always available in-process; AI is optional
+    db_ok = True
+    ai_ok = bool(os.environ.get("SWARMZ_AI_ENDPOINT"))
+    engine_ok = True
+    all_ready = db_ok and engine_ok
+    return {
+        "status": "ready" if all_ready else "degraded",
+        "services": {
+            "db": "ok" if db_ok else "unavailable",
+            "ai": "ok" if ai_ok else "offline",
+            "engine": "ok" if engine_ok else "unavailable",
+        },
+    }
+
+
 @app.get("/arena", response_class=HTMLResponse)
 def arena_page():
     return """

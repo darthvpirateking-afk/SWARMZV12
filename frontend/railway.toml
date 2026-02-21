@@ -1,0 +1,8 @@
+[build]
+builder = "nixpacks"
+buildCommand = "npm install && npm run build"
+
+[deploy]
+startCommand = "npm run preview -- --port $PORT --host"
+healthcheckTimeout = 30
+restartPolicyType = "on_failure"
