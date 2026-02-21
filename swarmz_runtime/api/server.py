@@ -70,10 +70,18 @@ async def lifespan(app: FastAPI):
 def create_app() -> FastAPI:
     from fastapi.middleware.cors import CORSMiddleware
 
+    # Allow origins from env var; fall back to all origins for local dev
+    _cors_origins_env = os.environ.get("CORS_ALLOW_ORIGINS", "")
+    _cors_origins = (
+        [o.strip() for o in _cors_origins_env.split(",") if o.strip()]
+        if _cors_origins_env
+        else ["*"]
+    )
+
     app = FastAPI(lifespan=lifespan)
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["*"],
+        allow_origins=_cors_origins,
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
@@ -105,8 +113,12 @@ def create_app() -> FastAPI:
     from .system_control import router as system_control_router
     from .mission_lifecycle import router as mission_lifecycle_router
 
-    app.include_router(system_control_router, prefix="/v1/system", tags=["system-control"])
-    app.include_router(mission_lifecycle_router, prefix="/v1/missions", tags=["mission-lifecycle"])
+    app.include_router(
+        system_control_router, prefix="/v1/system", tags=["system-control"]
+    )
+    app.include_router(
+        mission_lifecycle_router, prefix="/v1/missions", tags=["mission-lifecycle"]
+    )
 
     return app
 

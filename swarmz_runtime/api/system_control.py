@@ -5,9 +5,9 @@
 
 import logging
 import threading
+from collections import deque
 from datetime import datetime, timezone
-from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Deque, Dict, Optional
 
 from fastapi import APIRouter, Query
 
@@ -25,16 +25,22 @@ _STATE: Dict[str, Any] = {
     "last_heartbeat": datetime.now(timezone.utc).isoformat(),
 }
 
-# ── In-memory log ring ────────────────────────────────────────────────────────
-_LOG_RING: List[Dict[str, Any]] = []
+# ── In-memory log ring (deque for O(1) append/pop) ───────────────────────────
 _LOG_RING_MAX = 500
+_LOG_RING: Deque[Dict[str, Any]] = deque(maxlen=_LOG_RING_MAX)
 
 
 def _ts() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 
-def _append_log(level: str, source: str, message: str, mission_id: Optional[str] = None, details: Optional[Dict[str, Any]] = None) -> None:
+def _append_log(
+    level: str,
+    source: str,
+    message: str,
+    mission_id: Optional[str] = None,
+    details: Optional[Dict[str, Any]] = None,
+) -> None:
     entry: Dict[str, Any] = {
         "timestamp": _ts(),
         "level": level.upper(),
@@ -44,9 +50,7 @@ def _append_log(level: str, source: str, message: str, mission_id: Optional[str]
         "details": details or {},
     }
     with _LOCK:
-        _LOG_RING.append(entry)
-        if len(_LOG_RING) > _LOG_RING_MAX:
-            _LOG_RING.pop(0)
+        _LOG_RING.append(entry)  # deque(maxlen) handles eviction automatically
 
 
 # ── Runtime state helpers ─────────────────────────────────────────────────────
@@ -154,5 +158,5 @@ def get_logs(
         entries = [e for e in entries if e.get("mission_id") == mission_id]
 
     total = len(entries)
-    page = entries[offset: offset + limit]
+    page = entries[offset : offset + limit]
     return {"entries": page, "total": total, "offset": offset, "limit": limit}

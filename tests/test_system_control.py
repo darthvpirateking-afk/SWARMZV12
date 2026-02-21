@@ -51,9 +51,14 @@ def test_system_logs(client):
 
 
 def test_system_logs_filter(client):
+    # Generate some INFO log entries first
+    client.get("/v1/system/heartbeat")
+    client.post("/v1/system/start")
     resp = client.get("/v1/system/logs?level=INFO&limit=10")
     assert resp.status_code == 200
     data = resp.json()
+    # At least one INFO entry should exist (from the heartbeat/start calls above)
+    assert len(data["entries"]) > 0
     assert all(e["level"] == "INFO" for e in data["entries"])
 
 
@@ -66,7 +71,6 @@ def test_mission_lifecycle_start(client):
     data = resp.json()
     assert "mission_id" in data
     assert data["state"] == "QUEUED"
-    return data["mission_id"]
 
 
 def test_mission_lifecycle_status(client):

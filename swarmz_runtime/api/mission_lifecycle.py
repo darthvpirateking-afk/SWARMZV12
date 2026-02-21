@@ -6,7 +6,7 @@
 import threading
 import uuid
 from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
@@ -56,7 +56,9 @@ def _transition(mission_id: str, new_state: str) -> Dict[str, Any]:
     with _LOCK:
         m = _MISSIONS.get(mission_id)
         if not m:
-            raise HTTPException(status_code=404, detail=f"Mission {mission_id} not found")
+            raise HTTPException(
+                status_code=404, detail=f"Mission {mission_id} not found"
+            )
         current = m["state"]
         allowed = ALLOWED_TRANSITIONS.get(current, [])
         if new_state not in allowed:
@@ -141,4 +143,9 @@ def missions_status() -> Dict[str, Any]:
 def mission_status(mission_id: str) -> Dict[str, Any]:
     """Return state of a specific mission."""
     m = _get_mission(mission_id)
-    return {"mission_id": mission_id, "state": m["state"], "history": m["history"], "timestamp": _ts()}
+    return {
+        "mission_id": mission_id,
+        "state": m["state"],
+        "history": m["history"],
+        "timestamp": _ts(),
+    }
