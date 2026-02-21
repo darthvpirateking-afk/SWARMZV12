@@ -210,7 +210,7 @@ const styles: Record<string, CSSProperties> = {
   stepLine: {
     position: "absolute",
     top: 5,
-    right: -spacing.md as unknown as number,
+    right: `-${spacing.md}`,
     width: spacing.md,
     height: 1,
     background: colors.borderColor,
