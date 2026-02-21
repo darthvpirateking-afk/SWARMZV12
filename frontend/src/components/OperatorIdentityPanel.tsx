@@ -12,12 +12,15 @@ export function OperatorIdentityPanel({
   sessionId,
   buildTag = "v12.0",
 }: OperatorIdentityPanelProps) {
-  const sid = sessionId ?? `SID-${Math.random().toString(36).slice(2, 10).toUpperCase()}`;
+  const sid =
+    sessionId ?? `SID-${Math.random().toString(36).slice(2, 10).toUpperCase()}`;
 
   return (
     <section style={styles.card}>
       <div style={styles.avatar}>
-        <span style={styles.avatarText}>{operatorName.charAt(0).toUpperCase()}</span>
+        <span style={styles.avatarText}>
+          {operatorName.charAt(0).toUpperCase()}
+        </span>
       </div>
       <div style={styles.info}>
         <span style={styles.name}>{operatorName}</span>
