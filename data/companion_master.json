@@ -3,11 +3,11 @@
   "personality_anchor": "calm_analytical",
   "created_at": "2026-02-19T09:02:48.196411Z",
   "epochs_completed": 0,
-  "total_missions_witnessed": 54,
+  "total_missions_witnessed": 55,
   "last_insight": "Pattern detected: increasing efficiency",
   "policy": "prepare_only",
   "last_mission_id": "test_m1",
   "last_mission_status": "SUCCESS",
-  "updated_at": "2026-02-20T16:08:59.031685Z",
-  "last_insight_at": "2026-02-20T16:08:59.031673Z"
+  "updated_at": "2026-02-21T02:08:38.630674Z",
+  "last_insight_at": "2026-02-21T02:08:38.630663Z"
 }

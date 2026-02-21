@@ -62,3 +62,6 @@
 {"timestamp": "2026-02-20T16:08:59.118601", "event_type": "mission_created", "mission_id": "7ecf9a25", "details": {"goal": "E2E dispatch test", "category": "forge"}, "visibility": "visible"}
 {"ts": "2026-02-20T16:08:59.122256Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-160859-f83a57cb"}
 {"ts": "2026-02-20T16:08:59.136160Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-160859-712bcef2"}
+{"timestamp": "2026-02-21T02:08:38.722755", "event_type": "mission_created", "mission_id": "44cbfae4", "details": {"goal": "E2E dispatch test", "category": "forge"}, "visibility": "visible"}
+{"ts": "2026-02-21T02:08:38.726212Z", "event": "sovereign_dispatch", "mission_id": "M-20260221-020838-e909e379"}
+{"ts": "2026-02-21T02:08:38.739841Z", "event": "sovereign_dispatch", "mission_id": "M-20260221-020838-e17bdf72"}
