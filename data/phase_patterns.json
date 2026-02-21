@@ -1,12 +1,12 @@
 {
   "failure_clusters": {
     "count": 0,
-    "confidence": 0.05,
+    "confidence": 0.0,
     "recent": []
   },
   "abandoned": {
-    "count": 16,
-    "confidence": 1.0,
+    "count": 32,
+    "confidence": 0.95,
     "recent": [
       "stabilizing",
       "stabilizing",
@@ -18,12 +18,12 @@
   },
   "slowdowns": {
     "count": 0,
-    "confidence": 0.05,
+    "confidence": 0.0,
     "recent": []
   },
   "recoveries": {
-    "count": 72,
-    "confidence": 1.0,
+    "count": 105,
+    "confidence": 0.95,
     "recent": [
       "stabilizing",
       "stabilizing",
@@ -35,7 +35,7 @@
   },
   "bursts": {
     "count": 0,
-    "confidence": 0.05,
+    "confidence": 0.0,
     "recent": []
   }
 }

@@ -43,7 +43,7 @@ def _load_master() -> Dict[str, Any]:
         "epochs_completed": 0,
         "total_missions_witnessed": 0,
         "last_insight": None,
-        "policy": "prepare_only",
+        "policy": "active",
     }
     atomic_write_json(MASTER_FILE, default)
     return default
@@ -118,7 +118,7 @@ def get_composite_context() -> Dict[str, Any]:
     return {
         "master_identity": master.get("identity"),
         "personality_anchor": master.get("personality_anchor"),
-        "policy": master.get("policy", "prepare_only"),
+        "policy": master.get("policy", "active"),
         "epochs_completed": master.get("epochs_completed", 0),
         "total_missions_witnessed": master.get("total_missions_witnessed", 0),
         "last_insight": master.get("last_insight"),

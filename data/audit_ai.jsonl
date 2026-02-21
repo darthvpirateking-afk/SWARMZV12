@@ -70,3 +70,12 @@
 {"seq":1,"timestamp":"2026-02-20T13:46:43.391470Z","event":"model_call","provider":"test","model":"test-model","ok":true,"latency_ms":42,"input_tokens":10,"output_tokens":20,"error":null,"context":"unit_test"}
 {"seq":3,"timestamp":"2026-02-20T13:46:43.418286Z","event":"model_call","provider":"seq1","model":"m","ok":true,"latency_ms":0,"input_tokens":0,"output_tokens":0,"error":null,"context":""}
 {"seq":4,"timestamp":"2026-02-20T13:46:43.418794Z","event":"model_call","provider":"seq2","model":"m","ok":true,"latency_ms":0,"input_tokens":0,"output_tokens":0,"error":null,"context":""}
+{"seq":1,"timestamp":"2026-02-21T10:52:46.979319Z","event":"model_call","provider":"test","model":"test-model","ok":true,"latency_ms":42,"input_tokens":10,"output_tokens":20,"error":null,"context":"unit_test"}
+{"seq":3,"timestamp":"2026-02-21T10:52:47.005386Z","event":"model_call","provider":"seq1","model":"m","ok":true,"latency_ms":0,"input_tokens":0,"output_tokens":0,"error":null,"context":""}
+{"seq":4,"timestamp":"2026-02-21T10:52:47.005846Z","event":"model_call","provider":"seq2","model":"m","ok":true,"latency_ms":0,"input_tokens":0,"output_tokens":0,"error":null,"context":""}
+{"seq":1,"timestamp":"2026-02-21T10:52:49.231076Z","event":"model_call","provider":"test","model":"test-model","ok":true,"latency_ms":42,"input_tokens":10,"output_tokens":20,"error":null,"context":"unit_test"}
+{"seq":3,"timestamp":"2026-02-21T10:52:49.256483Z","event":"model_call","provider":"seq1","model":"m","ok":true,"latency_ms":0,"input_tokens":0,"output_tokens":0,"error":null,"context":""}
+{"seq":4,"timestamp":"2026-02-21T10:52:49.257053Z","event":"model_call","provider":"seq2","model":"m","ok":true,"latency_ms":0,"input_tokens":0,"output_tokens":0,"error":null,"context":""}
+{"seq":1,"timestamp":"2026-02-21T10:52:56.336428Z","event":"model_call","provider":"test","model":"test-model","ok":true,"latency_ms":42,"input_tokens":10,"output_tokens":20,"error":null,"context":"unit_test"}
+{"seq":3,"timestamp":"2026-02-21T10:52:56.364600Z","event":"model_call","provider":"seq1","model":"m","ok":true,"latency_ms":0,"input_tokens":0,"output_tokens":0,"error":null,"context":""}
+{"seq":4,"timestamp":"2026-02-21T10:52:56.365145Z","event":"model_call","provider":"seq2","model":"m","ok":true,"latency_ms":0,"input_tokens":0,"output_tokens":0,"error":null,"context":""}

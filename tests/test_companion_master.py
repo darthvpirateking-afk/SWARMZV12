@@ -11,7 +11,7 @@ def test_ensure_master():
     from core.companion_master import ensure_master
     m = ensure_master()
     assert m["identity"] == "MASTER_SWARMZ"
-    assert m["policy"] == "prepare_only"
+    assert m["policy"] == "active"
     assert isinstance(m["total_missions_witnessed"], int)
 
 
@@ -39,7 +39,7 @@ def test_get_composite_context():
     assert "confidence_level" in ctx
     assert "memory_summary" in ctx
     assert "policy" in ctx
-    assert ctx["policy"] == "prepare_only"
+    assert ctx["policy"] == "active"
 
 
 def test_self_assessment():
