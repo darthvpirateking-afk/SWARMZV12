@@ -23,6 +23,7 @@ Core Principles:
 4. Safety - Built-in safeguards with operator override
 """
 
+import os
 import sys
 import json
 import importlib
@@ -126,11 +127,19 @@ class SwarmzCore:
     Main SWARMZ system - Operator-Sovereign "Do Anything" System
     """
 
+    # Mapping from environment variable to plugin path
+    _FEATURE_PLUGINS = {
+        "ENABLE_REALITY_GATE": "plugins/reality_gate.py",
+        "ENABLE_MISSION_CONTRACT": "plugins/mission_contract.py",
+        "ENABLE_LEAD_AUDIT": "plugins/lead_audit.py",
+    }
+
     def __init__(self, config: Optional[Dict] = None):
         self.config = config or {}
         self.sovereignty = OperatorSovereignty()
         self.executor = TaskExecutor(self.sovereignty)
         self._register_builtin_tasks()
+        self._load_feature_plugins()
 
     def _register_builtin_tasks(self):
         """Register built-in core tasks."""
@@ -176,6 +185,22 @@ class SwarmzCore:
                 "warning": "Executes arbitrary code - use with caution",
             },
         )
+
+    def _load_feature_plugins(self):
+        """Auto-load plugins whose corresponding feature flag env var is set to 'true'."""
+        import warnings
+
+        for env_var, plugin_path in self._FEATURE_PLUGINS.items():
+            if os.getenv(env_var, "").lower() == "true":
+                full_path = Path(plugin_path)
+                if full_path.exists():
+                    self.executor.load_plugin(str(full_path))
+                else:
+                    warnings.warn(
+                        f"{env_var}=true but plugin file not found: {plugin_path}",
+                        RuntimeWarning,
+                        stacklevel=2,
+                    )
 
     def execute(self, task_name: str, **kwargs) -> Any:
         """Execute a task by name."""

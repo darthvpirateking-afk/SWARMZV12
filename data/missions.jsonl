@@ -85,3 +85,9 @@
 {"id": "63804d3c", "goal": "E2E dispatch test", "category": "forge", "constraints": {}, "expiry": null, "status": "pending", "created_at": "2026-02-21T02:27:00.243039", "updated_at": "2026-02-21T02:27:00.243041", "leverage_score": 70.0, "revisit_interval": 3600, "operator_public_key": null}
 {"mission_id": "M-20260221-022700-e4d3c53b", "intent": "E2E sovereign dispatch", "scope": "tests", "limits": {}, "status": "PENDING", "timestamp": "2026-02-21T02:27:00.246722Z"}
 {"mission_id": "M-20260221-022700-039c503c", "intent": "roundtrip-e2e", "scope": "tests", "limits": {}, "status": "PENDING", "timestamp": "2026-02-21T02:27:00.260514Z"}
+{"id": "3beac37f", "goal": "E2E dispatch test", "category": "forge", "constraints": {}, "expiry": null, "status": "pending", "created_at": "2026-02-21T02:44:34.361463", "updated_at": "2026-02-21T02:44:34.361465", "leverage_score": 70.0, "revisit_interval": 3600, "operator_public_key": null}
+{"mission_id": "M-20260221-024434-01754b12", "intent": "E2E sovereign dispatch", "scope": "tests", "limits": {}, "status": "PENDING", "timestamp": "2026-02-21T02:44:34.365058Z"}
+{"mission_id": "M-20260221-024434-e39bef32", "intent": "roundtrip-e2e", "scope": "tests", "limits": {}, "status": "PENDING", "timestamp": "2026-02-21T02:44:34.378669Z"}
+{"id": "93cdc1d2", "goal": "E2E dispatch test", "category": "forge", "constraints": {}, "expiry": null, "status": "pending", "created_at": "2026-02-21T02:45:20.558812", "updated_at": "2026-02-21T02:45:20.558814", "leverage_score": 70.0, "revisit_interval": 3600, "operator_public_key": null}
+{"mission_id": "M-20260221-024520-8dba6543", "intent": "E2E sovereign dispatch", "scope": "tests", "limits": {}, "status": "PENDING", "timestamp": "2026-02-21T02:45:20.562731Z"}
+{"mission_id": "M-20260221-024520-3b8912d4", "intent": "roundtrip-e2e", "scope": "tests", "limits": {}, "status": "PENDING", "timestamp": "2026-02-21T02:45:20.576343Z"}
