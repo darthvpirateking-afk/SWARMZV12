@@ -1,5 +1,9 @@
 import { apiGet } from "./client";
-import type { DatabaseCollections, DatabaseStats, DatabaseStatus } from "../types/databaseLayer";
+import type {
+  DatabaseCollections,
+  DatabaseStats,
+  DatabaseStatus,
+} from "../types/databaseLayer";
 
 export function fetchDatabaseStatus(): Promise<DatabaseStatus> {
   return apiGet<DatabaseStatus>("/v1/db/status");

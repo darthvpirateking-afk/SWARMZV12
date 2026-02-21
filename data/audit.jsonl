@@ -71,3 +71,6 @@
 {"timestamp": "2026-02-21T14:55:28.530373", "event_type": "mission_created", "mission_id": "ff6fc2f2", "details": {"goal": "E2E dispatch test", "category": "forge"}, "visibility": "visible"}
 {"ts": "2026-02-21T03:55:28.549090Z", "event": "sovereign_dispatch", "mission_id": "M-20260221-035528-da7a674b"}
 {"ts": "2026-02-21T03:55:28.587844Z", "event": "sovereign_dispatch", "mission_id": "M-20260221-035528-c67df551"}
+{"timestamp": "2026-02-21T04:17:28.998709", "event_type": "mission_created", "mission_id": "c1ed32d1", "details": {"goal": "E2E dispatch test", "category": "forge"}, "visibility": "visible"}
+{"ts": "2026-02-21T04:17:29.002247Z", "event": "sovereign_dispatch", "mission_id": "M-20260221-041729-b894eace"}
+{"ts": "2026-02-21T04:17:29.016300Z", "event": "sovereign_dispatch", "mission_id": "M-20260221-041729-30214293"}

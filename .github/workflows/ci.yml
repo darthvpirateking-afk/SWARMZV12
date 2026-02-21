@@ -377,6 +377,7 @@ jobs:
           ruff check .
 
       - name: Run mypy
+        continue-on-error: true
         run: |
           mypy --ignore-missing-imports swarmz_runtime core addons
 

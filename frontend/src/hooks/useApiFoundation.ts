@@ -1,6 +1,12 @@
 import { useCallback, useEffect, useState } from "react";
-import { fetchApiFoundationDomains, fetchApiFoundationStatus } from "../api/foundation";
-import type { ApiFoundationDomains, ApiFoundationStatus } from "../types/apiFoundation";
+import {
+  fetchApiFoundationDomains,
+  fetchApiFoundationStatus,
+} from "../api/foundation";
+import type {
+  ApiFoundationDomains,
+  ApiFoundationStatus,
+} from "../types/apiFoundation";
 
 interface ApiFoundationState {
   status: ApiFoundationStatus | null;
@@ -28,7 +34,10 @@ export function useApiFoundation() {
       ]);
       setState({ status, domains, loading: false, error: null });
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Failed to load API foundation";
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Failed to load API foundation";
       setState((prev) => ({ ...prev, loading: false, error: message }));
     }
   }, []);
