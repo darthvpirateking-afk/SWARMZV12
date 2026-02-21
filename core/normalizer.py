@@ -23,7 +23,6 @@
 Implements the Normalization layer to standardize event data.
 """
 
-import json
 import hashlib
 
 

@@ -10,7 +10,6 @@ import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, Any
-from zoneinfo import ZoneInfo
 
 ANCHOR_FILENAME = "operator_anchor.json"
 

@@ -3,7 +3,7 @@
 # See LICENSE file for details.
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from typing import Dict, Any, Optional
+from typing import Dict, Any
 
 from swarmz_runtime.factory import engine
 

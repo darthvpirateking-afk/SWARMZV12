@@ -18,7 +18,6 @@ from .schema import (
     ArenaCandidate,
     ArenaRunStatus,
     CandidateStatus,
-    ArenaConfig,
 )
 from .store import ArenaStore
 from .scoring import score_candidate, rank_candidates

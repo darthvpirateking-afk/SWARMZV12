@@ -5,7 +5,7 @@ import json
 from typing import List, Dict, Any, Optional
 from datetime import datetime
 from pathlib import Path
-from swarmz_runtime.storage.schema import Mission, AuditEntry, Rune, MissionStatus
+from swarmz_runtime.storage.schema import Mission, AuditEntry, Rune
 from swarmz_runtime.storage.jsonl_utils import write_jsonl
 
 

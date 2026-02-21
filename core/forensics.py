@@ -16,11 +16,10 @@ local evidence. No runtime behaviour is changed.
 
 from __future__ import annotations
 
-import json
 from dataclasses import dataclass, asdict
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 
 from jsonl_utils import read_jsonl
 from core.atomic import atomic_append_jsonl

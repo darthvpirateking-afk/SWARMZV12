@@ -1,8 +1,8 @@
 # SWARMZ Source Available License
 # Commercial use, hosting, and resale prohibited.
 # See LICENSE file for details.
-from fastapi import APIRouter, HTTPException, Depends
-from typing import Callable, Dict, Any, Optional
+from fastapi import APIRouter, HTTPException
+from typing import Callable, Dict, Any
 from pydantic import BaseModel
 from swarmz_runtime.core.engine import SwarmzEngine
 

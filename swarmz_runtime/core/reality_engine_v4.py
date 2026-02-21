@@ -1,7 +1,7 @@
 # SWARMZ Reality-Engine v4
 # Multi-Physics Layering
 
-from typing import Dict, Any, List
+from typing import Dict, Any
 
 
 class PhysicsLayer:

@@ -7,7 +7,6 @@ Provides storage health checks and diagnostic info accessible at
 
 from __future__ import annotations
 
-import os
 from pathlib import Path
 from typing import Any, Callable, Dict
 

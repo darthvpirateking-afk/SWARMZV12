@@ -19,7 +19,6 @@ swarmz_server and layers the required control routes.
 import os
 import uuid
 import json
-import hashlib
 from datetime import datetime
 from pathlib import Path
 from typing import Optional, Dict, Any

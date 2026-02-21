@@ -23,7 +23,7 @@ import statistics
 from dataclasses import dataclass, asdict
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List
 
 from jsonl_utils import read_jsonl
 from core.atomic import atomic_append_jsonl

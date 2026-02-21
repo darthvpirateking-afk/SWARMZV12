@@ -9,12 +9,10 @@ All operations are audited and append-only.
 """
 
 import json
-from datetime import datetime
 from pathlib import Path
 from typing import Optional, Dict, Any
 
-from fastapi import APIRouter, Depends, HTTPException, Request
-from fastapi.responses import JSONResponse
+from fastapi import APIRouter, HTTPException, Request
 
 from core.nexusmon_models import (
     ChatRequest,
@@ -25,7 +23,6 @@ from core.nexusmon_models import (
     ConversationContext,
     SystemHealth,
     AuditEvent,
-    Mission,
 )
 from core.conversation_engine import get_conversation_engine
 from core.memory_engine import get_memory_engine

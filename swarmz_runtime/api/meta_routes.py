@@ -4,8 +4,7 @@ from models.ignition import IgnitionStateRequest
 from models.lattice import LatticeStatusRequest
 from models.sovereign import SovereignDecisionRequest
 from fastapi import APIRouter, HTTPException, FastAPI
-from pydantic import BaseModel
-from typing import Any, Callable, Dict, List, Optional
+from typing import Callable, Optional
 from swarmz_runtime.core.engine import SwarmzEngine
 from swarmz_runtime.session.session_router import router as session_router
 

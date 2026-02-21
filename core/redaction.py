@@ -5,7 +5,6 @@
 Implements the Redaction + Privacy Guard layer to ensure sensitive data is protected.
 """
 
-import json
 import re
 
 REDACTION_RULES = {

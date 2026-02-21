@@ -9,7 +9,7 @@ to mount all trial endpoints under /v1/trials/*.
 """
 
 from typing import Optional, List
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from fastapi import FastAPI, HTTPException
 
 # â”€â”€ Request/Response Models â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€

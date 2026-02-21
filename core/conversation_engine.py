@@ -5,8 +5,7 @@ Combines intent classification, mode selection, and response generation
 with strict adherence to operator sovereignty invariants.
 """
 
-import json
-from typing import List, Dict, Any, Optional, Tuple
+from typing import List, Optional, Tuple
 from collections import defaultdict
 
 from core.nexusmon_models import (
@@ -17,10 +16,7 @@ from core.nexusmon_models import (
     SuggestedActionType,
     MissionDraft,
     StateSnapshot,
-    OperatorProfile,
-    NexusForm,
     Persona,
-    SystemHealth,
 )
 from core.persona_engine import get_persona, get_system_prompt
 from core.memory_engine import get_memory_engine

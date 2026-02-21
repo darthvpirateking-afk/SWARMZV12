@@ -1,7 +1,7 @@
 # SWARMZ Source Available License
 # Commercial use, hosting, and resale prohibited.
 # See LICENSE file for details.
-from typing import Dict, Any, List, Optional, Callable
+from typing import Dict, Any, List, Callable
 from datetime import datetime
 import hashlib
 import json

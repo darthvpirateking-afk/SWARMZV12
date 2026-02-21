@@ -8,17 +8,14 @@ import os
 import json
 import socket
 import secrets
-import traceback
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, Any, Optional, List
 
 from fastapi import FastAPI, Request, HTTPException, Query
-from fastapi.responses import HTMLResponse, JSONResponse, FileResponse, Response
+from fastapi.responses import HTMLResponse, FileResponse, Response
 from fastapi.staticfiles import StaticFiles
-from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
-from zoneinfo import ZoneInfo
 
 from contextlib import asynccontextmanager
 
@@ -27,9 +24,8 @@ logger = logging.getLogger("swarmz.server")
 from swarmz_runtime.core.engine import SwarmzEngine
 from jsonl_utils import read_jsonl
 from kernel_runtime.orchestrator import SwarmzOrchestrator
-from swarmz_runtime.api import missions, system, admin, ecosystem
+from swarmz_runtime.api import system, admin, ecosystem
 from . import arena as arena_api
-from .runtime_endpoints import runtime_scoreboard
 from .missions import router as missions_router
 from .system import router as system_router
 from .admin import router as admin_router

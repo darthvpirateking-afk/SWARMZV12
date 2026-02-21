@@ -6,7 +6,6 @@ import random
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, Any, List, Optional
-from zoneinfo import ZoneInfo
 
 from core.operator_anchor import compute_record_hash, sign_record, verify_signature
 

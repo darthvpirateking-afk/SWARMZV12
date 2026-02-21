@@ -8,8 +8,8 @@ Add-only module.  Import and call register_hologram_api(app) from server.py
 to mount all hologram endpoints under /v1/hologram/*.
 """
 
-from typing import Optional, List, Dict, Any
-from pydantic import BaseModel, Field
+from typing import Optional, List
+from pydantic import BaseModel
 from fastapi import FastAPI, HTTPException
 
 # â”€â”€ Request models â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
