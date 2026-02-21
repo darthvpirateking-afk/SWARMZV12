@@ -75,7 +75,14 @@ def _append_jsonl(path: Path, obj: Dict[str, Any]) -> None:
 
 @app.get("/health")
 async def health():
-    return {"status": "ok"}
+    """Health check endpoint for Railway and monitoring."""
+    return {"status": "ok", "service": "swarmz-backend"}
+
+
+@app.get("/v1/health")
+async def v1_health():
+    """Legacy health check endpoint."""
+    return {"status": "ok", "service": "swarmz-backend"}
 
 
 @app.post("/v1/sovereign/dispatch")

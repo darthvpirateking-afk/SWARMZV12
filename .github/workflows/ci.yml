@@ -23,6 +23,10 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.13'
+          cache: 'pip'
+          cache-dependency-path: |
+            requirements.txt
+            requirements-dev.txt
 
       - name: Install dependencies
         run: |
@@ -365,6 +369,8 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.13'
+          cache: 'pip'
+          cache-dependency-path: requirements-dev.txt
 
       - name: Install Python lint/type dependencies
         run: |
@@ -419,6 +425,8 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.13'
+          cache: 'pip'
+          cache-dependency-path: requirements-dev.txt
 
       - name: Install Python test dependencies
         run: |
@@ -459,6 +467,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.13'
+          cache: 'pip'
 
       - name: Build backend package
         run: |
@@ -497,6 +506,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.13'
+          cache: 'pip'
 
       - name: Python dependency audit
         run: |
@@ -529,6 +539,8 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.13'
+          cache: 'pip'
+          cache-dependency-path: requirements-dev.txt
 
       - name: Check Python formatting
         run: |

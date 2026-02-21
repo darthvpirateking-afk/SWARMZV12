@@ -1,0 +1,14 @@
+# Railway Deployment Configuration
+# https://docs.railway.app/deploy/config-as-code
+
+[build]
+builder = "NIXPACKS"
+watchPatterns = ["**/*.py", "**/*.ts", "**/*.tsx", "**/*.json"]
+
+[deploy]
+startCommand = "python -m uvicorn server:app --host 0.0.0.0 --port $PORT --log-level info"
+healthcheckPath = "/health"
+healthcheckTimeout = 300
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10
+

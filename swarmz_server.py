@@ -380,8 +380,20 @@ async def console_page():
 # --- Home route (serve HUD directly - no redirect loop) ---
 @app.get("/")
 async def home_page():
-    """Serve the SWARMZ Console HUD at root."""
-    return FileResponse("web/index.html", media_type="text/html")
+    """Serve the SWARMZ Console HUD at root, or return API info if web folder missing."""
+    web_index = Path("web/index.html")
+    if web_index.exists():
+        return FileResponse(str(web_index), media_type="text/html")
+    else:
+        # Fallback for Railway or environments where web/ folder isn't deployed
+        return {
+            "service": "SWARMZ API",
+            "status": "running",
+            "health": "/health",
+            "docs": "/docs",
+            "version": "1.0.0",
+            "message": "Backend is running. Deploy frontend separately for full UI."
+        }
 
 
 # --- Manifest, Icons, and Other PWA Routes ---

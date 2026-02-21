@@ -95,3 +95,12 @@ data/operator_anchor.json
 
 # Generated preemptive plans
 prepared_actions/preemptive/plan_*.json
+
+# Accidental artifacts
+nul
+_curl_debug.txt
+_home.html
+import_graph.dot
+
+# Railway
+.railway

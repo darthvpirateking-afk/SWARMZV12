@@ -1,0 +1,2003 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>FLUX∞</title>
+<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@100;200;300;400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://js.stripe.com/v3/"></script>
+<style>
+/* ═══════════════════════════════════════
+   QUANTUM GEOMETRY DESIGN SYSTEM — FLUX∞
+═══════════════════════════════════════ */
+:root {
+  --void:     #000005;
+  --deep:     #02000f;
+  --matrix:   #04011a;
+  --raised:   #080523;
+  --glass:    rgba(8,5,35,0.7);
+
+  /* PLASMA SPECTRUM */
+  --plasma-a:  #00ffff;
+  --plasma-b:  #7b2fff;
+  --plasma-c:  #ff006e;
+  --plasma-d:  #00ff9d;
+  --plasma-e:  #ff9500;
+  --plasma-f:  #e040fb;
+  --plasma-hot:#ffffff;
+
+  /* CHROMATIC */
+  --chroma-r: rgba(255,0,110,0.6);
+  --chroma-g: rgba(0,255,157,0.6);
+  --chroma-b: rgba(0,200,255,0.6);
+
+  --border:      rgba(0,255,255,0.08);
+  --border-live: rgba(0,255,255,0.35);
+  --border-hot:  rgba(0,255,255,0.7);
+
+  --text:    #e8f4ff;
+  --text-dim: #4a6080;
+  --text-mid: #8aabcc;
+
+  --font-display: 'Exo 2', sans-serif;
+  --font-ui:      'Rajdhani', sans-serif;
+  --font-mono:    'Share Tech Mono', monospace;
+
+  --r: 6px;   /* quantum angles — minimal rounding */
+  --r2: 12px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { height: 100%; scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-ui);
+  background: var(--void);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  cursor: crosshair;
+}
+
+/* ══ QUANTUM FIELD CANVAS ══ */
+#quantumCanvas {
+  position: fixed; inset: 0;
+  z-index: 0; pointer-events: none;
+  opacity: 0.55;
+}
+
+/* ══ GEOMETRY LAYER ══ */
+.geo-layer {
+  position: fixed; inset: 0; z-index: 0;
+  pointer-events: none; overflow: hidden;
+}
+.geo-hex {
+  position: absolute;
+  width: 600px; height: 600px;
+  border: 1px solid rgba(0,255,255,0.04);
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  animation: hexRotate 40s linear infinite;
+}
+.geo-hex:nth-child(1) { top: -200px; left: -200px; }
+.geo-hex:nth-child(2) { top: 20%; right: -300px; width: 800px; height: 800px; animation-duration: 60s; animation-direction: reverse; border-color: rgba(123,47,255,0.05); }
+.geo-hex:nth-child(3) { bottom: -100px; left: 10%; width: 400px; height: 400px; animation-duration: 50s; border-color: rgba(255,0,110,0.04); }
+
+.geo-tri {
+  position: absolute;
+  width: 0; height: 0;
+  opacity: 0.06;
+  animation: triFloat 20s ease-in-out infinite;
+}
+.geo-tri:nth-child(4) { top: 15%; left: 5%; border-left: 80px solid transparent; border-right: 80px solid transparent; border-bottom: 140px solid var(--plasma-a); animation-delay: 0s; }
+.geo-tri:nth-child(5) { top: 60%; right: 8%; border-left: 50px solid transparent; border-right: 50px solid transparent; border-bottom: 86px solid var(--plasma-b); animation-delay: -7s; }
+.geo-tri:nth-child(6) { bottom: 30%; left: 30%; border-left: 30px solid transparent; border-right: 30px solid transparent; border-bottom: 52px solid var(--plasma-c); animation-delay: -14s; }
+
+.geo-ring {
+  position: absolute;
+  border-radius: 50%;
+  animation: ringPulse 8s ease-in-out infinite;
+}
+.geo-ring:nth-child(7) { width: 500px; height: 500px; top: -100px; right: -150px; border: 1px solid rgba(123,47,255,0.08); animation-delay: 0s; }
+.geo-ring:nth-child(8) { width: 300px; height: 300px; bottom: 20%; left: -80px; border: 1px solid rgba(0,255,157,0.07); animation-delay: -4s; }
+
+@keyframes hexRotate {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes triFloat {
+  0%,100% { transform: translateY(0) rotate(0deg); }
+  50%      { transform: translateY(-30px) rotate(180deg); }
+}
+@keyframes ringPulse {
+  0%,100% { transform: scale(1); opacity: 0.5; }
+  50%      { transform: scale(1.1); opacity: 1; }
+}
+
+/* ══ APP SHELL ══ */
+.app {
+  width: 100%; max-width: 430px;
+  margin: 0 auto;
+  min-height: 100vh;
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column;
+  padding-bottom: 80px;
+}
+
+/* ══ SCREENS ══ */
+.screen { display: none; flex-direction: column; animation: screenIn 0.4s ease; }
+.screen.active { display: flex; }
+@keyframes screenIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ═══════════════════════════════════════
+   AUTH SCREEN
+═══════════════════════════════════════ */
+.auth-wrap {
+  min-height: 100vh; display: flex;
+  flex-direction: column; align-items: center;
+  justify-content: center; padding: 40px 24px;
+  position: relative;
+}
+
+.flux-logo-wrap { text-align: center; margin-bottom: 48px; position: relative; }
+
+.flux-logo {
+  font-family: var(--font-display);
+  font-size: 72px; font-weight: 900;
+  letter-spacing: -4px; line-height: 1;
+  position: relative; display: inline-block;
+}
+.flux-logo .f1 {
+  background: linear-gradient(135deg, var(--plasma-hot) 0%, var(--plasma-a) 40%, var(--plasma-b) 80%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 30px rgba(0,255,255,0.6));
+}
+.flux-logo .inf {
+  font-size: 48px; vertical-align: top;
+  background: linear-gradient(135deg, var(--plasma-c), var(--plasma-f));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  animation: infSpin 6s linear infinite;
+  display: inline-block;
+}
+@keyframes infSpin {
+  0%,100% { filter: drop-shadow(0 0 10px rgba(255,0,110,0.8)); }
+  50%      { filter: drop-shadow(0 0 30px rgba(255,0,110,1)); }
+}
+
+.flux-sub {
+  font-family: var(--font-mono); font-size: 11px;
+  color: var(--text-dim); letter-spacing: 5px;
+  text-transform: uppercase; margin-top: 8px;
+  animation: subPulse 3s ease-in-out infinite;
+}
+@keyframes subPulse {
+  0%,100% { opacity: 0.5; }
+  50%      { opacity: 1; color: var(--plasma-a); }
+}
+
+/* HOLOGRAPHIC CARD */
+.holo-card {
+  width: 100%;
+  position: relative;
+  background: var(--glass);
+  border: 1px solid var(--border-live);
+  border-radius: var(--r2);
+  padding: 32px 28px;
+  backdrop-filter: blur(30px);
+  overflow: hidden;
+}
+.holo-card::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg,
+    rgba(0,255,255,0.03) 0%,
+    transparent 30%,
+    rgba(123,47,255,0.03) 60%,
+    transparent 100%);
+  pointer-events: none;
+}
+.holo-card::after {
+  content: '';
+  position: absolute; top: 0; left: -100%;
+  width: 60%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent);
+  animation: holoSheen 6s ease-in-out infinite;
+}
+@keyframes holoSheen {
+  0%   { left: -100%; }
+  60%,100% { left: 200%; }
+}
+
+.auth-seg {
+  display: flex; gap: 0;
+  background: var(--deep);
+  border: 1px solid var(--border);
+  border-radius: var(--r); padding: 3px;
+  margin-bottom: 28px;
+}
+.seg-btn {
+  flex: 1; padding: 10px;
+  background: transparent; border: none;
+  color: var(--text-dim); font-family: var(--font-display);
+  font-size: 13px; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase;
+  border-radius: 4px; cursor: pointer; transition: all 0.2s;
+}
+.seg-btn.active {
+  background: linear-gradient(135deg, var(--plasma-b), var(--plasma-a));
+  color: var(--void);
+  box-shadow: 0 0 20px rgba(0,255,255,0.3);
+}
+
+.q-field { margin-bottom: 16px; }
+.q-field label {
+  display: block; font-family: var(--font-mono);
+  font-size: 10px; letter-spacing: 3px;
+  color: var(--text-dim); margin-bottom: 8px;
+  text-transform: uppercase;
+}
+.q-field input {
+  width: 100%;
+  background: var(--matrix);
+  border: 1px solid var(--border);
+  border-radius: var(--r); padding: 14px 16px;
+  color: var(--text); font-family: var(--font-display);
+  font-size: 15px; font-weight: 500; outline: none;
+  transition: all 0.2s; letter-spacing: 0.5px;
+}
+.q-field input:focus {
+  border-color: var(--plasma-a);
+  box-shadow: 0 0 0 2px rgba(0,255,255,0.15), 0 0 20px rgba(0,255,255,0.1);
+  background: rgba(0,255,255,0.03);
+}
+.q-field input::placeholder { color: var(--text-dim); }
+
+.emit-btn {
+  width: 100%; padding: 17px;
+  background: transparent;
+  border: 1px solid var(--plasma-a);
+  border-radius: var(--r2);
+  color: var(--plasma-a);
+  font-family: var(--font-display);
+  font-size: 15px; font-weight: 800;
+  letter-spacing: 3px; text-transform: uppercase;
+  cursor: pointer; position: relative; overflow: hidden;
+  transition: all 0.3s;
+}
+.emit-btn::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, var(--plasma-a), var(--plasma-b));
+  opacity: 0; transition: opacity 0.3s;
+}
+.emit-btn:hover {
+  color: var(--void);
+  box-shadow: 0 0 40px rgba(0,255,255,0.5), inset 0 0 40px rgba(0,255,255,0.1);
+}
+.emit-btn:hover::before { opacity: 1; }
+.emit-btn span { position: relative; z-index: 1; }
+.emit-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.or-line {
+  text-align: center; margin: 18px 0;
+  font-family: var(--font-mono); font-size: 10px;
+  color: var(--text-dim); letter-spacing: 4px;
+  position: relative;
+}
+.or-line::before, .or-line::after {
+  content: ''; position: absolute; top: 50%;
+  width: 38%; height: 1px; background: var(--border);
+}
+.or-line::before { left: 0; }
+.or-line::after  { right: 0; }
+
+.ghost-btn {
+  width: 100%; padding: 15px;
+  background: transparent; border: 1px solid var(--border-live);
+  border-radius: var(--r2); color: var(--plasma-d);
+  font-family: var(--font-display); font-size: 14px; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase;
+  cursor: pointer; transition: all 0.2s;
+}
+.ghost-btn:hover { background: rgba(0,255,157,0.06); border-color: var(--plasma-d); box-shadow: 0 0 20px rgba(0,255,157,0.2); }
+
+/* CONFIG NOTICE */
+.cfg-notice {
+  margin-top: 20px;
+  border: 1px solid rgba(255,149,0,0.3);
+  border-radius: var(--r);
+  padding: 14px 16px;
+  background: rgba(255,149,0,0.05);
+}
+.cfg-notice .cn-head { font-family: var(--font-mono); font-size: 10px; color: var(--plasma-e); letter-spacing: 2px; margin-bottom: 8px; }
+.cfg-notice .cn-body { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); line-height: 1.8; }
+.cfg-notice code { color: var(--plasma-a); background: rgba(0,255,255,0.08); padding: 1px 5px; border-radius: 3px; }
+
+/* ═══════════════════════════════════════
+   HOME SCREEN
+═══════════════════════════════════════ */
+.top-rail {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  padding: 20px 20px 0;
+}
+
+.flux-mark {
+  font-family: var(--font-display); font-size: 20px; font-weight: 900;
+  letter-spacing: -1px;
+  background: linear-gradient(90deg, var(--plasma-a), var(--plasma-b));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+
+.rail-right { display: flex; gap: 8px; }
+.q-btn {
+  width: 38px; height: 38px;
+  background: var(--raised); border: 1px solid var(--border);
+  border-radius: var(--r); display: flex; align-items: center;
+  justify-content: center; cursor: pointer; font-size: 16px;
+  transition: all 0.2s; position: relative;
+}
+.q-btn:hover { border-color: var(--border-live); background: rgba(0,255,255,0.06); }
+.live-dot {
+  position: absolute; top: 5px; right: 5px;
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--plasma-d);
+  box-shadow: 0 0 8px var(--plasma-d);
+  animation: dotBreath 2s ease-in-out infinite;
+}
+@keyframes dotBreath {
+  0%,100% { opacity:0.7; transform: scale(1); }
+  50%      { opacity:1;   transform: scale(1.3); }
+}
+
+/* ══ RESERVE CRYSTAL ══ */
+.reserve-crystal {
+  margin: 20px 16px;
+  position: relative;
+}
+
+.crystal-bg {
+  position: relative;
+  background: linear-gradient(145deg, rgba(8,5,35,0.98) 0%, rgba(2,0,15,0.98) 100%);
+  border: 1px solid var(--border-live);
+  border-radius: var(--r2);
+  padding: 28px 24px 22px;
+  overflow: hidden;
+  clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
+}
+
+/* Animated prismatic border glow */
+.crystal-bg::before {
+  content: '';
+  position: absolute; inset: -1px;
+  background: conic-gradient(
+    from var(--angle, 0deg),
+    var(--plasma-a), var(--plasma-b), var(--plasma-c),
+    var(--plasma-d), var(--plasma-e), var(--plasma-f),
+    var(--plasma-a)
+  );
+  border-radius: var(--r2);
+  z-index: -1;
+  animation: prismSpin 4s linear infinite;
+  opacity: 0.6;
+}
+@property --angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
+@keyframes prismSpin { to { --angle: 360deg; } }
+
+/* Holographic overlay grid */
+.crystal-bg::after {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: repeating-linear-gradient(
+    0deg, transparent, transparent 39px, rgba(0,255,255,0.015) 39px, rgba(0,255,255,0.015) 40px
+  ), repeating-linear-gradient(
+    90deg, transparent, transparent 39px, rgba(0,255,255,0.015) 39px, rgba(0,255,255,0.015) 40px
+  );
+  pointer-events: none;
+}
+
+.crystal-top {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  margin-bottom: 20px; position: relative; z-index: 1;
+}
+.reserve-label {
+  font-family: var(--font-mono); font-size: 9px;
+  color: var(--plasma-a); letter-spacing: 4px;
+  text-transform: uppercase;
+  text-shadow: 0 0 10px rgba(0,255,255,0.5);
+}
+.reserve-tier {
+  font-family: var(--font-mono); font-size: 9px;
+  padding: 4px 10px; border: 1px solid var(--plasma-b);
+  border-radius: 20px; color: var(--plasma-b);
+  letter-spacing: 2px; text-transform: uppercase;
+  box-shadow: 0 0 10px rgba(123,47,255,0.3);
+}
+
+.reserve-amount {
+  position: relative; z-index: 1;
+  margin-bottom: 22px;
+}
+.reserve-amount .ra-curr {
+  font-family: var(--font-display); font-size: 26px; font-weight: 300;
+  color: var(--text-dim); vertical-align: top;
+  margin-top: 8px; display: inline-block;
+}
+.reserve-amount .ra-int {
+  font-family: var(--font-display); font-size: 58px; font-weight: 900;
+  letter-spacing: -4px; line-height: 1;
+  background: linear-gradient(180deg, var(--plasma-hot) 0%, var(--plasma-a) 60%, rgba(0,255,255,0.4) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  text-shadow: none;
+  filter: drop-shadow(0 0 20px rgba(0,255,255,0.4));
+}
+.reserve-amount .ra-dec {
+  font-family: var(--font-display); font-size: 30px; font-weight: 300;
+  color: var(--text-dim);
+}
+.reserve-amount.masked .ra-int,
+.reserve-amount.masked .ra-dec,
+.reserve-amount.masked .ra-curr { filter: blur(10px); }
+
+.crystal-metrics {
+  display: flex; gap: 0;
+  border-top: 1px solid var(--border);
+  padding-top: 18px; position: relative; z-index: 1;
+}
+.cm-item {
+  flex: 1; padding: 0 12px; text-align: center;
+  border-right: 1px solid var(--border);
+}
+.cm-item:first-child { padding-left: 0; }
+.cm-item:last-child { border-right: none; }
+.cm-label { font-family: var(--font-mono); font-size: 8px; color: var(--text-dim); letter-spacing: 2px; margin-bottom: 5px; }
+.cm-val { font-family: var(--font-display); font-size: 16px; font-weight: 800; }
+.cm-val.emit-col { color: var(--plasma-c); }
+.cm-val.absorb-col { color: var(--plasma-d); }
+.cm-val.yield-col { color: var(--plasma-a); }
+
+/* YIELD STRIP */
+.yield-strip {
+  margin: 0 16px 16px;
+  display: flex; align-items: center; gap: 14px;
+  padding: 12px 16px;
+  background: rgba(0,255,157,0.04);
+  border: 1px solid rgba(0,255,157,0.15);
+  border-radius: var(--r);
+  clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+}
+.ys-icon { font-size: 20px; }
+.ys-info { flex: 1; }
+.ys-title { font-family: var(--font-display); font-size: 13px; font-weight: 700; color: var(--plasma-d); letter-spacing: 1px; }
+.ys-sub   { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); margin-top: 2px; }
+.ys-rate  { font-family: var(--font-display); font-size: 22px; font-weight: 900; color: var(--plasma-d); letter-spacing: -1px; }
+
+/* AI INSIGHT STRIP */
+.ai-strip {
+  margin: 0 16px 16px;
+  padding: 12px 16px;
+  background: rgba(123,47,255,0.06);
+  border: 1px solid rgba(123,47,255,0.25);
+  border-radius: var(--r);
+  display: flex; align-items: flex-start; gap: 12px;
+  cursor: pointer; transition: all 0.2s;
+}
+.ai-strip:hover { background: rgba(123,47,255,0.1); }
+.ai-orb {
+  width: 32px; height: 32px; flex-shrink: 0;
+  border-radius: 50%; background: linear-gradient(135deg, var(--plasma-b), var(--plasma-f));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; box-shadow: 0 0 15px rgba(123,47,255,0.5);
+  animation: aiPulse 3s ease-in-out infinite;
+}
+@keyframes aiPulse {
+  0%,100% { box-shadow: 0 0 10px rgba(123,47,255,0.4); }
+  50%      { box-shadow: 0 0 25px rgba(123,47,255,0.8); }
+}
+.ai-title { font-family: var(--font-display); font-size: 12px; font-weight: 700; color: var(--plasma-f); letter-spacing: 1px; }
+.ai-body  { font-family: var(--font-mono); font-size: 10px; color: var(--text-mid); margin-top: 3px; line-height: 1.6; }
+
+/* VECTOR ACTIONS */
+.vector-grid {
+  display: flex; gap: 10px;
+  padding: 0 16px; margin-bottom: 22px;
+}
+.vec-btn {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; gap: 8px; padding: 14px 8px;
+  background: var(--raised);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  cursor: pointer; transition: all 0.25s;
+  position: relative; overflow: hidden;
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+}
+.vec-btn::before {
+  content: ''; position: absolute; inset: 0;
+  opacity: 0; transition: opacity 0.3s;
+}
+.vec-btn:hover { transform: translateY(-3px); }
+.vec-btn:hover::before { opacity: 1; }
+.vec-btn:active { transform: translateY(0) scale(0.97); }
+
+.vec-btn:nth-child(1) { border-color: rgba(255,0,110,0.3); }
+.vec-btn:nth-child(1):hover { box-shadow: 0 8px 30px rgba(255,0,110,0.3), inset 0 0 30px rgba(255,0,110,0.06); border-color: var(--plasma-c); }
+.vec-btn:nth-child(2) { border-color: rgba(0,255,157,0.3); }
+.vec-btn:nth-child(2):hover { box-shadow: 0 8px 30px rgba(0,255,157,0.3), inset 0 0 30px rgba(0,255,157,0.06); border-color: var(--plasma-d); }
+.vec-btn:nth-child(3) { border-color: rgba(0,255,255,0.3); }
+.vec-btn:nth-child(3):hover { box-shadow: 0 8px 30px rgba(0,255,255,0.3), inset 0 0 30px rgba(0,255,255,0.06); border-color: var(--plasma-a); }
+.vec-btn:nth-child(4) { border-color: rgba(255,149,0,0.3); }
+.vec-btn:nth-child(4):hover { box-shadow: 0 8px 30px rgba(255,149,0,0.3), inset 0 0 30px rgba(255,149,0,0.06); border-color: var(--plasma-e); }
+.vec-btn:nth-child(5) { border-color: rgba(224,64,251,0.3); }
+.vec-btn:nth-child(5):hover { box-shadow: 0 8px 30px rgba(224,64,251,0.3), inset 0 0 30px rgba(224,64,251,0.06); border-color: var(--plasma-f); }
+
+.vec-icon {
+  font-size: 20px; width: 40px; height: 40px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: var(--r); background: rgba(255,255,255,0.04);
+}
+.vec-label {
+  font-family: var(--font-mono); font-size: 9px;
+  letter-spacing: 1px; color: var(--text-dim);
+  text-transform: uppercase;
+}
+
+/* NODES ROW */
+.section-bar {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 0 16px; margin-bottom: 12px;
+}
+.section-bar h3 {
+  font-family: var(--font-display); font-size: 13px; font-weight: 700;
+  letter-spacing: 3px; text-transform: uppercase; color: var(--text-dim);
+}
+.section-bar a {
+  font-family: var(--font-mono); font-size: 9px; color: var(--plasma-a);
+  letter-spacing: 2px; cursor: pointer; text-transform: uppercase;
+  transition: all 0.2s;
+}
+.section-bar a:hover { color: var(--plasma-hot); text-shadow: 0 0 10px rgba(0,255,255,0.8); }
+
+.nodes-row {
+  display: flex; gap: 14px; overflow-x: auto;
+  padding: 4px 16px 8px; scrollbar-width: none; margin-bottom: 20px;
+}
+.nodes-row::-webkit-scrollbar { display: none; }
+
+.node-chip {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 6px;
+  flex-shrink: 0; cursor: pointer;
+  transition: transform 0.2s;
+}
+.node-chip:hover { transform: scale(1.08); }
+.node-av {
+  width: 50px; height: 50px;
+  border-radius: var(--r);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display); font-size: 18px; font-weight: 900;
+  border: 1px solid transparent; transition: all 0.2s;
+  position: relative; clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px));
+}
+.node-av.online::after {
+  content: ''; position: absolute; bottom: 2px; right: 2px;
+  width: 9px; height: 9px; border-radius: 50%;
+  background: var(--plasma-d);
+  box-shadow: 0 0 8px var(--plasma-d);
+  border: 2px solid var(--void);
+}
+.node-chip:hover .node-av { border-color: var(--plasma-a); box-shadow: 0 0 15px rgba(0,255,255,0.3); }
+.node-handle { font-family: var(--font-mono); font-size: 9px; color: var(--text-dim); letter-spacing: 1px; }
+
+/* STREAM FEED */
+.stream-feed { padding: 0 16px; }
+
+.stream-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 13px 12px;
+  margin-bottom: 6px;
+  background: var(--raised);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  cursor: pointer; transition: all 0.25s;
+  animation: streamIn 0.35s ease both;
+  position: relative; overflow: hidden;
+  clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
+}
+.stream-item::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+  width: 2px;
+}
+.stream-item.absorb::before { background: var(--plasma-d); box-shadow: 0 0 8px var(--plasma-d); }
+.stream-item.emit::before   { background: var(--plasma-c); box-shadow: 0 0 8px var(--plasma-c); }
+.stream-item.pending::before { background: var(--plasma-e); box-shadow: 0 0 8px var(--plasma-e); }
+
+.stream-item:hover {
+  border-color: var(--border-live);
+  background: rgba(0,255,255,0.04);
+  transform: translateX(3px);
+}
+
+@keyframes streamIn {
+  from { opacity: 0; transform: translateX(-10px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.stream-glyph {
+  width: 42px; height: 42px; flex-shrink: 0;
+  border-radius: var(--r); display: flex; align-items: center;
+  justify-content: center;
+  font-family: var(--font-display); font-size: 15px; font-weight: 900;
+}
+.stream-item.absorb .stream-glyph { background: rgba(0,255,157,0.1); color: var(--plasma-d); border: 1px solid rgba(0,255,157,0.2); }
+.stream-item.emit   .stream-glyph { background: rgba(255,0,110,0.1);  color: var(--plasma-c); border: 1px solid rgba(255,0,110,0.2); }
+.stream-item.pending .stream-glyph { background: rgba(255,149,0,0.1); color: var(--plasma-e); border: 1px solid rgba(255,149,0,0.2); }
+
+.stream-body { flex: 1; min-width: 0; }
+.stream-node { font-family: var(--font-display); font-size: 14px; font-weight: 700; letter-spacing: 0.3px; }
+.stream-memo { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.stream-meta { display: flex; gap: 8px; margin-top: 3px; align-items: center; }
+.stream-time { font-family: var(--font-mono); font-size: 9px; color: var(--text-dim); }
+.stream-badge {
+  font-family: var(--font-mono); font-size: 8px; letter-spacing: 1px;
+  padding: 2px 6px; border-radius: 2px;
+}
+.stream-badge.completed { background: rgba(0,255,157,0.1); color: var(--plasma-d); }
+.stream-badge.pending   { background: rgba(255,149,0,0.1);  color: var(--plasma-e); }
+
+.stream-right { text-align: right; flex-shrink: 0; }
+.stream-val {
+  font-family: var(--font-display); font-size: 16px; font-weight: 800;
+  letter-spacing: -0.5px;
+}
+.stream-val.absorb { color: var(--plasma-d); }
+.stream-val.emit   { color: var(--plasma-c); }
+.stream-val.pending { color: var(--plasma-e); }
+.stream-yield { font-family: var(--font-mono); font-size: 9px; color: var(--plasma-a); margin-top: 2px; }
+
+/* ═══════════════════════════════════════
+   SECONDARY SCREENS
+═══════════════════════════════════════ */
+.inner-screen { padding: 20px 16px; }
+.inner-back {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 24px;
+}
+.back-btn {
+  background: var(--raised); border: 1px solid var(--border);
+  border-radius: var(--r); width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 16px; color: var(--text-mid);
+  transition: all 0.2s;
+}
+.back-btn:hover { border-color: var(--border-live); color: var(--plasma-a); }
+.inner-title {
+  font-family: var(--font-display); font-size: 22px; font-weight: 900;
+  letter-spacing: -0.5px;
+}
+.inner-title .accent { color: var(--plasma-a); }
+
+/* SPECTRUM (ANALYTICS) */
+.spec-card {
+  background: var(--raised); border: 1px solid var(--border);
+  border-radius: var(--r2); padding: 20px; margin-bottom: 16px;
+  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
+}
+.spec-label { font-family: var(--font-mono); font-size: 9px; letter-spacing: 3px; color: var(--text-dim); text-transform: uppercase; margin-bottom: 14px; }
+.waveform {
+  display: flex; gap: 6px; align-items: flex-end; height: 90px;
+}
+.wave-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.wave-bar {
+  width: 100%; border-radius: 2px 2px 0 0;
+  transition: height 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+  min-height: 4px; position: relative;
+}
+.wave-bar.active {
+  background: linear-gradient(to top, var(--plasma-b), var(--plasma-a)) !important;
+  box-shadow: 0 0 15px rgba(0,255,255,0.4);
+}
+.wave-bar.active::after {
+  content: ''; position: absolute; top: -4px; left: 50%; transform: translateX(-50%);
+  width: 4px; height: 4px; border-radius: 50%;
+  background: var(--plasma-a);
+  box-shadow: 0 0 8px var(--plasma-a);
+}
+.wave-lbl { font-family: var(--font-mono); font-size: 8px; color: var(--text-dim); letter-spacing: 1px; }
+
+.cat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+.cat-tile {
+  background: var(--raised); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 14px;
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%);
+}
+.ct-icon { font-size: 22px; margin-bottom: 6px; }
+.ct-name { font-family: var(--font-mono); font-size: 9px; color: var(--text-dim); letter-spacing: 2px; margin-bottom: 6px; }
+.ct-amount { font-family: var(--font-display); font-size: 20px; font-weight: 800; letter-spacing: -0.5px; }
+.ct-bar { height: 2px; background: var(--border); border-radius: 1px; margin-top: 8px; }
+.ct-fill { height: 100%; border-radius: 1px; transition: width 1.2s ease; }
+
+.flow-display {
+  display: flex; align-items: center; justify-content: space-around;
+  padding: 20px 0;
+}
+.flow-side { text-align: center; }
+.flow-lbl { font-family: var(--font-mono); font-size: 9px; color: var(--text-dim); letter-spacing: 2px; margin-bottom: 8px; }
+.flow-val { font-family: var(--font-display); font-size: 30px; font-weight: 900; letter-spacing: -1px; }
+.flow-center { font-size: 28px; color: var(--text-dim); animation: flowArrow 2s ease-in-out infinite; }
+@keyframes flowArrow {
+  0%,100% { transform: scaleX(1); opacity:0.4; }
+  50%      { transform: scaleX(1.3); opacity:1; }
+}
+
+/* INVOCATIONS (REQUESTS) */
+.invoc-item {
+  background: var(--raised); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 16px;
+  margin-bottom: 10px;
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+  animation: streamIn 0.3s ease both;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.invoc-top { display: flex; align-items: center; gap: 12px; }
+.invoc-av {
+  width: 42px; height: 42px; border-radius: var(--r); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display); font-size: 16px; font-weight: 900;
+  clip-path: polygon(0 0, calc(100% - 5px) 0, 100% 5px, 100% 100%, 5px 100%, 0 calc(100% - 5px));
+}
+.invoc-info { flex: 1; }
+.invoc-node { font-family: var(--font-display); font-size: 15px; font-weight: 700; }
+.invoc-memo { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); margin-top: 2px; }
+.invoc-amount { font-family: var(--font-display); font-size: 20px; font-weight: 900; color: var(--plasma-e); }
+.invoc-actions { display: flex; gap: 10px; }
+.absorb-action {
+  flex: 1; padding: 10px;
+  background: linear-gradient(135deg, rgba(0,255,157,0.15), rgba(0,255,157,0.05));
+  border: 1px solid rgba(0,255,157,0.4);
+  border-radius: var(--r); color: var(--plasma-d);
+  font-family: var(--font-display); font-size: 12px; font-weight: 700;
+  letter-spacing: 2px; cursor: pointer; text-transform: uppercase;
+  transition: all 0.2s;
+}
+.absorb-action:hover { background: rgba(0,255,157,0.2); box-shadow: 0 0 15px rgba(0,255,157,0.3); }
+.reject-action {
+  padding: 10px 16px;
+  background: transparent; border: 1px solid var(--border);
+  border-radius: var(--r); color: var(--text-dim);
+  font-family: var(--font-mono); font-size: 12px; cursor: pointer;
+  transition: all 0.2s;
+}
+.reject-action:hover { border-color: var(--plasma-c); color: var(--plasma-c); }
+
+/* CHRONOS (SCHEDULED) */
+.chrono-item {
+  display: flex; align-items: center; gap: 14px;
+  background: var(--raised); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 14px 16px;
+  margin-bottom: 10px;
+}
+.chrono-icon { font-size: 22px; }
+.chrono-info { flex: 1; }
+.chrono-name { font-family: var(--font-display); font-size: 14px; font-weight: 700; }
+.chrono-when { font-family: var(--font-mono); font-size: 10px; color: var(--plasma-e); margin-top: 3px; }
+.chrono-amount { font-family: var(--font-display); font-size: 18px; font-weight: 800; }
+
+/* PULSES (NOTIFICATIONS) */
+.pulse-item {
+  display: flex; gap: 12px; align-items: flex-start;
+  padding: 14px; border-radius: var(--r);
+  margin-bottom: 6px; transition: background 0.2s; cursor: pointer;
+}
+.pulse-item.unread { background: rgba(123,47,255,0.06); border-left: 2px solid var(--plasma-b); }
+.pulse-item:hover { background: var(--raised); }
+.pulse-icon { font-size: 24px; flex-shrink: 0; }
+.pulse-text .pt-title { font-family: var(--font-display); font-size: 14px; font-weight: 700; }
+.pulse-text .pt-body  { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); margin-top: 3px; }
+.pulse-text .pt-time  { font-family: var(--font-mono); font-size: 9px; color: var(--text-dim); margin-top: 4px; letter-spacing: 1px; }
+
+/* CALIBRATE (PROFILE/SETTINGS) */
+.calibrate-hero {
+  text-align: center; padding: 20px 0 28px;
+  border-bottom: 1px solid var(--border); margin-bottom: 20px;
+}
+.cal-av {
+  width: 80px; height: 80px; margin: 0 auto 14px;
+  border-radius: var(--r);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display); font-size: 34px; font-weight: 900;
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+  position: relative;
+}
+.cal-av::before {
+  content: ''; position: absolute; inset: -1px;
+  background: conic-gradient(from 0deg, var(--plasma-a), var(--plasma-b), var(--plasma-c), var(--plasma-a));
+  z-index: -1; border-radius: var(--r);
+  animation: prismSpin 3s linear infinite;
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+}
+.cal-name { font-family: var(--font-display); font-size: 24px; font-weight: 900; letter-spacing: -0.5px; }
+.cal-handle { font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); letter-spacing: 2px; margin-top: 4px; }
+.cal-badge {
+  display: inline-block; margin-top: 12px;
+  padding: 4px 14px; border: 1px solid var(--plasma-d);
+  font-family: var(--font-mono); font-size: 9px; color: var(--plasma-d);
+  letter-spacing: 3px; text-transform: uppercase;
+  border-radius: 2px;
+  box-shadow: 0 0 10px rgba(0,255,157,0.2);
+}
+
+.cal-group { margin-bottom: 22px; }
+.cal-group-label {
+  font-family: var(--font-mono); font-size: 8px; color: var(--text-dim);
+  letter-spacing: 3px; text-transform: uppercase;
+  padding: 0 4px; margin-bottom: 8px;
+}
+.cal-row {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--raised); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 14px;
+  margin-bottom: 6px; cursor: pointer; transition: all 0.2s;
+}
+.cal-row:hover { border-color: var(--border-live); background: rgba(0,255,255,0.03); }
+.cal-icon { font-size: 20px; }
+.cal-info { flex: 1; }
+.cal-info .ci-title { font-family: var(--font-display); font-size: 14px; font-weight: 600; }
+.cal-info .ci-sub   { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); margin-top: 2px; }
+.cal-arrow { color: var(--text-dim); font-size: 14px; }
+.q-toggle {
+  width: 42px; height: 22px; border-radius: 11px;
+  background: var(--matrix); border: 1px solid var(--border);
+  position: relative; cursor: pointer; transition: all 0.3s;
+}
+.q-toggle.on { background: var(--plasma-a); border-color: var(--plasma-a); box-shadow: 0 0 12px rgba(0,255,255,0.4); }
+.q-toggle::after {
+  content: ''; position: absolute; top: 2px; left: 2px;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--text-dim); transition: all 0.3s;
+}
+.q-toggle.on::after { left: 22px; background: var(--void); }
+
+.deauth-btn {
+  width: 100%; padding: 15px; margin-top: 8px;
+  background: transparent; border: 1px solid rgba(255,0,110,0.3);
+  border-radius: var(--r); color: var(--plasma-c);
+  font-family: var(--font-display); font-size: 13px; font-weight: 700;
+  letter-spacing: 3px; text-transform: uppercase;
+  cursor: pointer; transition: all 0.2s;
+}
+.deauth-btn:hover { background: rgba(255,0,110,0.08); border-color: var(--plasma-c); box-shadow: 0 0 20px rgba(255,0,110,0.2); }
+
+/* ═══════════════════════════════════════
+   MODALS / OVERLAYS
+═══════════════════════════════════════ */
+.overlay {
+  position: fixed; inset: 0; z-index: 200;
+  background: rgba(0,0,5,0.88);
+  backdrop-filter: blur(12px);
+  display: flex; align-items: flex-end; justify-content: center;
+  opacity: 0; pointer-events: none; transition: opacity 0.3s;
+}
+.overlay.open { opacity: 1; pointer-events: all; }
+
+.modal {
+  width: 100%; max-width: 430px;
+  background: var(--deep);
+  border: 1px solid var(--border-live);
+  border-radius: var(--r2) var(--r2) 0 0;
+  border-bottom: none;
+  padding-bottom: 40px;
+  transform: translateY(100%);
+  transition: transform 0.45s cubic-bezier(0.32, 0.72, 0, 1);
+  max-height: 92vh; overflow-y: auto;
+  position: relative; overflow-x: hidden;
+}
+.modal::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--plasma-a), var(--plasma-b), var(--plasma-c), transparent);
+}
+.overlay.open .modal { transform: translateY(0); }
+
+.modal-drag { width: 32px; height: 3px; background: var(--text-dim); border-radius: 2px; margin: 14px auto 0; }
+.modal-head {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 20px 24px 0;
+}
+.modal-head .mh-title {
+  font-family: var(--font-display); font-size: 20px; font-weight: 900; letter-spacing: -0.5px;
+}
+.modal-x {
+  width: 32px; height: 32px; background: var(--raised);
+  border: 1px solid var(--border); border-radius: var(--r);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: var(--text-dim); font-size: 14px; transition: all 0.2s;
+}
+.modal-x:hover { border-color: var(--plasma-c); color: var(--plasma-c); }
+.modal-inner { padding: 22px 24px; }
+
+/* AMOUNT CRYSTAL */
+.amt-crystal {
+  text-align: center; padding: 20px 0 14px;
+  border-bottom: 1px solid var(--border); margin-bottom: 16px;
+}
+.amt-val {
+  font-family: var(--font-display); font-size: 64px; font-weight: 900;
+  letter-spacing: -4px; line-height: 1;
+  background: linear-gradient(135deg, var(--plasma-hot), var(--plasma-a), var(--plasma-b));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 15px rgba(0,255,255,0.3));
+  min-height: 70px; display: flex; align-items: center; justify-content: center;
+}
+.amt-curr { font-size: 32px; color: var(--text-dim); vertical-align: top; margin-top: 12px; display: inline-block; margin-right: 4px; }
+
+.node-field {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--raised); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 13px 16px; margin-bottom: 10px;
+  transition: border-color 0.2s;
+}
+.node-field:focus-within { border-color: var(--plasma-a); box-shadow: 0 0 15px rgba(0,255,255,0.1); }
+.node-field .nf-icon { font-family: var(--font-mono); font-size: 14px; color: var(--plasma-a); }
+.node-field input {
+  background: none; border: none; outline: none;
+  color: var(--text); font-family: var(--font-display);
+  font-size: 16px; font-weight: 600; flex: 1;
+}
+.node-field input::placeholder { color: var(--text-dim); font-weight: 400; }
+
+.quick-vals { display: flex; gap: 8px; margin: 12px 0; }
+.qv { flex: 1; padding: 10px; background: var(--raised); border: 1px solid var(--border); border-radius: var(--r); font-family: var(--font-mono); font-size: 12px; color: var(--text-dim); text-align: center; cursor: pointer; transition: all 0.2s; letter-spacing: 1px; }
+.qv:hover { border-color: var(--plasma-a); color: var(--plasma-a); background: rgba(0,255,255,0.05); }
+
+/* NUMPAD */
+.qpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 12px 0; }
+.qk {
+  padding: 18px; background: var(--raised); border: 1px solid var(--border);
+  border-radius: var(--r); font-family: var(--font-display); font-size: 22px; font-weight: 700;
+  cursor: pointer; transition: all 0.15s; color: var(--text); text-align: center;
+  clip-path: polygon(0 0, calc(100% - 5px) 0, 100% 5px, 100% 100%, 5px 100%, 0 calc(100% - 5px));
+}
+.qk:hover { background: rgba(0,255,255,0.08); border-color: var(--plasma-a); transform: scale(1.02); }
+.qk:active { transform: scale(0.96); }
+.qk.dot { color: var(--plasma-a); }
+.qk.del { color: var(--plasma-c); }
+
+.fee-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 0; border-top: 1px solid var(--border); margin-bottom: 14px;
+  font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); letter-spacing: 1px;
+}
+.fee-free { color: var(--plasma-d); font-weight: 700; }
+
+/* QR PORTAL */
+.qr-portal { text-align: center; padding: 10px 24px 24px; }
+.portal-frame {
+  width: 180px; height: 180px; margin: 0 auto 18px;
+  background: var(--plasma-hot); border-radius: var(--r);
+  display: flex; align-items: center; justify-content: center;
+  padding: 14px;
+  box-shadow: 0 0 40px rgba(0,255,255,0.4), 0 0 80px rgba(123,47,255,0.2);
+  position: relative; overflow: hidden;
+}
+.portal-frame::before {
+  content: ''; position: absolute; inset: 0;
+  background: conic-gradient(from 0deg, rgba(0,255,255,0.1), rgba(123,47,255,0.1), rgba(255,0,110,0.1), rgba(0,255,255,0.1));
+  animation: prismSpin 3s linear infinite;
+  opacity: 0.5;
+}
+.qr-grid { display: grid; grid-template-columns: repeat(9, 1fr); gap: 2px; width: 150px; height: 150px; position: relative; z-index: 1; }
+.qr-cell { border-radius: 1px; }
+.portal-handle { font-family: var(--font-display); font-size: 18px; font-weight: 900; color: var(--plasma-a); letter-spacing: 1px; }
+.portal-sub { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); letter-spacing: 2px; margin-top: 4px; }
+.portal-actions { display: flex; gap: 10px; margin-top: 20px; }
+.pa-btn {
+  flex: 1; padding: 13px; background: var(--raised); border: 1px solid var(--border-live);
+  border-radius: var(--r); color: var(--text); font-family: var(--font-display);
+  font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+  cursor: pointer; transition: all 0.2s;
+}
+.pa-btn:hover { background: rgba(0,255,255,0.08); }
+
+/* SPLIT */
+.fracture-nodes { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+.fn-row {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--raised); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 12px;
+}
+.fn-av { width: 34px; height: 34px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 13px; font-weight: 900; }
+.fn-name { flex: 1; font-family: var(--font-display); font-size: 13px; font-weight: 600; }
+.fn-share { font-family: var(--font-mono); font-size: 13px; color: var(--plasma-a); }
+
+/* FLOATING VECTOR NAV */
+.vec-nav {
+  position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 100%; max-width: 430px;
+  background: rgba(2,0,15,0.97);
+  border-top: 1px solid var(--border-live);
+  display: none; align-items: center;
+  padding: 10px 16px 24px;
+  z-index: 100;
+  backdrop-filter: blur(30px);
+}
+.vec-nav::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--plasma-b), var(--plasma-a), var(--plasma-c), transparent);
+}
+
+.vn-item {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; gap: 4px;
+  padding: 8px 0; border-radius: var(--r);
+  cursor: pointer; background: none; border: none;
+  color: var(--text-dim); font-size: 20px;
+  transition: all 0.25s;
+}
+.vn-item.active {
+  color: var(--plasma-a);
+  text-shadow: 0 0 15px rgba(0,255,255,0.8);
+}
+.vn-item:hover:not(.active) { color: var(--text-mid); }
+.vn-label { font-family: var(--font-mono); font-size: 8px; letter-spacing: 1px; text-transform: uppercase; }
+
+.vn-emit {
+  width: 50px; height: 50px; flex-shrink: 0;
+  border-radius: var(--r);
+  background: linear-gradient(135deg, var(--plasma-b), var(--plasma-a));
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; border: none; color: var(--void);
+  font-size: 22px; font-weight: 900;
+  clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px));
+  box-shadow: 0 0 25px rgba(0,255,255,0.4);
+  transition: all 0.2s; margin: 0 8px;
+}
+.vn-emit:hover { box-shadow: 0 0 40px rgba(0,255,255,0.7); transform: scale(1.08); }
+
+/* TOAST SYSTEM */
+.toast-stack {
+  position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+  z-index: 999; display: flex; flex-direction: column;
+  gap: 8px; align-items: center; pointer-events: none;
+  width: 100%; max-width: 380px; padding: 0 16px;
+}
+.toast {
+  padding: 11px 20px;
+  background: var(--matrix);
+  border: 1px solid var(--border-live);
+  border-radius: var(--r);
+  font-family: var(--font-mono); font-size: 11px; color: var(--text);
+  letter-spacing: 1px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+  transform: translateY(-20px) scale(0.95);
+  opacity: 0; transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  text-align: center; pointer-events: all;
+  clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%);
+}
+.toast.show { transform: translateY(0) scale(1); opacity: 1; }
+.toast.ok  { border-color: rgba(0,255,157,0.5); color: var(--plasma-d); }
+.toast.bad { border-color: rgba(255,0,110,0.5); color: var(--plasma-c); }
+.toast.info { border-color: rgba(0,255,255,0.5); color: var(--plasma-a); }
+
+/* SPINNER */
+.spin { width: 18px; height: 18px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.2); border-top-color: white; animation: doSpin 0.7s linear infinite; display: inline-block; }
+@keyframes doSpin { to { transform: rotate(360deg); } }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-live); border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<!-- QUANTUM PARTICLE CANVAS -->
+<canvas id="quantumCanvas"></canvas>
+
+<!-- GEOMETRY DECORATIONS -->
+<div class="geo-layer">
+  <div class="geo-hex"></div>
+  <div class="geo-hex"></div>
+  <div class="geo-hex"></div>
+  <div class="geo-tri"></div>
+  <div class="geo-tri"></div>
+  <div class="geo-tri"></div>
+  <div class="geo-ring"></div>
+  <div class="geo-ring"></div>
+</div>
+
+<!-- TOAST STACK -->
+<div class="toast-stack" id="toastStack"></div>
+
+<!-- ═══════ OVERLAYS ═══════ -->
+<div class="overlay" id="ov-emit" onclick="bgClose(event,'ov-emit')">
+  <div class="modal">
+    <div class="modal-drag"></div>
+    <div class="modal-head"><div class="mh-title">⟶ EMIT</div><div class="modal-x" onclick="closeOv('ov-emit')">✕</div></div>
+    <div class="modal-inner">
+      <div class="node-field"><span class="nf-icon">NODE</span><input type="text" id="emitTo" placeholder="@handle or node ID" autocomplete="off"/></div>
+      <div class="node-field"><span class="nf-icon">MEMO</span><input type="text" id="emitMemo" placeholder="purpose or reference"/></div>
+      <div class="amt-crystal"><span class="amt-curr">$</span><span class="amt-val" id="emitDisp">0</span></div>
+      <div class="quick-vals">
+        <div class="qv" onclick="qa('emitAmt','emitDisp',10)">$10</div>
+        <div class="qv" onclick="qa('emitAmt','emitDisp',25)">$25</div>
+        <div class="qv" onclick="qa('emitAmt','emitDisp',50)">$50</div>
+        <div class="qv" onclick="qa('emitAmt','emitDisp',100)">$100</div>
+      </div>
+      <div class="qpad" id="pad1"></div>
+      <div class="fee-row"><span>VECTOR FEE</span><span class="fee-free">ZERO ∞</span></div>
+      <button class="emit-btn" id="emitBtn" onclick="doEmit()"><span>EMIT FUNDS ⟶</span></button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="ov-invoke" onclick="bgClose(event,'ov-invoke')">
+  <div class="modal">
+    <div class="modal-drag"></div>
+    <div class="modal-head"><div class="mh-title">⟵ INVOKE</div><div class="modal-x" onclick="closeOv('ov-invoke')">✕</div></div>
+    <div class="modal-inner">
+      <div class="node-field"><span class="nf-icon">FROM</span><input type="text" id="invFrom" placeholder="@handle" autocomplete="off"/></div>
+      <div class="node-field"><span class="nf-icon">MEMO</span><input type="text" id="invMemo" placeholder="for what?"/></div>
+      <div class="amt-crystal"><span class="amt-curr">$</span><span class="amt-val" id="invDisp">0</span></div>
+      <div class="qpad" id="pad2"></div>
+      <button class="emit-btn" style="border-color:var(--plasma-d);color:var(--plasma-d);" onclick="doInvoke()"><span>SEND INVOCATION ⟵</span></button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="ov-fracture" onclick="bgClose(event,'ov-fracture')">
+  <div class="modal">
+    <div class="modal-drag"></div>
+    <div class="modal-head"><div class="mh-title">◈ FRACTURE</div><div class="modal-x" onclick="closeOv('ov-fracture')">✕</div></div>
+    <div class="modal-inner">
+      <div class="node-field"><span class="nf-icon">MEMO</span><input type="text" id="fracMemo" placeholder="event or bill reference" value="Dinner @ Nobu"/></div>
+      <div class="amt-crystal"><span class="amt-curr">$</span><span class="amt-val" id="fracDisp">0</span></div>
+      <div class="qpad" id="pad3"></div>
+      <div class="fracture-nodes" id="fracNodes"></div>
+      <button class="emit-btn" style="border-color:var(--plasma-a);" onclick="doFracture()"><span>FRACTURE & INVOKE ◈</span></button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="ov-absorb" onclick="bgClose(event,'ov-absorb')">
+  <div class="modal">
+    <div class="modal-drag"></div>
+    <div class="modal-head"><div class="mh-title">⟐ ABSORB FUNDS</div><div class="modal-x" onclick="closeOv('ov-absorb')">✕</div></div>
+    <div class="modal-inner">
+      <div class="amt-crystal"><span class="amt-curr">$</span><span class="amt-val" id="absDisp">0</span></div>
+      <div class="quick-vals">
+        <div class="qv" onclick="qa('absAmt','absDisp',50)">$50</div>
+        <div class="qv" onclick="qa('absAmt','absDisp',100)">$100</div>
+        <div class="qv" onclick="qa('absAmt','absDisp',250)">$250</div>
+        <div class="qv" onclick="qa('absAmt','absDisp',500)">$500</div>
+      </div>
+      <div class="qpad" id="pad4"></div>
+      <div style="background:var(--raised);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;margin-bottom:14px;font-family:var(--font-mono);font-size:10px;color:var(--text-dim);letter-spacing:1px;">
+        🔒 LINKED: ••••4821 CHASE VECTOR · <span style="color:var(--plasma-a);cursor:pointer;" onclick="toast('Card management — wire Stripe!','info')">SWITCH NODE</span>
+      </div>
+      <div class="fee-row"><span>ACH VECTOR</span><span class="fee-free">ZERO ∞</span></div>
+      <button class="emit-btn" style="border-color:var(--plasma-d);color:var(--plasma-d);" id="absBtn" onclick="doAbsorb()"><span>⟐ ABSORB TO RESERVE</span></button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="ov-qr" onclick="bgClose(event,'ov-qr')">
+  <div class="modal">
+    <div class="modal-drag"></div>
+    <div class="modal-head"><div class="mh-title">◉ PORTAL LINK</div><div class="modal-x" onclick="closeOv('ov-qr')">✕</div></div>
+    <div class="qr-portal">
+      <div class="portal-frame"><div class="qr-grid" id="portalGrid"></div></div>
+      <div class="portal-handle" id="portalHandle">@node</div>
+      <div class="portal-sub">SCAN TO EMIT · INVOKE · FRACTURE</div>
+      <div class="portal-actions">
+        <button class="pa-btn" onclick="toast('Portal link copied','ok')">◎ COPY LINK</button>
+        <button class="pa-btn" onclick="toast('Portal saved to vault','ok')">⬇ SAVE PORTAL</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ APP ═══════ -->
+<div class="app">
+
+  <!-- AUTH -->
+  <div class="screen active" id="s-auth">
+    <div class="auth-wrap">
+      <div class="flux-logo-wrap">
+        <div class="flux-logo"><span class="f1">FLUX</span><span class="inf">∞</span></div>
+        <div class="flux-sub">quantum value transfer</div>
+      </div>
+      <div class="holo-card">
+        <div class="auth-seg">
+          <button class="seg-btn active" id="seg-in" onclick="authSeg('in')">ENTER</button>
+          <button class="seg-btn" id="seg-up" onclick="authSeg('up')">INITIALIZE</button>
+        </div>
+        <div id="form-in">
+          <div class="q-field"><label>NODE ADDRESS</label><input type="email" id="inEmail" placeholder="you@domain.com"/></div>
+          <div class="q-field"><label>CIPHER KEY</label><input type="password" id="inPass" placeholder="••••••••"/></div>
+          <button class="emit-btn" id="inBtn" onclick="doAuth()"><span>ENTER FLUX ∞</span></button>
+          <div class="or-line">OR</div>
+          <button class="ghost-btn" onclick="demoBoot()">⚡ DEMO VECTOR — NO SETUP</button>
+        </div>
+        <div id="form-up" class="hidden">
+          <div class="q-field"><label>IDENTITY</label><input type="text" id="upName" placeholder="Your name"/></div>
+          <div class="q-field"><label>NODE HANDLE</label><input type="text" id="upHandle" placeholder="@yourhandle"/></div>
+          <div class="q-field"><label>NODE ADDRESS</label><input type="email" id="upEmail" placeholder="you@domain.com"/></div>
+          <div class="q-field"><label>CIPHER KEY</label><input type="password" id="upPass" placeholder="min 8 chars"/></div>
+          <button class="emit-btn" id="upBtn" onclick="doInitialize()"><span>INITIALIZE NODE</span></button>
+          <div class="or-line">OR</div>
+          <button class="ghost-btn" onclick="demoBoot()">⚡ DEMO VECTOR</button>
+        </div>
+      </div>
+      <div class="cfg-notice">
+        <div class="cn-head">⚡ WIRING REQUIRED</div>
+        <div class="cn-body">
+          1. Supabase free project → paste <code>SUPABASE_URL</code> + <code>SUPABASE_KEY</code><br>
+          2. Table: <code>transactions(id, user_id, type, amount, node, memo, status, created_at)</code><br>
+          3. Stripe key → <code>STRIPE_KEY</code> + deploy <code>/api/payment-intent</code>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOME -->
+  <div class="screen" id="s-home">
+    <div class="top-rail">
+      <div class="flux-mark">FLUX∞</div>
+      <div class="rail-right">
+        <div class="q-btn" onclick="openOv('ov-qr')">◉</div>
+        <div class="q-btn" onclick="goTo('s-pulses','vn-pulses')">
+          🔔
+          <div class="live-dot" id="notifDot"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESERVE CRYSTAL -->
+    <div class="reserve-crystal">
+      <div class="crystal-bg">
+        <div class="crystal-top">
+          <div class="reserve-label">FLUX RESERVE</div>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <button style="background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:14px;" onclick="toggleMask()">👁</button>
+            <div class="reserve-tier">TIER II</div>
+          </div>
+        </div>
+        <div class="reserve-amount" id="reserveAmt">
+          <span class="ra-curr">$</span><span class="ra-int" id="resInt">2,847</span><span class="ra-dec">.<span id="resDec">53</span></span>
+        </div>
+        <div class="crystal-metrics">
+          <div class="cm-item"><div class="cm-label">EMITTED</div><div class="cm-val emit-col" id="metEmit">$0</div></div>
+          <div class="cm-item"><div class="cm-label">ABSORBED</div><div class="cm-val absorb-col" id="metAbs">$0</div></div>
+          <div class="cm-item"><div class="cm-label">YIELD</div><div class="cm-val yield-col" id="metYield">$0</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- YIELD STRIP -->
+    <div class="yield-strip">
+      <div class="ys-icon">◈</div>
+      <div class="ys-info">
+        <div class="ys-title">YIELD ACTIVE — 2% ALL VECTORS</div>
+        <div class="ys-sub">upgrade to TIER III for 5% · quantum compounding</div>
+      </div>
+      <div class="ys-rate" id="yieldDisp">$0.00</div>
+    </div>
+
+    <!-- AI INSIGHT -->
+    <div class="ai-strip" onclick="toast('AI: You spend 34% more on weekends. Shield your reserve Friday nights.','info')">
+      <div class="ai-orb">◭</div>
+      <div>
+        <div class="ai-title">FLUX INTELLIGENCE</div>
+        <div class="ai-body">Detected: 34% spend surge weekends · Reserve projected -$420 by Mar 1 · Tap to activate spend shield</div>
+      </div>
+    </div>
+
+    <!-- VECTORS (ACTIONS) -->
+    <div class="vector-grid">
+      <button class="vec-btn" onclick="openOv('ov-emit')">
+        <div class="vec-icon" style="color:var(--plasma-c)">⟶</div>
+        <span class="vec-label">EMIT</span>
+      </button>
+      <button class="vec-btn" onclick="openOv('ov-invoke')">
+        <div class="vec-icon" style="color:var(--plasma-d)">⟵</div>
+        <span class="vec-label">INVOKE</span>
+      </button>
+      <button class="vec-btn" onclick="openOv('ov-fracture')">
+        <div class="vec-icon" style="color:var(--plasma-a)">◈</div>
+        <span class="vec-label">FRACTURE</span>
+      </button>
+      <button class="vec-btn" onclick="openOv('ov-absorb')">
+        <div class="vec-icon" style="color:var(--plasma-e)">⟐</div>
+        <span class="vec-label">ABSORB</span>
+      </button>
+      <button class="vec-btn" onclick="goTo('s-chronos','vn-chronos')">
+        <div class="vec-icon" style="color:var(--plasma-f)">⊕</div>
+        <span class="vec-label">CHRONOS</span>
+      </button>
+    </div>
+
+    <!-- NODES -->
+    <div class="section-bar"><h3>NODES</h3><a onclick="toast('Node directory — wire to Supabase contacts table','info')">ALL NODES →</a></div>
+    <div class="nodes-row" id="nodesRow"></div>
+
+    <!-- STREAMS -->
+    <div class="section-bar"><h3>STREAM FEED</h3><a onclick="goTo('s-spectrum','vn-spectrum')">SPECTRUM →</a></div>
+    <div class="stream-feed" id="streamFeed"></div>
+
+  </div>
+
+  <!-- SPECTRUM (ANALYTICS) -->
+  <div class="screen" id="s-spectrum">
+    <div class="inner-screen">
+      <div class="inner-back">
+        <div class="back-btn" onclick="goTo('s-home','vn-home')">←</div>
+        <div class="inner-title">SPEC<span class="accent">TRUM</span></div>
+      </div>
+      <div class="spec-card">
+        <div class="spec-label">EMISSION WAVEFORM — 2026</div>
+        <div class="waveform" id="waveform"></div>
+      </div>
+      <div class="cat-grid" id="catGrid"></div>
+      <div class="spec-card">
+        <div class="spec-label">RESERVE FLOW THIS CYCLE</div>
+        <div class="flow-display">
+          <div class="flow-side">
+            <div class="flow-lbl">EMITTED</div>
+            <div class="flow-val" style="color:var(--plasma-c)" id="spEmit">$0</div>
+          </div>
+          <div class="flow-center">⇌</div>
+          <div class="flow-side">
+            <div class="flow-lbl">ABSORBED</div>
+            <div class="flow-val" style="color:var(--plasma-d)" id="spAbs">$0</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INVOCATIONS SCREEN -->
+  <div class="screen" id="s-invocations">
+    <div class="inner-screen">
+      <div class="inner-back">
+        <div class="back-btn" onclick="goTo('s-home','vn-home')">←</div>
+        <div class="inner-title">INVOC<span class="accent">ATIONS</span></div>
+      </div>
+      <div id="invocList"></div>
+    </div>
+  </div>
+
+  <!-- CHRONOS (SCHEDULED) -->
+  <div class="screen" id="s-chronos">
+    <div class="inner-screen">
+      <div class="inner-back">
+        <div class="back-btn" onclick="goTo('s-home','vn-home')">←</div>
+        <div class="inner-title">CHRON<span class="accent">OS</span></div>
+      </div>
+      <div id="chronosList"></div>
+      <button class="emit-btn" style="margin-top:16px;" onclick="toast('New Chronos vector — wire to Supabase cron job','info')"><span>⊕ NEW CHRONOS VECTOR</span></button>
+    </div>
+  </div>
+
+  <!-- PULSES (NOTIFICATIONS) -->
+  <div class="screen" id="s-pulses">
+    <div class="inner-screen">
+      <div class="inner-back">
+        <div class="back-btn" onclick="goTo('s-home','vn-home')">←</div>
+        <div class="inner-title">PULSE<span class="accent">S</span></div>
+      </div>
+      <div id="pulseList"></div>
+    </div>
+  </div>
+
+  <!-- CALIBRATE (PROFILE) -->
+  <div class="screen" id="s-calibrate">
+    <div class="inner-screen">
+      <div class="inner-back">
+        <div class="back-btn" onclick="goTo('s-home','vn-home')">←</div>
+        <div class="inner-title">CALIB<span class="accent">RATE</span></div>
+      </div>
+      <div class="calibrate-hero">
+        <div class="cal-av" id="calAv" style="background:var(--deep);">A</div>
+        <div class="cal-name" id="calName">—</div>
+        <div class="cal-handle" id="calHandle">@—</div>
+        <div class="cal-badge">NODE VERIFIED ◈</div>
+      </div>
+
+      <div class="cal-group">
+        <div class="cal-group-label">IDENTITY LAYER</div>
+        <div class="cal-row" onclick="toast('KYC: Identity confirmed via Stripe Identity','ok')">
+          <div class="cal-icon">◎</div>
+          <div class="cal-info"><div class="ci-title">Node Verified</div><div class="ci-sub">Stripe Identity · quantum KYC</div></div>
+          <div style="color:var(--plasma-d);font-family:var(--font-mono);font-size:11px;">ACTIVE</div>
+        </div>
+        <div class="cal-row" onclick="toast('Linked: ••••4821 Chase · Plaid vector active','ok')">
+          <div class="cal-icon">⬡</div>
+          <div class="cal-info"><div class="ci-title">Source Vector</div><div class="ci-sub">••••4821 Chase · Plaid bridge</div></div>
+          <div class="cal-arrow">›</div>
+        </div>
+        <div class="cal-row" onclick="toast('Emission card: Visa ••••4821 · Marqeta','ok')">
+          <div class="cal-icon">▭</div>
+          <div class="cal-info"><div class="ci-title">Emission Card</div><div class="ci-sub">Visa ••••4821 · Marqeta</div></div>
+          <div class="cal-arrow">›</div>
+        </div>
+      </div>
+
+      <div class="cal-group">
+        <div class="cal-group-label">SECURITY MATRIX</div>
+        <div class="cal-row">
+          <div class="cal-icon">◫</div>
+          <div class="cal-info"><div class="ci-title">Biometric Lock</div><div class="ci-sub">Face/fingerprint · active</div></div>
+          <button class="q-toggle on" onclick="this.classList.toggle('on')"></button>
+        </div>
+        <div class="cal-row">
+          <div class="cal-icon">◧</div>
+          <div class="cal-info"><div class="ci-title">Dual-Factor Auth</div><div class="ci-sub">TOTP authenticator</div></div>
+          <button class="q-toggle on" onclick="this.classList.toggle('on')"></button>
+        </div>
+        <div class="cal-row" onclick="toast('Vector limits: $5K/day · $25K/cycle','info')">
+          <div class="cal-icon">⧖</div>
+          <div class="cal-info"><div class="ci-title">Vector Limits</div><div class="ci-sub">$5,000 / day · $25,000 / cycle</div></div>
+          <div class="cal-arrow">›</div>
+        </div>
+      </div>
+
+      <div class="cal-group">
+        <div class="cal-group-label">SYSTEM VECTORS</div>
+        <div class="cal-row">
+          <div class="cal-icon">◈</div>
+          <div class="cal-info"><div class="ci-title">Pulse Broadcast</div><div class="ci-sub">All streams + invocations</div></div>
+          <button class="q-toggle on" onclick="this.classList.toggle('on')"></button>
+        </div>
+        <div class="cal-row">
+          <div class="cal-icon">⬡</div>
+          <div class="cal-info"><div class="ci-title">Quantum Layer (Crypto)</div><div class="ci-sub">BTC, ETH, DOGE vectors</div></div>
+          <button class="q-toggle" onclick="this.classList.toggle('on');toast('Quantum layer — wire Coinbase Commerce','info')"></button>
+        </div>
+        <div class="cal-row">
+          <div class="cal-icon">◭</div>
+          <div class="cal-info"><div class="ci-title">FLUX Intelligence</div><div class="ci-sub">Predictive spend AI</div></div>
+          <button class="q-toggle on" onclick="this.classList.toggle('on')"></button>
+        </div>
+      </div>
+
+      <button class="deauth-btn" onclick="doDeauth()">◌ DEAUTHORIZE NODE</button>
+    </div>
+  </div>
+
+</div><!-- /.app -->
+
+<!-- VECTOR NAV -->
+<nav class="vec-nav" id="vecNav">
+  <button class="vn-item active" id="vn-home" onclick="goTo('s-home','vn-home')">⌂<span class="vn-label">HOME</span></button>
+  <button class="vn-item" id="vn-invocations" onclick="goTo('s-invocations','vn-invocations')">⟵<span class="vn-label">INVOKE</span></button>
+  <button class="vn-emit" onclick="openOv('ov-emit')">⟶</button>
+  <button class="vn-item" id="vn-spectrum" onclick="goTo('s-spectrum','vn-spectrum')">◈<span class="vn-label">SPECTR</span></button>
+  <button class="vn-item" id="vn-calibrate" onclick="goTo('s-calibrate','vn-calibrate')">⊕<span class="vn-label">NODE</span></button>
+</nav>
+
+<!-- SCRIPTS -->
+<script>
+/* ═══ QUANTUM PARTICLE FIELD ═══ */
+(function(){
+  const canvas = document.getElementById('quantumCanvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [], connections = [];
+  const COLORS = ['#00ffff','#7b2fff','#ff006e','#00ff9d','#ff9500'];
+
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+
+  function mkParticle() {
+    return {
+      x: Math.random()*W, y: Math.random()*H,
+      vx: (Math.random()-0.5)*0.4, vy: (Math.random()-0.5)*0.4,
+      r: Math.random()*1.5+0.5,
+      color: COLORS[Math.floor(Math.random()*COLORS.length)],
+      alpha: Math.random()*0.6+0.2,
+    };
+  }
+
+  resize();
+  for(let i=0;i<60;i++) particles.push(mkParticle());
+  window.addEventListener('resize', resize);
+
+  function frame() {
+    ctx.clearRect(0,0,W,H);
+    // Draw connections
+    for(let i=0;i<particles.length;i++){
+      for(let j=i+1;j<particles.length;j++){
+        const dx=particles[i].x-particles[j].x, dy=particles[i].y-particles[j].y;
+        const d=Math.sqrt(dx*dx+dy*dy);
+        if(d<120){
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = `rgba(0,255,255,${(1-d/120)*0.12})`;
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      }
+    }
+    // Draw particles
+    particles.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      if(p.x<0||p.x>W) p.vx*=-1;
+      if(p.y<0||p.y>H) p.vy*=-1;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      ctx.fillStyle = p.color;
+      ctx.globalAlpha = p.alpha;
+      ctx.fill();
+      ctx.globalAlpha = 1;
+    });
+    requestAnimationFrame(frame);
+  }
+  frame();
+})();
+
+/* ═══ CONFIG ═══ */
+const SUPABASE_URL = 'YOUR_SUPABASE_URL';
+const SUPABASE_KEY = 'YOUR_SUPABASE_ANON_KEY';
+const STRIPE_KEY   = 'YOUR_STRIPE_PUBLISHABLE_KEY';
+
+let supa = null, stripeInst = null;
+try {
+  if (SUPABASE_URL !== 'YOUR_SUPABASE_URL') supa = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  if (STRIPE_KEY   !== 'YOUR_STRIPE_PUBLISHABLE_KEY') stripeInst = Stripe(STRIPE_KEY);
+} catch(e) {}
+
+/* ═══ STATE ═══ */
+let S = {
+  user: null,
+  reserve: 2847.53,
+  emitted: 0, absorbed: 0, yield: 0,
+  streams: [],
+  masked: false,
+};
+
+const NODES = [
+  {n:'Sarah',h:'@sarah', bg:'linear-gradient(135deg,#f472b6,#c026d3)', online:true},
+  {n:'Alex', h:'@alex',  bg:'linear-gradient(135deg,#38bdf8,#0284c7)', online:true},
+  {n:'Mike', h:'@mike',  bg:'linear-gradient(135deg,#fb923c,#ea580c)', online:false},
+  {n:'Priya',h:'@priya', bg:'linear-gradient(135deg,#a3e635,#65a30d)', online:true},
+  {n:'Lena', h:'@lena',  bg:'linear-gradient(135deg,#f9a8d4,#db2777)', online:false},
+  {n:'Omar', h:'@omar',  bg:'linear-gradient(135deg,#6ee7b7,#059669)', online:true},
+  {n:'Dev',  h:'@dev',   bg:'linear-gradient(135deg,#818cf8,#4f46e5)', online:true},
+];
+
+const SEED_STREAMS = [
+  {type:'absorb',node:'@sarah',memo:'dinner split ◈',    amount:24.50, time:'2m ago',     status:'completed', yield:0.49},
+  {type:'emit',  node:'@alex', memo:'ride share ◉',      amount:18.00, time:'1h ago',     status:'completed', yield:0.36},
+  {type:'absorb',node:'@priya',memo:'venue tickets ◈',   amount:65.00, time:'3h ago',     status:'completed', yield:1.30},
+  {type:'emit',  node:'@mike', memo:'market vector ◎',   amount:42.33, time:'Yesterday',  status:'completed', yield:0.85},
+  {type:'absorb',node:'@lena', memo:'shelter contribution',amount:400,  time:'Yesterday',  status:'completed', yield:8.00},
+  {type:'emit',  node:'@omar', memo:'recreation bet',    amount:15.00, time:'2d ago',     status:'completed', yield:0.30},
+];
+
+const SEED_INVOCATIONS = [
+  {node:'@sarah', memo:'Omakase night ◈', amount:38.50, time:'10m ago', bg:'linear-gradient(135deg,#f472b6,#c026d3)'},
+  {node:'@mike',  memo:'Fantasy league vector', amount:20.00, time:'2h ago', bg:'linear-gradient(135deg,#fb923c,#ea580c)'},
+];
+
+const SEED_CHRONOS = [
+  {icon:'⌂', name:'Shelter Vector — @landlord', when:'Mar 1 · CYCLIC MONTHLY',  amount:'$1,500'},
+  {icon:'◎', name:'Stream split — @sarah',       when:'Feb 28 · CYCLIC MONTHLY', amount:'$5.25'},
+  {icon:'⚡', name:'Energy matrix split',         when:'Mar 3 · CYCLIC MONTHLY',  amount:'$42.00'},
+];
+
+const SEED_PULSES = [
+  {icon:'⟶',title:'Sarah absorbed $24.50',body:'Vector: dinner split ◈',time:'2 MIN AGO',unread:true},
+  {icon:'⟵',title:'Priya invoked $38.50', body:'Omakase night ◈',       time:'10 MIN AGO',unread:true},
+  {icon:'◈',title:'Yield +$1.30 crystallized',body:'2% on Priya vector',time:'3H AGO',unread:true},
+  {icon:'◎',title:'Node verification complete',body:'Stripe Identity confirmed',time:'1D AGO',unread:false},
+  {icon:'◧',title:'New vector detected',    body:'iPhone · Melbourne AU',time:'2D AGO',unread:false},
+];
+
+/* ═══ NUMPAD STATE ═══ */
+let pads = { emitAmt:'', invAmt:'', fracAmt:'', absAmt:'' };
+
+function buildPad(id, amtKey, dispId) {
+  const wrap = document.getElementById(id); wrap.innerHTML = '';
+  ['1','2','3','4','5','6','7','8','9','.','0','⌫'].forEach(k => {
+    const el = document.createElement('div');
+    el.className = `qk${k==='.'?' dot':k==='⌫'?' del':''}`;
+    el.textContent = k;
+    el.onclick = () => {
+      let v = pads[amtKey];
+      if(k==='⌫') v=v.slice(0,-1);
+      else if(k==='.'&&v.includes('.')) return;
+      else if(v.length>7) return;
+      else v+=k;
+      if(v.startsWith('.')) v='0'+v;
+      pads[amtKey]=v;
+      document.getElementById(dispId).textContent = v||'0';
+      if(amtKey==='fracAmt') renderFracNodes(parseFloat(v)||0);
+    };
+    wrap.appendChild(el);
+  });
+}
+
+function qa(amtKey, dispId, val) {
+  pads[amtKey] = String(val);
+  document.getElementById(dispId).textContent = val;
+  if(amtKey==='fracAmt') renderFracNodes(val);
+}
+
+/* ═══ AUTH ═══ */
+function authSeg(mode) {
+  document.getElementById('seg-in').classList.toggle('active',mode==='in');
+  document.getElementById('seg-up').classList.toggle('active',mode==='up');
+  document.getElementById('form-in').classList.toggle('hidden',mode!=='in');
+  document.getElementById('form-up').classList.toggle('hidden',mode!=='up');
+}
+
+async function doAuth() {
+  const email=document.getElementById('inEmail').value.trim();
+  const pass=document.getElementById('inPass').value;
+  if(!email||!pass){toast('Provide node address + cipher key','bad');return;}
+  if(!supa){toast('Set SUPABASE_URL/KEY or use demo vector','bad');return;}
+  setBtnLoad('inBtn',true);
+  const {data,error}=await supa.auth.signInWithPassword({email,password:pass});
+  setBtnLoad('inBtn',false);
+  if(error){toast(error.message,'bad');return;}
+  bootNode({name:data.user.email.split('@')[0],handle:'@'+data.user.email.split('@')[0],id:data.user.id});
+}
+
+async function doInitialize() {
+  const name=document.getElementById('upName').value.trim();
+  const handle=document.getElementById('upHandle').value.trim()||('@'+name.toLowerCase().replace(' ',''));
+  const email=document.getElementById('upEmail').value.trim();
+  const pass=document.getElementById('upPass').value;
+  if(!name||!email||!pass){toast('Complete all initialization fields','bad');return;}
+  if(!supa){toast('Set SUPABASE_URL/KEY or use demo vector','bad');return;}
+  setBtnLoad('upBtn',true);
+  const {data,error}=await supa.auth.signUp({email,password:pass,options:{data:{full_name:name,handle}}});
+  setBtnLoad('upBtn',false);
+  if(error){toast(error.message,'bad');return;}
+  toast('Node initialized! Check your address ◉','ok');
+  bootNode({name,handle,id:data.user.id});
+}
+
+function demoBoot() {
+  bootNode({name:'Alex Chen',handle:'@alexchen',id:'demo',demo:true});
+}
+
+function bootNode(user) {
+  S.user = user;
+  // Update all display refs
+  document.getElementById('calName').textContent   = user.name;
+  document.getElementById('calHandle').textContent = user.handle;
+  document.getElementById('calAv').textContent     = user.name[0].toUpperCase();
+  document.getElementById('portalHandle').textContent = user.handle;
+  generatePortal();
+  initHome();
+  goTo('s-home','vn-home');
+  document.getElementById('vecNav').style.display='flex';
+  toast(user.demo ? '⚡ DEMO VECTOR ACTIVE — no Supabase/Stripe' : 'NODE ONLINE — '+user.name.split(' ')[0]+' ◈','ok');
+  if(supa && !user.demo) loadStreams();
+  subscribeRealtime();
+}
+
+async function doDeauth() {
+  if(supa) await supa.auth.signOut();
+  S.user=null;
+  document.getElementById('vecNav').style.display='none';
+  goTo('s-auth','');
+  toast('NODE DEAUTHORIZED ◌','info');
+}
+
+/* ═══ SUPABASE ═══ */
+async function loadStreams() {
+  if(!supa||!S.user||S.user.demo)return;
+  const {data,error}=await supa.from('transactions').select('*').eq('user_id',S.user.id).order('created_at',{ascending:false}).limit(20);
+  if(error){console.error(error);return;}
+  S.streams=data.map(r=>({type:r.type,node:r.node,memo:r.memo,amount:r.amount,time:'Synced',status:r.status,yield:r.amount*0.02}));
+  renderStreams(); recalc();
+}
+
+async function saveStream(s) {
+  if(!supa||!S.user||S.user.demo)return;
+  await supa.from('transactions').insert({user_id:S.user.id,type:s.type,amount:s.amount,node:s.node,memo:s.memo,status:s.status,created_at:new Date().toISOString()});
+}
+
+function subscribeRealtime() {
+  if(!supa||!S.user||S.user.demo)return;
+  supa.channel('flux-streams').on('postgres_changes',{event:'INSERT',schema:'public',table:'transactions',filter:`user_id=eq.${S.user.id}`},p=>{
+    const r=p.new;
+    const s={type:r.type,node:r.node,memo:r.memo,amount:r.amount,time:'LIVE',status:r.status,yield:r.amount*0.02};
+    S.streams.unshift(s);
+    if(r.type==='absorb'){S.reserve+=r.amount;S.absorbed+=r.amount;}
+    else{S.reserve-=r.amount;S.emitted+=r.amount;}
+    S.yield+=r.amount*0.02;
+    updateReserve(); prependStream(s);
+    toast(`${r.type==='absorb'?'⟵':'⟶'} ${r.type.toUpperCase()} $${r.amount.toFixed(2)} · ${r.node}`,'ok');
+  }).subscribe();
+}
+
+/* ═══ STRIPE ═══ */
+async function stripeCharge(amountCents) {
+  if(!stripeInst) return {ok:true}; // demo
+  try {
+    const res=await fetch('/api/payment-intent',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({amount:amountCents,currency:'usd'})});
+    const {clientSecret}=await res.json();
+    const result=await stripeInst.confirmCardPayment(clientSecret,{payment_method:{card:{}}});
+    return {ok:!result.error,err:result.error?.message};
+  } catch(e){return {ok:false,err:e.message};}
+}
+
+/* ═══ ACTIONS ═══ */
+async function doEmit() {
+  const to   = document.getElementById('emitTo').value.trim();
+  const memo = document.getElementById('emitMemo').value.trim()||'—';
+  const amt  = parseFloat(pads.emitAmt)||0;
+  if(!to)   {toast('Specify target node','bad');return;}
+  if(amt<=0){toast('Enter emission amount','bad');return;}
+  if(amt>S.reserve){toast('INSUFFICIENT RESERVE','bad');return;}
+  setBtnLoad('emitBtn',true);
+  await delay(800);
+  const s={type:'emit',node:to.startsWith('@')?to:'@'+to,memo,amount:amt,time:'JUST NOW',status:'completed',yield:amt*0.02};
+  S.reserve-=amt; S.emitted+=amt; S.yield+=amt*0.02;
+  S.streams.unshift(s); await saveStream(s);
+  updateReserve(); prependStream(s);
+  setBtnLoad('emitBtn',false);
+  closeOv('ov-emit');
+  pads.emitAmt=''; document.getElementById('emitDisp').textContent='0';
+  document.getElementById('emitTo').value=''; document.getElementById('emitMemo').value='';
+  toast(`EMITTED $${amt.toFixed(2)} → ${to} ◈`,'ok');
+  addPulse({icon:'⟶',title:`Emitted $${amt.toFixed(2)} to ${to}`,body:memo,time:'JUST NOW',unread:false});
+}
+
+async function doInvoke() {
+  const from = document.getElementById('invFrom').value.trim();
+  const memo = document.getElementById('invMemo').value.trim()||'—';
+  const amt  = parseFloat(pads.invAmt)||0;
+  if(!from||amt<=0){toast('Complete invocation fields','bad');return;}
+  await delay(500);
+  closeOv('ov-invoke'); pads.invAmt=''; document.getElementById('invDisp').textContent='0';
+  toast(`INVOCATION SENT → ${from} ◈`,'ok');
+  addPulse({icon:'⟵',title:`Invoked $${amt.toFixed(2)} from ${from}`,body:memo,time:'JUST NOW',unread:false});
+}
+
+async function doFracture() {
+  const memo = document.getElementById('fracMemo').value.trim()||'bill split';
+  const total= parseFloat(pads.fracAmt)||0;
+  if(total<=0){toast('Enter total to fracture','bad');return;}
+  const nodes=NODES.slice(0,3), each=(total/(nodes.length+1)).toFixed(2);
+  await delay(700);
+  closeOv('ov-fracture'); pads.fracAmt=''; document.getElementById('fracDisp').textContent='0';
+  toast(`FRACTURED $${total.toFixed(2)} → each node owes $${each} ◈`,'ok');
+}
+
+async function doAbsorb() {
+  const amt=parseFloat(pads.absAmt)||0;
+  if(amt<=0){toast('Enter absorption amount','bad');return;}
+  setBtnLoad('absBtn',true);
+  const {ok,err}=await stripeCharge(Math.round(amt*100));
+  if(!ok){setBtnLoad('absBtn',false);toast(err||'VECTOR FAILED','bad');return;}
+  const s={type:'absorb',node:'SOURCE VECTOR ••••4821',memo:'reserve absorption',amount:amt,time:'JUST NOW',status:'completed',yield:amt*0.02};
+  S.reserve+=amt; S.absorbed+=amt; S.yield+=amt*0.02;
+  S.streams.unshift(s); await saveStream(s);
+  updateReserve(); prependStream(s);
+  setBtnLoad('absBtn',false);
+  closeOv('ov-absorb'); pads.absAmt=''; document.getElementById('absDisp').textContent='0';
+  toast(`ABSORBED $${amt.toFixed(2)} → RESERVE ⟐`,'ok');
+}
+
+/* ═══ RENDER ═══ */
+function initHome() {
+  S.streams=[...SEED_STREAMS];
+  SEED_STREAMS.forEach(s=>{
+    if(s.type==='absorb'){S.absorbed+=s.amount;}
+    else{S.emitted+=s.amount;}
+    S.yield+=s.yield||0;
+  });
+  updateReserve(); renderStreams();
+  renderNodes(); renderInvocations(); renderChronos(); renderPulses(); renderSpectrum();
+  buildPad('pad1','emitAmt','emitDisp');
+  buildPad('pad2','invAmt','invDisp');
+  buildPad('pad3','fracAmt','fracDisp');
+  buildPad('pad4','absAmt','absDisp');
+  generatePortal();
+}
+
+function updateReserve() {
+  const [i,d]=S.reserve.toFixed(2).split('.');
+  document.getElementById('resInt').textContent=Number(i).toLocaleString();
+  document.getElementById('resDec').textContent=d;
+  document.getElementById('metEmit').textContent='$'+S.emitted.toFixed(0);
+  document.getElementById('metAbs').textContent ='$'+S.absorbed.toFixed(0);
+  document.getElementById('metYield').textContent='$'+S.yield.toFixed(2);
+  document.getElementById('yieldDisp').textContent='$'+S.yield.toFixed(2);
+  document.getElementById('spEmit').textContent='$'+S.emitted.toFixed(2);
+  document.getElementById('spAbs').textContent ='$'+S.absorbed.toFixed(2);
+}
+
+function recalc() { S.emitted=0;S.absorbed=0;S.yield=0; S.streams.forEach(s=>{if(s.type==='absorb')S.absorbed+=s.amount;else S.emitted+=s.amount;S.yield+=s.yield||s.amount*0.02;}); updateReserve(); }
+
+function renderNodes() {
+  const row=document.getElementById('nodesRow'); row.innerHTML='';
+  NODES.forEach(n=>{
+    const el=document.createElement('div'); el.className='node-chip';
+    el.innerHTML=`<div class="node-av ${n.online?'online':''}" style="background:${n.bg}">${n.n[0]}</div><span class="node-handle">${n.h}</span>`;
+    el.onclick=()=>{document.getElementById('emitTo').value=n.h;openOv('ov-emit');};
+    row.appendChild(el);
+  });
+}
+
+function renderStreams() {
+  const feed=document.getElementById('streamFeed'); feed.innerHTML='';
+  S.streams.slice(0,10).forEach((s,i)=>{const el=makeStreamEl(s);el.style.animationDelay=(i*0.05)+'s';feed.appendChild(el);});
+}
+
+function prependStream(s) {
+  const feed=document.getElementById('streamFeed');
+  const el=makeStreamEl(s); feed.insertBefore(el,feed.firstChild);
+}
+
+function makeStreamEl(s) {
+  const el=document.createElement('div'); el.className=`stream-item ${s.type}`;
+  const sym=s.type==='absorb'?'⟵':s.type==='emit'?'⟶':'⊙';
+  const yld=s.yield?`<div class="stream-yield">+$${s.yield.toFixed(2)} YIELD</div>`:'';
+  el.innerHTML=`
+    <div class="stream-glyph">${sym}</div>
+    <div class="stream-body">
+      <div class="stream-node">${s.node}</div>
+      <div class="stream-memo">${s.memo}</div>
+      <div class="stream-meta"><span class="stream-time">${s.time}</span><span class="stream-badge ${s.status}">${s.status.toUpperCase()}</span></div>
+    </div>
+    <div class="stream-right">
+      <div class="stream-val ${s.type}">${s.type==='absorb'?'+':'-'}$${s.amount.toFixed(2)}</div>
+      ${yld}
+    </div>`;
+  return el;
+}
+
+function renderInvocations() {
+  const list=document.getElementById('invocList'); list.innerHTML='';
+  SEED_INVOCATIONS.forEach((r,i)=>{
+    const el=document.createElement('div'); el.className='invoc-item'; el.style.animationDelay=(i*0.08)+'s';
+    el.innerHTML=`
+      <div class="invoc-top">
+        <div class="invoc-av" style="background:${r.bg}">${r.node[1].toUpperCase()}</div>
+        <div class="invoc-info"><div class="invoc-node">${r.node}</div><div class="invoc-memo">${r.memo}</div></div>
+        <div class="invoc-amount">$${r.amount.toFixed(2)}</div>
+      </div>
+      <div class="invoc-actions">
+        <button class="absorb-action" onclick="payInvoc(this,${r.amount},'${r.node}')">⟵ ABSORB</button>
+        <button class="reject-action" onclick="this.closest('.invoc-item').remove();toast('INVOCATION REJECTED','bad')">REJECT</button>
+      </div>`;
+    list.appendChild(el);
+  });
+}
+
+function payInvoc(btn,amount,node) {
+  if(amount>S.reserve){toast('INSUFFICIENT RESERVE','bad');return;}
+  S.reserve-=amount; S.emitted+=amount;
+  const s={type:'emit',node,memo:'INVOCATION ABSORBED',amount,time:'JUST NOW',status:'completed',yield:amount*0.02};
+  S.streams.unshift(s); saveStream(s); updateReserve(); prependStream(s);
+  btn.closest('.invoc-item').remove();
+  toast(`INVOCATION ABSORBED · $${amount.toFixed(2)} → ${node}`,'ok');
+}
+
+function renderChronos() {
+  const list=document.getElementById('chronosList'); list.innerHTML='';
+  SEED_CHRONOS.forEach(c=>{
+    const el=document.createElement('div'); el.className='chrono-item';
+    el.innerHTML=`<div class="chrono-icon">${c.icon}</div><div class="chrono-info"><div class="chrono-name">${c.name}</div><div class="chrono-when">⊕ ${c.when}</div></div><div class="chrono-amount">${c.amount}</div>`;
+    list.appendChild(el);
+  });
+}
+
+function renderPulses() {
+  const list=document.getElementById('pulseList'); list.innerHTML='';
+  SEED_PULSES.forEach(p=>{
+    const el=document.createElement('div'); el.className='pulse-item'+(p.unread?' unread':'');
+    el.innerHTML=`<div class="pulse-icon">${p.icon}</div><div class="pulse-text"><div class="pt-title">${p.title}</div><div class="pt-body">${p.body}</div><div class="pt-time">${p.time}</div></div>`;
+    el.onclick=()=>{el.classList.remove('unread');document.getElementById('notifDot').style.display='none';};
+    list.appendChild(el);
+  });
+}
+
+function addPulse(p) {
+  SEED_PULSES.unshift(p); renderPulses();
+  document.getElementById('notifDot').style.display='block';
+}
+
+function renderSpectrum() {
+  // Waveform
+  const wf=document.getElementById('waveform'); wf.innerHTML='';
+  const months=['S','O','N','D','J','F'], vals=[320,510,290,680,430,595];
+  const mx=Math.max(...vals);
+  months.forEach((m,i)=>{
+    const pct=(vals[i]/mx*100);
+    const el=document.createElement('div'); el.className='wave-col';
+    el.innerHTML=`<div class="wave-bar${i===5?' active':''}" style="height:${pct}%;background:${i===5?'':'rgba(0,255,255,0.15)'}"></div><span class="wave-lbl">${m}</span>`;
+    wf.appendChild(el);
+  });
+  // Categories
+  const cats=[
+    {icon:'◈',name:'SUSTENANCE',amount:'$234',pct:'68',color:'var(--plasma-b)'},
+    {icon:'⟶',name:'MOBILITY',  amount:'$89', pct:'30',color:'var(--plasma-a)'},
+    {icon:'⌂', name:'SHELTER',  amount:'$400',pct:'100',color:'var(--plasma-d)'},
+    {icon:'◉', name:'CULTURE',  amount:'$65', pct:'22',color:'var(--plasma-c)'},
+  ];
+  const grid=document.getElementById('catGrid'); grid.innerHTML='';
+  cats.forEach(c=>{
+    const el=document.createElement('div'); el.className='cat-tile';
+    el.innerHTML=`<div class="ct-icon">${c.icon}</div><div class="ct-name">${c.name}</div><div class="ct-amount" style="color:${c.color}">${c.amount}</div><div class="ct-bar"><div class="ct-fill" style="width:${c.pct}%;background:${c.color}"></div></div>`;
+    grid.appendChild(el);
+  });
+}
+
+function renderFracNodes(total) {
+  const nodes=NODES.slice(0,3), each=nodes.length>0?(total/(nodes.length+1)).toFixed(2):'0.00';
+  const list=document.getElementById('fracNodes'); list.innerHTML='';
+  nodes.forEach(n=>{
+    const el=document.createElement('div'); el.className='fn-row';
+    el.innerHTML=`<div class="fn-av" style="background:${n.bg}">${n.n[0]}</div><div class="fn-name">${n.n} <span style="font-family:var(--font-mono);font-size:10px;color:var(--text-dim)">${n.h}</span></div><div class="fn-share">$${each}</div>`;
+    list.appendChild(el);
+  });
+}
+
+function generatePortal() {
+  const grid=document.getElementById('portalGrid'); grid.innerHTML='';
+  const pattern=[1,1,1,0,1,0,1,1,1,1,0,1,0,0,0,1,0,1,1,0,1,1,0,1,1,0,1,0,0,0,1,1,0,0,0,0,1,1,0,0,1,0,0,1,1,0,0,1,0,0,1,1,0,1,1,0,1,0,1,1,1,1,0,1,0,1,1,1,1,1,0,0,0,1,0,0,0,1,1,1,1];
+  pattern.forEach(v=>{const c=document.createElement('div');c.className='qr-cell';c.style.background=v?'#030012':'white';grid.appendChild(c);});
+}
+
+/* ═══ UI ═══ */
+function goTo(screenId, navId) {
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(screenId).classList.add('active');
+  document.querySelectorAll('.vn-item').forEach(n=>n.classList.remove('active'));
+  if(navId) document.getElementById(navId)?.classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function openOv(id) {
+  document.getElementById(id).classList.add('open');
+  document.body.style.overflow='hidden';
+  if(id==='ov-fracture') renderFracNodes(0);
+}
+function closeOv(id) { document.getElementById(id).classList.remove('open'); document.body.style.overflow=''; }
+function bgClose(e,id){ if(e.target===document.getElementById(id)) closeOv(id); }
+
+function toggleMask() {
+  S.masked=!S.masked;
+  document.getElementById('reserveAmt').classList.toggle('masked',S.masked);
+}
+
+function toast(msg, type='info') {
+  const stack=document.getElementById('toastStack');
+  const t=document.createElement('div'); t.className=`toast ${type}`; t.textContent=msg;
+  stack.appendChild(t);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>t.classList.add('show')));
+  setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.remove(),400);},3200);
+}
+
+function setBtnLoad(id,on) {
+  const btn=document.getElementById(id); if(!btn)return;
+  if(on){btn._orig=btn.innerHTML;btn.innerHTML='<span class="spin"></span>';btn.disabled=true;}
+  else{btn.innerHTML=btn._orig||btn.innerHTML;btn.disabled=false;}
+}
+
+function delay(ms){ return new Promise(r=>setTimeout(r,ms)); }
+
+/* Auto-check Supabase session */
+(async()=>{
+  if(supa){
+    const {data:{session}}=await supa.auth.getSession();
+    if(session){
+      const u=session.user;
+      bootNode({name:u.user_metadata?.full_name||u.email.split('@')[0],handle:u.user_metadata?.handle||'@node',id:u.id});
+    }
+  }
+})();
+</script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "https://https-swarmzv10-onrender-com.onrender.com";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8012";
 
 function buildHeaders(): HeadersInit {
   const headers: HeadersInit = { "Content-Type": "application/json" };

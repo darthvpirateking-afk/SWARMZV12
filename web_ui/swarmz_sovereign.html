@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>SWARMZ — Sovereign Command</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════
+   SWARMZ — SOVEREIGN WEAPON INTERFACE
+   Molten amber · blood orange · gold
+══════════════════════════════════ */
+:root {
+  --void:   #080602;
+  --deep:   #0f0a04;
+  --base:   #160e05;
+  --raised: #1e1408;
+  --glass:  rgba(22,14,5,0.92);
+
+  --amber:  #ffaa00;
+  --orange: #ff5500;
+  --gold:   #ffd700;
+  --ember:  #ff2200;
+  --lime:   #aaff00;
+  --ice:    #00ddff;
+
+  --text:   #fff8ee;
+  --mid:    #9a7a50;
+  --dim:    #4a3820;
+
+  --border:     rgba(255,170,0,0.12);
+  --border-lit: rgba(255,170,0,0.4);
+  --border-hot: rgba(255,170,0,0.8);
+
+  --fn: 'DM Sans', sans-serif;
+  --fd: 'Bebas Neue', sans-serif;
+  --fm: 'DM Mono', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; }
+
+body {
+  font-family: var(--fn);
+  background: var(--void);
+  color: var(--text);
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+}
+
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(255,170,0,0.1) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 100% 80%, rgba(255,85,0,0.08) 0%, transparent 50%),
+    radial-gradient(ellipse 40% 30% at 0% 60%, rgba(255,34,0,0.06) 0%, transparent 50%);
+}
+
+.app {
+  width: 100%; max-width: 430px;
+  height: 100vh;
+  display: flex; flex-direction: column;
+  position: relative; z-index: 1;
+  overflow: hidden;
+}
+
+.screen {
+  display: none; flex-direction: column;
+  flex: 1; overflow-y: auto; overflow-x: hidden;
+  padding-bottom: 72px;
+  scrollbar-width: none;
+}
+.screen::-webkit-scrollbar { display: none; }
+.screen.active { display: flex; }
+
+/* ══ AUTH ══ */
+.auth-screen {
+  justify-content: center; align-items: center;
+  padding: 32px 20px; gap: 0; min-height: 100vh;
+}
+
+.auth-logo {
+  font-family: var(--fd); font-size: 80px; letter-spacing: 2px;
+  line-height: 1; text-align: center;
+  background: linear-gradient(170deg, var(--gold) 0%, var(--amber) 40%, var(--orange) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 30px rgba(255,170,0,0.5));
+  margin-bottom: 4px;
+}
+.auth-sub {
+  font-family: var(--fm); font-size: 10px; color: var(--mid);
+  letter-spacing: 4px; text-transform: uppercase; text-align: center;
+  margin-bottom: 40px;
+}
+
+.auth-box {
+  width: 100%;
+  background: var(--raised);
+  border: 1px solid var(--border-lit);
+  border-radius: 16px; padding: 24px 20px;
+  position: relative; overflow: hidden;
+}
+.auth-box::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--amber), var(--orange), transparent);
+}
+
+.f { margin-bottom: 14px; }
+.f label { display: block; font-family: var(--fm); font-size: 9px; letter-spacing: 2px; color: var(--mid); margin-bottom: 6px; text-transform: uppercase; }
+.f input {
+  width: 100%; background: var(--deep); border: 1px solid var(--border);
+  border-radius: 8px; padding: 12px 14px; color: var(--text);
+  font-family: var(--fn); font-size: 15px; outline: none; transition: all 0.2s;
+}
+.f input:focus { border-color: var(--amber); box-shadow: 0 0 0 2px rgba(255,170,0,0.15); }
+.f input::placeholder { color: var(--dim); }
+
+.btn-prime {
+  width: 100%; padding: 15px; border-radius: 10px; border: none;
+  background: linear-gradient(135deg, var(--amber), var(--orange));
+  color: var(--void); font-family: var(--fn); font-size: 15px; font-weight: 700;
+  cursor: pointer; transition: all 0.2s; letter-spacing: 0.5px;
+}
+.btn-prime:hover { filter: brightness(1.1); transform: translateY(-1px); box-shadow: 0 6px 24px rgba(255,170,0,0.3); }
+.btn-prime:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+.btn-ghost {
+  width: 100%; padding: 13px; border-radius: 10px;
+  background: transparent; border: 1px solid var(--border-lit);
+  color: var(--amber); font-family: var(--fn); font-size: 14px; font-weight: 600;
+  cursor: pointer; transition: all 0.2s; margin-top: 10px;
+}
+.btn-ghost:hover { background: rgba(255,170,0,0.08); }
+
+/* ══ HOME ══ */
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 16px 0; flex-shrink: 0;
+}
+.tb-logo { font-family: var(--fd); font-size: 26px; letter-spacing: 1px;
+  background: linear-gradient(90deg, var(--gold), var(--amber));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.tb-right { display: flex; gap: 8px; }
+.tb-btn {
+  width: 36px; height: 36px; background: var(--raised); border: 1px solid var(--border);
+  border-radius: 8px; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 15px; transition: all 0.2s; position: relative;
+}
+.tb-btn:hover { border-color: var(--border-lit); background: rgba(255,170,0,0.06); }
+
+.sovereign-card {
+  margin: 12px 16px 10px;
+  background: linear-gradient(145deg, var(--raised), var(--deep));
+  border: 1px solid var(--border-lit);
+  border-radius: 16px; padding: 18px 18px 16px;
+  position: relative; overflow: hidden; flex-shrink: 0;
+}
+.sovereign-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), var(--amber), var(--orange), transparent);
+}
+
+.sc-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.sc-label { font-family: var(--fm); font-size: 9px; color: var(--mid); letter-spacing: 3px; text-transform: uppercase; }
+
+.sc-operator {
+  margin-bottom: 8px;
+}
+.sc-op-name { font-family: var(--fd); font-size: 24px; letter-spacing: 0.5px; color: var(--amber); }
+.sc-op-handle { font-family: var(--fm); font-size: 10px; color: var(--mid); letter-spacing: 2px; }
+
+.sc-stats { display: flex; gap: 0; border-top: 1px solid var(--border); padding-top: 12px; }
+.scs { flex: 1; text-align: center; border-right: 1px solid var(--border); }
+.scs:last-child { border-right: none; }
+.scs .l { font-family: var(--fm); font-size: 8px; color: var(--dim); letter-spacing: 2px; margin-bottom: 3px; text-transform: uppercase; }
+.scs .v { font-family: var(--fd); font-size: 18px; letter-spacing: 0.5px; }
+.v.cmd-c   { color: var(--orange); }
+.v.min-c   { color: var(--lime); }
+.v.stage-c { color: var(--gold); }
+
+/* ACTION STRIP */
+.action-strip {
+  display: flex; gap: 8px; padding: 0 16px; margin-bottom: 12px; flex-shrink: 0;
+}
+.act {
+  flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px;
+  padding: 10px 6px; border-radius: 10px;
+  background: var(--raised); border: 1px solid var(--border);
+  cursor: pointer; transition: all 0.2s;
+}
+.act:hover { transform: translateY(-2px); }
+.act:active { transform: translateY(0) scale(0.97); }
+.act:nth-child(1):hover { border-color: var(--orange); box-shadow: 0 4px 16px rgba(255,85,0,0.25); }
+.act:nth-child(2):hover { border-color: var(--lime);   box-shadow: 0 4px 16px rgba(170,255,0,0.2); }
+.act:nth-child(3):hover { border-color: var(--amber);  box-shadow: 0 4px 16px rgba(255,170,0,0.25); }
+.act:nth-child(4):hover { border-color: var(--ice);    box-shadow: 0 4px 16px rgba(0,221,255,0.2); }
+.act .ai { font-size: 18px; }
+.act .al { font-family: var(--fm); font-size: 8px; color: var(--mid); letter-spacing: 1px; text-transform: uppercase; }
+
+/* AI COMMAND BAR */
+.ai-bar {
+  margin: 0 16px 12px;
+  background: rgba(255,170,0,0.05); border: 1px solid rgba(255,170,0,0.18);
+  border-radius: 10px; padding: 10px 12px;
+  display: flex; align-items: center; gap: 10px; cursor: pointer;
+  transition: background 0.2s; flex-shrink: 0;
+}
+.ai-bar:hover { background: rgba(255,170,0,0.09); }
+.ai-orb {
+  width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--amber), var(--orange));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; box-shadow: 0 0 12px rgba(255,170,0,0.4);
+  animation: orbpulse 3s ease-in-out infinite;
+}
+@keyframes orbpulse { 0%,100%{box-shadow:0 0 8px rgba(255,170,0,0.3)}50%{box-shadow:0 0 20px rgba(255,170,0,0.7)} }
+.ai-text .it { font-family: var(--fn); font-size: 12px; font-weight: 600; color: var(--amber); }
+.ai-text .ib { font-family: var(--fm); font-size: 10px; color: var(--mid); margin-top: 2px; }
+
+/* SECTION HEAD */
+.sh {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 0 16px; margin-bottom: 8px; flex-shrink: 0;
+}
+.sh h3 { font-family: var(--fm); font-size: 9px; color: var(--mid); letter-spacing: 3px; text-transform: uppercase; }
+.sh a  { font-family: var(--fm); font-size: 9px; color: var(--amber); letter-spacing: 1px; cursor: pointer; }
+
+/* MINIONS ROW */
+.minions-row {
+  display: flex; gap: 12px; overflow-x: auto; padding: 2px 16px 4px;
+  scrollbar-width: none; margin-bottom: 12px; flex-shrink: 0;
+}
+.minions-row::-webkit-scrollbar { display: none; }
+.minion {
+  display: flex; flex-direction: column; align-items: center; gap: 5px;
+  flex-shrink: 0; cursor: pointer; transition: transform 0.2s;
+}
+.minion:hover { transform: scale(1.06); }
+.m-av {
+  width: 44px; height: 44px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--fn); font-size: 16px; font-weight: 800;
+  border: 1px solid transparent; transition: all 0.2s; position: relative;
+}
+.m-av.active::after {
+  content: ''; position: absolute; bottom: 2px; right: 2px;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--lime); box-shadow: 0 0 6px var(--lime); border: 2px solid var(--void);
+}
+.minion:hover .m-av { border-color: var(--amber); }
+.m-name { font-family: var(--fm); font-size: 9px; color: var(--dim); }
+
+/* COMMAND LIST */
+.commands { padding: 0 16px; }
+.cmd-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 10px;
+  margin-bottom: 6px;
+  background: var(--raised); border: 1px solid var(--border);
+  border-radius: 10px; cursor: pointer; transition: all 0.2s;
+  animation: slin 0.3s ease both;
+  border-left: 2px solid transparent;
+}
+.cmd-item.deploy { border-left-color: var(--orange); }
+.cmd-item.execute { border-left-color: var(--lime); }
+.cmd-item.pending { border-left-color: var(--gold); }
+.cmd-item:hover { background: rgba(255,170,0,0.04); border-color: var(--border-lit); }
+@keyframes slin { from{opacity:0;transform:translateX(-8px)} to{opacity:1;transform:translateX(0)} }
+
+.cmd-glyph {
+  width: 36px; height: 36px; border-radius: 8px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800;
+  font-family: var(--fd);
+}
+.cmd-item.deploy .cmd-glyph { background: rgba(255,85,0,0.1);   color: var(--orange); }
+.cmd-item.execute .cmd-glyph { background: rgba(170,255,0,0.1); color: var(--lime); }
+.cmd-item.pending .cmd-glyph { background: rgba(255,215,0,0.1); color: var(--gold); }
+
+.cmd-body { flex: 1; min-width: 0; }
+.cmd-target { font-size: 13px; font-weight: 600; }
+.cmd-desc { font-family: var(--fm); font-size: 10px; color: var(--mid); margin-top: 1px; }
+
+.cmd-right { text-align: right; flex-shrink: 0; }
+.cmd-time { font-family: var(--fm); font-size: 9px; color: var(--mid); }
+.cmd-status { font-family: var(--fm); font-size: 9px; color: var(--amber); margin-top: 1px; }
+
+/* BOTTOM NAV */
+.bot-nav {
+  display: none;
+  position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 100%; max-width: 430px;
+  background: rgba(8,6,2,0.97);
+  border-top: 1px solid var(--border-lit);
+  backdrop-filter: blur(20px);
+  z-index: 100;
+}
+.bot-nav::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--amber), var(--orange), transparent);
+}
+.bnav-inner { display: flex; align-items: center; padding: 8px 8px 20px; }
+.bn {
+  flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
+  padding: 8px 0; border-radius: 10px; background: none; border: none;
+  color: var(--dim); cursor: pointer; transition: all 0.2s;
+}
+.bn.on { color: var(--amber); }
+.bn:hover:not(.on) { color: var(--mid); }
+.bn-icon { font-size: 19px; }
+.bn-lbl { font-family: var(--fm); font-size: 8px; letter-spacing: 1px; text-transform: uppercase; }
+.bn-deploy {
+  width: 48px; height: 48px; border-radius: 12px; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--amber), var(--orange));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; font-weight: 900; cursor: pointer; border: none;
+  box-shadow: 0 0 20px rgba(255,170,0,0.35); transition: all 0.2s;
+  margin: 0 4px; color: var(--void);
+}
+.bn-deploy:hover { box-shadow: 0 0 32px rgba(255,170,0,0.6); transform: scale(1.06); }
+
+/* TOAST */
+.toast-box {
+  position: fixed; top: 16px; left: 50%; transform: translateX(-50%);
+  z-index: 999; display: flex; flex-direction: column; gap: 6px;
+  align-items: center; pointer-events: none; width: 100%; max-width: 380px; padding: 0 16px;
+}
+.t {
+  padding: 10px 18px; background: var(--raised); border: 1px solid var(--border-lit);
+  border-radius: 8px; font-family: var(--fm); font-size: 11px; color: var(--text);
+  letter-spacing: 0.5px; box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+  transform: translateY(-16px) scale(0.95); opacity: 0;
+  transition: all 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  text-align: center; pointer-events: all;
+}
+.t.show { transform: translateY(0) scale(1); opacity: 1; }
+.t.ok   { border-color: rgba(170,255,0,0.4); color: var(--lime); }
+.t.bad  { border-color: rgba(255,34,0,0.4);  color: var(--ember); }
+.t.info { border-color: rgba(255,170,0,0.4); color: var(--amber); }
+
+.hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<!-- TOAST -->
+<div class="toast-box" id="toastBox"></div>
+
+<!-- APP -->
+<div class="app">
+
+  <!-- AUTH -->
+  <div class="screen active" id="s-auth">
+    <div class="auth-screen">
+      <div class="auth-logo">SWARMZ</div>
+      <div class="auth-sub">sovereign weapon system</div>
+      <div class="auth-box">
+        <div class="f"><label>OPERATOR NAME</label><input id="opName" type="text" placeholder="Regan Stewart Harris"/></div>
+        <div class="f"><label>OPERATOR KEY</label><input id="opKey" type="password" placeholder="cipher key"/></div>
+        <button class="btn-prime" id="authBtn" onclick="doAuth()">ENTER COMMAND LAYER →</button>
+        <button class="btn-ghost" onclick="demoBoot()">⚡ DEMO MODE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOME -->
+  <div class="screen" id="s-home">
+    <div class="topbar">
+      <div class="tb-logo">SWARMZ</div>
+      <div class="tb-right">
+        <div class="tb-btn" onclick="toast('Evolution stage: NASCENT','info')">◈</div>
+        <div class="tb-btn" onclick="toast('No pending invocations','info')">🔔</div>
+      </div>
+    </div>
+
+    <!-- SOVEREIGN CARD -->
+    <div class="sovereign-card">
+      <div class="sc-top">
+        <div class="sc-label">SOVEREIGN STATUS</div>
+        <div style="font-family:var(--fm);font-size:9px;padding:3px 8px;border:1px solid rgba(255,170,0,0.3);border-radius:20px;color:var(--amber);letter-spacing:1px;">NASCENT</div>
+      </div>
+      <div class="sc-operator">
+        <div class="sc-op-name" id="opNameDisp">—</div>
+        <div class="sc-op-handle" id="opHandleDisp">@—</div>
+      </div>
+      <div class="sc-stats">
+        <div class="scs"><div class="l">COMMANDS</div><div class="v cmd-c" id="cmdCount">0</div></div>
+        <div class="scs"><div class="l">MINIONS</div><div class="v min-c" id="minCount">0</div></div>
+        <div class="scs"><div class="l">STAGE</div><div class="v stage-c">NASCENT</div></div>
+      </div>
+    </div>
+
+    <!-- ACTION STRIP -->
+    <div class="action-strip">
+      <div class="act" onclick="toast('DEPLOY — command deployment','info')"><div class="ai">↑</div><div class="al">DEPLOY</div></div>
+      <div class="act" onclick="toast('EXECUTE — direct execution','info')"><div class="ai">▶</div><div class="al">EXECUTE</div></div>
+      <div class="act" onclick="toast('INVOKE — request from node','info')"><div class="ai">↓</div><div class="al">INVOKE</div></div>
+      <div class="act" onclick="toast('SPECTRUM — view analytics','info')"><div class="ai">◈</div><div class="al">SPECTRUM</div></div>
+    </div>
+
+    <!-- AI COMMAND BAR -->
+    <div class="ai-bar" onclick="toast('AI: Calibrating. Command latency: near zero. No friction detected.','info')">
+      <div class="ai-orb">◭</div>
+      <div class="ai-text">
+        <div class="it">COMMAND VOICE</div>
+        <div class="ib">Four hostiles. Northeast cluster. Kael and twin-forms, thirty seconds.</div>
+      </div>
+    </div>
+
+    <!-- MINIONS -->
+    <div class="sh"><h3>MINION ROSTER</h3><a onclick="toast('Full roster coming','info')">ALL →</a></div>
+    <div class="minions-row" id="minionsRow"></div>
+
+    <!-- COMMANDS -->
+    <div class="sh"><h3>COMMAND FEED</h3><a onclick="toast('Command history','info')">HISTORY →</a></div>
+    <div class="commands" id="commandFeed"></div>
+  </div>
+
+</div><!-- /.app -->
+
+<!-- BOTTOM NAV -->
+<nav class="bot-nav" id="botNav">
+  <div class="bnav-inner">
+    <button class="bn on" id="bn-home" onclick="goto('s-home','bn-home')"><span class="bn-icon">⌂</span><span class="bn-lbl">HOME</span></button>
+    <button class="bn" id="bn-minions"><span class="bn-icon">◇</span><span class="bn-lbl">MINIONS</span></button>
+    <button class="bn-deploy" onclick="toast('DEPLOY COMMAND','info')">↑</button>
+    <button class="bn" id="bn-spec"><span class="bn-icon">◈</span><span class="bn-lbl">SPEC</span></button>
+    <button class="bn" id="bn-operator"><span class="bn-icon">⊕</span><span class="bn-lbl">OPERATOR</span></button>
+  </div>
+</nav>
+
+<script>
+/* ══ STATE ══ */
+let S = { operator:null, commands:0, minions:0 };
+
+/* ══ DATA ══ */
+const MINIONS = [
+  {n:'Kael',type:'soldier',bg:'linear-gradient(135deg,#f472b6,#c026d3)',active:true},
+  {n:'Shadow-7',type:'scout',bg:'linear-gradient(135deg,#38bdf8,#0284c7)',active:true},
+  {n:'Forge',type:'builder',bg:'linear-gradient(135deg,#fb923c,#ea580c)',active:false},
+  {n:'Archive-Prime',type:'keeper',bg:'linear-gradient(135deg,#a3e635,#65a30d)',active:true},
+  {n:'Vex',type:'infiltrator',bg:'linear-gradient(135deg,#f9a8d4,#db2777)',active:false},
+  {n:'Titan',type:'enforcer',bg:'linear-gradient(135deg,#6ee7b7,#059669)',active:true},
+  {n:'Echo',type:'recon',bg:'linear-gradient(135deg,#818cf8,#4f46e5)',active:true},
+];
+
+const COMMANDS = [
+  {type:'execute',target:'@target-alpha',desc:'Sweep northeast quadrant',     time:'2m',  status:'EXECUTING'},
+  {type:'deploy', target:'Kael',         desc:'Hold perimeter',                time:'1h',  status:'DEPLOYED'},
+  {type:'execute',target:'Archive-Prime',desc:'Extract memory fragments',      time:'3h',  status:'COMPLETE'},
+  {type:'deploy', target:'Shadow-7',     desc:'Scout forward positions',       time:'1d',  status:'DEPLOYED'},
+  {type:'execute',target:'@node-beta',   desc:'Defensive formation',           time:'1d',  status:'COMPLETE'},
+  {type:'deploy', target:'Echo',         desc:'Pattern recognition sweep',     time:'2d',  status:'COMPLETE'},
+];
+
+/* ══ AUTH ══ */
+async function doAuth(){
+  const name=document.getElementById('opName').value.trim();
+  const key=document.getElementById('opKey').value;
+  if(!name||!key){toast('Complete all fields','bad');return;}
+  boot({name,handle:'@'+name.toLowerCase().replace(/\s+/g,'')});
+}
+
+function demoBoot(){boot({name:'Regan Stewart Harris',handle:'@reganharris',demo:true});}
+
+function boot(operator){
+  S.operator=operator;
+  document.getElementById('opNameDisp').textContent=operator.name;
+  document.getElementById('opHandleDisp').textContent=operator.handle;
+  
+  S.commands=COMMANDS.length;
+  S.minions=MINIONS.filter(m=>m.active).length;
+  
+  updateStats();
+  renderMinions();
+  renderCommands();
+  
+  goto('s-home','bn-home');
+  document.getElementById('botNav').style.display='block';
+  toast(operator.demo?'⚡ DEMO ACTIVE':'COMMAND LAYER ONLINE — '+operator.name.split(' ')[0]+' ◈','ok');
+}
+
+function updateStats(){
+  document.getElementById('cmdCount').textContent=S.commands;
+  document.getElementById('minCount').textContent=S.minions;
+}
+
+function renderMinions(){
+  const r=document.getElementById('minionsRow'); r.innerHTML='';
+  MINIONS.forEach(m=>{
+    const el=document.createElement('div'); el.className='minion';
+    el.innerHTML=`<div class="m-av ${m.active?'active':''}" style="background:${m.bg}">${m.n[0]}</div><span class="m-name">${m.n}</span>`;
+    el.onclick=()=>toast(`${m.n} · ${m.type} · ${m.active?'ACTIVE':'STANDBY'}`,'info');
+    r.appendChild(el);
+  });
+}
+
+function renderCommands(){
+  const f=document.getElementById('commandFeed'); f.innerHTML='';
+  COMMANDS.slice(0,8).forEach((c,i)=>{
+    const el=document.createElement('div'); el.className=`cmd-item ${c.type}`;
+    el.style.animationDelay=(i*0.04)+'s';
+    const sym=c.type==='deploy'?'↑':c.type==='execute'?'▶':'○';
+    el.innerHTML=`
+      <div class="cmd-glyph">${sym}</div>
+      <div class="cmd-body"><div class="cmd-target">${c.target}</div><div class="cmd-desc">${c.desc}</div></div>
+      <div class="cmd-right"><div class="cmd-time">${c.time}</div><div class="cmd-status">${c.status}</div></div>`;
+    f.appendChild(el);
+  });
+}
+
+/* ══ UI ══ */
+function goto(screenId, navId){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(screenId).classList.add('active');
+  document.querySelectorAll('.bn').forEach(b=>b.classList.remove('on'));
+  if(navId) document.getElementById(navId)?.classList.add('on');
+  window.scrollTo(0,0);
+}
+
+function toast(msg, type='info'){
+  const box=document.getElementById('toastBox');
+  const t=document.createElement('div'); t.className=`t ${type}`; t.textContent=msg;
+  box.appendChild(t);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>t.classList.add('show')));
+  setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.remove(),400);},3000);
+}
+</script>
+</body>
+</html>
