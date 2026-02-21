@@ -895,7 +895,7 @@ async def galileo_run_details(run_id: str):
                     try:
                         with open(file_path, "r") as f:
                             artifacts[json_file] = json.load(f)
-                    except:
+                    except Exception:
                         pass
 
         return {"ok": True, "run": run, "artifacts": artifacts}
@@ -1030,7 +1030,7 @@ async def galileo_selfcheck():
                 hyp2 = json_module.load(f)
             # Stable stringify comparison
             json_match = stableStringify(hyp1) == stableStringify(hyp2)
-        except:
+        except Exception:
             json_match = None  # Unable to verify
 
         deterministic = ids_match and totals_match and (json_match is not False)

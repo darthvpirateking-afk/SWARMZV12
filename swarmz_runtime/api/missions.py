@@ -3,12 +3,14 @@
 # See LICENSE file for details.
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from typing import Dict, Any, Optional, Callable
+from typing import Dict, Any, Optional
 from swarmz_runtime.core.engine import SwarmzEngine
 
 router = APIRouter()
 
-get_engine: Callable[[], SwarmzEngine] = lambda: SwarmzEngine()
+
+def get_engine() -> SwarmzEngine:
+    return SwarmzEngine()
 
 
 class CreateMissionRequest(BaseModel):

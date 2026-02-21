@@ -2,13 +2,15 @@
 # Commercial use, hosting, and resale prohibited.
 # See LICENSE file for details.
 from fastapi import APIRouter, HTTPException
-from typing import Callable, Dict, Any
+from typing import Dict, Any
 from pydantic import BaseModel
 from swarmz_runtime.core.engine import SwarmzEngine
 
 router = APIRouter()
 
-get_engine: Callable[[], SwarmzEngine] = lambda: SwarmzEngine()
+
+def get_engine() -> SwarmzEngine:
+    return SwarmzEngine()
 
 
 class OperatorCommand(BaseModel):

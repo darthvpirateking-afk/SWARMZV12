@@ -1,10 +1,7 @@
-from core.license_guard import enforce
-
-enforce()
+#!/usr/bin/env python3
 # SWARMZ Source Available License
 # Commercial use, hosting, and resale prohibited.
 # See LICENSE file for details.
-#!/usr/bin/env python3
 import argparse
 import json
 import os
@@ -13,6 +10,10 @@ import threading
 from pathlib import Path
 
 import uvicorn
+
+from core.license_guard import enforce
+
+enforce()
 
 ROOT = Path(__file__).resolve().parent
 RUNTIME_CONFIG = ROOT / "config" / "runtime.json"

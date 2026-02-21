@@ -22,7 +22,10 @@ from swarmz_runtime.core.autoloop import AutoLoopManager
 
 router = APIRouter()
 
-get_engine: Callable[[], SwarmzEngine] = lambda: SwarmzEngine()
+
+def get_engine() -> SwarmzEngine:
+    return SwarmzEngine()
+
 
 _loop_manager: Optional[AutoLoopManager] = None
 

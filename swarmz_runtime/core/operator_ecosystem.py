@@ -444,9 +444,9 @@ class OperatorEcosystem:
         ]
         offer_ids = {o.get("offer_id") for o in offers}
         listings = [
-            l
-            for l in self._read_jsonl(self._listings)
-            if l.get("offer_id") in offer_ids
+            listing
+            for listing in self._read_jsonl(self._listings)
+            if listing.get("offer_id") in offer_ids
         ]
         orders = [
             o for o in self._read_jsonl(self._orders) if o.get("offer_id") in offer_ids

@@ -40,7 +40,7 @@ def _score_length_quality(response: str, prompt: str) -> float:
 
     # Structure component: reward paragraphs, lists, variety
     lines = text.split("\n")
-    non_empty = [l for l in lines if l.strip()]
+    non_empty = [ln for ln in lines if ln.strip()]
     structure_score = min(len(non_empty) / 10.0, 1.0)
 
     # Relevance component: how many prompt words appear in response

@@ -85,132 +85,122 @@ jobs:
         continue-on-error: true
         run: |
           mkdir -p artifacts
-          if python tools/find_import_cycles.py . --dot artifacts/autofind_import_graph.dot > artifacts/autofind_agent.stdout.txt 2> artifacts/autofind_agent.stderr.txt; then
-            python - <<'PY'
-            import json
-            import os
-            from datetime import datetime, timezone
+          python tools/find_import_cycles.py . --dot artifacts/autofind_import_graph.dot > artifacts/autofind_agent.stdout.txt 2> artifacts/autofind_agent.stderr.txt
+          echo $? > /tmp/autofind_exit.txt
+          python - <<'PY'
+          import json
+          import os
+          from datetime import datetime, timezone
+          from pathlib import Path
 
-            data = {
-                "status": "success",
-                "source": "tools/find_import_cycles.py",
-                "command": "python tools/find_import_cycles.py . --dot artifacts/autofind_import_graph.dot",
-                "event": os.getenv("GITHUB_EVENT_NAME"),
-                "repository": os.getenv("GITHUB_REPOSITORY"),
-                "sha": os.getenv("GITHUB_SHA"),
-                "ref": os.getenv("GITHUB_REF"),
-                "generated_at": datetime.now(timezone.utc).isoformat(),
-                "stdout_file": "autofind_agent.stdout.txt",
-                "stderr_file": "autofind_agent.stderr.txt",
-                "dot_file": "autofind_import_graph.dot"
-            }
-            with open("artifacts/autofind_agent_result.json", "w", encoding="utf-8") as f:
-                json.dump(data, f, indent=2)
-            PY
-          else
-            python - <<'PY'
-            import json
-            import os
-            from datetime import datetime, timezone
+          exit_code = int(Path("/tmp/autofind_exit.txt").read_text().strip())
+          stderr = ""
+          try:
+              with open("artifacts/autofind_agent.stderr.txt", "r", encoding="utf-8", errors="replace") as f:
+                  stderr = f.read().strip()
+          except FileNotFoundError:
+              stderr = "stderr not captured"
 
-            stderr = ""
-            try:
-                with open("artifacts/autofind_agent.stderr.txt", "r", encoding="utf-8", errors="replace") as f:
-                    stderr = f.read().strip()
-            except FileNotFoundError:
-                stderr = "stderr not captured"
-
-            data = {
-                "status": "error",
-                "source": "tools/find_import_cycles.py",
-                "error_type": "autofind_failed",
-                "message": "Auto find agent failed",
-                "command": "python tools/find_import_cycles.py . --dot artifacts/autofind_import_graph.dot",
-                "event": os.getenv("GITHUB_EVENT_NAME"),
-                "repository": os.getenv("GITHUB_REPOSITORY"),
-                "sha": os.getenv("GITHUB_SHA"),
-                "ref": os.getenv("GITHUB_REF"),
-                "generated_at": datetime.now(timezone.utc).isoformat(),
-                "stderr": stderr
-            }
-            with open("artifacts/autofind_agent_result.json", "w", encoding="utf-8") as f:
-                json.dump(data, f, indent=2)
-            PY
-          fi
+          if exit_code == 0:
+              data = {
+                  "status": "success",
+                  "source": "tools/find_import_cycles.py",
+                  "command": "python tools/find_import_cycles.py . --dot artifacts/autofind_import_graph.dot",
+                  "event": os.getenv("GITHUB_EVENT_NAME"),
+                  "repository": os.getenv("GITHUB_REPOSITORY"),
+                  "sha": os.getenv("GITHUB_SHA"),
+                  "ref": os.getenv("GITHUB_REF"),
+                  "generated_at": datetime.now(timezone.utc).isoformat(),
+                  "stdout_file": "autofind_agent.stdout.txt",
+                  "stderr_file": "autofind_agent.stderr.txt",
+                  "dot_file": "autofind_import_graph.dot",
+              }
+          else:
+              data = {
+                  "status": "error",
+                  "source": "tools/find_import_cycles.py",
+                  "error_type": "autofind_failed",
+                  "message": "Auto find agent failed",
+                  "command": "python tools/find_import_cycles.py . --dot artifacts/autofind_import_graph.dot",
+                  "event": os.getenv("GITHUB_EVENT_NAME"),
+                  "repository": os.getenv("GITHUB_REPOSITORY"),
+                  "sha": os.getenv("GITHUB_SHA"),
+                  "ref": os.getenv("GITHUB_REF"),
+                  "generated_at": datetime.now(timezone.utc).isoformat(),
+                  "stderr": stderr,
+              }
+          with open("artifacts/autofind_agent_result.json", "w", encoding="utf-8") as f:
+              json.dump(data, f, indent=2)
+          PY
 
       - name: Run security detector
         continue-on-error: true
         run: |
           mkdir -p artifacts
-          if python -m pip_audit -r requirements.txt --format json --output artifacts/security_detector_raw.json > artifacts/security_detector.stdout.txt 2> artifacts/security_detector.stderr.txt; then
-            python - <<'PY'
-            import json
-            import os
-            from datetime import datetime, timezone
+          python -m pip_audit -r requirements.txt --format json --output artifacts/security_detector_raw.json > artifacts/security_detector.stdout.txt 2> artifacts/security_detector.stderr.txt
+          echo $? > /tmp/security_detector_exit.txt
+          python - <<'PY'
+          import json
+          import os
+          from datetime import datetime, timezone
+          from pathlib import Path
 
-            raw = {}
-            try:
-                with open("artifacts/security_detector_raw.json", "r", encoding="utf-8") as f:
-                    raw = json.load(f)
-            except Exception:
-                raw = {}
+          exit_code = int(Path("/tmp/security_detector_exit.txt").read_text().strip())
+          stderr = ""
+          try:
+              with open("artifacts/security_detector.stderr.txt", "r", encoding="utf-8", errors="replace") as f:
+                  stderr = f.read().strip()
+          except FileNotFoundError:
+              stderr = "stderr not captured"
 
-            deps = raw.get("dependencies") if isinstance(raw, dict) else []
-            vuln_count = 0
-            if isinstance(deps, list):
-                for dep in deps:
-                    vulns = dep.get("vulns", []) if isinstance(dep, dict) else []
-                    if isinstance(vulns, list):
-                        vuln_count += len(vulns)
+          if exit_code == 0:
+              raw = {}
+              try:
+                  with open("artifacts/security_detector_raw.json", "r", encoding="utf-8") as f:
+                      raw = json.load(f)
+              except Exception:
+                  raw = {}
 
-            data = {
-                "status": "success",
-                "source": "pip-audit",
-                "command": "python -m pip_audit -r requirements.txt --format json --output artifacts/security_detector_raw.json",
-                "event": os.getenv("GITHUB_EVENT_NAME"),
-                "repository": os.getenv("GITHUB_REPOSITORY"),
-                "sha": os.getenv("GITHUB_SHA"),
-                "ref": os.getenv("GITHUB_REF"),
-                "generated_at": datetime.now(timezone.utc).isoformat(),
-                "dependency_count": len(deps) if isinstance(deps, list) else 0,
-                "vulnerability_count": vuln_count,
-                "raw_result_file": "security_detector_raw.json",
-                "stdout_file": "security_detector.stdout.txt",
-                "stderr_file": "security_detector.stderr.txt"
-            }
-            with open("artifacts/security_detector_result.json", "w", encoding="utf-8") as f:
-                json.dump(data, f, indent=2)
-            PY
-          else
-            python - <<'PY'
-            import json
-            import os
-            from datetime import datetime, timezone
+              deps = raw.get("dependencies") if isinstance(raw, dict) else []
+              vuln_count = 0
+              if isinstance(deps, list):
+                  for dep in deps:
+                      vulns = dep.get("vulns", []) if isinstance(dep, dict) else []
+                      if isinstance(vulns, list):
+                          vuln_count += len(vulns)
 
-            stderr = ""
-            try:
-                with open("artifacts/security_detector.stderr.txt", "r", encoding="utf-8", errors="replace") as f:
-                    stderr = f.read().strip()
-            except FileNotFoundError:
-                stderr = "stderr not captured"
-
-            data = {
-                "status": "error",
-                "source": "pip-audit",
-                "error_type": "security_detector_failed",
-                "message": "Security detector failed",
-                "command": "python -m pip_audit -r requirements.txt --format json --output artifacts/security_detector_raw.json",
-                "event": os.getenv("GITHUB_EVENT_NAME"),
-                "repository": os.getenv("GITHUB_REPOSITORY"),
-                "sha": os.getenv("GITHUB_SHA"),
-                "ref": os.getenv("GITHUB_REF"),
-                "generated_at": datetime.now(timezone.utc).isoformat(),
-                "stderr": stderr
-            }
-            with open("artifacts/security_detector_result.json", "w", encoding="utf-8") as f:
-                json.dump(data, f, indent=2)
-            PY
-          fi
+              data = {
+                  "status": "success",
+                  "source": "pip-audit",
+                  "command": "python -m pip_audit -r requirements.txt --format json --output artifacts/security_detector_raw.json",
+                  "event": os.getenv("GITHUB_EVENT_NAME"),
+                  "repository": os.getenv("GITHUB_REPOSITORY"),
+                  "sha": os.getenv("GITHUB_SHA"),
+                  "ref": os.getenv("GITHUB_REF"),
+                  "generated_at": datetime.now(timezone.utc).isoformat(),
+                  "dependency_count": len(deps) if isinstance(deps, list) else 0,
+                  "vulnerability_count": vuln_count,
+                  "raw_result_file": "security_detector_raw.json",
+                  "stdout_file": "security_detector.stdout.txt",
+                  "stderr_file": "security_detector.stderr.txt",
+              }
+          else:
+              data = {
+                  "status": "error",
+                  "source": "pip-audit",
+                  "error_type": "security_detector_failed",
+                  "message": "Security detector failed",
+                  "command": "python -m pip_audit -r requirements.txt --format json --output artifacts/security_detector_raw.json",
+                  "event": os.getenv("GITHUB_EVENT_NAME"),
+                  "repository": os.getenv("GITHUB_REPOSITORY"),
+                  "sha": os.getenv("GITHUB_SHA"),
+                  "ref": os.getenv("GITHUB_REF"),
+                  "generated_at": datetime.now(timezone.utc).isoformat(),
+                  "stderr": stderr,
+              }
+          with open("artifacts/security_detector_result.json", "w", encoding="utf-8") as f:
+              json.dump(data, f, indent=2)
+          PY
 
       - name: Upload detector artifacts
         uses: actions/upload-artifact@v4
@@ -227,12 +217,12 @@ jobs:
           import os
           from pathlib import Path
 
-            required_result_files = [
-              Path("artifacts/autofind_agent_result.json"),
-            ]
-            optional_result_files = [
-              Path("artifacts/security_detector_result.json"),
-            ]
+          required_result_files = [
+            Path("artifacts/autofind_agent_result.json"),
+          ]
+          optional_result_files = [
+            Path("artifacts/security_detector_result.json"),
+          ]
 
           failures = []
           statuses = {}

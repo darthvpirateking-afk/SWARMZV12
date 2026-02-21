@@ -102,7 +102,7 @@ def register_trials_api(app: FastAPI) -> None:
         try:
             from core.trials import require_trial
 
-            result = require_trial(
+            require_trial(
                 action=payload.action,
                 context=payload.context,
                 metric_name="conversion_rate",

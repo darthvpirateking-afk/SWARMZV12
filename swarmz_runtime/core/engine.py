@@ -876,7 +876,7 @@ class SwarmzEngine:
         # Extract ignition components
         unified_vector = ignition_state.get("unified_vector", np.zeros(9))
         cockpit_signal = ignition_state.get("cockpit_signal", {})
-        kernel_path = ignition_state.get("kernel_path", {})
+        _kernel_path = ignition_state.get("kernel_path", {})
         layer_states = ignition_state.get("layer_states", {})
         meta_coherence = ignition_state.get("meta_coherence", 0)
 
@@ -918,7 +918,7 @@ class SwarmzEngine:
         )
 
         # STEP 3: SHAPE → SPACE-SHAPING geometry
-        space_shaping = layer_states.get("space_shaping", {})
+        _space_shaping = layer_states.get("space_shaping", {})
         geometry_vector = unified_vector[
             5
         ]  # SPACE-SHAPING is index 5 in weighted hierarchy

@@ -48,3 +48,11 @@
 {"timestamp": "2026-02-21T00:46:44.197444", "event_type": "mission_created", "mission_id": "fd326146", "details": {"goal": "E2E dispatch test", "category": "forge"}, "visibility": "visible"}
 {"ts": "2026-02-20T13:46:44.215594Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-134644-5aea5d42"}
 {"ts": "2026-02-20T13:46:44.255066Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-134644-d9b4baa6"}
+{"timestamp": "2026-02-21T01:53:49.590857+00:00", "event_type": "schema_migration", "details": {"from": 1, "to": 2, "label": "v1_to_v2"}}
+{"timestamp": "2026-02-21T01:53:49.595283+00:00", "event_type": "schema_migration", "details": {"from": 2, "to": 3, "label": "v2_to_v3"}}
+{"timestamp": "2026-02-21T01:53:49.599715+00:00", "event_type": "schema_migration", "details": {"from": 3, "to": 4, "label": "v3_to_v4"}}
+{"timestamp": "2026-02-21T01:53:49.604371+00:00", "event_type": "schema_migration", "details": {"from": 4, "to": 5, "label": "v4_to_v5"}}
+{"timestamp": "2026-02-21T01:53:49.609196+00:00", "event_type": "schema_migration", "details": {"from": 5, "to": 6, "label": "v5_to_v6"}}
+{"timestamp": "2026-02-21T01:53:51.888658", "event_type": "mission_created", "mission_id": "c69abc08", "details": {"goal": "E2E dispatch test", "category": "forge"}, "visibility": "visible"}
+{"ts": "2026-02-21T01:53:51.892155Z", "event": "sovereign_dispatch", "mission_id": "M-20260221-015351-98119f91"}
+{"ts": "2026-02-21T01:53:51.905869Z", "event": "sovereign_dispatch", "mission_id": "M-20260221-015351-c4483071"}

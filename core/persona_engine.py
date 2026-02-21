@@ -33,7 +33,7 @@ class PersonaEngine:
             Persona with adjusted style parameters
         """
         # Base style (center values)
-        base_style = PersonaStyle(
+        _base_style = PersonaStyle(
             warmth=0.7, directness=0.8, abstraction=0.4, metaphor=0.5
         )
 

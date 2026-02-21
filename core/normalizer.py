@@ -47,8 +47,6 @@ def stable_hash(value: str) -> str:
     """Return a stable SHA256 hash for a string value."""
     return hashlib.sha256(value.encode("utf-8")).hexdigest()
 
-    return event
-
 
 def normalize_file_path(file_path):
     """Convert file paths to repo-relative paths where possible."""

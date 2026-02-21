@@ -18,8 +18,12 @@ ROOT = Path(__file__).resolve().parent.parent
 PREPARED_DIR = ROOT / "prepared_actions"
 PROMPT_DIR = Path(__file__).resolve().parent / "prompt_templates"
 
-from core.model_router import call as model_call, is_offline, record_call
-from core.companion import load_memory, _build_context_block, _audit_model_call
+from core.model_router import call as model_call, is_offline, record_call  # noqa: E402
+from core.companion import (  # noqa: E402
+    load_memory,
+    _build_context_block,
+    _audit_model_call,
+)
 
 # lazy write_jsonl
 try:

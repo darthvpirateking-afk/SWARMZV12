@@ -8,7 +8,7 @@ Provides storage health checks and diagnostic info accessible at
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Callable, Dict
+from typing import Any, Dict
 
 from fastapi import APIRouter
 from swarmz_runtime.core.engine import SwarmzEngine
@@ -16,7 +16,9 @@ from swarmz_runtime.storage.jsonl_utils import read_jsonl
 
 router = APIRouter()
 
-get_engine: Callable[[], SwarmzEngine] = lambda: SwarmzEngine()
+
+def get_engine() -> SwarmzEngine:
+    return SwarmzEngine()
 
 
 @router.get("/storage_check")

@@ -448,7 +448,7 @@ def daily_tick() -> Dict[str, Any]:
     try:
         from core.companion_master import self_assessment
 
-        assessment = self_assessment()
+        _assessment = self_assessment()
         ran.append("companion_selftest")
     except Exception:
         pass

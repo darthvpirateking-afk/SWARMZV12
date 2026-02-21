@@ -19,8 +19,6 @@ from pydantic import BaseModel, Field
 
 from contextlib import asynccontextmanager
 
-logger = logging.getLogger("swarmz.server")
-
 from swarmz_runtime.core.engine import SwarmzEngine
 from jsonl_utils import read_jsonl
 from kernel_runtime.orchestrator import SwarmzOrchestrator
@@ -43,7 +41,8 @@ from .system_primitives_routes import router as system_primitives_routes_router
 from swarmz_runtime.core.system_primitives import SystemPrimitivesRuntime
 from addons.api.addons_router import router as addons_router
 from addons.api.guardrails_router import router as guardrails_router
-from .companion_state import companion_state
+
+logger = logging.getLogger("swarmz.server")
 
 # ---- cheap constants only (NO orchestrator creation here) ----
 BASE_DIR = Path(__file__).resolve().parent
@@ -432,10 +431,6 @@ def companion_state():
         "master_identity": "MASTER_SWARMZ",
         "self_assessment": "MASTER_SWARMZ companion state is active.",
     }
-
-
-def companion_history(tail: int = 10):
-    return {"ok": True, "records": [], "history": [], "read_only": True}
 
 
 @app.get("/health")

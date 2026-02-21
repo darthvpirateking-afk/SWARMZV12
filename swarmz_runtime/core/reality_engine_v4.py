@@ -20,7 +20,7 @@ class RealityEngineV4:
 
     def adapt_to_layer(self, layer_name: str, entity: Dict[str, Any]):
         """Adapt an entity to a specific physics layer."""
-        layer = next((l for l in self.layers if l.name == layer_name), None)
+        layer = next((lyr for lyr in self.layers if lyr.name == layer_name), None)
         if not layer:
             raise ValueError(f"Physics layer {layer_name} not found")
         # Implementation for adapting entity to layer properties
@@ -28,7 +28,7 @@ class RealityEngineV4:
 
     def get_layer_properties(self, layer_name: str) -> Dict[str, Any]:
         """Retrieve properties of a specific physics layer."""
-        layer = next((l for l in self.layers if l.name == layer_name), None)
+        layer = next((lyr for lyr in self.layers if lyr.name == layer_name), None)
         if not layer:
             raise ValueError(f"Physics layer {layer_name} not found")
         return layer.properties

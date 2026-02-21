@@ -269,7 +269,7 @@ Tasks:
 3. Ask clarifying questions
 4. Never prescribe; only reflect
 """
-        prompt = system_prompt + "\n\n" + mode_guidance
+        _prompt = system_prompt + "\n\n" + mode_guidance
 
         # For now, generate a reflection reply (in production, call LLM)
         reply = self._generate_stub_reply(message, "Reflect", context)
@@ -304,7 +304,7 @@ Tasks:
 3. Suggest structure
 4. Build mission_draft payload
 """
-        prompt = system_prompt + "\n\n" + mode_guidance
+        _prompt = system_prompt + "\n\n" + mode_guidance
 
         reply = self._generate_stub_reply(message, "Plan", context)
 
@@ -345,7 +345,7 @@ Tasks:
 3. Ground in audit trails or visible state
 4. Avoid jargon unless operator knows it
 """
-        prompt = system_prompt + "\n\n" + mode_guidance
+        _prompt = system_prompt + "\n\n" + mode_guidance
 
         reply = self._generate_stub_reply(message, "Explain", context)
 
@@ -383,7 +383,7 @@ Tasks:
 3. Explain the reasoning
 4. Respect their decision if they decline
 """
-        prompt = system_prompt + "\n\n" + mode_guidance
+        _prompt = system_prompt + "\n\n" + mode_guidance
 
         reply = self._generate_stub_reply(message, "Nudge", context)
 

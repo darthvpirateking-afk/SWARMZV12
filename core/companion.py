@@ -26,7 +26,7 @@ AUDIT_FILE = DATA_DIR / "audit.jsonl"
 PROMPT_DIR = Path(__file__).resolve().parent / "prompt_templates"
 
 # import sibling
-from core.model_router import (
+from core.model_router import (  # noqa: E402
     call as model_call,
     is_offline,
     record_call,
