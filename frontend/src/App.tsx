@@ -39,7 +39,7 @@ const styles: Record<string, CSSProperties> = {
     padding: "24px",
     display: "grid",
     gap: "20px",
-    maxWidth: "960px",
+    maxWidth: "900px",
     margin: "0 auto",
     width: "100%",
     boxSizing: "border-box",
