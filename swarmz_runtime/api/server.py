@@ -68,7 +68,16 @@ async def lifespan(app: FastAPI):
 
 
 def create_app() -> FastAPI:
+    from fastapi.middleware.cors import CORSMiddleware
+
     app = FastAPI(lifespan=lifespan)
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
     app.mount("/static", StaticFiles(directory=str(UI_DIR)), name="static")
     app.include_router(missions_router, prefix="/v1/missions", tags=["missions"])
     app.include_router(system_router, prefix="/v1/system", tags=["system"])
@@ -92,6 +101,12 @@ def create_app() -> FastAPI:
     )
     app.include_router(addons_router, prefix="/v1/addons", tags=["addons"])
     app.include_router(guardrails_router, prefix="/v1/guardrails", tags=["guardrails"])
+
+    from .system_control import router as system_control_router
+    from .mission_lifecycle import router as mission_lifecycle_router
+
+    app.include_router(system_control_router, prefix="/v1/system", tags=["system-control"])
+    app.include_router(mission_lifecycle_router, prefix="/v1/missions", tags=["mission-lifecycle"])
 
     return app
 
