@@ -88,8 +88,8 @@ jobs:
         continue-on-error: true
         run: |
           mkdir -p artifacts
-          python tools/find_import_cycles.py . --dot artifacts/autofind_import_graph.dot > artifacts/autofind_agent.stdout.txt 2> artifacts/autofind_agent.stderr.txt; echo $? > /tmp/autofind_exit.txt
-          python - <<'PY'
+          python tools/find_import_cycles.py . --dot artifacts/autofind_import_graph.dot > artifacts/autofind_agent.stdout.txt 2> artifacts/autofind_agent.stderr.txt && echo 0 > /tmp/autofind_exit.txt || echo $? > /tmp/autofind_exit.txt
+          python - <<'PY' || true
           import json
           import os
           from datetime import datetime, timezone
@@ -136,6 +136,10 @@ jobs:
           with open("artifacts/autofind_agent_result.json", "w", encoding="utf-8") as f:
               json.dump(data, f, indent=2)
           PY
+          if [ ! -f artifacts/autofind_agent_result.json ]; then
+            _exit=$(cat /tmp/autofind_exit.txt 2>/dev/null || echo -1)
+            printf '{"status":"error","message":"autofind_agent_result.json not written","exit_code":%s}\n' "$_exit" > artifacts/autofind_agent_result.json
+          fi
 
       - name: Run security detector
         continue-on-error: true
