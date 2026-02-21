@@ -12,3 +12,5 @@
 {"ts":"2026-02-21T02:23:41.562832+00:00","type":"mission_created","payload":{"mission_id":"34ce7f2e","goal":"E2E dispatch test","category":"forge"}}
 {"ts":"2026-02-21T02:27:00.086082+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"127.0.0.1","timestamp":"2026-02-21T02:27:00.086072"}}
 {"ts":"2026-02-21T02:27:00.243134+00:00","type":"mission_created","payload":{"mission_id":"63804d3c","goal":"E2E dispatch test","category":"forge"}}
+{"ts":"2026-02-21T03:55:27.484147+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-21T14:55:27.484136"}}
+{"ts":"2026-02-21T03:55:28.529904+00:00","type":"mission_created","payload":{"mission_id":"ff6fc2f2","goal":"E2E dispatch test","category":"forge"}}
