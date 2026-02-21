@@ -45,7 +45,11 @@ export function CompanionAvatarDock({
     width: 64,
     height: 64,
     borderRadius: "50%",
-    background: `radial-gradient(circle, ${accentColor}${Math.round(glowOpacity * 255).toString(16).padStart(2, "0")} 0%, transparent 70%)`,
+    background: `radial-gradient(circle, ${accentColor}${Math.round(
+      glowOpacity * 255,
+    )
+      .toString(16)
+      .padStart(2, "0")} 0%, transparent 70%)`,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",

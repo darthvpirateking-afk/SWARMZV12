@@ -8,14 +8,20 @@ interface HeartbeatPulseProps {
   size?: number;
 }
 
-const STATE_CONFIG: Record<HeartbeatState, { color: string; duration: number; scale: number }> = {
+const STATE_CONFIG: Record<
+  HeartbeatState,
+  { color: string; duration: number; scale: number }
+> = {
   healthy: { color: colors.running, duration: 950, scale: 1.12 },
   high_load: { color: colors.warning, duration: 600, scale: 1.1 },
   degraded: { color: colors.error, duration: 1750, scale: 1.08 },
   desync: { color: colors.secondaryAccent, duration: 120, scale: 1.05 },
 };
 
-export function HeartbeatPulse({ state = "healthy", size = 24 }: HeartbeatPulseProps) {
+export function HeartbeatPulse({
+  state = "healthy",
+  size = 24,
+}: HeartbeatPulseProps) {
   const config = STATE_CONFIG[state];
   const [pulsing, setPulsing] = useState(false);
   const frozenRef = useRef(false);

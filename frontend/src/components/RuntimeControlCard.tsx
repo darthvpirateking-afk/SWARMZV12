@@ -1,5 +1,11 @@
 import { type CSSProperties, useCallback, useEffect, useState } from "react";
-import { colors, radii, shadows, spacing, typography } from "../theme/cosmicTokens";
+import {
+  colors,
+  radii,
+  shadows,
+  spacing,
+  typography,
+} from "../theme/cosmicTokens";
 import { systemApi, type RuntimeStatus } from "../api/system";
 
 const STATUS_COLOR: Record<string, string> = {
@@ -54,7 +60,13 @@ export function RuntimeControlCard() {
     <section style={styles.card}>
       <div style={styles.header}>
         <h2 style={styles.title}>Runtime Control</h2>
-        <span style={{ ...styles.badge, color: accentColor, borderColor: accentColor }}>
+        <span
+          style={{
+            ...styles.badge,
+            color: accentColor,
+            borderColor: accentColor,
+          }}
+        >
           {runtimeStatus.toUpperCase()}
         </span>
       </div>
@@ -66,7 +78,8 @@ export function RuntimeControlCard() {
           </span>
           {status.details.started_at && (
             <span style={styles.metaText}>
-              Started: {new Date(status.details.started_at).toLocaleTimeString()}
+              Started:{" "}
+              {new Date(status.details.started_at).toLocaleTimeString()}
             </span>
           )}
         </div>
@@ -79,13 +92,25 @@ export function RuntimeControlCard() {
             style={{
               ...styles.btn,
               opacity: isLoading ? 0.5 : 1,
-              borderColor: action === "stop" ? colors.error : action === "restart" ? colors.warning : colors.running,
-              color: action === "stop" ? colors.error : action === "restart" ? colors.warning : colors.running,
+              borderColor:
+                action === "stop"
+                  ? colors.error
+                  : action === "restart"
+                    ? colors.warning
+                    : colors.running,
+              color:
+                action === "stop"
+                  ? colors.error
+                  : action === "restart"
+                    ? colors.warning
+                    : colors.running,
             }}
             disabled={isLoading}
             onClick={() => void handleAction(action)}
           >
-            {loading === action ? "…" : action.charAt(0).toUpperCase() + action.slice(1)}
+            {loading === action
+              ? "…"
+              : action.charAt(0).toUpperCase() + action.slice(1)}
           </button>
         ))}
       </div>

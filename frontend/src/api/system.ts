@@ -64,13 +64,29 @@ export const systemApi = {
 
 export const missionApi = {
   start: (goal: string, category = "default") =>
-    apiPost<{ mission_id: string; state: string; timestamp: string }>("/v1/missions/start", {
-      goal,
-      category,
-    }),
-  stop: (mission_id: string) => apiPost<{ mission_id: string; state: string; timestamp: string }>("/v1/missions/stop", { mission_id }),
-  pause: (mission_id: string) => apiPost<{ mission_id: string; state: string; timestamp: string }>("/v1/missions/pause", { mission_id }),
-  resume: (mission_id: string) => apiPost<{ mission_id: string; state: string; timestamp: string }>("/v1/missions/resume", { mission_id }),
+    apiPost<{ mission_id: string; state: string; timestamp: string }>(
+      "/v1/missions/start",
+      {
+        goal,
+        category,
+      },
+    ),
+  stop: (mission_id: string) =>
+    apiPost<{ mission_id: string; state: string; timestamp: string }>(
+      "/v1/missions/stop",
+      { mission_id },
+    ),
+  pause: (mission_id: string) =>
+    apiPost<{ mission_id: string; state: string; timestamp: string }>(
+      "/v1/missions/pause",
+      { mission_id },
+    ),
+  resume: (mission_id: string) =>
+    apiPost<{ mission_id: string; state: string; timestamp: string }>(
+      "/v1/missions/resume",
+      { mission_id },
+    ),
   status: () => apiGet<MissionsStatusResponse>("/v1/missions/status"),
-  statusById: (mission_id: string) => apiGet<MissionStatus>(`/v1/missions/status/${mission_id}`),
+  statusById: (mission_id: string) =>
+    apiGet<MissionStatus>(`/v1/missions/status/${mission_id}`),
 };
