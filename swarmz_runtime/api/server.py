@@ -292,7 +292,7 @@ def create_app() -> FastAPI:
         ("swarmz_runtime.api.bootstrap_routes", "/v1/bootstrap", "bootstrap"),
         ("swarmz_runtime.api.foundation_routes", "/v1/api", "foundation"),
         ("swarmz_runtime.api.database_routes", "/v1/db", "database"),
-        ("swarmz_runtime.api.companion_state", "/v1/companion", "companion-core"),
+        # companion routes handled by control.py — companion_state.py has no router
         ("swarmz_runtime.api.build_milestones_routes", "/v1/build/milestones", "build-milestones"),
     ]
     for mod_path, prefix, tag in _feature_routers:
