@@ -82,3 +82,6 @@
 {"event_id":"6efbc6ff-60e4-4e94-b103-06e2383e9117","ts":"2026-02-21T02:23:41.720890Z","event_type":"drift_detected","trial_id":"NONE","payload":{"metric_name":"conv","context":"ctx","drift_magnitude":131.2899,"older_mean":0.5045,"recent_mean":0.902,"older_std":0.003}}
 {"event_id":"d8fd35de-3d18-4a32-9573-2ecf48aa8478","ts":"2026-02-21T02:23:41.727096Z","event_type":"followup_suggestions_generated","trial_id":"NONE","payload":{"context":"ctx","limit":5,"count":0}}
 {"event_id":"7060e033-ba2d-46c0-8ea9-1226ab0e3557","ts":"2026-02-21T02:23:41.727951Z","event_type":"followup_suggestions_generated","trial_id":"NONE","payload":{"context":"","limit":5,"count":2}}
+{"event_id":"bfb3026b-49c8-417c-8973-b65c48bb13cf","ts":"2026-02-21T02:27:00.393508Z","event_type":"drift_detected","trial_id":"NONE","payload":{"metric_name":"conv","context":"ctx","drift_magnitude":131.2899,"older_mean":0.5045,"recent_mean":0.902,"older_std":0.003}}
+{"event_id":"a6474733-f0f2-47c5-af40-a7c7f83228ca","ts":"2026-02-21T02:27:00.400617Z","event_type":"followup_suggestions_generated","trial_id":"NONE","payload":{"context":"ctx","limit":5,"count":0}}
+{"event_id":"bf0b9ca0-a384-44e5-8846-fd918424eb6d","ts":"2026-02-21T02:27:00.401481Z","event_type":"followup_suggestions_generated","trial_id":"NONE","payload":{"context":"","limit":5,"count":2}}
