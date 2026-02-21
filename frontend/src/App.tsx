@@ -6,8 +6,6 @@ import { KernelLogsViewer } from "./components/KernelLogsViewer";
 import { MissionTimelineVisualizer } from "./components/MissionTimelineVisualizer";
 import { OperatorIdentityPanel } from "./components/OperatorIdentityPanel";
 import { CompanionAvatarDock } from "./components/CompanionAvatarDock";
-import { AppStoreTracker } from "./components/AppStoreTracker";
-
 export default function App() {
   return (
     <div style={styles.root}>
@@ -21,7 +19,6 @@ export default function App() {
 
         <RuntimeControlCard />
         <MissionLifecycleCard />
-        <AppStoreTracker />
         <MissionTimelineVisualizer />
         <KernelLogsViewer />
       </main>

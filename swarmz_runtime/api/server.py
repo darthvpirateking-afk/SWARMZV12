@@ -112,7 +112,6 @@ def create_app() -> FastAPI:
 
     from .system_control import router as system_control_router
     from .mission_lifecycle import router as mission_lifecycle_router
-    from .app_store_routes import router as app_store_router
 
     app.include_router(
         system_control_router, prefix="/v1/system", tags=["system-control"]
@@ -120,7 +119,6 @@ def create_app() -> FastAPI:
     app.include_router(
         mission_lifecycle_router, prefix="/v1/missions", tags=["mission-lifecycle"]
     )
-    app.include_router(app_store_router, prefix="/v1/appstore", tags=["appstore"])
 
     return app
 
