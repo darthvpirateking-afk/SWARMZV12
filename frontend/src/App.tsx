@@ -38,7 +38,10 @@ export default function App() {
   const [isSending, setIsSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const canSend = useMemo(() => !isSending && text.trim().length > 0, [isSending, text]);
+  const canSend = useMemo(
+    () => !isSending && text.trim().length > 0,
+    [isSending, text],
+  );
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -53,16 +56,23 @@ export default function App() {
     setMessages((prev) => [...prev, makeMessage("user", outbound)]);
 
     try {
-      const payload = await apiPost<CompanionResponse>("/v1/companion/message", { text: outbound });
+      const payload = await apiPost<CompanionResponse>(
+        "/v1/companion/message",
+        { text: outbound },
+      );
 
       if (payload.ok === false) {
         throw new Error(payload.error || payload.detail || "Request failed");
       }
 
-      const replyText = typeof payload.reply === "string" ? payload.reply : "No reply returned.";
+      const replyText =
+        typeof payload.reply === "string"
+          ? payload.reply
+          : "No reply returned.";
       setMessages((prev) => [...prev, makeMessage("assistant", replyText)]);
     } catch (caught) {
-      const message = caught instanceof Error ? caught.message : "Request failed.";
+      const message =
+        caught instanceof Error ? caught.message : "Request failed.";
       setError(message);
     } finally {
       setIsSending(false);
@@ -74,7 +84,9 @@ export default function App() {
       <section style={styles.card}>
         <header>
           <h1 style={styles.title}>SWARMZ Frontend Chat</h1>
-          <p style={styles.subtitle}>Companion endpoint: /v1/companion/message</p>
+          <p style={styles.subtitle}>
+            Companion endpoint: /v1/companion/message
+          </p>
         </header>
 
         <BootstrapPage />
@@ -90,10 +102,14 @@ export default function App() {
               key={message.id}
               style={{
                 ...styles.message,
-                ...(message.role === "user" ? styles.userMessage : styles.assistantMessage),
+                ...(message.role === "user"
+                  ? styles.userMessage
+                  : styles.assistantMessage),
               }}
             >
-              <p style={styles.role}>{message.role === "user" ? "You" : "SWARMZ"}</p>
+              <p style={styles.role}>
+                {message.role === "user" ? "You" : "SWARMZ"}
+              </p>
               <p style={styles.text}>{message.text}</p>
             </article>
           ))}

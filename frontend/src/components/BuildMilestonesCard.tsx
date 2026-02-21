@@ -26,7 +26,12 @@ export function BuildMilestonesCard({
       <header style={styles.header}>
         <h2 style={styles.title}>BUILD Milestones</h2>
         <div style={styles.actions}>
-          <button style={styles.button} onClick={onRefresh} disabled={loading} type="button">
+          <button
+            style={styles.button}
+            onClick={onRefresh}
+            disabled={loading}
+            type="button"
+          >
             {loading ? "Refreshing..." : "Refresh"}
           </button>
           <button
@@ -42,7 +47,8 @@ export function BuildMilestonesCard({
 
       {status ? (
         <p style={styles.meta}>
-          Current: {status.current_stage} · Target: {status.target_stage} · Total: {status.total_stages}
+          Current: {status.current_stage} · Target: {status.target_stage} ·
+          Total: {status.total_stages}
         </p>
       ) : null}
 
@@ -60,17 +66,30 @@ export function BuildMilestonesCard({
       {promoteResult ? <p style={styles.ok}>{promoteResult.message}</p> : null}
       {promoteResult && promoteResult.applied_stages.length > 0 ? (
         <p style={styles.meta}>
-          Applied this run: BUILD {promoteResult.applied_stages[0].stage} → BUILD {promoteResult.applied_stages[promoteResult.applied_stages.length - 1].stage}
+          Applied this run: BUILD {promoteResult.applied_stages[0].stage} →
+          BUILD{" "}
+          {
+            promoteResult.applied_stages[
+              promoteResult.applied_stages.length - 1
+            ].stage
+          }
         </p>
       ) : null}
 
       {status && status.history.length > 0 ? (
         <div style={styles.historyList}>
-          {status.history.slice(-8).reverse().map((entry) => (
-            <p key={`${entry.stage}-${entry.executed_at}`} style={styles.historyItem}>
-              {entry.title} · {entry.status} · {new Date(entry.executed_at).toLocaleString()}
-            </p>
-          ))}
+          {status.history
+            .slice(-8)
+            .reverse()
+            .map((entry) => (
+              <p
+                key={`${entry.stage}-${entry.executed_at}`}
+                style={styles.historyItem}
+              >
+                {entry.title} · {entry.status} ·{" "}
+                {new Date(entry.executed_at).toLocaleString()}
+              </p>
+            ))}
         </div>
       ) : null}
 

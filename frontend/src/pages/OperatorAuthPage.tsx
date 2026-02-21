@@ -2,7 +2,8 @@ import { OperatorAuthCard } from "../components/OperatorAuthCard";
 import { useOperatorAuth } from "../hooks/useOperatorAuth";
 
 export function OperatorAuthPage() {
-  const { status, verifyResult, loading, error, refresh, verify } = useOperatorAuth();
+  const { status, verifyResult, loading, error, refresh, verify } =
+    useOperatorAuth();
 
   return (
     <OperatorAuthCard
