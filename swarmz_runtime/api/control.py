@@ -664,6 +664,28 @@ async def companion_state_endpoint():
         }
 
 
+@router.get("/v1/companion/core/status")
+async def companion_core_status():
+    """Companion core status — used by CompanionCorePage cockpit."""
+    try:
+        from core.companion_master import get_composite_context
+        ctx = get_composite_context()
+        return {"ok": True, "status": "active", **ctx}
+    except Exception:
+        return {
+            "ok": True,
+            "status": "active",
+            "master_identity": "MASTER_SWARMZ",
+            "capabilities": ["chat", "memory", "context"],
+        }
+
+
+@router.post("/v1/companion/core/message")
+async def companion_core_message(request: Request):
+    """Companion core message — alias of /v1/companion/message for CompanionCorePage."""
+    return await companion_message(request)
+
+
 # ---------------------------------------------------------------------------
 # Companion history (from server.py + swarmz_runtime/api/server.py)
 # ---------------------------------------------------------------------------
@@ -789,3 +811,35 @@ def pairing_info():
 def pairing_pair():
     # This endpoint is wired in create_app with access to operator_pin state
     return {"ok": False, "error": "pairing not configured in extracted router"}
+
+
+# ---------------------------------------------------------------------------
+# Operator auth — direct paths matching frontend api/operatorAuth.ts
+# ---------------------------------------------------------------------------
+@router.get("/v1/operator/auth/status")
+async def operator_auth_status_direct(request: Request):
+    """Direct path for OperatorAuthPage — /v1/operator/auth/status."""
+    import os
+    has_key = bool(os.environ.get("OPERATOR_KEY"))
+    return {
+        "ok": True,
+        "configured": has_key,
+        "authenticated": False,
+        "method": "operator_key" if has_key else "none",
+    }
+
+
+@router.post("/v1/operator/auth/verify")
+async def operator_auth_verify_direct(request: Request):
+    """Direct path for OperatorAuthPage — /v1/operator/auth/verify."""
+    import os
+    try:
+        body = await request.json()
+    except Exception:
+        body = {}
+    provided_key = body.get("operator_key", "").strip()
+    expected_key = os.environ.get("OPERATOR_KEY", "")
+    if not expected_key:
+        return {"ok": True, "valid": True, "message": "No key configured — open access"}
+    valid = provided_key == expected_key
+    return {"ok": True, "valid": valid, "message": "Verified" if valid else "Invalid key"}

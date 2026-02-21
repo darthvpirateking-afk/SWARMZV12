@@ -277,7 +277,7 @@ def create_app() -> FastAPI:
     _addon_routers = [
         ("addons.api.addons_router", "/v1/addons", "addons"),
         ("addons.api.guardrails_router", "/v1/guardrails", "guardrails"),
-        ("core.nexusmon_router", "/v1/nexusmon", "nexusmon"),
+        ("core.nexusmon_router", "", "nexusmon"),  # routes already include /v1/nexusmon prefix
         # addons.api.operator_auth_router — file does not exist, skip
     ]
     for mod_path, prefix, tag in _addon_routers:
