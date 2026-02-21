@@ -95,3 +95,7 @@ data/operator_anchor.json
 
 # Generated preemptive plans
 prepared_actions/preemptive/plan_*.json
+
+# Runtime-generated prepared actions (test fixtures and mission data)
+prepared_actions/*/test_*/
+prepared_actions/mission_*/
