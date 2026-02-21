@@ -93,6 +93,8 @@ data/operator_anchor.json
 /np.ndarray
 /base64.b64decode(
 /BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB.txt
+# Shell redirect artifacts (e.g. from `pip install pkg>=version`)
+/=*
 
 # Generated preemptive plans
 prepared_actions/preemptive/plan_*.json
