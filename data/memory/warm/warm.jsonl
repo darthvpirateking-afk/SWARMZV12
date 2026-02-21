@@ -20,6 +20,3 @@
 {"timestamp":"2026-02-20T03:22:08.353811+00:00Z","mission_id":"test_ap","inputs_hash":"abc","strategy":"baseline","score":1.0,"success":true,"runtime_ms":50,"usefulness":0.995,"tier":"warm"}
 {"timestamp":"2026-02-20T03:31:30.786249+00:00Z","mission_id":"test_ap","inputs_hash":"abc","strategy":"baseline","score":1.0,"success":true,"runtime_ms":50,"usefulness":0.995,"tier":"warm"}
 {"timestamp":"2026-02-20T03:39:47.469143+00:00Z","mission_id":"test_ap","inputs_hash":"abc","strategy":"baseline","score":1.0,"success":true,"runtime_ms":50,"usefulness":0.995,"tier":"warm"}
-{"timestamp":"2026-02-20T09:28:27.235856+00:00Z","mission_id":"test_ap","inputs_hash":"abc","strategy":"baseline","score":1.0,"success":true,"runtime_ms":50,"usefulness":0.995,"tier":"warm"}
-{"timestamp":"2026-02-20T09:29:37.266110+00:00Z","mission_id":"test_ap","inputs_hash":"abc","strategy":"baseline","score":1.0,"success":true,"runtime_ms":50,"usefulness":0.995,"tier":"warm"}
-{"timestamp":"2026-02-20T09:29:47.029090+00:00Z","mission_id":"test_ap","inputs_hash":"abc","strategy":"baseline","score":1.0,"success":true,"runtime_ms":50,"usefulness":0.995,"tier":"warm"}

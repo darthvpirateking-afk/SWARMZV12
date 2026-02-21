@@ -14,6 +14,7 @@ downloads/
 eggs/
 .eggs/
 lib/
+!ui/src/lib/
 lib64/
 parts/
 sdist/
@@ -95,3 +96,7 @@ data/operator_anchor.json
 
 # Generated preemptive plans
 prepared_actions/preemptive/plan_*.json
+prepared_actions/commands/
+prepared_actions/messages/
+prepared_actions/purchases/
+prepared_actions/mission_*/

@@ -42,19 +42,6 @@
 {"ts": "2026-02-20T03:31:31.221365Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-033131-e4c0eb11"}
 {"ts": "2026-02-20T03:39:47.851488Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-033947-f0afc9c9"}
 {"ts": "2026-02-20T03:39:47.883813Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-033947-6c54fd1b"}
-{"timestamp": "2026-02-20T07:14:10.420374", "event_type": "chat_turn", "operator_id": "runtime-check", "mission_id": null, "details": {"message": "status check", "reply": "Current state: Health: entropy 30.0%, coherence 80.0% | Form: Operator", "mode": "Status", "context_screen": "None", "context_mission": null}}
-{"timestamp": "2026-02-20T07:17:38.243708", "event_type": "chat_turn", "operator_id": "final-check", "mission_id": null, "details": {"message": "give status", "reply": "Current state: Health: entropy 30.0%, coherence 80.0% | Form: Operator", "mode": "Status", "context_screen": "None", "context_mission": null}}
-{"timestamp": "2026-02-20T07:17:51.206470+00:00", "event": "companion_message", "source": "rule_engine", "text_sha256": "073c1634c496cdb6", "reply_len": 106}
-{"timestamp": "2026-02-20T07:17:59.920320+00:00", "event": "companion_message", "source": "rule_engine", "text_sha256": "073c1634c496cdb6", "reply_len": 106}
-{"timestamp": "2026-02-20T20:28:27.609339", "event_type": "mission_created", "mission_id": "b9ae50ff", "details": {"goal": "E2E dispatch test", "category": "forge"}, "visibility": "visible"}
-{"ts": "2026-02-20T09:28:27.628954Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-092827-fef663a3"}
-{"ts": "2026-02-20T09:28:27.670427Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-092827-2a19e4a1"}
-{"timestamp": "2026-02-20T20:29:37.650410", "event_type": "mission_created", "mission_id": "5e75df7c", "details": {"goal": "E2E dispatch test", "category": "forge"}, "visibility": "visible"}
-{"ts": "2026-02-20T09:29:37.667706Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-092937-d96a06e5"}
-{"ts": "2026-02-20T09:29:37.708123Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-092937-7e936f6d"}
-{"timestamp": "2026-02-20T20:29:47.405154", "event_type": "mission_created", "mission_id": "b40ba75f", "details": {"goal": "E2E dispatch test", "category": "forge"}, "visibility": "visible"}
-{"ts": "2026-02-20T09:29:47.421737Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-092947-3af6de31"}
-{"ts": "2026-02-20T09:29:47.457095Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-092947-387f032e"}
-{"timestamp": "2026-02-20T09:33:41.925309", "event_type": "mission_created", "mission_id": "5fb39448", "details": {"goal": "E2E dispatch test", "category": "forge"}, "visibility": "visible"}
-{"ts": "2026-02-20T09:33:41.928773Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-093341-66647ce6"}
-{"ts": "2026-02-20T09:33:41.942895Z", "event": "sovereign_dispatch", "mission_id": "M-20260220-093341-55a3d16c"}
+{"timestamp": "2026-02-21T11:26:30.485491", "event_type": "mission_created", "mission_id": "c0cce646", "details": {"goal": "E2E dispatch test", "category": "forge"}, "visibility": "visible"}
+{"ts": "2026-02-21T11:26:30.488856Z", "event": "sovereign_dispatch", "mission_id": "M-20260221-112630-23ce3d7d"}
+{"ts": "2026-02-21T11:26:30.502574Z", "event": "sovereign_dispatch", "mission_id": "M-20260221-112630-f2a3598c"}

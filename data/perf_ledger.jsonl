@@ -42,10 +42,4 @@
 {"timestamp":"2026-02-20T03:31:31.425859+00:00","mission_id":"test_engine_pl","runtime_ms":100,"success_bool":true,"cost_estimate":0.01,"agent_work_time":0.0,"agent_wait_time":0.0}
 {"timestamp":"2026-02-20T03:39:47.424795+00:00","mission_id":"test_ap","runtime_ms":50,"success_bool":true,"cost_estimate":0.0,"agent_work_time":0.0,"agent_wait_time":0.0}
 {"timestamp":"2026-02-20T03:39:48.042398+00:00","mission_id":"test_engine_pl","runtime_ms":100,"success_bool":true,"cost_estimate":0.01,"agent_work_time":0.0,"agent_wait_time":0.0}
-{"timestamp":"2026-02-20T09:28:27.187088+00:00","mission_id":"test_ap","runtime_ms":50,"success_bool":true,"cost_estimate":0.0,"agent_work_time":0.0,"agent_wait_time":0.0}
-{"timestamp":"2026-02-20T09:28:27.833151+00:00","mission_id":"test_engine_pl","runtime_ms":100,"success_bool":true,"cost_estimate":0.01,"agent_work_time":0.0,"agent_wait_time":0.0}
-{"timestamp":"2026-02-20T09:29:37.220043+00:00","mission_id":"test_ap","runtime_ms":50,"success_bool":true,"cost_estimate":0.0,"agent_work_time":0.0,"agent_wait_time":0.0}
-{"timestamp":"2026-02-20T09:29:37.871339+00:00","mission_id":"test_engine_pl","runtime_ms":100,"success_bool":true,"cost_estimate":0.01,"agent_work_time":0.0,"agent_wait_time":0.0}
-{"timestamp":"2026-02-20T09:29:46.984494+00:00","mission_id":"test_ap","runtime_ms":50,"success_bool":true,"cost_estimate":0.0,"agent_work_time":0.0,"agent_wait_time":0.0}
-{"timestamp":"2026-02-20T09:29:47.620115+00:00","mission_id":"test_engine_pl","runtime_ms":100,"success_bool":true,"cost_estimate":0.01,"agent_work_time":0.0,"agent_wait_time":0.0}
-{"timestamp":"2026-02-20T09:33:41.975321+00:00","mission_id":"test_engine_pl","runtime_ms":100,"success_bool":true,"cost_estimate":0.01,"agent_work_time":0.0,"agent_wait_time":0.0}
+{"timestamp":"2026-02-21T11:26:30.534197+00:00","mission_id":"test_engine_pl","runtime_ms":100,"success_bool":true,"cost_estimate":0.01,"agent_work_time":0.0,"agent_wait_time":0.0}
