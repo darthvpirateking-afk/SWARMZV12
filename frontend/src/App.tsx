@@ -1,213 +1,57 @@
-import { FormEvent, useMemo, useState, type CSSProperties } from "react";
-import { apiPost } from "./api/client";
-import { BootstrapPage } from "./pages/BootstrapPage";
-import { ApiFoundationPage } from "./pages/ApiFoundationPage";
-import { DatabaseLayerPage } from "./pages/DatabaseLayerPage";
-import { OperatorAuthPage } from "./pages/OperatorAuthPage";
-import { CompanionCorePage } from "./pages/CompanionCorePage";
-import { BuildMilestonesPage } from "./pages/BuildMilestonesPage";
-
-type Role = "user" | "assistant";
-
-interface ChatMessage {
-  id: string;
-  role: Role;
-  text: string;
-}
-
-interface CompanionResponse {
-  ok?: boolean;
-  reply?: string;
-  error?: string;
-  detail?: string;
-}
-
-function makeMessage(role: Role, text: string): ChatMessage {
-  return {
-    id: `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`,
-    role,
-    text,
-  };
-}
+import { type CSSProperties } from "react";
+import { CockpitTopBar } from "./components/CockpitTopBar";
+import { RuntimeControlCard } from "./components/RuntimeControlCard";
+import { MissionLifecycleCard } from "./components/MissionLifecycleCard";
+import { KernelLogsViewer } from "./components/KernelLogsViewer";
+import { MissionTimelineVisualizer } from "./components/MissionTimelineVisualizer";
+import { OperatorIdentityPanel } from "./components/OperatorIdentityPanel";
+import { CompanionAvatarDock } from "./components/CompanionAvatarDock";
+import { AppStoreTracker } from "./components/AppStoreTracker";
 
 export default function App() {
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    makeMessage("assistant", "SWARMZ chat ready."),
-  ]);
-  const [text, setText] = useState("");
-  const [isSending, setIsSending] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const canSend = useMemo(() => !isSending && text.trim().length > 0, [isSending, text]);
-
-  async function onSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const outbound = text.trim();
-    if (!outbound || isSending) {
-      return;
-    }
-
-    setError(null);
-    setIsSending(true);
-    setText("");
-    setMessages((prev) => [...prev, makeMessage("user", outbound)]);
-
-    try {
-      const payload = await apiPost<CompanionResponse>("/v1/companion/message", { text: outbound });
-
-      if (payload.ok === false) {
-        throw new Error(payload.error || payload.detail || "Request failed");
-      }
-
-      const replyText = typeof payload.reply === "string" ? payload.reply : "No reply returned.";
-      setMessages((prev) => [...prev, makeMessage("assistant", replyText)]);
-    } catch (caught) {
-      const message = caught instanceof Error ? caught.message : "Request failed.";
-      setError(message);
-    } finally {
-      setIsSending(false);
-    }
-  }
-
   return (
-    <main style={styles.page}>
-      <section style={styles.card}>
-        <header>
-          <h1 style={styles.title}>SWARMZ Frontend Chat</h1>
-          <p style={styles.subtitle}>Companion endpoint: /v1/companion/message</p>
-        </header>
+    <div style={styles.root}>
+      <CockpitTopBar buildTag="v12.0" />
 
-        <BootstrapPage />
-        <ApiFoundationPage />
-        <DatabaseLayerPage />
-        <OperatorAuthPage />
-        <CompanionCorePage />
-        <BuildMilestonesPage />
+      <main style={styles.main}>
+        <div style={styles.topRow}>
+          <OperatorIdentityPanel buildTag="v12.0" />
+          <CompanionAvatarDock />
+        </div>
 
-        <section style={styles.messages}>
-          {messages.map((message) => (
-            <article
-              key={message.id}
-              style={{
-                ...styles.message,
-                ...(message.role === "user" ? styles.userMessage : styles.assistantMessage),
-              }}
-            >
-              <p style={styles.role}>{message.role === "user" ? "You" : "SWARMZ"}</p>
-              <p style={styles.text}>{message.text}</p>
-            </article>
-          ))}
-          {isSending ? (
-            <article style={{ ...styles.message, ...styles.assistantMessage }}>
-              <p style={styles.role}>SWARMZ</p>
-              <p style={styles.text}>Thinking...</p>
-            </article>
-          ) : null}
-        </section>
-
-        <form onSubmit={onSubmit} style={styles.form}>
-          <textarea
-            value={text}
-            onChange={(event) => setText(event.target.value)}
-            placeholder="Type a message"
-            rows={4}
-            disabled={isSending}
-            style={styles.textarea}
-          />
-          <button type="submit" disabled={!canSend} style={styles.button}>
-            {isSending ? "Sending..." : "Send"}
-          </button>
-        </form>
-
-        {error ? <p style={styles.error}>{error}</p> : null}
-      </section>
-    </main>
+        <RuntimeControlCard />
+        <MissionLifecycleCard />
+        <AppStoreTracker />
+        <MissionTimelineVisualizer />
+        <KernelLogsViewer />
+      </main>
+    </div>
   );
 }
 
 const styles: Record<string, CSSProperties> = {
-  page: {
+  root: {
     minHeight: "100vh",
-    margin: 0,
+    background: "#050712",
+    color: "#F5F7FF",
+    fontFamily: "Inter, Segoe UI, Arial, sans-serif",
+    display: "grid",
+    gridTemplateRows: "auto 1fr",
+  },
+  main: {
     padding: "24px",
     display: "grid",
-    placeItems: "center",
-    background: "#0d1218",
-    color: "#e9edf3",
-    fontFamily: "Inter, Segoe UI, Arial, sans-serif",
-  },
-  card: {
-    width: "min(860px, 100%)",
-    background: "#17202a",
-    border: "1px solid #2e3b4a",
-    borderRadius: "14px",
-    padding: "18px",
-    display: "grid",
-    gap: "14px",
-  },
-  title: {
-    margin: 0,
-    fontSize: "1.3rem",
-  },
-  subtitle: {
-    margin: "6px 0 0",
-    color: "#9fb2c8",
-    fontSize: "0.9rem",
-  },
-  messages: {
-    display: "grid",
-    gap: "10px",
-    maxHeight: "56vh",
-    overflowY: "auto",
-  },
-  message: {
-    borderRadius: "10px",
-    padding: "10px",
-  },
-  userMessage: {
-    background: "#2b4054",
-  },
-  assistantMessage: {
-    background: "#232d38",
-  },
-  role: {
-    margin: "0 0 6px",
-    fontSize: "0.78rem",
-    textTransform: "uppercase",
-    color: "#9bc6ef",
-  },
-  text: {
-    margin: 0,
-    whiteSpace: "pre-wrap",
-    lineHeight: 1.4,
-  },
-  form: {
-    display: "grid",
-    gap: "10px",
-  },
-  textarea: {
+    gap: "20px",
+    maxWidth: "960px",
+    margin: "0 auto",
     width: "100%",
-    resize: "vertical",
-    minHeight: "96px",
-    borderRadius: "9px",
-    border: "1px solid #3a4f64",
-    background: "#111922",
-    color: "#e9edf3",
-    padding: "10px",
-    font: "inherit",
+    boxSizing: "border-box",
   },
-  button: {
-    justifySelf: "end",
-    border: "1px solid #3d6e9e",
-    background: "#24527a",
-    color: "#f3f8ff",
-    borderRadius: "8px",
-    padding: "8px 14px",
-    cursor: "pointer",
-    font: "inherit",
-  },
-  error: {
-    margin: 0,
-    color: "#ff9b9b",
+  topRow: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    flexWrap: "wrap",
+    gap: "16px",
   },
 };

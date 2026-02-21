@@ -1,6 +1,7 @@
 # state.py
 # Manages avatar state.
 
+
 class AvatarState:
     def __init__(self):
         self.avatar_form = {}

@@ -1,6 +1,7 @@
 # models.py
 # Defines avatar-related models.
 
+
 class Avatar:
     def __init__(self, name, attributes):
         self.name = name

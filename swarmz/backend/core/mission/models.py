@@ -1,7 +1,9 @@
 # Models module for SWARMZ mission
 
+
 class Models:
     pass
+
 
 class Mission:
     def __init__(self, mission_id, name, steps):

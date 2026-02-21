@@ -5,7 +5,6 @@
 Implements the Replay Simulator layer to generate dry-run plans for workflows.
 """
 
-import json
 
 def generate_replay_plan(sequence_or_macro):
     """Generate a replay plan for a given sequence or macro."""

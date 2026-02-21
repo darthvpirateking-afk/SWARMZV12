@@ -35,7 +35,9 @@ def post_json(url: str, payload: dict):
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--base", required=True, help="Base URL, e.g. https://swarmzV10-.onrender.com")
+    parser.add_argument(
+        "--base", required=True, help="Base URL, e.g. https://swarmzV10-.onrender.com"
+    )
     args = parser.parse_args()
 
     base = args.base.rstrip("/")
@@ -63,7 +65,9 @@ def main() -> int:
 
     chat_url = f"{base}/v1/nexusmon/chat"
     try:
-        status, raw = post_json(chat_url, {"operator_id": "render-check", "message": "status"})
+        status, raw = post_json(
+            chat_url, {"operator_id": "render-check", "message": "status"}
+        )
         print(f"[chat] {status} {chat_url}")
         print(raw[:320])
     except urllib.error.HTTPError as exc:

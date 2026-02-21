@@ -10,7 +10,6 @@ from swarmz_runtime.core.operator_charter import (
     future_contract,
 )
 
-
 router = APIRouter()
 
 

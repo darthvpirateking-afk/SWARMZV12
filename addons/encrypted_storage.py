@@ -33,6 +33,7 @@ def _xor_bytes(data: bytes, key: bytes) -> bytes:
 
 def _hmac_sha256(key: bytes, data: bytes) -> bytes:
     import hmac as _hmac
+
     return _hmac.new(key, data, hashlib.sha256).digest()
 
 
@@ -61,12 +62,16 @@ def decrypt_blob(blob: bytes, passphrase: str) -> bytes:
 
 def _constant_time_eq(a: bytes, b: bytes) -> bool:
     import hmac as _hmac
+
     return _hmac.compare_digest(a, b)
 
 
 # ---- JSONL helpers ---------------------------------------------------
 
-def save_encrypted_jsonl(path: Path, records: List[Dict[str, Any]], passphrase: str) -> None:
+
+def save_encrypted_jsonl(
+    path: Path, records: List[Dict[str, Any]], passphrase: str
+) -> None:
     """Write list of dicts as encrypted JSONL blob."""
     text = "\n".join(json.dumps(r) for r in records)
     blob = encrypt_blob(text.encode(), passphrase)
@@ -83,12 +88,13 @@ def load_encrypted_jsonl(path: Path, passphrase: str) -> List[Dict[str, Any]]:
 def is_encryption_enabled() -> bool:
     """Check whether an encryption key is set."""
     from addons.config_ext import get_config
+
     cfg = get_config()
     return bool(cfg.get("encryption_key") or os.environ.get("SWARMZ_ENCRYPTION_KEY"))
 
 
 def get_encryption_key() -> Optional[str]:
     from addons.config_ext import get_config
+
     cfg = get_config()
     return cfg.get("encryption_key") or os.environ.get("SWARMZ_ENCRYPTION_KEY") or None
-

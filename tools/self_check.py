@@ -13,6 +13,7 @@ SWARMZ Self Check
 
 Standard library only.
 """
+
 import json
 import socket
 import sys
@@ -20,7 +21,12 @@ from pathlib import Path
 from typing import List
 
 ROOT = Path(__file__).resolve().parent.parent
-EXPECTED_FILES = ["run_swarmz.py", "swarmz_server.py", "requirements.txt", "package.json"]
+EXPECTED_FILES = [
+    "run_swarmz.py",
+    "swarmz_server.py",
+    "requirements.txt",
+    "package.json",
+]
 IGNORE_DIRS = {"node_modules", ".git", "__pycache__", "build", "dist"}
 DEFAULT_PORTS = [8012, 3000]
 
@@ -41,7 +47,7 @@ def check_cwd():
     cwd = Path.cwd().resolve()
     if cwd != ROOT:
         warn(f"Working directory is {cwd}, expected {ROOT}")
-        print("  FIX: cd \"" + str(ROOT) + "\"")
+        print('  FIX: cd "' + str(ROOT) + '"')
         return False
     info("Working directory OK")
     return True
@@ -65,7 +71,9 @@ def check_nested_package_json():
     if root_pkg not in pkgs:
         warn("package.json missing at repo root")
     if len(pkgs) > 1:
-        warn("Nested package.json detected; choose a single authoritative root at runtime")
+        warn(
+            "Nested package.json detected; choose a single authoritative root at runtime"
+        )
         for p in pkgs:
             print(f"  - {p.relative_to(ROOT)}")
         print("  FIX: run Node commands in repo root or set NODE_PATH explicitly")
@@ -115,8 +123,18 @@ def check_scripts_and_deps():
                     warn(f"Dev dependency missing: {dep}")
                     ok = False
             if missing_scripts:
-                print("  FIX (CMD): " + " & ".join([f"npm set-script {s} \"<cmd>\"" for s in missing_scripts]))
-                print("  FIX (PS): " + "; ".join([f"npm set-script {s} '<cmd>'" for s in missing_scripts]))
+                print(
+                    "  FIX (CMD): "
+                    + " & ".join(
+                        [f'npm set-script {s} "<cmd>"' for s in missing_scripts]
+                    )
+                )
+                print(
+                    "  FIX (PS): "
+                    + "; ".join(
+                        [f"npm set-script {s} '<cmd>'" for s in missing_scripts]
+                    )
+                )
             missing_deps = [dep for dep in needed if dep not in dev_deps]
             if missing_deps:
                 print("  FIX (CMD): npm install -D " + " ".join(missing_deps))
@@ -162,8 +180,14 @@ def check_port_conflicts():
                 continue
     if busy:
         warn("Port conflicts detected: " + ", ".join(map(str, busy)))
-        print("  FIX (CMD): " + " & ".join([f"netstat -ano ^| findstr :{p}" for p in busy]))
-        print("  FIX (PS): " + "; ".join([f"Get-NetTCPConnection -LocalPort {p}" for p in busy]))
+        print(
+            "  FIX (CMD): "
+            + " & ".join([f"netstat -ano ^| findstr :{p}" for p in busy])
+        )
+        print(
+            "  FIX (PS): "
+            + "; ".join([f"Get-NetTCPConnection -LocalPort {p}" for p in busy])
+        )
         return False
     info("Ports available: " + ", ".join(map(str, DEFAULT_PORTS)))
     return True
@@ -195,4 +219,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

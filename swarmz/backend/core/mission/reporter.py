@@ -1,6 +1,7 @@
 # reporter.py
 # Reports mission status.
 
+
 class MissionReporter:
     def report(self, mission):
         """

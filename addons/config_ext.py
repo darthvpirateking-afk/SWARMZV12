@@ -88,4 +88,3 @@ def reload_config() -> Dict[str, Any]:
     global _cached
     _cached = load_addon_config()
     return _cached
-

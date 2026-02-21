@@ -31,4 +31,3 @@ def get_predictions():
 def get_templates():
     runes = get_engine().get_runes()
     return {"templates": runes, "count": len(runes)}
-

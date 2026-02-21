@@ -9,17 +9,21 @@ import json
 
 CONFIG_PATH = "config/enforcement.json"
 
+
 def load_config():
     with open(CONFIG_PATH, "r") as f:
         return json.load(f)
+
 
 def get_mode():
     config = load_config()
     return config.get("mode", "OBSERVE")
 
+
 def should_enforce(action_class):
     config = load_config()
     return config["enabled"] and action_class in config["enforce_on"]
+
 
 def handle_violation(action_class, reason):
     mode = get_mode()

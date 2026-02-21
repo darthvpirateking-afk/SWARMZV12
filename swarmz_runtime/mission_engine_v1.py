@@ -1,6 +1,7 @@
 # Mission Engine v1
 # This module handles mission parsing, planning, execution, and reporting.
 
+
 class MissionEngineV1:
     def __init__(self):
         # Initialize mission state
@@ -12,7 +13,7 @@ class MissionEngineV1:
             "id": mission_id,
             "name": name,
             "steps": steps,
-            "state": "pending"
+            "state": "pending",
         }
 
     def start_mission(self, mission_id):
@@ -37,6 +38,7 @@ class MissionEngineV1:
     def list_missions(self):
         """List all missions."""
         return self.missions
+
 
 # Example usage
 if __name__ == "__main__":

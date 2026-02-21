@@ -13,7 +13,6 @@ from __future__ import annotations
 
 from typing import Any, Dict, List
 
-
 _RESOURCE_KEYS = ("servers", "nodes", "vms", "containers", "databases")
 
 
@@ -26,12 +25,16 @@ def _extract_resources(state: Dict[str, Any]) -> List[Dict[str, Any]]:
         for raw in items:
             if not isinstance(raw, dict):
                 continue
-            rid = str(raw.get("id") or raw.get("name") or raw.get("node_id") or "unknown")
+            rid = str(
+                raw.get("id") or raw.get("name") or raw.get("node_id") or "unknown"
+            )
             resources.append({"id": rid, "kind": key.rstrip("s") or key})
     return resources
 
 
-def compute_backup_plan(state: Dict[str, Any], default_interval_hours: int = 24) -> Dict[str, Any]:
+def compute_backup_plan(
+    state: Dict[str, Any], default_interval_hours: int = 24
+) -> Dict[str, Any]:
     """Compute a conservative backup/DR plan from infra state.
 
     The goal is to produce an explanation-first summary rather than a
@@ -98,4 +101,3 @@ def compute_backup_plan(state: Dict[str, Any], default_interval_hours: int = 24)
         "resources": resources,
         "schedule": schedule,
     }
-

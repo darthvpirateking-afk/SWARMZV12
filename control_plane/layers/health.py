@@ -16,4 +16,3 @@ class HealthLayer(BaseLayer):
     def collect(self) -> list[dict]:
         current = self._state.get_value("health.system_health", 100)
         return [self._make_record("health.system_health", current, units="percent")]
-

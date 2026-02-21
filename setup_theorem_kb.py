@@ -10,7 +10,6 @@ Usage:
     python setup_theorem_kb.py
 """
 
-import os
 import re
 import json
 from pathlib import Path
@@ -1425,8 +1424,10 @@ Shannon's theorem (information theory)
 Ugly duckling theorem (computer science)
 """
 
+
 def setup_kb():
     pass
+
 
 def parse_theorems(raw: str) -> dict:
     """Parse raw theorem text into {category: [{name, fields, slug}, ...]}."""
@@ -1444,7 +1445,9 @@ def parse_theorems(raw: str) -> dict:
             entry = {
                 "name": m.group("name").strip(),
                 "fields": fields,
-                "slug": re.sub(r"[^a-z0-9]+", "_", m.group("name").strip().lower()).strip("_"),
+                "slug": re.sub(
+                    r"[^a-z0-9]+", "_", m.group("name").strip().lower()
+                ).strip("_"),
             }
             categories.setdefault(current_cat, []).append(entry)
         else:
@@ -1452,11 +1455,13 @@ def parse_theorems(raw: str) -> dict:
             if "(" not in line:
                 current_cat = line
             else:
-                categories.setdefault(current_cat, []).append({
-                    "name": line,
-                    "fields": [],
-                    "slug": re.sub(r"[^a-z0-9]+", "_", line.lower()).strip("_"),
-                })
+                categories.setdefault(current_cat, []).append(
+                    {
+                        "name": line,
+                        "fields": [],
+                        "slug": re.sub(r"[^a-z0-9]+", "_", line.lower()).strip("_"),
+                    }
+                )
 
     return categories
 
@@ -1501,17 +1506,19 @@ def main():
     PARSED_FILE.write_text(
         json.dumps(categories, indent=2, ensure_ascii=False), encoding="utf-8"
     )
-    print(f"  [4/5] Wrote theorems.json")
+    print("  [4/5] Wrote theorems.json")
 
     # 5. Write per-category markdown + index
     cat_files = []
     for cat_name, theorems in sorted(categories.items()):
         p = write_category_file(CATEGORIES_DIR, cat_name, theorems)
-        cat_files.append({
-            "category": cat_name,
-            "count": len(theorems),
-            "file": str(p.relative_to(ROOT)),
-        })
+        cat_files.append(
+            {
+                "category": cat_name,
+                "count": len(theorems),
+                "file": str(p.relative_to(ROOT)),
+            }
+        )
 
     index_data = {
         "generated": datetime.now().isoformat(),

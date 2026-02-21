@@ -3,11 +3,13 @@
 
 from typing import Dict, Any, List
 
+
 class CosmologyNode:
     def __init__(self, name: str, worlds: List[str], entropy_model: Dict[str, Any]):
         self.name = name
         self.worlds = worlds
         self.entropy_model = entropy_model
+
 
 class InterCosmicLink:
     def __init__(self, source: CosmologyNode, target: CosmologyNode):
@@ -19,6 +21,7 @@ class InterCosmicLink:
         """Validate the link using the governor and shadow ledger."""
         self.validated = governor.approve_link(self) and shadow_ledger.log_link(self)
         return self.validated
+
 
 class CosmicRouter:
     def __init__(self):
@@ -32,6 +35,7 @@ class CosmicRouter:
         """Route a mission across cosmologies."""
         # Implementation for routing logic
         pass
+
 
 class CosmicMap:
     def __init__(self):

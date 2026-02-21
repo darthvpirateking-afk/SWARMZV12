@@ -53,19 +53,22 @@ def log_model_call(
     context: str = "",
 ) -> None:
     """Record a modelâ€‘router call in data/audit_ai.jsonl."""
-    _append(AI_AUDIT_FILE, {
-        "seq": _next_seq(),
-        "timestamp": now(),
-        "event": "model_call",
-        "provider": provider,
-        "model": model,
-        "ok": ok,
-        "latency_ms": latency_ms,
-        "input_tokens": input_tokens,
-        "output_tokens": output_tokens,
-        "error": error,
-        "context": context,
-    })
+    _append(
+        AI_AUDIT_FILE,
+        {
+            "seq": _next_seq(),
+            "timestamp": now(),
+            "event": "model_call",
+            "provider": provider,
+            "model": model,
+            "ok": ok,
+            "latency_ms": latency_ms,
+            "input_tokens": input_tokens,
+            "output_tokens": output_tokens,
+            "error": error,
+            "context": context,
+        },
+    )
 
 
 def log_decision(
@@ -123,4 +126,3 @@ def _tail(path: Path, limit: int) -> list:
         except Exception:
             pass
     return entries
-

@@ -59,7 +59,9 @@ def ensure_master() -> Dict[str, Any]:
     return _load_master()
 
 
-def record_mission_observed(mission_id: str, intent: str, status: str, summary: str = "") -> None:
+def record_mission_observed(
+    mission_id: str, intent: str, status: str, summary: str = ""
+) -> None:
     """Increment the master mission counter and delegate to companion memory."""
     master = _load_master()
     master["total_missions_witnessed"] = master.get("total_missions_witnessed", 0) + 1
@@ -70,6 +72,7 @@ def record_mission_observed(mission_id: str, intent: str, status: str, summary: 
     # Delegate to companion.py for detailed memory
     try:
         from core.companion import record_mission_outcome
+
         record_mission_outcome(mission_id, intent, status, summary)
     except Exception:
         pass
@@ -148,4 +151,3 @@ def self_assessment() -> str:
         lines.append(f"Last insight: {ctx['last_insight']}")
     lines.append(f"Policy: {ctx['policy']}")
     return "\n".join(lines)
-

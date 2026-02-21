@@ -4,9 +4,7 @@ from models.ignition import IgnitionStateRequest
 from models.lattice import LatticeStatusRequest
 from models.sovereign import SovereignDecisionRequest
 from fastapi import APIRouter, HTTPException, FastAPI
-from pydantic import BaseModel
-from typing import Dict, Any, List, Optional
-from swarmz_runtime.core.engine import SwarmzEngine
+from typing import Optional
 from swarmz_runtime.session.session_router import router as session_router
 
 app = FastAPI()
@@ -16,6 +14,7 @@ router = APIRouter()
 get_engine: Optional[callable] = None
 
 app.include_router(session_router, prefix="/api")
+
 
 @router.post("/v1/meta/decide")
 def make_sovereign_decision(request: SovereignDecisionRequest):
@@ -34,10 +33,12 @@ def make_sovereign_decision(request: SovereignDecisionRequest):
             "sovereign_decision": decision,
             "lattice_completed": True,
             "meta_coherence": decision.get("_meta_coherence", 0),
-            "timestamp": engine.get_current_timestamp()
+            "timestamp": engine.get_current_timestamp(),
         }
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Sovereign decision failed: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Sovereign decision failed: {str(e)}"
+        )
 
 
 @router.post("/v1/meta/control")
@@ -52,17 +53,18 @@ def apply_sovereign_control(request: SovereignDecisionRequest):
 
     try:
         control_decision = engine.apply_sovereign_control(
-            request.context,
-            request.decision_type or "sovereign_override"
+            request.context, request.decision_type or "sovereign_override"
         )
         return {
             "sovereign_control_applied": True,
             "control_decision": control_decision,
             "untraceable": control_decision.get("_untraceable", False),
-            "timestamp": engine.get_current_timestamp()
+            "timestamp": engine.get_current_timestamp(),
         }
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Sovereign control failed: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Sovereign control failed: {str(e)}"
+        )
 
 
 @router.get("/v1/meta/lattice")
@@ -89,7 +91,7 @@ def get_lattice_status(request: LatticeStatusRequest = None):
                 "magic_way": "Nonlinear emergence uplift",
                 "mythical_way": "Archetypal pattern alignment",
                 "sovereign_override": "Covert force application",
-                "meta_selector": "Silent arbitration governance"
+                "meta_selector": "Silent arbitration governance",
             }
 
         return status
@@ -114,10 +116,12 @@ def get_sovereign_status():
             "silent_arbitration": "OPERATIONAL",
             "sovereign_opacity": "TOTAL",
             "lattice_unity": "ACHIEVED",
-            "timestamp": engine.get_current_timestamp()
+            "timestamp": engine.get_current_timestamp(),
         }
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Sovereign status failed: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Sovereign status failed: {str(e)}"
+        )
 
 
 @router.post("/v1/meta/task-matrix")
@@ -150,10 +154,12 @@ def process_task_matrix(request: SovereignDecisionRequest):
             "cockpit_signal": result["cockpit_signal"],
             "kernel_path": result["kernel_path"],
             "meta_coherence": result["meta_coherence"],
-            "timestamp": result["timestamp"]
+            "timestamp": result["timestamp"],
         }
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Task matrix processing failed: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Task matrix processing failed: {str(e)}"
+        )
 
 
 @router.post("/v1/meta/kernel-ignition")
@@ -188,9 +194,13 @@ def execute_kernel_ignition(request: IgnitionStateRequest):
             "kernel_ignition_executed": True,
             "ignition_result": ignition_result,
             "cockpit_activated": ignition_result["kernel_state"] == "IGNITION_COMPLETE",
-            "operator_control": ignition_result["cockpit_activation"]["operator_channel"],
-            "execution_governance": ignition_result["cockpit_activation"]["execution_governance"],
-            "timestamp": ignition_result["timestamp"]
+            "operator_control": ignition_result["cockpit_activation"][
+                "operator_channel"
+            ],
+            "execution_governance": ignition_result["cockpit_activation"][
+                "execution_governance"
+            ],
+            "timestamp": ignition_result["timestamp"],
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Kernel ignition failed: {str(e)}")
@@ -215,30 +225,36 @@ def get_ignition_status():
             "unified_vector_available": True,
             "cockpit_ready": True,
             "kernel_safe": True,
-            "timestamp": engine.get_current_timestamp()
+            "timestamp": engine.get_current_timestamp(),
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Ignition status failed: {str(e)}")
+
 
 @app.get("/missions")
 def get_missions():
     return {"missions": []}
 
+
 @app.post("/missions")
 def create_mission(mission: dict):
     return {"mission": mission}
+
 
 @app.get("/swarm")
 def get_swarm():
     return {"swarm": []}
 
+
 @app.get("/cosmology")
 def get_cosmology():
     return {"cosmology": {}}
 
+
 @app.get("/patchpack")
 def get_patchpack():
     return {"patchpack": []}
+
 
 @app.get("/system")
 def get_system():

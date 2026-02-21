@@ -15,8 +15,15 @@ class PerfLedger:
         if not self.file.exists():
             self.file.touch()
 
-    def append(self, mission_id: str, runtime_ms: float, success_bool: bool, cost_estimate: float,
-               agent_work_time: float = 0.0, agent_wait_time: float = 0.0) -> None:
+    def append(
+        self,
+        mission_id: str,
+        runtime_ms: float,
+        success_bool: bool,
+        cost_estimate: float,
+        agent_work_time: float = 0.0,
+        agent_wait_time: float = 0.0,
+    ) -> None:
         record: Dict[str, Any] = {
             "timestamp": datetime.now(timezone.utc).isoformat(),
             "mission_id": mission_id,
@@ -39,5 +46,4 @@ class PerfLedger:
                     entries.append(json.loads(line))
         except Exception:
             return []
-        return entries[-max(1, limit):]
-
+        return entries[-max(1, limit) :]

@@ -49,13 +49,17 @@ class EntropyMonitor:
             ts = e.get("timestamp")
             if ts:
                 try:
-                    timestamps.append(datetime.fromisoformat(ts.replace("Z", "+00:00")).timestamp())
+                    timestamps.append(
+                        datetime.fromisoformat(ts.replace("Z", "+00:00")).timestamp()
+                    )
                 except Exception:
                     continue
         timestamps.sort()
         switch_freq = 0.0
         if len(timestamps) > 1:
-            deltas = [timestamps[i+1] - timestamps[i] for i in range(len(timestamps)-1)]
+            deltas = [
+                timestamps[i + 1] - timestamps[i] for i in range(len(timestamps) - 1)
+            ]
             avg_delta = sum(deltas) / len(deltas)
             if avg_delta > 0:
                 switch_freq = min(10.0, 3600.0 / avg_delta)
@@ -71,7 +75,10 @@ class EntropyMonitor:
 
     def update(self) -> Dict[str, Any]:
         metrics = self._compute_metrics()
-        if metrics.get("error_rate", 0.0) > 0.25 or metrics.get("task_switch_frequency", 0.0) > 6.0:
+        if (
+            metrics.get("error_rate", 0.0) > 0.25
+            or metrics.get("task_switch_frequency", 0.0) > 6.0
+        ):
             metrics["mode"] = "CONSOLIDATE"
         else:
             metrics["mode"] = "EXPAND"
@@ -91,4 +98,3 @@ class EntropyMonitor:
             "exploration_bias_delta": 0.02,
             "priority_finish": False,
         }
-

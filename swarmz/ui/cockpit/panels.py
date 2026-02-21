@@ -1,29 +1,36 @@
 # panels.py
 # Implements the Cockpit panels.
 
+
 class AvatarPanel:
     def display(self):
         return "Avatar Panel Displayed"
+
 
 class MissionsPanel:
     def display(self):
         return "Missions Panel Displayed"
 
+
 class SwarmPanel:
     def display(self):
         return "Swarm Panel Displayed"
+
 
 class CosmologyPanel:
     def display(self):
         return "Cosmology Panel Displayed"
 
+
 class PatchpackPanel:
     def display(self):
         return "Patchpack Panel Displayed"
 
+
 class SystemPanel:
     def display(self):
         return "System Panel Displayed"
+
 
 # Example usage
 if __name__ == "__main__":

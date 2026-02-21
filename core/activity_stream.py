@@ -20,6 +20,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+
 import json
 import os
 import time
@@ -48,17 +49,26 @@ def record_event(*args, **kwargs):
             return
         if len(args) == 2:
             name, payload = args
-            telemetry.record_event(str(name), payload if isinstance(payload, dict) else {"payload": payload})
+            telemetry.record_event(
+                str(name),
+                payload if isinstance(payload, dict) else {"payload": payload},
+            )
             return
         if len(args) >= 3:
             namespace, name, payload = args[0], args[1], args[2]
-            telemetry.record_event(f"{namespace}:{name}", payload if isinstance(payload, dict) else {"payload": payload})
+            telemetry.record_event(
+                f"{namespace}:{name}",
+                payload if isinstance(payload, dict) else {"payload": payload},
+            )
             return
         payload = kwargs.get("payload", {})
-        telemetry.record_event("event", payload if isinstance(payload, dict) else {"payload": payload})
+        telemetry.record_event(
+            "event", payload if isinstance(payload, dict) else {"payload": payload}
+        )
     except Exception:
         # Fail silent to avoid crashing callers that treat telemetry as best-effort
         pass
+
 
 def initialize_activity_stream():
     """Initialize the activity stream by setting up directories and session metadata."""
@@ -66,11 +76,10 @@ def initialize_activity_stream():
     SESSION_ID = str(uuid.uuid4())
     os.makedirs(os.path.dirname(EVENTS_FILE), exist_ok=True)
     with open(SESSION_FILE, "w") as session_file:
-        json.dump({
-            "session_id": SESSION_ID,
-            "start_time": time.time(),
-            "pid": os.getpid()
-        }, session_file)
+        json.dump(
+            {"session_id": SESSION_ID, "start_time": time.time(), "pid": os.getpid()},
+            session_file,
+        )
 
 
 # No import-time side effects. Call initialize_activity_stream() explicitly when needed.

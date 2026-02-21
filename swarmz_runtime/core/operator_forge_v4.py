@@ -3,11 +3,13 @@
 
 from typing import Dict, Any, List
 
+
 class DomainBlueprint:
     def __init__(self, name: str, clusters: List[str], properties: Dict[str, Any]):
         self.name = name
         self.clusters = clusters
         self.properties = properties
+
 
 class OperatorForgeV4:
     def __init__(self):

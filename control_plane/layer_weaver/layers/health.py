@@ -25,13 +25,28 @@ class HealthLayer(BaseLayer):
 
     def collect(self) -> List[dict]:
         return [
-            self.make_record("Health", "sleep_hours_avg",
-                             self._defaults["sleep_hours_avg"],
-                             "hours", 0.9, "higher_better"),
-            self.make_record("Health", "fatigue_score",
-                             self._defaults["fatigue_score"],
-                             "score_0_100", 0.85, "lower_better"),
-            self.make_record("Health", "resting_hr",
-                             self._defaults["resting_hr"],
-                             "bpm", 0.9, "lower_better"),
+            self.make_record(
+                "Health",
+                "sleep_hours_avg",
+                self._defaults["sleep_hours_avg"],
+                "hours",
+                0.9,
+                "higher_better",
+            ),
+            self.make_record(
+                "Health",
+                "fatigue_score",
+                self._defaults["fatigue_score"],
+                "score_0_100",
+                0.85,
+                "lower_better",
+            ),
+            self.make_record(
+                "Health",
+                "resting_hr",
+                self._defaults["resting_hr"],
+                "bpm",
+                0.9,
+                "lower_better",
+            ),
         ]

@@ -111,11 +111,15 @@ def check_kill_criteria(strategy_id: str, metrics: Dict[str, float]) -> Dict[str
     for key, threshold in criteria.items():
         if key in metrics and metrics[key] > threshold:
             kill_strategy(strategy_id, f"Auto-kill: {key}={metrics[key]} > {threshold}")
-            return {"status": "killed", "breach": key, "value": metrics[key], "threshold": threshold}
+            return {
+                "status": "killed",
+                "breach": key,
+                "value": metrics[key],
+                "threshold": threshold,
+            }
 
     return {"status": "ok"}
 
 
 def list_strategies() -> Dict[str, Any]:
     return _load().get("strategies", {})
-

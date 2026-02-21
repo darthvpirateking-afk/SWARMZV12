@@ -2,6 +2,7 @@ from fastapi import APIRouter
 
 router = APIRouter()
 
+
 @router.get("/cockpit/panels")
 def get_cockpit_panels():
     return {
@@ -16,6 +17,7 @@ def get_cockpit_panels():
             "Shadow-Ledger Alerts",
         ]
     }
+
 
 @router.get("/cockpit/layout")
 def get_cockpit_layout():

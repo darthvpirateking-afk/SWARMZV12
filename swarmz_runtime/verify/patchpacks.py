@@ -53,4 +53,3 @@ def rollback_patchpack(pack_id: str) -> Dict[str, Any]:
         return {"ok": False, "error": "missing pack"}
     provenance.append_audit("patchpack_rollback", {"id": pack_id})
     return {"ok": True, "message": "rollback stub"}
-

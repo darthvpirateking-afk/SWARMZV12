@@ -15,6 +15,8 @@ def test__dump_routes(client):
     paths = {getattr(r, "path", "") for r in routes}
     assert "/v1/prepared/pending" in paths or "/v1/v1/prepared/pending" in paths
     assert "/v1/ai/status" in paths or "/v1/v1/ai/status" in paths
+
+
 # SWARMZ Source Available License
 # Commercial use, hosting, and resale prohibited.
 # See LICENSE file for details.
@@ -26,11 +28,6 @@ Uses FastAPI TestClient.
 """
 
 
-
-import pytest
-
-
-
 def test_runtime_scoreboard(client):
     resp = client.get("/v1/runtime/scoreboard")
     assert resp.status_code == 200
@@ -38,7 +35,6 @@ def test_runtime_scoreboard(client):
     assert data.get("ok", True) is True
     assert "personality" in data
     assert "timestamp" in data
-
 
 
 def test_companion_state(client):
@@ -51,7 +47,6 @@ def test_companion_state(client):
     assert "MASTER_SWARMZ" in data.get("self_assessment", "")
 
 
-
 def test_companion_history(client):
     resp = client.get("/v1/companion/history?tail=5")
     assert resp.status_code == 200
@@ -60,7 +55,6 @@ def test_companion_history(client):
     assert "records" in data
     assert isinstance(data["records"], list)
     assert "read_only" in data
-
 
 
 def test_prepared_pending(client):
@@ -72,13 +66,11 @@ def test_prepared_pending(client):
     assert "count" in data or "counts" in data
 
 
-
 def test_prepared_pending_filtered(client):
     resp = client.get("/v1/prepared/pending?category=commands")
     assert resp.status_code == 200
     data = resp.json()
     assert "pending" in data or "items" in data
-
 
 
 def test_ai_status_includes_phase(client):
@@ -88,12 +80,10 @@ def test_ai_status_includes_phase(client):
     assert "phase" in data
 
 
-
 def test_health(client):
     resp = client.get("/health")
     assert resp.status_code == 200
     assert resp.json()["status"] == "ok"
-
 
 
 def test_observability_health(client):
@@ -102,12 +92,10 @@ def test_observability_health(client):
     assert r.json().get("status") == "ok"
 
 
-
 def test_observability_ready(client):
     r = client.get("/v1/observability/ready")
     assert r.status_code == 200
     assert r.json().get("status") == "ready"
-
 
 
 def test_debug_routes(client):
@@ -121,6 +109,7 @@ def test_debug_routes(client):
 import unittest
 from unittest.mock import patch, MagicMock
 from kernel_runtime.orchestrator import SwarmzOrchestrator
+
 
 class TestObservabilityEndpoints(unittest.TestCase):
 
@@ -154,6 +143,6 @@ class TestObservabilityEndpoints(unittest.TestCase):
         mock_launch_cockpit.assert_called_once()
         self.assertIsNotNone(cockpit)
 
+
 if __name__ == "__main__":
     unittest.main()
-

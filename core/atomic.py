@@ -65,4 +65,3 @@ def atomic_append_jsonl(path: Path, obj: Dict[str, Any]) -> None:
             except Exception:
                 pass
         fd.close()
-

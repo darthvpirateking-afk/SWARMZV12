@@ -27,18 +27,26 @@ export function CompanionCoreCard({
     <section style={styles.card}>
       <header style={styles.header}>
         <h2 style={styles.title}>Companion Core</h2>
-        <button style={styles.button} onClick={onRefresh} disabled={loading} type="button">
+        <button
+          style={styles.button}
+          onClick={onRefresh}
+          disabled={loading}
+          type="button"
+        >
           {loading ? "Refreshing..." : "Refresh"}
         </button>
       </header>
 
       {status ? (
         <p style={styles.meta}>
-          Source: {status.source} · memory: v{status.memory_version} · outcomes: {status.outcomes_count}
+          Source: {status.source} · memory: v{status.memory_version} · outcomes:{" "}
+          {status.outcomes_count}
         </p>
       ) : null}
 
-      {status?.summary ? <p style={styles.meta}>Summary: {status.summary}</p> : null}
+      {status?.summary ? (
+        <p style={styles.meta}>Summary: {status.summary}</p>
+      ) : null}
 
       <div style={styles.row}>
         <input
@@ -59,7 +67,9 @@ export function CompanionCoreCard({
       </div>
 
       {messageResult ? (
-        <p style={messageResult.ok ? styles.ok : styles.error}>{messageResult.reply}</p>
+        <p style={messageResult.ok ? styles.ok : styles.error}>
+          {messageResult.reply}
+        </p>
       ) : null}
 
       {error ? <p style={styles.error}>{error}</p> : null}

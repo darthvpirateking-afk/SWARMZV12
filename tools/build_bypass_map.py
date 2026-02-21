@@ -13,26 +13,28 @@ from core.bypass_map import build_bypass_map
 
 
 def main() -> None:
-	events_file = Path("data") / "events.jsonl"
-	output_file = Path("docs") / "BYPASS_MAP.md"
-	rows = []
-	if events_file.exists():
-		for line in events_file.read_text(encoding="utf-8", errors="replace").splitlines():
-			line = line.strip()
-			if not line:
-				continue
-			try:
-				rows.append(json.loads(line))
-			except json.JSONDecodeError:
-				continue
+    events_file = Path("data") / "events.jsonl"
+    output_file = Path("docs") / "BYPASS_MAP.md"
+    rows = []
+    if events_file.exists():
+        for line in events_file.read_text(
+            encoding="utf-8", errors="replace"
+        ).splitlines():
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                rows.append(json.loads(line))
+            except json.JSONDecodeError:
+                continue
 
-	mapped = build_bypass_map(rows)
-	output_file.parent.mkdir(parents=True, exist_ok=True)
-	output_file.write_text(
-		"# BYPASS MAP\n\n" + "\n".join(f"- {item}" for item in mapped[:200]),
-		encoding="utf-8",
-	)
+    mapped = build_bypass_map(rows)
+    output_file.parent.mkdir(parents=True, exist_ok=True)
+    output_file.write_text(
+        "# BYPASS MAP\n\n" + "\n".join(f"- {item}" for item in mapped[:200]),
+        encoding="utf-8",
+    )
 
 
 if __name__ == "__main__":
-	main()
+    main()

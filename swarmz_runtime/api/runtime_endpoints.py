@@ -3,6 +3,7 @@ from fastapi import APIRouter
 
 router = APIRouter()
 
+
 @router.get("/v1/runtime/scoreboard", tags=["runtime"])
 def runtime_scoreboard():
     return {

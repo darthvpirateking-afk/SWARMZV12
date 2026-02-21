@@ -49,4 +49,3 @@ def perf_bench():
     with bench_file.open("a", encoding="utf-8") as f:
         f.write(str(row) + "\n")
     return row
-

@@ -158,4 +158,3 @@ class BrainMapping:
     def auto_mode(self) -> bool:
         """Auto mode is always disabled for cognitive stability."""
         return False
-

@@ -7,10 +7,9 @@ SWARMZ Market Lab Module
 Provides deterministic backtesting over local CSV data.
 """
 
-from typing import Dict, Any, List
+from typing import Dict, Any
 from pathlib import Path
 import csv
-import json
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 MARKET_LOG = DATA_DIR / "market_lab.jsonl"

@@ -1,6 +1,7 @@
 # manager.py
 # Manages swarm operations.
 
+
 class SwarmManager:
     def __init__(self):
         self.workers = []

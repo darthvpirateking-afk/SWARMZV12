@@ -24,6 +24,7 @@ CONFIG_FILE = ROOT / "config" / "runtime.json"
 
 # â”€â”€ Config helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
+
 def _load_config() -> Dict[str, Any]:
     if CONFIG_FILE.exists():
         try:
@@ -61,7 +62,10 @@ def _get_api_key(provider_cfg: Dict[str, Any]) -> Optional[str]:
 
 # â”€â”€ Normalised response â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
-def _ok_response(text: str, usage: Dict, provider: str, model: str, latency_ms: int) -> Dict[str, Any]:
+
+def _ok_response(
+    text: str, usage: Dict, provider: str, model: str, latency_ms: int
+) -> Dict[str, Any]:
     return {
         "ok": True,
         "text": text,
@@ -73,7 +77,9 @@ def _ok_response(text: str, usage: Dict, provider: str, model: str, latency_ms: 
     }
 
 
-def _err_response(error: str, provider: str = "", model: str = "", latency_ms: int = 0) -> Dict[str, Any]:
+def _err_response(
+    error: str, provider: str = "", model: str = "", latency_ms: int = 0
+) -> Dict[str, Any]:
     return {
         "ok": False,
         "text": "",
@@ -87,6 +93,7 @@ def _err_response(error: str, provider: str = "", model: str = "", latency_ms: i
 
 # â”€â”€ Anthropic (Messages API) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
+
 def _call_anthropic(
     messages: List[Dict[str, str]],
     system: str,
@@ -96,12 +103,14 @@ def _call_anthropic(
     max_tokens: int,
 ) -> Dict[str, Any]:
     url = "https://api.anthropic.com/v1/messages"
-    body = json.dumps({
-        "model": model,
-        "max_tokens": max_tokens,
-        "system": system,
-        "messages": messages,
-    }).encode("utf-8")
+    body = json.dumps(
+        {
+            "model": model,
+            "max_tokens": max_tokens,
+            "system": system,
+            "messages": messages,
+        }
+    ).encode("utf-8")
 
     req = urllib.request.Request(url, data=body, method="POST")
     req.add_header("Content-Type", "application/json")
@@ -130,13 +139,16 @@ def _call_anthropic(
             detail = e.read().decode("utf-8")[:500]
         except Exception:
             pass
-        return _err_response(f"Anthropic HTTP {e.code}: {detail}", "anthropic", model, latency)
+        return _err_response(
+            f"Anthropic HTTP {e.code}: {detail}", "anthropic", model, latency
+        )
     except Exception as e:
         latency = int((time.monotonic() - t0) * 1000)
         return _err_response(f"Anthropic error: {str(e)}", "anthropic", model, latency)
 
 
 # â”€â”€ OpenAI (Chat Completions API) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
 
 def _call_openai(
     messages: List[Dict[str, str]],
@@ -149,11 +161,13 @@ def _call_openai(
     url = "https://api.openai.com/v1/chat/completions"
 
     full_messages = [{"role": "system", "content": system}] + messages
-    body = json.dumps({
-        "model": model,
-        "max_tokens": max_tokens,
-        "messages": full_messages,
-    }).encode("utf-8")
+    body = json.dumps(
+        {
+            "model": model,
+            "max_tokens": max_tokens,
+            "messages": full_messages,
+        }
+    ).encode("utf-8")
 
     req = urllib.request.Request(url, data=body, method="POST")
     req.add_header("Content-Type", "application/json")
@@ -181,13 +195,16 @@ def _call_openai(
             detail = e.read().decode("utf-8")[:500]
         except Exception:
             pass
-        return _err_response(f"OpenAI HTTP {e.code}: {detail}", "openai", model, latency)
+        return _err_response(
+            f"OpenAI HTTP {e.code}: {detail}", "openai", model, latency
+        )
     except Exception as e:
         latency = int((time.monotonic() - t0) * 1000)
         return _err_response(f"OpenAI error: {str(e)}", "openai", model, latency)
 
 
 # â”€â”€ Public interface â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
 
 def call(
     messages: List[Dict[str, str]],
@@ -227,7 +244,9 @@ def call(
         env_name = prov_cfg.get("apiKeyEnv", f"{prov.upper()}_API_KEY")
         return _err_response(
             f"No API key â€” set env var {env_name}",
-            prov, mdl, 0,
+            prov,
+            mdl,
+            0,
         )
 
     if not mdl:
@@ -270,4 +289,3 @@ def get_status() -> Dict[str, Any]:
         "lastCallTimestamp": _last_call_timestamp,
         "lastError": _last_call_error,
     }
-

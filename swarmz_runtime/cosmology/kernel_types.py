@@ -5,6 +5,7 @@ class KernelTypes:
     COSMOLOGY_KERNEL = "CosmologyKernel"
     SWARM_KERNEL = "SwarmKernel"
 
+
 COSMOLOGY_STATES = [
     "stable",
     "charged",

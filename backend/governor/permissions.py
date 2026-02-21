@@ -1,5 +1,6 @@
 # Permissions module for SWARMZ governor
 
+
 class Permissions:
     def __init__(self):
         self.permissions = {}

@@ -30,4 +30,3 @@ def self_check() -> Dict[str, Any]:
         "ok": True,
         "registered_modules": len(_registry.list_extensions()),
     }
-
