@@ -71,7 +71,7 @@ def _get_operator_key(
 
 def _append_jsonl(path: Path, obj: Dict[str, Any]) -> None:
     with path.open("a", encoding="utf-8") as f:
-        f.write(json.dumps(obj, separators=(',', ':')) + "\n")
+        f.write(json.dumps(obj, separators=(",", ":")) + "\n")
 
 
 @app.get("/health")
@@ -80,7 +80,9 @@ async def health():
 
 
 @app.post("/v1/sovereign/dispatch")
-async def sovereign_dispatch(payload: DispatchRequest, op_key: str = Depends(_get_operator_key)):
+async def sovereign_dispatch(
+    payload: DispatchRequest, op_key: str = Depends(_get_operator_key)
+):
     now = datetime.utcnow().isoformat() + "Z"
     mission_id = f"M-{uuid.uuid4().hex[:12]}"
 
@@ -131,6 +133,7 @@ async def system_log(tail: int = 10):
 
 # â”€â”€ helpers for state.json â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
+
 def _read_state() -> Dict[str, Any]:
     """Read persisted mode state. Create default if missing."""
     if STATE_FILE.exists():
@@ -153,6 +156,7 @@ def _write_state(state: Dict[str, Any]) -> None:
 
 # â”€â”€ GET/POST /v1/mode â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
+
 class ModeRequest(BaseModel):
     mode: str
 
@@ -160,7 +164,12 @@ class ModeRequest(BaseModel):
 @app.get("/v1/mode")
 async def get_mode():
     s = _read_state()
-    return {"ok": True, "mode": s["mode"], "updated_at": s.get("updated_at"), "version": s.get("version", 1)}
+    return {
+        "ok": True,
+        "mode": s["mode"],
+        "updated_at": s.get("updated_at"),
+        "version": s.get("version", 1),
+    }
 
 
 @app.post("/v1/mode")
@@ -175,13 +184,16 @@ async def set_mode(payload: ModeRequest, op_key: str = Depends(_get_operator_key
     s["updated_at"] = now
     s["version"] = s.get("version", 0) + 1
     _write_state(s)
-    _append_jsonl(AUDIT_FILE, {
-        "timestamp": now,
-        "event": "mode_changed",
-        "old_mode": old_mode,
-        "new_mode": mode,
-        "operator": bool(op_key),
-    })
+    _append_jsonl(
+        AUDIT_FILE,
+        {
+            "timestamp": now,
+            "event": "mode_changed",
+            "old_mode": old_mode,
+            "new_mode": mode,
+            "operator": bool(op_key),
+        },
+    )
     return {"ok": True, "mode": mode, "updated_at": now, "version": s["version"]}
 
 
@@ -201,13 +213,16 @@ async def set_mode(payload: ModeRequest, op_key: str = Depends(_get_operator_key
 
 # â”€â”€ POST /v1/build/dispatch â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
+
 class BuildDispatchRequest(BaseModel):
     intent: str
     spec: Optional[Dict[str, Any]] = None
 
 
 @app.post("/v1/build/dispatch")
-async def build_dispatch(payload: BuildDispatchRequest, op_key: str = Depends(_get_operator_key)):
+async def build_dispatch(
+    payload: BuildDispatchRequest, op_key: str = Depends(_get_operator_key)
+):
     s = _read_state()
     if s.get("mode") != "BUILD":
         raise HTTPException(status_code=400, detail="Must be in BUILD mode to dispatch")
@@ -225,16 +240,20 @@ async def build_dispatch(payload: BuildDispatchRequest, op_key: str = Depends(_g
         "created_at": now,
     }
     write_jsonl(MISSIONS_FILE, mission)
-    _append_jsonl(AUDIT_FILE, {
-        "timestamp": now,
-        "event": "mission_created",
-        "mission_id": mission_id,
-        "intent": payload.intent,
-    })
+    _append_jsonl(
+        AUDIT_FILE,
+        {
+            "timestamp": now,
+            "event": "mission_created",
+            "mission_id": mission_id,
+            "intent": payload.intent,
+        },
+    )
     return {"ok": True, "mission_id": mission_id, "status": "PENDING"}
 
 
 # â”€â”€ GET /v1/swarm/status â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
 
 @app.get("/v1/swarm/status")
 async def swarm_status():
@@ -269,11 +288,13 @@ async def swarm_status():
 
 # â”€â”€ GET /v1/ai/status â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
+
 @app.get("/v1/ai/status")
 async def ai_status():
     """Return AI subsystem status: offline mode, provider, model, last call info."""
     try:
         from core.model_router import get_status as _ai_status
+
         status = _ai_status()
     except Exception:
         status = {
@@ -287,6 +308,7 @@ async def ai_status():
 
     # Add QUARANTINE state
     from swarmz_server import compute_phase
+
     try:
         missions, _, _ = read_jsonl(MISSIONS_FILE)
     except Exception:
@@ -304,11 +326,13 @@ async def ai_status():
 
 # â”€â”€ GET /v1/runtime/scoreboard â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
+
 @app.get("/v1/runtime/scoreboard")
 async def runtime_scoreboard():
     """Return aggregated engine status: personality, trajectory, phase, pending actions."""
     try:
         from core.context_pack import get_scoreboard
+
         return {"ok": True, **get_scoreboard()}
     except Exception as exc:
         return {"ok": False, "error": str(exc)[:200]}
@@ -316,11 +340,13 @@ async def runtime_scoreboard():
 
 # â”€â”€ GET /v1/companion/state â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
+
 @app.get("/v1/companion/state")
 async def companion_state_endpoint():
     """Return companion master context + state."""
     try:
         from core.companion_master import get_composite_context, self_assessment
+
         ctx = get_composite_context()
         ctx["self_assessment"] = self_assessment()
         return {"ok": True, **ctx}
@@ -330,12 +356,14 @@ async def companion_state_endpoint():
 
 # â”€â”€ GET /v1/companion/history â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
+
 @app.get("/v1/companion/history")
 async def companion_history(tail: int = 20):
     """Return last N evolution history records + readâ€‘only status."""
     tail = max(1, min(int(tail), 200))
     try:
         from core.context_pack import load as _load_engines
+
         eng = _load_engines()
         evo = eng.get("evolution")
         records = []
@@ -349,11 +377,13 @@ async def companion_history(tail: int = 20):
 
 # â”€â”€ GET /v1/prepared/pending â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
+
 @app.get("/v1/prepared/pending")
 async def prepared_pending(category: Optional[str] = None):
     """List pending prepared actions (not yet executed by operator)."""
     try:
         from core.safe_execution import list_pending as _list_pending, count_pending
+
         if category:
             items = _list_pending(category)
         else:
@@ -372,17 +402,20 @@ try:
     async def trials_page():
         """Serve the Trials Inbox UI."""
         return _FileResponse("web/trials.html", media_type="text/html")
+
 except Exception:
     pass
 
 try:
     from core.trials_api import register_trials_api
+
     register_trials_api(app)
 except Exception:
     pass  # fail-open: trials API unavailable
 
 try:
     from core.trials_worker import start_worker as _start_trials_worker
+
     _start_trials_worker()
 except Exception:
     pass  # fail-open: trials worker unavailable
@@ -397,11 +430,13 @@ try:
     async def hologram_page():
         """Serve the Hologram Evolution Ladder UI."""
         return _HoloFileResponse("web/hologram.html", media_type="text/html")
+
 except Exception:
     pass
 
 try:
     from core.hologram_api import register_hologram_api
+
     register_hologram_api(app)
 except Exception:
     pass  # fail-open: hologram API unavailable
@@ -410,6 +445,7 @@ except Exception:
 # â”€â”€ Awareness Module â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 try:
     from core.awareness_api import register_awareness_api
+
     register_awareness_api(app)
 except Exception:
     pass  # fail-open: awareness API unavailable
@@ -417,6 +453,7 @@ except Exception:
 # â”€â”€ Forensics Module â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 try:
     from core.forensics_api import register_forensics_api
+
     register_forensics_api(app)
 except Exception:
     pass  # fail-open: forensics API unavailable
@@ -429,11 +466,13 @@ try:
     async def shell_page():
         """Serve the Shell UI."""
         return _ShellFileResponse("web/shell.html", media_type="text/html")
+
 except Exception:
     pass
 
 try:
     from core.shell_api import register_shell_api
+
     register_shell_api(app)
 except Exception:
     pass  # fail-open: shell API unavailable
@@ -446,11 +485,13 @@ try:
     async def market_lab_page():
         """Serve the Market Lab UI."""
         return _MarketLabFileResponse("web/market_lab.html", media_type="text/html")
+
 except Exception:
     pass
 
 try:
     from core.market_lab_api import register_market_lab_api
+
     register_market_lab_api(app)
 except Exception:
     pass  # fail-open: market lab API unavailable
@@ -458,12 +499,14 @@ except Exception:
 # â”€â”€ Zapier Universal Connector Bridge â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 try:
     from core.zapier_bridge import register_zapier_bridge
+
     register_zapier_bridge(app)
 except Exception:
     pass  # fail-open: zapier bridge unavailable
 
 
 # Minimal scaffold for server.py
+
 
 def start_server():
     pass
@@ -491,5 +534,6 @@ app.include_router(guardrails_router, prefix="/v1/guardrails", tags=["guardrails
 from swarmz_runtime.api.companion_state import companion_state
 
 # Register the companion_state endpoint
-app.add_api_route("/v1/companion/state", companion_state, methods=["GET"], tags=["companion"])
-
+app.add_api_route(
+    "/v1/companion/state", companion_state, methods=["GET"], tags=["companion"]
+)

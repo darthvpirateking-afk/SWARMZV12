@@ -14,8 +14,11 @@ from typing import Any, Dict, List, Optional
 
 from swarmz_runtime.storage.schema import AuditEntry
 from .schema import (
-    ArenaRun, ArenaCandidate, ArenaRunStatus,
-    CandidateStatus, ArenaConfig,
+    ArenaRun,
+    ArenaCandidate,
+    ArenaRunStatus,
+    CandidateStatus,
+    ArenaConfig,
 )
 from .store import ArenaStore
 from .scoring import score_candidate, rank_candidates
@@ -37,9 +40,7 @@ def _generate_response(prompt: str, worker_index: int) -> str:
     for i in range(worker_index + 1):
         offset = i % max(len(words), 1)
         rotated = words[offset:] + words[:offset]
-        elaboration_lines.append(
-            f"Perspective {i + 1}: " + " ".join(rotated)
-        )
+        elaboration_lines.append(f"Perspective {i + 1}: " + " ".join(rotated))
     detail = "\n".join(elaboration_lines)
     return f"{base}\n\n{detail}\n\nConclusion: This addresses the key aspects of the prompt from angle {worker_index}."
 
@@ -63,9 +64,12 @@ class ArenaEngine:
             except Exception:
                 pass  # best-effort audit
 
-    def start_run(self, prompt: str,
-                  num_candidates: int = 3,
-                  scoring_strategy: str = "length_quality") -> Dict[str, Any]:
+    def start_run(
+        self,
+        prompt: str,
+        num_candidates: int = 3,
+        scoring_strategy: str = "length_quality",
+    ) -> Dict[str, Any]:
         """Start a new arena run.
 
         Spawns up to num_candidates parallel workers, scores results,
@@ -87,15 +91,20 @@ class ArenaEngine:
             config_snapshot=config.model_dump(mode="json"),
         )
         self.store.save_run(run.model_dump(mode="json"))
-        self._audit("ARENA_RUN_STARTED", run_id, {
-            "prompt": prompt[:200],
-            "num_candidates": num_candidates,
-            "strategy": scoring_strategy,
-        })
+        self._audit(
+            "ARENA_RUN_STARTED",
+            run_id,
+            {
+                "prompt": prompt[:200],
+                "num_candidates": num_candidates,
+                "strategy": scoring_strategy,
+            },
+        )
 
         # Spawn parallel workers
-        candidates = self._run_candidates(run_id, prompt,
-                                          num_candidates, scoring_strategy)
+        candidates = self._run_candidates(
+            run_id, prompt, num_candidates, scoring_strategy
+        )
 
         # Rank and select winner
         ranked = rank_candidates(candidates)
@@ -105,18 +114,25 @@ class ArenaEngine:
         completed_at = datetime.now().isoformat()
         candidate_ids = [c["id"] for c in ranked]
 
-        self.store.update_run(run_id, {
-            "status": ArenaRunStatus.COMPLETED.value,
-            "winner_id": winner_id,
-            "candidates": candidate_ids,
-            "completed_at": completed_at,
-        })
+        self.store.update_run(
+            run_id,
+            {
+                "status": ArenaRunStatus.COMPLETED.value,
+                "winner_id": winner_id,
+                "candidates": candidate_ids,
+                "completed_at": completed_at,
+            },
+        )
 
-        self._audit("ARENA_RUN_COMPLETED", run_id, {
-            "winner_id": winner_id,
-            "num_scored": len(ranked),
-            "top_score": ranked[0]["score"] if ranked else 0,
-        })
+        self._audit(
+            "ARENA_RUN_COMPLETED",
+            run_id,
+            {
+                "winner_id": winner_id,
+                "num_scored": len(ranked),
+                "top_score": ranked[0]["score"] if ranked else 0,
+            },
+        )
 
         return {
             "run_id": run_id,
@@ -126,9 +142,9 @@ class ArenaEngine:
             "completed_at": completed_at,
         }
 
-    def _run_candidates(self, run_id: str, prompt: str,
-                        num_candidates: int,
-                        scoring_strategy: str) -> List[Dict[str, Any]]:
+    def _run_candidates(
+        self, run_id: str, prompt: str, num_candidates: int, scoring_strategy: str
+    ) -> List[Dict[str, Any]]:
         """Execute candidate generation in parallel."""
         results: List[Dict[str, Any]] = []
 
@@ -156,35 +172,45 @@ class ArenaEngine:
                 try:
                     response = future.result(timeout=30)
                     score = score_candidate(response, prompt, scoring_strategy)
-                    self.store.update_candidate(cand_id, {
-                        "response": response,
-                        "score": score,
-                        "status": CandidateStatus.SCORED.value,
-                        "completed_at": datetime.now().isoformat(),
-                    })
-                    results.append({
-                        "id": cand_id,
-                        "run_id": run_id,
-                        "worker_index": worker_idx,
-                        "response": response,
-                        "score": score,
-                        "status": "scored",
-                    })
+                    self.store.update_candidate(
+                        cand_id,
+                        {
+                            "response": response,
+                            "score": score,
+                            "status": CandidateStatus.SCORED.value,
+                            "completed_at": datetime.now().isoformat(),
+                        },
+                    )
+                    results.append(
+                        {
+                            "id": cand_id,
+                            "run_id": run_id,
+                            "worker_index": worker_idx,
+                            "response": response,
+                            "score": score,
+                            "status": "scored",
+                        }
+                    )
                 except Exception as e:
-                    self.store.update_candidate(cand_id, {
-                        "status": CandidateStatus.FAILED.value,
-                        "error": str(e),
-                        "completed_at": datetime.now().isoformat(),
-                    })
-                    results.append({
-                        "id": cand_id,
-                        "run_id": run_id,
-                        "worker_index": worker_idx,
-                        "response": "",
-                        "score": 0.0,
-                        "status": "failed",
-                        "error": str(e),
-                    })
+                    self.store.update_candidate(
+                        cand_id,
+                        {
+                            "status": CandidateStatus.FAILED.value,
+                            "error": str(e),
+                            "completed_at": datetime.now().isoformat(),
+                        },
+                    )
+                    results.append(
+                        {
+                            "id": cand_id,
+                            "run_id": run_id,
+                            "worker_index": worker_idx,
+                            "response": "",
+                            "score": 0.0,
+                            "status": "failed",
+                            "error": str(e),
+                        }
+                    )
 
         return results
 

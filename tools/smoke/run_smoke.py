@@ -107,6 +107,7 @@ def main():
         if isinstance(r, dict) and r.get("status") == "ok":
             return True
         return f"unexpected: {r}"
+
     runner.step("GET /health", check_health)
 
     # 2. Root / index
@@ -117,6 +118,7 @@ def main():
         if isinstance(r, dict):
             return True
         return f"unexpected type: {type(r)}"
+
     runner.step("GET / (index)", check_root)
 
     # 3. Runtime status
@@ -128,6 +130,7 @@ def main():
             if e.code == 404:
                 return "WARN: /v1/runtime/status not found (may not be implemented)"
             raise
+
     runner.step("GET /v1/runtime/status", check_status)
 
     # 4. Missions list
@@ -141,15 +144,16 @@ def main():
             if e.code == 404:
                 return "WARN: /v1/missions not found"
             raise
+
     runner.step("GET /v1/missions", check_missions)
 
     # 5. Dispatch test mission
     def check_dispatch():
         try:
-            r = post_json(f"{base}/v1/sovereign/dispatch", {
-                "intent": "smoke_test",
-                "scope": "verify"
-            })
+            r = post_json(
+                f"{base}/v1/sovereign/dispatch",
+                {"intent": "smoke_test", "scope": "verify"},
+            )
             if isinstance(r, dict):
                 return True
             return f"unexpected: {r}"
@@ -159,6 +163,7 @@ def main():
             if e.code == 404:
                 return "WARN: /v1/sovereign/dispatch not found"
             raise
+
     runner.step("POST /v1/sovereign/dispatch", check_dispatch)
 
     # 6. Zapier inbound
@@ -167,8 +172,13 @@ def main():
         try:
             r = post_json(
                 f"{base}/v1/zapier/inbound",
-                {"source": "smoke", "type": "smoke.test", "payload": {"x": 1}, "dedupe_key": "smoke-runner-1"},
-                {"X-SWARMZ-SECRET": secret}
+                {
+                    "source": "smoke",
+                    "type": "smoke.test",
+                    "payload": {"x": 1},
+                    "dedupe_key": "smoke-runner-1",
+                },
+                {"X-SWARMZ-SECRET": secret},
             )
             if isinstance(r, dict) and (r.get("ok") or r.get("dedupe")):
                 return True
@@ -177,6 +187,7 @@ def main():
             if e.code == 404:
                 return "WARN: /v1/zapier/inbound not found (server restart needed?)"
             raise
+
     runner.step("POST /v1/zapier/inbound", check_zapier_inbound)
 
     # 7. System log
@@ -188,6 +199,7 @@ def main():
             if e.code == 404:
                 return "WARN: /v1/system/log not found"
             raise
+
     runner.step("GET /v1/system/log", check_syslog)
 
     print()
@@ -201,4 +213,3 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"FATAL: {e}")
         sys.exit(1)
-

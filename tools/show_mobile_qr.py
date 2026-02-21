@@ -9,9 +9,11 @@ Generate a QR code for accessing SWARMZ on mobile.
 import socket
 import qrcode
 
+
 def get_local_ip():
     hostname = socket.gethostname()
     return socket.gethostbyname(hostname)
+
 
 def generate_qr_code():
     try:
@@ -22,6 +24,7 @@ def generate_qr_code():
         print(f"Access SWARMZ at: {url}")
     except Exception as e:
         print(f"Failed to generate QR code: {e}")
+
 
 if __name__ == "__main__":
     generate_qr_code()

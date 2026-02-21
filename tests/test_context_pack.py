@@ -8,9 +8,9 @@ Integration tests: load engines, before_mission, after_mission, scoreboard.
 """
 
 
-
 def test_load_engines():
     from core.context_pack import load
+
     eng = load()
     assert isinstance(eng, dict)
     # Key engines should be present
@@ -29,6 +29,7 @@ def test_load_engines():
 
 def test_before_mission():
     from core.context_pack import before_mission
+
     ctx = before_mission({"mission_id": "test_bp", "intent": "smoke"})
     assert "strategy" in ctx
     assert "inputs_hash" in ctx
@@ -39,6 +40,7 @@ def test_before_mission():
 
 def test_after_mission():
     from core.context_pack import after_mission
+
     # Should not crash even with minimal data
     after_mission(
         {"mission_id": "test_ap", "intent": "smoke"},
@@ -52,6 +54,7 @@ def test_after_mission():
 
 def test_get_scoreboard():
     from core.context_pack import get_scoreboard
+
     sb = get_scoreboard()
     assert "timestamp" in sb
     assert "personality" in sb
@@ -60,6 +63,7 @@ def test_get_scoreboard():
 
 def test_daily_tick():
     from core.context_pack import daily_tick
+
     result = daily_tick()
     assert result["ok"] is True
     assert isinstance(result["ran"], list)
@@ -68,10 +72,10 @@ def test_daily_tick():
 def test_companion_selftest():
     """The companion master self-assessment should be deterministic and non-empty."""
     from core.companion_master import self_assessment
+
     text = self_assessment()
     assert len(text) > 20
     assert "MASTER_SWARMZ" in text
     # Calling again gives same result (deterministic)
     text2 = self_assessment()
     assert text == text2
-

@@ -1,6 +1,7 @@
 # formation.py
 # Manages unit formations.
 
+
 class FormationEngine:
     def create_formation(self, units, formation_type):
         """Create a formation with units."""

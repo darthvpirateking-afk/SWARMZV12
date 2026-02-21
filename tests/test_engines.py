@@ -14,6 +14,7 @@ import pytest
 
 def test_perf_ledger():
     from core.perf_ledger import PerfLedger
+
     pl = PerfLedger("data")
     pl.append("test_engine_pl", 100, True, 0.01)
     recent = pl.load_recent(5)
@@ -22,7 +23,13 @@ def test_perf_ledger():
 
 
 def test_operator_anchor():
-    from core.operator_anchor import load_or_create_anchor, verify_fingerprint, compute_record_hash, sign_record
+    from core.operator_anchor import (
+        load_or_create_anchor,
+        verify_fingerprint,
+        compute_record_hash,
+        sign_record,
+    )
+
     anchor = load_or_create_anchor("data")
     assert "machine_fingerprint" in anchor
     assert "operator_private_key" in anchor
@@ -38,6 +45,7 @@ def test_operator_anchor():
 def test_evolution_memory():
     from core.evolution_memory import EvolutionMemory
     from core.operator_anchor import load_or_create_anchor
+
     anchor = load_or_create_anchor("data")
     evo = EvolutionMemory("data", anchor=anchor, read_only=False)
     # get_personality returns personality_vector
@@ -53,6 +61,7 @@ def test_evolution_memory():
 
 def test_world_model():
     from core.world_model import WorldModel
+
     wm = WorldModel("data")
     # recompute should not crash
     wm.recompute()
@@ -64,6 +73,7 @@ def test_world_model():
 
 def test_divergence_engine():
     from core.divergence_engine import DivergenceEngine
+
     de = DivergenceEngine("data")
     result = de.update()
     assert "divergence_score" in result
@@ -73,6 +83,7 @@ def test_divergence_engine():
 
 def test_entropy_monitor():
     from core.entropy_monitor import EntropyMonitor
+
     em = EntropyMonitor("data")
     result = em.update()
     assert "mode" in result
@@ -82,6 +93,7 @@ def test_entropy_monitor():
 
 def test_phase_engine():
     from core.phase_engine import PhaseEngine
+
     pe = PhaseEngine("data")
     # after_outcome should not crash
     pe.after_outcome(True, 0.8, 100, "baseline")
@@ -94,6 +106,7 @@ def test_trajectory_engine():
     from core.evolution_memory import EvolutionMemory
     from core.perf_ledger import PerfLedger
     from core.operator_anchor import load_or_create_anchor
+
     anchor = load_or_create_anchor("data")
     evo = EvolutionMemory("data", anchor=anchor)
     pl = PerfLedger("data")
@@ -108,6 +121,7 @@ def test_counterfactual_engine():
     from core.counterfactual_engine import CounterfactualEngine
     from core.evolution_memory import EvolutionMemory
     from core.operator_anchor import load_or_create_anchor
+
     anchor = load_or_create_anchor("data")
     evo = EvolutionMemory("data", anchor=anchor)
     cf = CounterfactualEngine("data", evo)
@@ -142,7 +156,7 @@ def test_relevance_engine(tmp_path):
         "strategy_used": "baseline",
         "score": 0.8,
         "success_bool": True,
-        "previous_hash": "GENESIS"
+        "previous_hash": "GENESIS",
     }
     with open(history_file, "w", encoding="utf-8") as f:
         f.write(json.dumps(sample_record) + "\n")
@@ -155,4 +169,3 @@ def test_relevance_engine(tmp_path):
     re.after_outcome("test_rel_m1", "test_hash", "baseline", 0.8, True, 100)
     hot = mem_hot_dir / "hot.jsonl"
     assert hot.exists()
-

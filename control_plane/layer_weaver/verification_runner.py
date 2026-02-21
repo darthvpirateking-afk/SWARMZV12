@@ -48,8 +48,11 @@ def _deadline_seconds(deadline: dict) -> float:
     t = deadline.get("type", "seconds")
     v = deadline.get("value", 60)
     multipliers = {
-        "seconds": 1, "minutes": 60, "hours": 3600,
-        "days": 86400, "weeks": 604800,
+        "seconds": 1,
+        "minutes": 60,
+        "hours": 3600,
+        "days": 86400,
+        "weeks": 604800,
     }
     return v * multipliers.get(t, 1)
 
@@ -57,10 +60,13 @@ def _deadline_seconds(deadline: dict) -> float:
 class VerificationRunner:
     """Verifies executed actions and triggers rollback on failure."""
 
-    def __init__(self, state_store: StateStore,
-                 vstore: VerificationStore,
-                 bus: EventDebouncer,
-                 config_hash_fn=None):
+    def __init__(
+        self,
+        state_store: StateStore,
+        vstore: VerificationStore,
+        bus: EventDebouncer,
+        config_hash_fn=None,
+    ):
         self._state = state_store
         self._vstore = vstore
         self._bus = bus
@@ -84,7 +90,9 @@ class VerificationRunner:
 
         metric = vspec["metric"]
         baseline = self._state.get_latest_value(metric)
-        deadline_secs = _deadline_seconds(vspec.get("deadline", {"type": "seconds", "value": 60}))
+        deadline_secs = _deadline_seconds(
+            vspec.get("deadline", {"type": "seconds", "value": 60})
+        )
 
         item = {
             "action": action,
@@ -96,15 +104,20 @@ class VerificationRunner:
             "config_hash": payload.get("config_hash", self._config_hash_fn()),
         }
         self._pending.append(item)
-        self._bus.publish_immediate("VERIFY_SCHEDULED", {
-            "action_id": action["id"],
-            "metric": metric,
-            "baseline": baseline,
-            "deadline_seconds": deadline_secs,
-            "time": datetime.now(timezone.utc).isoformat(),
-        })
-        print(f"[verify] scheduled: {action['id']} "
-              f"(metric={metric}, deadline={deadline_secs}s)")
+        self._bus.publish_immediate(
+            "VERIFY_SCHEDULED",
+            {
+                "action_id": action["id"],
+                "metric": metric,
+                "baseline": baseline,
+                "deadline_seconds": deadline_secs,
+                "time": datetime.now(timezone.utc).isoformat(),
+            },
+        )
+        print(
+            f"[verify] scheduled: {action['id']} "
+            f"(metric={metric}, deadline={deadline_secs}s)"
+        )
 
     def check_pending(self):
         """Check all pending verifications whose deadline has elapsed."""
@@ -132,7 +145,9 @@ class VerificationRunner:
             else:
                 delta = actual - baseline
                 try:
-                    passed = evaluate_comparison(vspec["op"], delta, vspec["target_delta"])
+                    passed = evaluate_comparison(
+                        vspec["op"], delta, vspec["target_delta"]
+                    )
                 except (ValueError, TypeError):
                     passed = False
                 reason = None if passed else "threshold_not_met"
@@ -174,25 +189,31 @@ class VerificationRunner:
             rb_action_id = rb.get("action_id")
             rb_action = self._actions_by_id.get(rb_action_id)
             if rb_action:
-                self._bus.publish_immediate("ROLLBACK_TRIGGERED", {
-                    "original_action_id": action["id"],
-                    "rollback_action_id": rb_action_id,
-                    "rollback_action": rb_action,
-                    "type": "action_ref",
-                    "time": datetime.now(timezone.utc).isoformat(),
-                })
+                self._bus.publish_immediate(
+                    "ROLLBACK_TRIGGERED",
+                    {
+                        "original_action_id": action["id"],
+                        "rollback_action_id": rb_action_id,
+                        "rollback_action": rb_action,
+                        "type": "action_ref",
+                        "time": datetime.now(timezone.utc).isoformat(),
+                    },
+                )
                 print(f"[verify] rollback triggered: {rb_action_id}")
             else:
                 print(f"[verify] rollback action not found: {rb_action_id}")
 
         elif rb_type == "instruction":
             steps = rb.get("steps", [])
-            self._bus.publish_immediate("ROLLBACK_TRIGGERED", {
-                "original_action_id": action["id"],
-                "type": "instruction",
-                "steps": steps,
-                "time": datetime.now(timezone.utc).isoformat(),
-            })
+            self._bus.publish_immediate(
+                "ROLLBACK_TRIGGERED",
+                {
+                    "original_action_id": action["id"],
+                    "type": "instruction",
+                    "steps": steps,
+                    "time": datetime.now(timezone.utc).isoformat(),
+                },
+            )
             print(f"[verify] rollback instructions emitted for {action['id']}")
 
         else:  # none
@@ -201,12 +222,13 @@ class VerificationRunner:
 
 # ── CLI ─────────────────────────────────────────────────────────────────
 
+
 def main():
     parser = argparse.ArgumentParser(description="Verification Runner")
-    parser.add_argument("--loop", action="store_true",
-                        help="Run continuously")
-    parser.add_argument("--interval", type=float, default=2.0,
-                        help="Check interval in seconds")
+    parser.add_argument("--loop", action="store_true", help="Run continuously")
+    parser.add_argument(
+        "--interval", type=float, default=2.0, help="Check interval in seconds"
+    )
     args = parser.parse_args()
 
     bus = EventDebouncer(window=0.5)

@@ -6,7 +6,6 @@ from pydantic import BaseModel, Field
 
 from swarmz_runtime.core.template_sync import TemplateSyncManager
 
-
 router = APIRouter()
 _manager = TemplateSyncManager(Path(__file__).resolve().parent.parent.parent)
 

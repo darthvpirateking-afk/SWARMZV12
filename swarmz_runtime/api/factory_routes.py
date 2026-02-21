@@ -30,7 +30,7 @@ def execute_artifact(request: ArtifactExecutionRequest):
             artifact_id=request.artifact_id,
             parameters=request.parameters,
             operator_key=request.operator_key,
-            safe_mode=request.safe_mode
+            safe_mode=request.safe_mode,
         )
         return result
     except Exception as e:
@@ -59,4 +59,3 @@ def factory_graph():
 def decisions_latest():
     dec = engine.latest_decision()
     return dec or {}
-

@@ -1,6 +1,7 @@
 # registry.py
 # Manages unit registration.
 
+
 class UnitRegistry:
     def __init__(self):
         self.units = {}

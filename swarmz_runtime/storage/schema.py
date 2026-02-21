@@ -96,4 +96,3 @@ class MaintenanceTask(BaseModel):
     complexity_score: float
     scheduled_at: datetime
     reason: str
-

@@ -9,7 +9,13 @@ class OperatorLink:
         }
 
     def initiate_link(self, state):
-        if state in ["link_idle", "link_sync", "link_focus", "link_overclock", "link_shadow"]:
+        if state in [
+            "link_idle",
+            "link_sync",
+            "link_focus",
+            "link_overclock",
+            "link_shadow",
+        ]:
             self.state = state
             return f"Link state set to {state}"
         raise ValueError("Invalid link state")

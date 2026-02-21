@@ -14,7 +14,12 @@ from core.operator_anchor import compute_record_hash, sign_record, verify_signat
 class EvolutionMemory:
     """Persistent, append-only evolution history with companion continuity."""
 
-    def __init__(self, data_dir: str = "data", anchor: Optional[Dict[str, Any]] = None, read_only: bool = False):
+    def __init__(
+        self,
+        data_dir: str = "data",
+        anchor: Optional[Dict[str, Any]] = None,
+        read_only: bool = False,
+    ):
         self.data_dir = Path(data_dir)
         self.data_dir.mkdir(parents=True, exist_ok=True)
         self.history_file = self.data_dir / "evolution_history.jsonl"
@@ -40,7 +45,9 @@ class EvolutionMemory:
         self._load_chain()
 
     @staticmethod
-    def compute_inputs_hash(goal: str, category: str, constraints: Dict[str, Any]) -> str:
+    def compute_inputs_hash(
+        goal: str, category: str, constraints: Dict[str, Any]
+    ) -> str:
         payload = {
             "goal": goal or "",
             "category": category or "",
@@ -50,7 +57,9 @@ class EvolutionMemory:
         return compute_record_hash({"payload": raw}, previous_hash="")
 
     @staticmethod
-    def compute_score(success: bool, total_runtime_ms: float, cost_estimate: float) -> float:
+    def compute_score(
+        success: bool, total_runtime_ms: float, cost_estimate: float
+    ) -> float:
         base = 1.0 if success else 0.0
         speed_factor = 1.0 / (1.0 + max(total_runtime_ms, 0.0) / 10000.0)
         cost_factor = 1.0 / (1.0 + max(cost_estimate, 0.0))
@@ -69,12 +78,21 @@ class EvolutionMemory:
                     if row.get("previous_hash") != prev_hash:
                         self.chain_valid = False
                         break
-                    record_hash = compute_record_hash({k: v for k, v in row.items() if k not in {"record_hash", "signature"}}, prev_hash)
+                    record_hash = compute_record_hash(
+                        {
+                            k: v
+                            for k, v in row.items()
+                            if k not in {"record_hash", "signature"}
+                        },
+                        prev_hash,
+                    )
                     if record_hash != row.get("record_hash"):
                         self.chain_valid = False
                         break
                     priv = self.anchor.get("operator_private_key", "")
-                    if priv and not verify_signature(priv, record_hash, row.get("signature", "")):
+                    if priv and not verify_signature(
+                        priv, record_hash, row.get("signature", "")
+                    ):
                         self.chain_valid = False
                         break
                     records.append(row)
@@ -119,8 +137,15 @@ class EvolutionMemory:
         }
         previous_hash = self._next_previous_hash()
         record_hash = compute_record_hash(base_record, previous_hash)
-        signature = sign_record(self.anchor.get("operator_private_key", ""), record_hash)
-        full_record = {**base_record, "previous_hash": previous_hash, "record_hash": record_hash, "signature": signature}
+        signature = sign_record(
+            self.anchor.get("operator_private_key", ""), record_hash
+        )
+        full_record = {
+            **base_record,
+            "previous_hash": previous_hash,
+            "record_hash": record_hash,
+            "signature": signature,
+        }
 
         with open(self.history_file, "a", encoding="utf-8") as f:
             f.write(json.dumps(full_record, separators=(",", ":")) + "\n")
@@ -174,10 +199,14 @@ class EvolutionMemory:
         self._commitments = weights or {}
 
     def bump_exploration_bias(self, delta: float) -> None:
-        self._personality["exploration_bias"] = self._clamp(self._personality.get("exploration_bias", 0.5) + delta)
+        self._personality["exploration_bias"] = self._clamp(
+            self._personality.get("exploration_bias", 0.5) + delta
+        )
         self._save_personality()
 
-    def select_strategy(self, inputs_hash: str, default_strategy: str = "baseline", bias_fn=None) -> str:
+    def select_strategy(
+        self, inputs_hash: str, default_strategy: str = "baseline", bias_fn=None
+    ) -> str:
         stats = self._aggregate_by_strategy(inputs_hash)
         if not stats:
             preferred = self._state.get("preferred_strategies", {})
@@ -199,7 +228,9 @@ class EvolutionMemory:
             if self._commitments:
                 weighted *= self._commitments.get(strat, 1.0)
             weighted *= self._reliability_penalty(strat)
-            weighted *= 1.0 - min(0.3, self._uncertainty.get("uncertainty_weight", 0.0) * 0.2)
+            weighted *= 1.0 - min(
+                0.3, self._uncertainty.get("uncertainty_weight", 0.0) * 0.2
+            )
             weights.append(weighted)
         if sum(weights) <= 0:
             return max(stats.items(), key=lambda kv: kv[1].get("avg_score", 0.0))[0]
@@ -210,14 +241,18 @@ class EvolutionMemory:
             return strategies[0]
 
     # ---------- Outcomes & personality ----------
-    def _update_personality(self, success: bool, runtime_ms: float, score: float) -> None:
+    def _update_personality(
+        self, success: bool, runtime_ms: float, score: float
+    ) -> None:
         p = self._personality
         delta = 0.02 if success else -0.02
         p["risk_tolerance"] = self._clamp(p.get("risk_tolerance", 0.5) + delta)
         speed_adj = 0.01 if runtime_ms < 5000 else -0.01
         p["speed_preference"] = self._clamp(p.get("speed_preference", 0.5) + speed_adj)
         explore_adj = 0.01 if score < 0.5 else -0.005
-        p["exploration_bias"] = self._clamp(p.get("exploration_bias", 0.5) + explore_adj)
+        p["exploration_bias"] = self._clamp(
+            p.get("exploration_bias", 0.5) + explore_adj
+        )
         retry_adj = -0.01 if success else 0.015
         p["retry_patience"] = self._clamp(p.get("retry_patience", 0.5) + retry_adj)
         self._personality = p
@@ -235,17 +270,22 @@ class EvolutionMemory:
     ) -> None:
         state = self._state
         prefs: Dict[str, Dict[str, Any]] = state.setdefault("preferred_strategies", {})
-        entry = prefs.get(strategy, {"avg_score": 0.0, "count": 0, "reinforced": False, "priority": 1.0})
+        entry = prefs.get(
+            strategy,
+            {"avg_score": 0.0, "count": 0, "reinforced": False, "priority": 1.0},
+        )
         count = entry.get("count", 0)
         new_avg = ((entry.get("avg_score", 0.0) * count) + score) / max(count + 1, 1)
         improvement = score > previous_avg
 
-        entry.update({
-            "avg_score": round(new_avg, 4),
-            "count": count + 1,
-            "reinforced": bool(improvement),
-            "last_score": score,
-        })
+        entry.update(
+            {
+                "avg_score": round(new_avg, 4),
+                "count": count + 1,
+                "reinforced": bool(improvement),
+                "last_score": score,
+            }
+        )
         if not improvement:
             entry["priority"] = max(entry.get("priority", 1.0) * 0.9, 0.1)
         else:
@@ -292,8 +332,13 @@ class EvolutionMemory:
             return list(preferred.keys())
         return ["baseline"]
 
-    def update_reliability(self, strategy: str, predicted: float, actual: float, surprise_score: float) -> None:
-        rec = self._reliability.get(strategy, {"count": 0, "accurate": 0, "overconfident": 0, "squared_error": 0.0})
+    def update_reliability(
+        self, strategy: str, predicted: float, actual: float, surprise_score: float
+    ) -> None:
+        rec = self._reliability.get(
+            strategy,
+            {"count": 0, "accurate": 0, "overconfident": 0, "squared_error": 0.0},
+        )
         rec["count"] += 1
         error = predicted - actual
         rec["squared_error"] += error * error
@@ -381,7 +426,13 @@ class EvolutionMemory:
             try:
                 with open(self.personality_file, "r", encoding="utf-8") as f:
                     data = json.load(f)
-                    defaults.update({k: self._clamp(float(v)) for k, v in data.items() if k in defaults})
+                    defaults.update(
+                        {
+                            k: self._clamp(float(v))
+                            for k, v in data.items()
+                            if k in defaults
+                        }
+                    )
             except Exception:
                 pass
         return defaults
@@ -409,7 +460,16 @@ class EvolutionMemory:
             try:
                 with open(self.uncertainty_file, "r", encoding="utf-8") as f:
                     data = json.load(f)
-                    defaults.update({k: self._clamp(float(v)) if isinstance(v, (int, float)) else v for k, v in data.items()})
+                    defaults.update(
+                        {
+                            k: (
+                                self._clamp(float(v))
+                                if isinstance(v, (int, float))
+                                else v
+                            )
+                            for k, v in data.items()
+                        }
+                    )
             except Exception:
                 return defaults
         return defaults
@@ -438,7 +498,9 @@ class EvolutionMemory:
         strat_totals: Dict[str, Dict[str, Any]] = {}
         for row in self._history_cache[-100:]:
             strat = row.get("strategy_used", "baseline")
-            st = strat_totals.setdefault(strat, {"scores": [], "success": 0, "count": 0})
+            st = strat_totals.setdefault(
+                strat, {"scores": [], "success": 0, "count": 0}
+            )
             st["scores"].append(float(row.get("score", 0.0)))
             st["success"] += 1 if row.get("success_bool") else 0
             st["count"] += 1
@@ -451,4 +513,3 @@ class EvolutionMemory:
             }
         with open(epoch_file, "w", encoding="utf-8") as f:
             json.dump(summary, f, indent=2)
-

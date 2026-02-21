@@ -42,10 +42,10 @@ from control_plane.verification_runner import (
     DEFAULT_MAX_ATTEMPTS,
 )
 
-
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------
+
 
 @pytest.fixture()
 def tmp_data(tmp_path):
@@ -59,8 +59,16 @@ def tmp_data(tmp_path):
     schema = {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "type": "object",
-        "required": ["layer", "variable", "value", "units", "time",
-                      "confidence", "directionality", "source"],
+        "required": [
+            "layer",
+            "variable",
+            "value",
+            "units",
+            "time",
+            "confidence",
+            "directionality",
+            "source",
+        ],
         "properties": {
             "layer": {"type": "string"},
             "variable": {"type": "string"},
@@ -68,8 +76,10 @@ def tmp_data(tmp_path):
             "units": {"type": "string"},
             "time": {"type": "string"},
             "confidence": {"type": "number", "minimum": 0, "maximum": 1},
-            "directionality": {"type": "string",
-                               "enum": ["up", "down", "stable", "unknown"]},
+            "directionality": {
+                "type": "string",
+                "enum": ["up", "down", "stable", "unknown"],
+            },
             "source": {"type": "string"},
         },
         "additionalProperties": False,
@@ -93,6 +103,7 @@ def components(tmp_data):
 
     # Patch the schema path used by StateStore
     import control_plane.state_store as ss_mod
+
     orig_schema = ss_mod._SCHEMA
     schema_path = str(tmp_data / "schemas" / "state.schema.json")
     with open(schema_path) as f:
@@ -105,7 +116,10 @@ def components(tmp_data):
     dlogger = DecisionLogger(data_path=dlog_path)
 
     runner = VerificationRunner(
-        store, vstore, bus, adapter,
+        store,
+        vstore,
+        bus,
+        adapter,
         decision_logger=dlogger,
         max_attempts=DEFAULT_MAX_ATTEMPTS,
         lease_seconds=60,
@@ -125,9 +139,14 @@ def components(tmp_data):
     ss_mod._SCHEMA = orig_schema
 
 
-def _make_action(action_id="act_allocate_budget", metric="money.budget_remaining",
-                 operator=">=", threshold=500, deadline_seconds=0,
-                 rollback_id="act_deallocate_budget"):
+def _make_action(
+    action_id="act_allocate_budget",
+    metric="money.budget_remaining",
+    operator=">=",
+    threshold=500,
+    deadline_seconds=0,
+    rollback_id="act_deallocate_budget",
+):
     """Build a minimal action dict matching the catalogue shape."""
     return {
         "action_id": action_id,
@@ -136,8 +155,7 @@ def _make_action(action_id="act_allocate_budget", metric="money.budget_remaining
         "action_type": "money",
         "expected_effects": [{"variable": metric, "delta": 500}],
         "irreversibility_cost": 0.2,
-        "rollback": {"action_id": rollback_id,
-                     "description": "rollback"},
+        "rollback": {"action_id": rollback_id, "description": "rollback"},
         "verification": {
             "metric": metric,
             "operator": operator,
@@ -150,21 +168,25 @@ def _make_action(action_id="act_allocate_budget", metric="money.budget_remaining
 def _put_state(store, variable, value, layer="money"):
     """Write a state record into the store."""
     from datetime import datetime, timezone
-    store.put({
-        "layer": layer,
-        "variable": variable,
-        "value": value,
-        "units": "abstract",
-        "time": datetime.now(timezone.utc).isoformat(),
-        "confidence": 0.9,
-        "directionality": "up",
-        "source": "test",
-    })
+
+    store.put(
+        {
+            "layer": layer,
+            "variable": variable,
+            "value": value,
+            "units": "abstract",
+            "time": datetime.now(timezone.utc).isoformat(),
+            "confidence": 0.9,
+            "directionality": "up",
+            "source": "test",
+        }
+    )
 
 
 # ---------------------------------------------------------------------------
 # Unit tests: helpers
 # ---------------------------------------------------------------------------
+
 
 class TestHelpers:
     def test_sha256_deterministic(self):
@@ -206,12 +228,18 @@ class TestHelpers:
 # Unit tests: InMemoryJobStore
 # ---------------------------------------------------------------------------
 
+
 class TestInMemoryJobStore:
     def test_enqueue_idempotent(self):
         js = _InMemoryJobStore()
-        job = {"dedupe_key": "dk1", "decision_id": "d1",
-               "action_id": "a1", "deadline_at": "2099-01-01T00:00:00+00:00",
-               "verify_spec": {}, "verify_spec_hash": "h"}
+        job = {
+            "dedupe_key": "dk1",
+            "decision_id": "d1",
+            "action_id": "a1",
+            "deadline_at": "2099-01-01T00:00:00+00:00",
+            "verify_spec": {},
+            "verify_spec_hash": "h",
+        }
         j1 = js.enqueue(job)
         j2 = js.enqueue(dict(job))  # same dedupe_key
         assert j1["job_id"] == j2["job_id"]
@@ -219,10 +247,16 @@ class TestInMemoryJobStore:
     def test_claim_due(self):
         js = _InMemoryJobStore()
         from datetime import datetime, timezone, timedelta
+
         past = (datetime.now(timezone.utc) - timedelta(seconds=10)).isoformat()
-        job = {"dedupe_key": "dk2", "decision_id": "d2",
-               "action_id": "a2", "deadline_at": past,
-               "verify_spec": {}, "verify_spec_hash": "h"}
+        job = {
+            "dedupe_key": "dk2",
+            "decision_id": "d2",
+            "action_id": "a2",
+            "deadline_at": past,
+            "verify_spec": {},
+            "verify_spec_hash": "h",
+        }
         js.enqueue(job)
         claimed = js.claim_due("runner-1", 60)
         assert len(claimed) == 1
@@ -232,10 +266,16 @@ class TestInMemoryJobStore:
     def test_finalize_exactly_once(self):
         js = _InMemoryJobStore()
         from datetime import datetime, timezone, timedelta
+
         past = (datetime.now(timezone.utc) - timedelta(seconds=10)).isoformat()
-        job = {"dedupe_key": "dk3", "deadline_at": past,
-               "decision_id": "d", "action_id": "a",
-               "verify_spec": {}, "verify_spec_hash": "h"}
+        job = {
+            "dedupe_key": "dk3",
+            "deadline_at": past,
+            "decision_id": "d",
+            "action_id": "a",
+            "verify_spec": {},
+            "verify_spec_hash": "h",
+        }
         js.enqueue(job)
         claimed = js.claim_due("r1", 60)
         jid = claimed[0]["job_id"]
@@ -247,10 +287,16 @@ class TestInMemoryJobStore:
     def test_mark_rollback_exactly_once(self):
         js = _InMemoryJobStore()
         from datetime import datetime, timezone, timedelta
+
         past = (datetime.now(timezone.utc) - timedelta(seconds=10)).isoformat()
-        job = {"dedupe_key": "dk4", "deadline_at": past,
-               "decision_id": "d", "action_id": "a",
-               "verify_spec": {}, "verify_spec_hash": "h"}
+        job = {
+            "dedupe_key": "dk4",
+            "deadline_at": past,
+            "decision_id": "d",
+            "action_id": "a",
+            "verify_spec": {},
+            "verify_spec_hash": "h",
+        }
         js.enqueue(job)
         claimed = js.claim_due("r1", 60)
         jid = claimed[0]["job_id"]
@@ -260,10 +306,16 @@ class TestInMemoryJobStore:
     def test_dead_letter(self):
         js = _InMemoryJobStore()
         from datetime import datetime, timezone, timedelta
+
         past = (datetime.now(timezone.utc) - timedelta(seconds=10)).isoformat()
-        job = {"dedupe_key": "dk5", "deadline_at": past,
-               "decision_id": "d", "action_id": "a",
-               "verify_spec": {}, "verify_spec_hash": "h"}
+        job = {
+            "dedupe_key": "dk5",
+            "deadline_at": past,
+            "decision_id": "d",
+            "action_id": "a",
+            "verify_spec": {},
+            "verify_spec_hash": "h",
+        }
         js.enqueue(job)
         claimed = js.claim_due("r1", 60)
         jid = claimed[0]["job_id"]
@@ -274,23 +326,44 @@ class TestInMemoryJobStore:
     def test_stats(self):
         js = _InMemoryJobStore()
         from datetime import datetime, timezone, timedelta
+
         past = (datetime.now(timezone.utc) - timedelta(seconds=10)).isoformat()
-        js.enqueue({"dedupe_key": "a", "deadline_at": past,
-                     "decision_id": "d", "action_id": "a",
-                     "verify_spec": {}, "verify_spec_hash": "h"})
-        js.enqueue({"dedupe_key": "b", "deadline_at": "2099-01-01T00:00:00+00:00",
-                     "decision_id": "d", "action_id": "b",
-                     "verify_spec": {}, "verify_spec_hash": "h"})
+        js.enqueue(
+            {
+                "dedupe_key": "a",
+                "deadline_at": past,
+                "decision_id": "d",
+                "action_id": "a",
+                "verify_spec": {},
+                "verify_spec_hash": "h",
+            }
+        )
+        js.enqueue(
+            {
+                "dedupe_key": "b",
+                "deadline_at": "2099-01-01T00:00:00+00:00",
+                "decision_id": "d",
+                "action_id": "b",
+                "verify_spec": {},
+                "verify_spec_hash": "h",
+            }
+        )
         s = js.stats()
         assert s.get(STATUS_QUEUED, 0) == 2
 
     def test_record_rollback_result(self):
         js = _InMemoryJobStore()
         from datetime import datetime, timezone, timedelta
+
         past = (datetime.now(timezone.utc) - timedelta(seconds=10)).isoformat()
-        job = {"dedupe_key": "dk6", "deadline_at": past,
-               "decision_id": "d", "action_id": "a",
-               "verify_spec": {}, "verify_spec_hash": "h"}
+        job = {
+            "dedupe_key": "dk6",
+            "deadline_at": past,
+            "decision_id": "d",
+            "action_id": "a",
+            "verify_spec": {},
+            "verify_spec_hash": "h",
+        }
         js.enqueue(job)
         claimed = js.claim_due("r1", 60)
         jid = claimed[0]["job_id"]
@@ -304,14 +377,20 @@ class TestInMemoryJobStore:
 # Unit tests: DeltaEvaluator
 # ---------------------------------------------------------------------------
 
+
 class TestDeltaEvaluator:
     def test_pass(self, tmp_path):
         p = str(tmp_path / "state.jsonl")
         with open(p, "w") as f:
-            f.write(json.dumps({
-                "variable": "money.budget_remaining",
-                "value": 600,
-            }) + "\n")
+            f.write(
+                json.dumps(
+                    {
+                        "variable": "money.budget_remaining",
+                        "value": 600,
+                    }
+                )
+                + "\n"
+            )
 
         ev = DeltaEvaluator(state_path=p)
         job = {
@@ -331,10 +410,15 @@ class TestDeltaEvaluator:
     def test_fail_threshold_not_met(self, tmp_path):
         p = str(tmp_path / "state.jsonl")
         with open(p, "w") as f:
-            f.write(json.dumps({
-                "variable": "money.budget_remaining",
-                "value": 100,
-            }) + "\n")
+            f.write(
+                json.dumps(
+                    {
+                        "variable": "money.budget_remaining",
+                        "value": 100,
+                    }
+                )
+                + "\n"
+            )
 
         ev = DeltaEvaluator(state_path=p)
         job = {
@@ -353,10 +437,15 @@ class TestDeltaEvaluator:
     def test_missing_metric(self, tmp_path):
         p = str(tmp_path / "state.jsonl")
         with open(p, "w") as f:
-            f.write(json.dumps({
-                "variable": "other.var",
-                "value": 10,
-            }) + "\n")
+            f.write(
+                json.dumps(
+                    {
+                        "variable": "other.var",
+                        "value": 10,
+                    }
+                )
+                + "\n"
+            )
 
         ev = DeltaEvaluator(state_path=p)
         job = {
@@ -376,16 +465,26 @@ class TestDeltaEvaluator:
         p = str(tmp_path / "state.jsonl")
         with open(p, "w") as f:
             # First record (before baseline)
-            f.write(json.dumps({
-                "variable": "money.budget_remaining",
-                "value": 100,
-            }) + "\n")
+            f.write(
+                json.dumps(
+                    {
+                        "variable": "money.budget_remaining",
+                        "value": 100,
+                    }
+                )
+                + "\n"
+            )
             offset = f.tell()
             # Second record (after baseline)
-            f.write(json.dumps({
-                "variable": "money.budget_remaining",
-                "value": 700,
-            }) + "\n")
+            f.write(
+                json.dumps(
+                    {
+                        "variable": "money.budget_remaining",
+                        "value": 700,
+                    }
+                )
+                + "\n"
+            )
 
         ev = DeltaEvaluator(state_path=p)
         job = {
@@ -405,10 +504,15 @@ class TestDeltaEvaluator:
         p = str(tmp_path / "state.jsonl")
         with open(p, "w") as f:
             for v in [400, 600]:
-                f.write(json.dumps({
-                    "variable": "money.budget_remaining",
-                    "value": v,
-                }) + "\n")
+                f.write(
+                    json.dumps(
+                        {
+                            "variable": "money.budget_remaining",
+                            "value": v,
+                        }
+                    )
+                    + "\n"
+                )
 
         ev = DeltaEvaluator(state_path=p)
         job = {
@@ -428,6 +532,7 @@ class TestDeltaEvaluator:
 # ---------------------------------------------------------------------------
 # Integration tests: VerificationRunner (in-process mode)
 # ---------------------------------------------------------------------------
+
 
 class TestVerificationRunnerInProcess:
     def test_enqueue_on_action_selected(self, components):
@@ -550,8 +655,9 @@ class TestVerificationRunnerInProcess:
         store = components["store"]
 
         cal_events = []
-        bus.subscribe("CALIBRATION_VERIFICATION_OUTCOME",
-                      lambda e, p: cal_events.append(p))
+        bus.subscribe(
+            "CALIBRATION_VERIFICATION_OUTCOME", lambda e, p: cal_events.append(p)
+        )
 
         action = _make_action(threshold=500, deadline_seconds=0)
         bus.publish("ACTION_SELECTED", action)
@@ -632,8 +738,7 @@ class TestVerificationRunnerInProcess:
         bus = components["bus"]
 
         recorded = []
-        bus.subscribe("ROLLBACK_RESULT_RECORDED",
-                      lambda e, p: recorded.append(p))
+        bus.subscribe("ROLLBACK_RESULT_RECORDED", lambda e, p: recorded.append(p))
 
         # Simulate an ACT_RESULT
         bus.publish("ACT_RESULT", {"action_id": "rb-fake", "ok": True})
@@ -658,6 +763,7 @@ class TestVerificationRunnerInProcess:
 # ---------------------------------------------------------------------------
 # Verification store query tests
 # ---------------------------------------------------------------------------
+
 
 class TestVerificationStoreQueries:
     def test_find_by_job_id(self, tmp_path):

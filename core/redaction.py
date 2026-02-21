@@ -14,6 +14,7 @@ REDACTION_RULES = {
     "phones": r"\+?\d{10,15}",
 }
 
+
 def redact_event(event):
     """Redact sensitive information from an event."""
     event = event.copy()

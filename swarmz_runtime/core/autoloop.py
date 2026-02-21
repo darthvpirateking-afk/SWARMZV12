@@ -91,7 +91,9 @@ class AutoLoopManager:
             # kill-switch check
             if self._kill_file.exists():
                 self._running = False
-                self._log_audit("kill_switch_triggered", details={"file": str(self._kill_file)})
+                self._log_audit(
+                    "kill_switch_triggered", details={"file": str(self._kill_file)}
+                )
                 self._persist_state()
                 break
 
@@ -103,7 +105,9 @@ class AutoLoopManager:
             try:
                 t_start = time.perf_counter()
                 self._tick("make money", {}, {})
-                telemetry.record_duration("autoloop_tick", (time.perf_counter() - t_start) * 1000.0)
+                telemetry.record_duration(
+                    "autoloop_tick", (time.perf_counter() - t_start) * 1000.0
+                )
             except Exception as exc:
                 self._log_audit("tick_error", details={"error": str(exc)})
                 telemetry.record_failure("autoloop_tick_error", str(exc))
@@ -154,7 +158,9 @@ class AutoLoopManager:
             details={
                 "tick_count": self._tick_count,
                 "operator_goal": operator_goal,
-                "run_result_status": run_result.get("status", run_result.get("error", "unknown")),
+                "run_result_status": run_result.get(
+                    "status", run_result.get("error", "unknown")
+                ),
                 "ts": now_iso,
             },
         )
@@ -226,4 +232,3 @@ class AutoLoopManager:
                 self._tick_interval = state.get("tick_interval", 30)
             except (json.JSONDecodeError, OSError):
                 pass  # start fresh
-

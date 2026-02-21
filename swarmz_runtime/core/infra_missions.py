@@ -16,7 +16,6 @@ from typing import Any, Dict, List
 from swarmz_runtime.storage.db import Database
 from swarmz_runtime.storage.schema import Mission, MissionCategory, MissionStatus
 
-
 _db = Database("data")
 
 
@@ -24,7 +23,9 @@ def _new_mission_id() -> str:
     return str(uuid.uuid4())[:8]
 
 
-def _save_mission(goal: str, category: MissionCategory, constraints: Dict[str, Any]) -> Mission:
+def _save_mission(
+    goal: str, category: MissionCategory, constraints: Dict[str, Any]
+) -> Mission:
     mission = Mission(
         id=_new_mission_id(),
         goal=goal,
@@ -36,7 +37,9 @@ def _save_mission(goal: str, category: MissionCategory, constraints: Dict[str, A
     return mission
 
 
-def emit_infra_missions(autoscale_plan: Dict[str, Any], backup_plan: Dict[str, Any]) -> Dict[str, Any]:
+def emit_infra_missions(
+    autoscale_plan: Dict[str, Any], backup_plan: Dict[str, Any]
+) -> Dict[str, Any]:
     """Create simulation-only missions representing infra recommendations.
 
     The resulting missions are tagged with "infra_simulation": True in
@@ -80,4 +83,3 @@ def emit_infra_missions(autoscale_plan: Dict[str, Any], backup_plan: Dict[str, A
         "created_missions": len(created_ids),
         "mission_ids": created_ids,
     }
-

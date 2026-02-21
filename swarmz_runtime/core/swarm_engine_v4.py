@@ -3,9 +3,11 @@
 
 from typing import Dict, Any, List
 
+
 class FormationRuleset:
     def __init__(self, rules: Dict[str, Any]):
         self.rules = rules
+
 
 class FormationSynthesizer:
     def __init__(self):
@@ -16,6 +18,7 @@ class FormationSynthesizer:
         # Implementation for synthesizing formations
         pass
 
+
 class FormationExecutor:
     def __init__(self):
         self.active_formations = []
@@ -25,10 +28,11 @@ class FormationExecutor:
         # Implementation for executing formations
         pass
 
+
 class FormationMonitor:
     def __init__(self):
         self.visualization_data = {}
 
     def update_visualization(self, formations: List[Dict[str, Any]]):
         """Update cockpit visualization of emergent patterns."""
-        self.visualization_data = {f['id']: f for f in formations}
+        self.visualization_data = {f["id"]: f for f in formations}

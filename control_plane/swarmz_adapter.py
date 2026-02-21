@@ -39,16 +39,17 @@ class SwarmzAdapter:
             new_val = current + delta
             parts = var.split(".", 1)
             layer = parts[0] if len(parts) > 1 else "unknown"
-            self._state.put({
-                "layer": layer,
-                "variable": var,
-                "value": new_val,
-                "units": "abstract",
-                "time": now,
-                "confidence": 0.9,
-                "directionality": "up" if delta >= 0 else "down",
-                "source": f"adapter:{action.get('action_id', 'unknown')}",
-            })
+            self._state.put(
+                {
+                    "layer": layer,
+                    "variable": var,
+                    "value": new_val,
+                    "units": "abstract",
+                    "time": now,
+                    "confidence": 0.9,
+                    "directionality": "up" if delta >= 0 else "down",
+                    "source": f"adapter:{action.get('action_id', 'unknown')}",
+                }
+            )
         self._bus.publish("ACTION_EXECUTED", action)
         return True
-

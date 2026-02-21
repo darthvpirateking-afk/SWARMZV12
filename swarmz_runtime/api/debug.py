@@ -42,6 +42,7 @@ def storage_check() -> Dict[str, Any]:
             return {"exists": False, "size_bytes": 0}
         try:
             import json
+
             with open(path) as fh:
                 json.load(fh)
             return {

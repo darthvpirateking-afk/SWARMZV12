@@ -17,13 +17,19 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import JSONResponse
 
 from core.nexusmon_models import (
-    ChatRequest, ChatReply, OperatorProfile, NexusForm, NexusFormType,
-    ConversationContext, SystemHealth, AuditEvent, Mission
+    ChatRequest,
+    ChatReply,
+    OperatorProfile,
+    NexusForm,
+    NexusFormType,
+    ConversationContext,
+    SystemHealth,
+    AuditEvent,
+    Mission,
 )
 from core.conversation_engine import get_conversation_engine
 from core.memory_engine import get_memory_engine
 from jsonl_utils import write_jsonl
-
 
 router = APIRouter(prefix="/v1/nexusmon", tags=["conversation"])
 
@@ -42,12 +48,13 @@ MISSIONS_FILE = DATA_DIR / "missions.jsonl"
 # Helper Functions (Data Access)
 # ================================================================
 
+
 def _ensure_operator_profile(operator_id: str) -> OperatorProfile:
     """Get or create an operator profile.
-    
+
     Args:
         operator_id: Operator ID
-        
+
     Returns:
         OperatorProfile object
     """
@@ -70,8 +77,7 @@ def _ensure_operator_profile(operator_id: str) -> OperatorProfile:
 
     # Create new profile
     profile = OperatorProfile(
-        operator_id=operator_id,
-        username=operator_id.replace("op-", "")
+        operator_id=operator_id, username=operator_id.replace("op-", "")
     )
 
     # Store it
@@ -82,10 +88,10 @@ def _ensure_operator_profile(operator_id: str) -> OperatorProfile:
 
 def _ensure_nexus_form(operator_id: str) -> NexusForm:
     """Get or create a NexusForm for an operator.
-    
+
     Args:
         operator_id: Operator ID
-        
+
     Returns:
         NexusForm object
     """
@@ -107,10 +113,7 @@ def _ensure_nexus_form(operator_id: str) -> NexusForm:
             pass
 
     # Create new form
-    form = NexusForm(
-        operator_id=operator_id,
-        current_form=NexusFormType.OPERATOR
-    )
+    form = NexusForm(operator_id=operator_id, current_form=NexusFormType.OPERATOR)
 
     # Store it
     write_jsonl(NEXUS_FORMS_FILE, form.model_dump(mode="json"))
@@ -120,22 +123,18 @@ def _ensure_nexus_form(operator_id: str) -> NexusForm:
 
 def _get_system_health() -> SystemHealth:
     """Get current system health (stub for now).
-    
+
     In production, this would compute from actual system metrics.
     """
-    return SystemHealth(
-        entropy=0.3,
-        drift=0.2,
-        coherence=0.8
-    )
+    return SystemHealth(entropy=0.3, drift=0.2, coherence=0.8)
 
 
 def _get_active_missions(operator_id: Optional[str] = None) -> list:
     """Get active missions.
-    
+
     Args:
         operator_id: Optional filter by operator
-        
+
     Returns:
         List of active missions
     """
@@ -161,7 +160,7 @@ def _get_active_missions(operator_id: Optional[str] = None) -> list:
 
 def _emit_audit_event(event: AuditEvent) -> None:
     """Emit an audit event.
-    
+
     Args:
         event: AuditEvent to record
     """
@@ -172,18 +171,19 @@ def _emit_audit_event(event: AuditEvent) -> None:
 # Endpoints
 # ================================================================
 
+
 @router.post("/chat")
 async def chat(payload: ChatRequest, request: Request) -> ChatReply:
     """
     Main NEXUSMON chat endpoint.
-    
+
     Receives a message, generates a reply with mode, suggested actions,
     and state snapshot. All operations are audited.
-    
+
     Args:
         payload: ChatRequest with operator_id, message, context
         request: FastAPI request object
-        
+
     Returns:
         ChatReply with reply text, mode, actions, snapshot
     """
@@ -209,14 +209,13 @@ async def chat(payload: ChatRequest, request: Request) -> ChatReply:
             missions=missions,
             health=health,
             history=history,
-            ui_context=payload.context
+            ui_context=payload.context,
         )
 
         # 5. Generate reply using conversation engine
         conversation_engine = get_conversation_engine()
         reply_obj = conversation_engine.generate_reply(
-            message=payload.message,
-            context=context
+            message=payload.message, context=context
         )
 
         # 6. Store conversation turn
@@ -225,7 +224,7 @@ async def chat(payload: ChatRequest, request: Request) -> ChatReply:
             message=payload.message,
             reply=reply_obj.reply,
             mode=reply_obj.mode.value,
-            tags=[]
+            tags=[],
         )
 
         # 7. Emit audit event
@@ -238,8 +237,8 @@ async def chat(payload: ChatRequest, request: Request) -> ChatReply:
                     "reply": reply_obj.reply[:200],
                     "mode": reply_obj.mode.value,
                     "context_screen": payload.context.screen,
-                    "context_mission": payload.context.mission_id
-                }
+                    "context_mission": payload.context.mission_id,
+                },
             )
         )
 
@@ -251,7 +250,7 @@ async def chat(payload: ChatRequest, request: Request) -> ChatReply:
             AuditEvent(
                 event_type="chat_error",
                 operator_id=payload.operator_id,
-                details={"error": str(e)}
+                details={"error": str(e)},
             )
         )
         raise HTTPException(status_code=500, detail=str(e))
@@ -260,20 +259,16 @@ async def chat(payload: ChatRequest, request: Request) -> ChatReply:
 @router.get("/health")
 async def nexusmon_health():
     """Health check for NEXUSMON service."""
-    return {
-        "ok": True,
-        "service": "NEXUSMON Console",
-        "status": "operational"
-    }
+    return {"ok": True, "service": "NEXUSMON Console", "status": "operational"}
 
 
 @router.get("/operators/{operator_id}/profile")
 async def get_operator_profile(operator_id: str):
     """Get operator profile.
-    
+
     Args:
         operator_id: Operator ID
-        
+
     Returns:
         OperatorProfile
     """
@@ -284,10 +279,10 @@ async def get_operator_profile(operator_id: str):
 @router.get("/operators/{operator_id}/nexus-form")
 async def get_operator_nexus_form(operator_id: str):
     """Get operator's current NexusForm.
-    
+
     Args:
         operator_id: Operator ID
-        
+
     Returns:
         NexusForm
     """
@@ -298,11 +293,11 @@ async def get_operator_nexus_form(operator_id: str):
 @router.get("/operators/{operator_id}/conversation-history")
 async def get_conversation_history(operator_id: str, limit: int = 20):
     """Get recent conversation history for an operator.
-    
+
     Args:
         operator_id: Operator ID
         limit: Maximum number of turns to return
-        
+
     Returns:
         List of ConversationTurn objects
     """
@@ -314,10 +309,10 @@ async def get_conversation_history(operator_id: str, limit: int = 20):
 @router.get("/operators/{operator_id}/memory")
 async def get_operator_memory(operator_id: str):
     """Get long-term operator memory.
-    
+
     Args:
         operator_id: Operator ID
-        
+
     Returns:
         OperatorMemory or None
     """
@@ -333,25 +328,22 @@ async def update_operator_memory(
     operator_id: str,
     summary: str,
     tags: Optional[list] = None,
-    patterns: Optional[Dict[str, Any]] = None
+    patterns: Optional[Dict[str, Any]] = None,
 ):
     """Update operator's long-term memory.
-    
+
     Args:
         operator_id: Operator ID
         summary: Text summary of patterns
         tags: Optional tags
         patterns: Optional pattern dict
-        
+
     Returns:
         OperatorMemory
     """
     memory_engine = get_memory_engine()
     memory = memory_engine.update_operator_memory(
-        operator_id=operator_id,
-        summary=summary,
-        tags=tags,
-        patterns=patterns
+        operator_id=operator_id, summary=summary, tags=tags, patterns=patterns
     )
     return memory.model_dump(mode="json")
 
@@ -359,7 +351,7 @@ async def update_operator_memory(
 @router.get("/system/health")
 async def get_system_health():
     """Get current system health.
-    
+
     Returns:
         SystemHealth
     """

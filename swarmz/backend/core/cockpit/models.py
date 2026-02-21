@@ -1,6 +1,7 @@
 # models.py
 # Defines cockpit-related models.
 
+
 class Cockpit:
     def __init__(self, name, systems):
         self.name = name

@@ -55,8 +55,8 @@ from .layers.swarm_health import SwarmHealthLayer
 from .layers.permissions import PermissionsLayer
 from .layers.memory import MemoryLayer
 
-
 # ── Config loading + validation ────────────────────────────────────────
+
 
 def _load_schema(name: str) -> dict:
     with open(os.path.join(_SCHEMAS, name)) as f:
@@ -138,16 +138,20 @@ def validate_configs(bus: EventDebouncer) -> Optional[tuple]:
         errors.append(f"actions.json: {e}")
 
     if errors:
-        bus.publish_immediate("CONFIG_INVALID", {
-            "errors": errors,
-            "time": datetime.now(timezone.utc).isoformat(),
-        })
+        bus.publish_immediate(
+            "CONFIG_INVALID",
+            {
+                "errors": errors,
+                "time": datetime.now(timezone.utc).isoformat(),
+            },
+        )
         return None
 
     return objectives, coupling, actions
 
 
 # ── Weaver Cycle ────────────────────────────────────────────────────────
+
 
 class WeaverService:
     """Event-driven control-plane service."""
@@ -213,7 +217,8 @@ class WeaverService:
 
         # 4-5. Score and select best action
         best_action, breakdown = select_best_action(
-            actions, active_objs, lambdas, target_ranges, coupling, state_values)
+            actions, active_objs, lambdas, target_ranges, coupling, state_values
+        )
 
         if best_action is None:
             decision = {
@@ -242,24 +247,33 @@ class WeaverService:
             "time": now,
         }
         self.decision_logger.log(decision)
-        self.adapter.emit_event("ACTION_SELECTED", {
-            **decision,
-            "action": best_action,
-        })
+        self.adapter.emit_event(
+            "ACTION_SELECTED",
+            {
+                **decision,
+                "action": best_action,
+            },
+        )
         self.adapter.emit_event("WEAVER_CYCLE_COMPLETED", decision)
-        print(f"[weaver] ACTION_SELECTED: {best_action['id']} "
-              f"(score={breakdown['score']})")
+        print(
+            f"[weaver] ACTION_SELECTED: {best_action['id']} "
+            f"(score={breakdown['score']})"
+        )
         return decision
 
 
 # ── CLI ─────────────────────────────────────────────────────────────────
 
+
 def main():
     parser = argparse.ArgumentParser(description="Layer-Weaver Service")
-    parser.add_argument("--loop", action="store_true",
-                        help="Run continuously")
-    parser.add_argument("--interval", type=int, default=30,
-                        help="Cycle interval in seconds (with --loop)")
+    parser.add_argument("--loop", action="store_true", help="Run continuously")
+    parser.add_argument(
+        "--interval",
+        type=int,
+        default=30,
+        help="Cycle interval in seconds (with --loop)",
+    )
     args = parser.parse_args()
 
     svc = WeaverService()

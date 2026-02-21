@@ -10,9 +10,17 @@ from typing import List, Dict, Any, Optional, Tuple
 from collections import defaultdict
 
 from core.nexusmon_models import (
-    ConversationContext, ChatReply, ChatModeType, SuggestedAction,
-    SuggestedActionType, MissionDraft, StateSnapshot, OperatorProfile,
-    NexusForm, Persona, SystemHealth
+    ConversationContext,
+    ChatReply,
+    ChatModeType,
+    SuggestedAction,
+    SuggestedActionType,
+    MissionDraft,
+    StateSnapshot,
+    OperatorProfile,
+    NexusForm,
+    Persona,
+    SystemHealth,
 )
 from core.persona_engine import get_persona, get_system_prompt
 from core.memory_engine import get_memory_engine
@@ -26,7 +34,12 @@ class IntentClassifier:
         "stuck": ["stuck", "blocked", "can't", "struggling", "confused"],
         "help_plan": ["help me plan", "plan", "how do i", "what should i", "design"],
         "explain": ["why", "how does", "explain", "what is", "what does"],
-        "status": ["what is happening", "status", "what are you doing", "current state"],
+        "status": [
+            "what is happening",
+            "status",
+            "what are you doing",
+            "current state",
+        ],
         "reflect": ["how am i", "patterns", "what do i", "am i"],
         "mission": ["mission", "task", "goal", "create"],
     }
@@ -34,10 +47,10 @@ class IntentClassifier:
     @staticmethod
     def classify(message: str) -> str:
         """Classify intent from user message.
-        
+
         Args:
             message: User message text
-            
+
         Returns:
             Intent string (e.g., "stuck", "help_plan", etc.)
         """
@@ -60,16 +73,13 @@ class ModeSelector:
     """Selects response mode based on intent and context."""
 
     @staticmethod
-    def select_mode(
-        intent: str,
-        context: ConversationContext
-    ) -> ChatModeType:
+    def select_mode(intent: str, context: ConversationContext) -> ChatModeType:
         """Select appropriate response mode.
-        
+
         Args:
             intent: Classified user intent
             context: Full conversation context
-            
+
         Returns:
             ChatModeType (Reflect, Plan, Explain, Nudge, MissionDraft, Status)
         """
@@ -110,17 +120,13 @@ class ConversationEngine:
         self.mode_selector = ModeSelector()
         self.memory_engine = get_memory_engine()
 
-    def generate_reply(
-        self,
-        message: str,
-        context: ConversationContext
-    ) -> ChatReply:
+    def generate_reply(self, message: str, context: ConversationContext) -> ChatReply:
         """Generate a conversational reply.
-        
+
         Args:
             message: User message
             context: Full conversation context
-            
+
         Returns:
             ChatReply with reply text, mode, suggested actions, etc.
         """
@@ -143,7 +149,7 @@ class ConversationEngine:
             mode=mode,
             persona=persona,
             context=context,
-            context_summary=context_summary
+            context_summary=context_summary,
         )
 
         # 6. Build state snapshot
@@ -154,20 +160,16 @@ class ConversationEngine:
             mode=mode,
             suggested_actions=suggested_actions,
             mission_draft=mission_draft,
-            state_snapshot=snapshot
+            state_snapshot=snapshot,
         )
 
-    def _build_context_summary(
-        self,
-        context: ConversationContext,
-        intent: str
-    ) -> str:
+    def _build_context_summary(self, context: ConversationContext, intent: str) -> str:
         """Build a concise context summary for the LLM prompt.
-        
+
         Args:
             context: Conversation context
             intent: Classified intent
-            
+
         Returns:
             Context summary string
         """
@@ -175,7 +177,9 @@ class ConversationEngine:
 
         # Recent conversation
         if context.history:
-            recent_turns_summary = self.memory_engine.summarize_turns(context.history[-5:])
+            recent_turns_summary = self.memory_engine.summarize_turns(
+                context.history[-5:]
+            )
             parts.append(f"Recent conversation: {recent_turns_summary}")
 
         # Operator state
@@ -188,7 +192,9 @@ class ConversationEngine:
 
         # NexusForm
         if context.nexus_form:
-            parts.append(f"Evolution: currently in {context.nexus_form.current_form.value} form")
+            parts.append(
+                f"Evolution: currently in {context.nexus_form.current_form.value} form"
+            )
 
         # Active missions
         if context.missions:
@@ -215,17 +221,17 @@ class ConversationEngine:
         mode: ChatModeType,
         persona: Persona,
         context: ConversationContext,
-        context_summary: str
+        context_summary: str,
     ) -> Tuple[str, List[SuggestedAction], Optional[MissionDraft]]:
         """Route to specific mode handler.
-        
+
         Args:
             message: User message
             mode: Selected response mode
             persona: Selected persona
             context: Conversation context
             context_summary: Context summary for LLM
-            
+
         Returns:
             Tuple of (reply_text, suggested_actions, mission_draft)
         """
@@ -238,7 +244,9 @@ class ConversationEngine:
         elif mode == ChatModeType.NUDGE:
             return self._handle_nudge(message, persona, context, context_summary)
         elif mode == ChatModeType.MISSION_DRAFT:
-            return self._handle_mission_draft(message, persona, context, context_summary)
+            return self._handle_mission_draft(
+                message, persona, context, context_summary
+            )
         elif mode == ChatModeType.STATUS:
             return self._handle_status(message, persona, context, context_summary)
         else:
@@ -250,7 +258,7 @@ class ConversationEngine:
         message: str,
         persona: Persona,
         context: ConversationContext,
-        context_summary: str
+        context_summary: str,
     ) -> Tuple[str, List[SuggestedAction], Optional[MissionDraft]]:
         """Handle REFLECT mode: mirror patterns and friction."""
         system_prompt = get_system_prompt(persona, context_summary)
@@ -274,8 +282,7 @@ Tasks:
         if context.health.entropy > 0.6:
             suggested_actions.append(
                 SuggestedAction(
-                    type=SuggestedActionType.VIEW_METRICS,
-                    payload={"screen": "Metrics"}
+                    type=SuggestedActionType.VIEW_METRICS, payload={"screen": "Metrics"}
                 )
             )
 
@@ -286,7 +293,7 @@ Tasks:
         message: str,
         persona: Persona,
         context: ConversationContext,
-        context_summary: str
+        context_summary: str,
     ) -> Tuple[str, List[SuggestedAction], Optional[MissionDraft]]:
         """Handle PLAN mode: co-structure missions."""
         system_prompt = get_system_prompt(persona, context_summary)
@@ -310,13 +317,13 @@ Tasks:
             situation={"inferred": "from conversation"},
             goal="To be refined with operator",
             constraints={},
-            evidence={}
+            evidence={},
         )
 
         suggested_actions = [
             SuggestedAction(
                 type=SuggestedActionType.CREATE_MISSION,
-                payload=mission_draft.model_dump()
+                payload=mission_draft.model_dump(),
             )
         ]
 
@@ -327,7 +334,7 @@ Tasks:
         message: str,
         persona: Persona,
         context: ConversationContext,
-        context_summary: str
+        context_summary: str,
     ) -> Tuple[str, List[SuggestedAction], Optional[MissionDraft]]:
         """Handle EXPLAIN mode: clarify system state and concepts."""
         system_prompt = get_system_prompt(persona, context_summary)
@@ -348,8 +355,7 @@ Tasks:
 
         suggested_actions = [
             SuggestedAction(
-                type=SuggestedActionType.VIEW_AUDIT,
-                payload={"screen": "Audit"}
+                type=SuggestedActionType.VIEW_AUDIT, payload={"screen": "Audit"}
             )
         ]
 
@@ -360,7 +366,7 @@ Tasks:
         message: str,
         persona: Persona,
         context: ConversationContext,
-        context_summary: str
+        context_summary: str,
     ) -> Tuple[str, List[SuggestedAction], Optional[MissionDraft]]:
         """Handle NUDGE mode: gentle structural suggestions."""
         system_prompt = get_system_prompt(persona, context_summary)
@@ -392,7 +398,7 @@ Tasks:
         message: str,
         persona: Persona,
         context: ConversationContext,
-        context_summary: str
+        context_summary: str,
     ) -> Tuple[str, List[SuggestedAction], Optional[MissionDraft]]:
         """Handle MISSION_DRAFT mode: formalize chat into mission."""
         reply = "I've extracted a mission draft from our conversation. Review it below, then create the mission."
@@ -401,13 +407,13 @@ Tasks:
             situation={"from_conversation": message[:200]},
             goal="Extract from conversation",
             constraints={"inferred": "from context"},
-            evidence={}
+            evidence={},
         )
 
         suggested_actions = [
             SuggestedAction(
                 type=SuggestedActionType.CREATE_MISSION,
-                payload=mission_draft.model_dump()
+                payload=mission_draft.model_dump(),
             )
         ]
 
@@ -418,7 +424,7 @@ Tasks:
         message: str,
         persona: Persona,
         context: ConversationContext,
-        context_summary: str
+        context_summary: str,
     ) -> Tuple[str, List[SuggestedAction], Optional[MissionDraft]]:
         """Handle STATUS mode: summarize current state."""
         parts = []
@@ -440,31 +446,29 @@ Tasks:
 
         suggested_actions = [
             SuggestedAction(
-                type=SuggestedActionType.VIEW_METRICS,
-                payload={"screen": "Metrics"}
+                type=SuggestedActionType.VIEW_METRICS, payload={"screen": "Metrics"}
             )
         ]
 
         return reply, suggested_actions, None
 
     def _generate_stub_reply(
-        self,
-        message: str,
-        mode: str,
-        context: ConversationContext
+        self, message: str, mode: str, context: ConversationContext
     ) -> str:
         """Generate a stub reply for demonstration.
-        
+
         In production, this would call the LLM with the system prompt.
         """
-        return f"[{mode}] I hear you saying: \"{message[:50]}...\" Let me respond in this way..."
+        return f'[{mode}] I hear you saying: "{message[:50]}..." Let me respond in this way...'
 
     def _build_state_snapshot(self, context: ConversationContext) -> StateSnapshot:
         """Build state snapshot for response."""
         return StateSnapshot(
             nexus_form=context.nexus_form.current_form if context.nexus_form else None,
             system_health=context.health,
-            active_missions=len([m for m in context.missions if m.get("status") == "RUNNING"])
+            active_missions=len(
+                [m for m in context.missions if m.get("status") == "RUNNING"]
+            ),
         )
 
 

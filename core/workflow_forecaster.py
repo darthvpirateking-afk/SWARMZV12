@@ -1,4 +1,3 @@
-
 # MIT License
 # Copyright (c) 2026 SWARMZ
 #
@@ -23,13 +22,29 @@
 # SWARMZ Workflow Forecaster
 # Purpose: Predict the next 5-10 minutes of operator workflow.
 
+
 class WorkflowForecaster:
     def forecast(self, context):
         try:
             # Example forecasting logic
-            return {"predicted_actions": [], "predicted_tasks": [], "predicted_files": [], "confidence": 0}
+            return {
+                "predicted_actions": [],
+                "predicted_tasks": [],
+                "predicted_files": [],
+                "confidence": 0,
+            }
         except Exception:
-            return {"predicted_actions": [], "predicted_tasks": [], "predicted_files": [], "confidence": 0}  # Fail-open
+            return {
+                "predicted_actions": [],
+                "predicted_tasks": [],
+                "predicted_files": [],
+                "confidence": 0,
+            }  # Fail-open
 
     def get_forecast_summary(self):
-        return {"predicted_actions": [], "predicted_tasks": [], "predicted_files": [], "confidence": 0}
+        return {
+            "predicted_actions": [],
+            "predicted_tasks": [],
+            "predicted_files": [],
+            "confidence": 0,
+        }

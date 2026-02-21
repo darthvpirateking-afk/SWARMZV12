@@ -10,6 +10,7 @@ from core.enforcement_mode import get_mode
 from core.reality_classifier import classify_action
 from core.value_scoreboard import load_scoreboard
 
+
 class TestPromotionPath(unittest.TestCase):
 
     def test_enforcement_mode(self):
@@ -26,6 +27,7 @@ class TestPromotionPath(unittest.TestCase):
         """Test that the scoreboard loads correctly."""
         scoreboard = load_scoreboard()
         self.assertIsInstance(scoreboard, dict)
+
 
 if __name__ == "__main__":
     unittest.main()

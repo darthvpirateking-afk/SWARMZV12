@@ -76,4 +76,3 @@ def exit_quarantine(operator_key: str) -> Dict[str, Any]:
 
 def get_quarantine_status() -> Dict[str, Any]:
     return _load_state()
-

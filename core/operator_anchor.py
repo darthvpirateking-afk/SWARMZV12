@@ -12,13 +12,18 @@ from pathlib import Path
 from typing import Dict, Any
 from zoneinfo import ZoneInfo
 
-
 ANCHOR_FILENAME = "operator_anchor.json"
 
 
 def _safe_run(cmd):
     try:
-        return subprocess.check_output(cmd, shell=True, stderr=subprocess.DEVNULL, timeout=2).decode().strip()
+        return (
+            subprocess.check_output(
+                cmd, shell=True, stderr=subprocess.DEVNULL, timeout=2
+            )
+            .decode()
+            .strip()
+        )
     except Exception:
         return ""
 
@@ -35,11 +40,16 @@ def compute_machine_fingerprint() -> str:
         "NUMBER_OF_PROCESSORS",
     ]
     import os  # local import to avoid heavy deps
+
     for key in env_cpu:
         parts.append(os.getenv(key, ""))
 
-    disk_serial = _safe_run("wmic diskdrive get SerialNumber /value") or _safe_run("lsblk -no SERIAL")
-    os_guid = _safe_run("wmic csproduct get UUID /value") or _safe_run("cat /etc/machine-id")
+    disk_serial = _safe_run("wmic diskdrive get SerialNumber /value") or _safe_run(
+        "lsblk -no SERIAL"
+    )
+    os_guid = _safe_run("wmic csproduct get UUID /value") or _safe_run(
+        "cat /etc/machine-id"
+    )
     parts.append(disk_serial)
     parts.append(os_guid)
     raw = "|".join(str(p) for p in parts if p is not None)
@@ -93,4 +103,3 @@ def sign_record(private_key: str, record_hash: str) -> str:
 def verify_signature(private_key: str, record_hash: str, signature: str) -> bool:
     expected = sign_record(private_key, record_hash)
     return secrets.compare_digest(expected, signature)
-

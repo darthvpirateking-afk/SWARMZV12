@@ -48,7 +48,7 @@ def compute_drift(name: str, window: int = 20) -> Dict[str, Any]:
     if len(entries) < window * 2:
         return {"drift": 0.0, "status": "insufficient_data", "n": len(entries)}
 
-    old = entries[-(window * 2):-window]
+    old = entries[-(window * 2) : -window]
     recent = entries[-window:]
 
     old_vals = [e["value"] for e in old]
@@ -56,7 +56,9 @@ def compute_drift(name: str, window: int = 20) -> Dict[str, Any]:
 
     old_mean = sum(old_vals) / len(old_vals)
     new_mean = sum(new_vals) / len(new_vals)
-    old_std = max(math.sqrt(sum((v - old_mean) ** 2 for v in old_vals) / len(old_vals)), 1e-9)
+    old_std = max(
+        math.sqrt(sum((v - old_mean) ** 2 for v in old_vals) / len(old_vals)), 1e-9
+    )
 
     drift = abs(new_mean - old_mean) / old_std
 
@@ -64,7 +66,12 @@ def compute_drift(name: str, window: int = 20) -> Dict[str, Any]:
     threshold = cfg.get("drift_threshold", 0.25)
     high = drift > threshold
 
-    result = {"metric": name, "drift": round(drift, 4), "threshold": threshold, "high": high}
+    result = {
+        "metric": name,
+        "drift": round(drift, 4),
+        "threshold": threshold,
+        "high": high,
+    }
 
     if high:
         _audit("drift_detected", result)
@@ -98,4 +105,3 @@ def scan_all_metrics() -> List[Dict[str, Any]]:
                 e = json.loads(line)
                 names.add(e.get("metric", ""))
     return [compute_drift(n) for n in sorted(names) if n]
-

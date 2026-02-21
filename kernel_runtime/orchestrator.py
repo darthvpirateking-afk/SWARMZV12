@@ -8,8 +8,10 @@ from typing import Optional, Dict, Any
 
 _log = logging.getLogger("swarmz.orchestrator")
 
+
 class SwarmzOrchestrator:
     """Central orchestrator for SWARMZ activation sequence."""
+
     def __init__(self, config: Optional[Dict[str, Any]] = None):
         self.config: Dict[str, Any] = config or self.load_config()
         self.mesh: Optional[Any] = None
@@ -43,6 +45,7 @@ class SwarmzOrchestrator:
         _log.info("Loading mesh...")
         try:
             from backend.core.cosmology.mesh_router import MeshRouter
+
             return MeshRouter()
         except ImportError:
             _log.info("Mesh subsystem not implemented, using stub.")
@@ -52,6 +55,7 @@ class SwarmzOrchestrator:
         _log.info("Starting governor...")
         try:
             from backend.governor import Governor
+
             return Governor()
         except ImportError:
             _log.info("Governor subsystem not implemented, using stub.")
@@ -61,6 +65,7 @@ class SwarmzOrchestrator:
         _log.info("Starting patchpack...")
         try:
             from backend.patchpack import Patchpack
+
             return Patchpack()
         except ImportError:
             _log.info("Patchpack subsystem not implemented, using stub.")
@@ -70,6 +75,7 @@ class SwarmzOrchestrator:
         _log.info("Starting session...")
         try:
             from swarmz_runtime.session import operator_session
+
             return operator_session
         except ImportError:
             _log.info("Session subsystem not implemented, using stub.")
@@ -79,6 +85,7 @@ class SwarmzOrchestrator:
         _log.info("Starting mission engine...")
         try:
             from swarmz_runtime.mission_engine import mission_engine
+
             return mission_engine
         except ImportError:
             _log.info("Mission engine not implemented, using stub.")
@@ -88,6 +95,7 @@ class SwarmzOrchestrator:
         _log.info("Starting swarm engine...")
         try:
             from swarmz_runtime.swarm_engine import behaviors
+
             return behaviors
         except ImportError:
             _log.info("Swarm engine not implemented, using stub.")
@@ -97,6 +105,7 @@ class SwarmzOrchestrator:
         _log.info("Starting avatar...")
         try:
             from swarmz_runtime.avatar import avatar_omega
+
             return avatar_omega
         except ImportError:
             _log.info("Avatar subsystem not implemented, using stub.")
@@ -110,6 +119,7 @@ class SwarmzOrchestrator:
         _log.info("Launching cockpit...")
         try:
             from swarmz_runtime.ui import cockpit
+
             return cockpit
         except ImportError:
             _log.info("Cockpit subsystem not implemented, using stub.")

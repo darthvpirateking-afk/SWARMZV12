@@ -8,6 +8,7 @@ from pathlib import Path
 
 EVENTS_FILE = Path("data/activity/events.jsonl")
 
+
 def verify_activity_stream():
     """Verify that events are being appended to the activity stream."""
     if not EVENTS_FILE.exists():
@@ -22,6 +23,7 @@ def verify_activity_stream():
 
         print(f"{len(lines)} events recorded.")
         return True
+
 
 if __name__ == "__main__":
     verify_activity_stream()

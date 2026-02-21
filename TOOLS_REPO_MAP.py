@@ -8,8 +8,31 @@ OUT_DIR = os.path.join(ROOT, "docs")
 OUT_MD = os.path.join(OUT_DIR, "REPO_MAP.md")
 OUT_JSON = os.path.join(OUT_DIR, "REPO_MAP.json")
 
-EXCLUDE_DIRS = {".git", ".venv", "node_modules", "dist", "build", ".next", "__pycache__", ".pytest_cache"}
-EXCLUDE_EXT = {".png", ".jpg", ".jpeg", ".webp", ".gif", ".ico", ".mp4", ".mov", ".zip", ".pdf", ".woff", ".woff2"}
+EXCLUDE_DIRS = {
+    ".git",
+    ".venv",
+    "node_modules",
+    "dist",
+    "build",
+    ".next",
+    "__pycache__",
+    ".pytest_cache",
+}
+EXCLUDE_EXT = {
+    ".png",
+    ".jpg",
+    ".jpeg",
+    ".webp",
+    ".gif",
+    ".ico",
+    ".mp4",
+    ".mov",
+    ".zip",
+    ".pdf",
+    ".woff",
+    ".woff2",
+}
+
 
 def sha1_file(path):
     h = hashlib.sha1()
@@ -21,12 +44,15 @@ def sha1_file(path):
             h.update(b)
     return h.hexdigest()
 
+
 def is_excluded_dir(d):
     return d in EXCLUDE_DIRS or d.startswith(".")
+
 
 def is_excluded_file(fn):
     _, ext = os.path.splitext(fn.lower())
     return ext in EXCLUDE_EXT
+
 
 def safe_relpath(p: str, root: str):
     """
@@ -45,6 +71,7 @@ def safe_relpath(p: str, root: str):
         return os.path.relpath(p, root).replace("\\", "/")
     except Exception:
         return None
+
 
 def main():
     os.makedirs(OUT_DIR, exist_ok=True)
@@ -66,12 +93,14 @@ def main():
 
             try:
                 st = os.stat(p)
-                files.append({
-                    "path": rel,
-                    "size": st.st_size,
-                    "mtime": int(st.st_mtime),
-                    "sha1": sha1_file(p) if st.st_size <= 2_000_000 else None,
-                })
+                files.append(
+                    {
+                        "path": rel,
+                        "size": st.st_size,
+                        "mtime": int(st.st_mtime),
+                        "sha1": sha1_file(p) if st.st_size <= 2_000_000 else None,
+                    }
+                )
             except Exception as e:
                 files.append({"path": rel, "error": str(e)})
 
@@ -80,7 +109,7 @@ def main():
         "root": ROOT.replace("\\", "/"),
         "generated_at": int(time.time()),
         "file_count": len(files_sorted),
-        "files": files_sorted
+        "files": files_sorted,
     }
 
     with open(OUT_JSON, "w", encoding="utf-8") as f:
@@ -95,7 +124,19 @@ def main():
     hints = []
     for x in files_sorted:
         p = x.get("path", "")
-        if p.endswith(("run_swarmz.py", "run_server.py", "server.py", "main.py", "app.py", "index.ts", "server/index.ts", "web/package.json", "package.json")):
+        if p.endswith(
+            (
+                "run_swarmz.py",
+                "run_server.py",
+                "server.py",
+                "main.py",
+                "app.py",
+                "index.ts",
+                "server/index.ts",
+                "web/package.json",
+                "package.json",
+            )
+        ):
             hints.append(p)
 
     if hints:
@@ -118,11 +159,12 @@ def main():
     print("WROTE:", os.path.relpath(OUT_MD, ROOT))
     print("WROTE:", os.path.relpath(OUT_JSON, ROOT))
 
+
 if __name__ == "__main__":
     main()
 
 # Minimal scaffold for TOOLS_REPO_MAP.py
 
+
 def get_tools_repo_map():
     pass
-

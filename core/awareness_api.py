@@ -76,4 +76,3 @@ def register_awareness_api(app: FastAPI) -> None:
             return result
         except Exception as exc:
             return {"ok": False, "error": str(exc)[:300]}
-

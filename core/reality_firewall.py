@@ -6,6 +6,7 @@ Reality Firewall Module
 Classifies actions as SAFE or REALITY.
 """
 
+
 def classify_action(action: dict) -> str:
     """
     Classify an action as SAFE or REALITY.
@@ -20,6 +21,7 @@ def classify_action(action: dict) -> str:
         print(f"[fail-open] Classification error: {e}")
         return "SAFE"
 
+
 def should_block(action: dict, runtime_config: dict) -> bool:
     """
     Determine if an action should be blocked based on runtime configuration.
@@ -31,6 +33,7 @@ def should_block(action: dict, runtime_config: dict) -> bool:
     except Exception as e:
         print(f"[fail-open] Blocking decision error: {e}")
         return False
+
 
 def record_firewall_event(action: dict, decision: str):
     """

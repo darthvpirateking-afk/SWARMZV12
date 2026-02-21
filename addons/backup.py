@@ -80,4 +80,3 @@ def rollback_import(rollback_path: str, data_dir: str = "data") -> Dict[str, Any
     shutil.copytree(rp, dp)
     _audit("backup_rollback", {"restored_from": rollback_path})
     return {"status": "rolled_back", "restored_from": rollback_path}
-

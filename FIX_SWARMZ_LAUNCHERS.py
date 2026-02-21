@@ -14,6 +14,7 @@ Outputs (overwritten in-place):
 Also patches lines that accidentally start with "urn {" to "return {" in
 server.py and run_server.py if those files exist.
 """
+
 from __future__ import annotations
 
 import socket

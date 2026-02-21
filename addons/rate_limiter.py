@@ -49,11 +49,14 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
             lambda: _TokenBucket(capacity=self._cap, refill_rate=self._rate)
         )
 
-    async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
+    async def dispatch(
+        self, request: Request, call_next: RequestResponseEndpoint
+    ) -> Response:
         client = request.client.host if request.client else "unknown"
         key = f"{client}:{request.url.path}"
         bucket = self._buckets[key]
         if not bucket.consume():
-            raise HTTPException(status_code=429, detail="Rate limit exceeded â€” slow down")
+            raise HTTPException(
+                status_code=429, detail="Rate limit exceeded â€” slow down"
+            )
         return await call_next(request)
-

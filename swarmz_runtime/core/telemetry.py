@@ -46,7 +46,9 @@ def record_event(name: str, payload: Optional[Dict[str, Any]] = None) -> None:
     verbose_log("event", name, payload)
 
 
-def record_duration(name: str, duration_ms: float, context: Optional[Dict[str, Any]] = None) -> None:
+def record_duration(
+    name: str, duration_ms: float, context: Optional[Dict[str, Any]] = None
+) -> None:
     evt = {
         "ts": datetime.now(timezone.utc).isoformat(),
         "type": name,
@@ -57,7 +59,9 @@ def record_duration(name: str, duration_ms: float, context: Optional[Dict[str, A
     verbose_log("duration", name, f"{duration_ms:.3f}ms", context)
 
 
-def record_failure(name: str, error: str, context: Optional[Dict[str, Any]] = None) -> None:
+def record_failure(
+    name: str, error: str, context: Optional[Dict[str, Any]] = None
+) -> None:
     evt = {
         "ts": datetime.now(timezone.utc).isoformat(),
         "type": name,
@@ -112,4 +116,3 @@ def avg_duration(name: str, max_samples: int = 100) -> Optional[float]:
     except Exception:
         return None
     return None
-

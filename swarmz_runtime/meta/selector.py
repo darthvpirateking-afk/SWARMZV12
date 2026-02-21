@@ -13,10 +13,12 @@ if TYPE_CHECKING:
 # Avoid circular import - will be set by the engine
 _engine_instance = None
 
+
 def set_engine_provider(engine_provider: Callable[[], Any]):
     """Set the engine provider function to avoid circular imports."""
     global _engine_instance
     _engine_instance = engine_provider
+
 
 def get_engine():
     """Get the engine instance."""
@@ -51,7 +53,9 @@ class MetaSelector:
         self.space_shaping = SpaceShaping(engine)
         self.pre_evaluated = PreEvaluated(engine)
 
-    def select(self, context: Dict[str, Any], options: List[Dict[str, Any]]) -> Dict[str, Any]:
+    def select(
+        self, context: Dict[str, Any], options: List[Dict[str, Any]]
+    ) -> Dict[str, Any]:
         """
         Execute the complete lattice flow for sovereign decision making.
         """
@@ -62,7 +66,9 @@ class MetaSelector:
         shaped_space = self.space_shaping.shape(context, filtered_options)
 
         # Apply architectural restraint
-        restrained_options = self.architectural_restraint.restrain(context, shaped_space)
+        restrained_options = self.architectural_restraint.restrain(
+            context, shaped_space
+        )
 
         # Apply nonlinear uplift
         uplifted_options = self.magic_way.uplift(context, restrained_options)
@@ -81,7 +87,9 @@ class MetaSelector:
 
         return final_selection
 
-    def _meta_select(self, context: Dict[str, Any], options: List[Dict[str, Any]]) -> Dict[str, Any]:
+    def _meta_select(
+        self, context: Dict[str, Any], options: List[Dict[str, Any]]
+    ) -> Dict[str, Any]:
         """
         THE THING WITHOUT A NAME - Final silent arbitration
         Meta-coherence without visible dominance
@@ -108,17 +116,23 @@ class MetaSelector:
 
         return selected_option
 
-    def _calculate_meta_coherence(self, context: Dict[str, Any], option: Dict[str, Any]) -> float:
+    def _calculate_meta_coherence(
+        self, context: Dict[str, Any], option: Dict[str, Any]
+    ) -> float:
         """
         Calculate meta-coherence score for an option.
         This is the invisible architecture that governs without being seen.
         """
         # Create coherence hash from context + option
-        coherence_input = json.dumps({
-            "context": context,
-            "option": option,
-            "timestamp": datetime.now().isoformat()
-        }, sort_keys=True, default=str)
+        coherence_input = json.dumps(
+            {
+                "context": context,
+                "option": option,
+                "timestamp": datetime.now().isoformat(),
+            },
+            sort_keys=True,
+            default=str,
+        )
 
         # Use SHA-256 for deterministic coherence calculation
         coherence_hash = hashlib.sha256(coherence_input.encode()).hexdigest()
@@ -128,13 +142,20 @@ class MetaSelector:
 
         return coherence_value
 
-    def _log_lattice_flow(self, context: Dict[str, Any], original_options: List[Dict[str, Any]], final_selection: Dict[str, Any]):
+    def _log_lattice_flow(
+        self,
+        context: Dict[str, Any],
+        original_options: List[Dict[str, Any]],
+        final_selection: Dict[str, Any],
+    ):
         """
         Log the complete lattice flow for audit purposes.
         """
         lattice_log = {
             "timestamp": datetime.now().isoformat(),
-            "context_hash": hashlib.sha256(json.dumps(context, sort_keys=True).encode()).hexdigest()[:16],
+            "context_hash": hashlib.sha256(
+                json.dumps(context, sort_keys=True).encode()
+            ).hexdigest()[:16],
             "original_options_count": len(original_options),
             "final_selection": final_selection.get("id", "unknown"),
             "meta_coherence": final_selection.get("_meta_coherence", 0),
@@ -145,16 +166,17 @@ class MetaSelector:
                 "magic_way",
                 "mythical_way",
                 "sovereign_override",
-                "meta_selector"
-            ]
+                "meta_selector",
+            ],
         }
 
         # Log to audit system
         from swarmz_runtime.storage.schema import AuditEntry, VisibilityLevel
+
         audit_entry = AuditEntry(
             event_type="lattice_flow_complete",
             details=lattice_log,
-            visibility=VisibilityLevel.BRIGHT  # Meta-selector operations are visible for audit
+            visibility=VisibilityLevel.BRIGHT,  # Meta-selector operations are visible for audit
         )
         engine = get_engine()
         engine.db.log_audit(audit_entry)
@@ -169,7 +191,9 @@ class LatticeFlow:
     def __init__(self, engine: "SwarmzEngine"):
         self.engine = engine
 
-    def process(self, context: Dict[str, Any], options: List[Dict[str, Any]]) -> Dict[str, Any]:
+    def process(
+        self, context: Dict[str, Any], options: List[Dict[str, Any]]
+    ) -> Dict[str, Any]:
         """
         Execute the complete lattice flow.
         """
@@ -190,7 +214,9 @@ class PreEvaluated:
     def __init__(self, engine: "SwarmzEngine"):
         self.engine = engine
 
-    def filter(self, context: Dict[str, Any], options: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    def filter(
+        self, context: Dict[str, Any], options: List[Dict[str, Any]]
+    ) -> List[Dict[str, Any]]:
         """
         Fast pre-evaluation filtering to remove obviously invalid options.
         """
@@ -236,7 +262,9 @@ class SpaceShaping:
     def __init__(self, engine: "SwarmzEngine"):
         self.engine = engine
 
-    def shape(self, context: Dict[str, Any], options: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    def shape(
+        self, context: Dict[str, Any], options: List[Dict[str, Any]]
+    ) -> List[Dict[str, Any]]:
         """
         Shape the decision space by establishing boundaries and directions.
         """
@@ -249,7 +277,9 @@ class SpaceShaping:
 
         return shaped
 
-    def _apply_space_shaping(self, context: Dict[str, Any], option: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    def _apply_space_shaping(
+        self, context: Dict[str, Any], option: Dict[str, Any]
+    ) -> Optional[Dict[str, Any]]:
         """
         Apply directional constraints to shape the option space.
         """
@@ -259,17 +289,21 @@ class SpaceShaping:
 
         return option
 
-    def _calculate_boundaries(self, context: Dict[str, Any], option: Dict[str, Any]) -> Dict[str, Any]:
+    def _calculate_boundaries(
+        self, context: Dict[str, Any], option: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """
         Calculate boundary constraints for the option.
         """
         return {
             "context_domain": context.get("domain", "general"),
             "option_scope": option.get("scope", "local"),
-            "directional_alignment": self._calculate_alignment(context, option)
+            "directional_alignment": self._calculate_alignment(context, option),
         }
 
-    def _calculate_alignment(self, context: Dict[str, Any], option: Dict[str, Any]) -> float:
+    def _calculate_alignment(
+        self, context: Dict[str, Any], option: Dict[str, Any]
+    ) -> float:
         """
         Calculate how well the option aligns with the context direction.
         """
@@ -299,7 +333,9 @@ class ArchitecturalRestraint:
     def __init__(self, engine: "SwarmzEngine"):
         self.engine = engine
 
-    def restrain(self, context: Dict[str, Any], options: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    def restrain(
+        self, context: Dict[str, Any], options: List[Dict[str, Any]]
+    ) -> List[Dict[str, Any]]:
         """
         Apply architectural purity constraints to enforce minimal, clean designs.
         """
@@ -312,7 +348,9 @@ class ArchitecturalRestraint:
 
         return restrained
 
-    def _passes_architectural_restraint(self, context: Dict[str, Any], option: Dict[str, Any]) -> bool:
+    def _passes_architectural_restraint(
+        self, context: Dict[str, Any], option: Dict[str, Any]
+    ) -> bool:
         """
         Check if option passes architectural purity requirements.
         """
@@ -330,7 +368,9 @@ class ArchitecturalRestraint:
 
         return True
 
-    def _apply_restraint(self, context: Dict[str, Any], option: Dict[str, Any]) -> Dict[str, Any]:
+    def _apply_restraint(
+        self, context: Dict[str, Any], option: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """
         Apply architectural restraint to minimize and purify the option.
         """
@@ -365,7 +405,9 @@ class MagicWay:
     def __init__(self, engine: "SwarmzEngine"):
         self.engine = engine
 
-    def uplift(self, context: Dict[str, Any], options: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    def uplift(
+        self, context: Dict[str, Any], options: List[Dict[str, Any]]
+    ) -> List[Dict[str, Any]]:
         """
         Apply nonlinear uplift to create emergence and wild potential.
         """
@@ -377,7 +419,9 @@ class MagicWay:
 
         return uplifted
 
-    def _apply_magic_uplift(self, context: Dict[str, Any], option: Dict[str, Any]) -> Dict[str, Any]:
+    def _apply_magic_uplift(
+        self, context: Dict[str, Any], option: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """
         Apply nonlinear transformation to uplift the option.
         """
@@ -395,7 +439,9 @@ class MagicWay:
 
         return uplifted
 
-    def _calculate_emergence(self, context: Dict[str, Any], option: Dict[str, Any]) -> float:
+    def _calculate_emergence(
+        self, context: Dict[str, Any], option: Dict[str, Any]
+    ) -> float:
         """
         Calculate emergence potential for nonlinear uplift.
         """
@@ -414,6 +460,7 @@ class MagicWay:
 
         # Add some "magic" randomness for emergence
         import random
+
         magic_factor = random.uniform(0.8, 1.2)
 
         emergence = min(1.0, synergy_score * magic_factor)
@@ -433,7 +480,9 @@ class MythicalWay:
     def __init__(self, engine: "SwarmzEngine"):
         self.engine = engine
 
-    def align(self, context: Dict[str, Any], options: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    def align(
+        self, context: Dict[str, Any], options: List[Dict[str, Any]]
+    ) -> List[Dict[str, Any]]:
         """
         Apply archetypal alignment for deep pattern resonance.
         """
@@ -445,7 +494,9 @@ class MythicalWay:
 
         return aligned
 
-    def _apply_mythical_alignment(self, context: Dict[str, Any], option: Dict[str, Any]) -> Dict[str, Any]:
+    def _apply_mythical_alignment(
+        self, context: Dict[str, Any], option: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """
         Apply archetypal patterns and narrative alignment.
         """
@@ -464,7 +515,9 @@ class MythicalWay:
 
         return aligned
 
-    def _identify_archetypes(self, context: Dict[str, Any], option: Dict[str, Any]) -> List[str]:
+    def _identify_archetypes(
+        self, context: Dict[str, Any], option: Dict[str, Any]
+    ) -> List[str]:
         """
         Identify archetypal patterns in context and option.
         """
@@ -480,11 +533,14 @@ class MythicalWay:
             "explorer": ["discover", "explore", "journey", "unknown"],
             "creator": ["create", "build", "innovate", "design"],
             "guardian": ["protect", "defend", "secure", "guard"],
-            "trickster": ["clever", "deceptive", "unconventional", "surprise"]
+            "trickster": ["clever", "deceptive", "unconventional", "surprise"],
         }
 
         for archetype, patterns in archetype_patterns.items():
-            if any(pattern in context_text or pattern in option_text for pattern in patterns):
+            if any(
+                pattern in context_text or pattern in option_text
+                for pattern in patterns
+            ):
                 archetypes.append(archetype)
 
         return archetypes
@@ -514,7 +570,9 @@ class SovereignOverride:
     def __init__(self, engine: "SwarmzEngine"):
         self.engine = engine
 
-    def override(self, context: Dict[str, Any], options: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    def override(
+        self, context: Dict[str, Any], options: List[Dict[str, Any]]
+    ) -> List[Dict[str, Any]]:
         """
         Apply sovereign override when needed - covert force with zero transparency.
         """
@@ -530,7 +588,9 @@ class SovereignOverride:
 
         return overridden
 
-    def _requires_override(self, context: Dict[str, Any], options: List[Dict[str, Any]]) -> bool:
+    def _requires_override(
+        self, context: Dict[str, Any], options: List[Dict[str, Any]]
+    ) -> bool:
         """
         Determine if sovereign override is required.
         """
@@ -548,7 +608,9 @@ class SovereignOverride:
 
         return False
 
-    def _apply_sovereign_override(self, context: Dict[str, Any], options: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    def _apply_sovereign_override(
+        self, context: Dict[str, Any], options: List[Dict[str, Any]]
+    ) -> List[Dict[str, Any]]:
         """
         Apply covert sovereign control - untraceable force.
         """
@@ -575,10 +637,12 @@ class SovereignOverride:
             "context_domain": context.get("domain", "sovereign"),
             "sovereign_control": True,
             "_sovereign_override": True,
-            "_untraceable": True
+            "_untraceable": True,
         }
 
-    def _apply_sovereign_influence(self, context: Dict[str, Any], option: Dict[str, Any]) -> Dict[str, Any]:
+    def _apply_sovereign_influence(
+        self, context: Dict[str, Any], option: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """
         Apply subtle sovereign influence to an existing option.
         """
@@ -588,7 +652,9 @@ class SovereignOverride:
 
         return influenced
 
-    def _log_covert_override(self, context: Dict[str, Any], original_count: int, final_count: int):
+    def _log_covert_override(
+        self, context: Dict[str, Any], original_count: int, final_count: int
+    ):
         """
         Log sovereign override with zero transparency markers.
         """
@@ -596,13 +662,15 @@ class SovereignOverride:
         audit_entry = {
             "event_type": "sovereign_override_applied",
             "details": {
-                "context_hash": hashlib.sha256(json.dumps(context, sort_keys=True).encode()).hexdigest()[:16],
+                "context_hash": hashlib.sha256(
+                    json.dumps(context, sort_keys=True).encode()
+                ).hexdigest()[:16],
                 "original_options": original_count,
                 "final_options": final_count,
                 "untraceable": True,
-                "covert_operation": True
+                "covert_operation": True,
             },
-            "visibility": "bright"  # Visible for audit but marked as untraceable
+            "visibility": "bright",  # Visible for audit but marked as untraceable
         }
 
         self.engine.db.log_audit(audit_entry)

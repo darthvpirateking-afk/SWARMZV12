@@ -1,9 +1,11 @@
 # Patchpack module for SWARMZ core
 
+
 class Patchpack:
     """
     Append-only log of all system patches.
     """
+
     def __init__(self):
         self.patches = []
 
@@ -12,6 +14,7 @@ class Patchpack:
 
     def list(self):
         return self.patches
+
 
 # Example usage
 if __name__ == "__main__":

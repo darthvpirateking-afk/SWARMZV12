@@ -10,6 +10,7 @@ Usage:
 Performs environment sanity checks without mutating repo state. The script prints
 PASS/FAIL per check plus Windows CMD and PowerShell fix commands.
 """
+
 from __future__ import annotations
 
 import json
@@ -29,7 +30,13 @@ DEFAULT_PORTS = [8012, 3000]
 
 
 class CheckResult:
-    def __init__(self, name: str, status: str, info: str, fixes: List[Tuple[str, str]] | None = None):
+    def __init__(
+        self,
+        name: str,
+        status: str,
+        info: str,
+        fixes: List[Tuple[str, str]] | None = None,
+    ):
         self.name = name
         self.status = status  # PASS | FAIL | WARN
         self.info = info
@@ -66,8 +73,8 @@ def check_workdir() -> CheckResult:
     correct = Path.cwd().resolve() == ROOT
     info = f"cwd={Path.cwd()} expected={ROOT}"
     fixes = [
-        ("CMD", f"cd /d \"{ROOT}\""),
-        ("PS", f"Set-Location \"{ROOT}\""),
+        ("CMD", f'cd /d "{ROOT}"'),
+        ("PS", f'Set-Location "{ROOT}"'),
     ]
     return CheckResult("Working directory", "PASS" if correct else "FAIL", info, fixes)
 
@@ -79,12 +86,19 @@ def check_shadow_dirs() -> CheckResult:
             dup = parent / parent.name
             if dup.exists():
                 shadows.append(str(dup.relative_to(ROOT)))
-    pkg_jsons = [p for p in ROOT.rglob("package.json") if "node_modules" not in p.parts and ".git" not in p.parts]
+    pkg_jsons = [
+        p
+        for p in ROOT.rglob("package.json")
+        if "node_modules" not in p.parts and ".git" not in p.parts
+    ]
     info_parts = []
     if shadows:
         info_parts.append("shadow dirs: " + ", ".join(shadows))
     if len(pkg_jsons) > 1:
-        info_parts.append("multiple package.json roots: " + ", ".join(str(p.relative_to(ROOT)) for p in pkg_jsons))
+        info_parts.append(
+            "multiple package.json roots: "
+            + ", ".join(str(p.relative_to(ROOT)) for p in pkg_jsons)
+        )
     if shadows:
         status = "WARN"
     elif len(pkg_jsons) > 1:
@@ -92,10 +106,18 @@ def check_shadow_dirs() -> CheckResult:
     else:
         status = "PASS"
     fixes = [
-        ("CMD", "Remove duplicate nested dirs (e.g., rmdir /s web\\web) or consolidate package roots."),
-        ("PS", "Remove duplicate nested dirs (Remove-Item -Recurse -Force web/web) or consolidate package roots."),
+        (
+            "CMD",
+            "Remove duplicate nested dirs (e.g., rmdir /s web\\web) or consolidate package roots.",
+        ),
+        (
+            "PS",
+            "Remove duplicate nested dirs (Remove-Item -Recurse -Force web/web) or consolidate package roots.",
+        ),
     ]
-    return CheckResult("Shadow dirs / package roots", status, "; ".join(info_parts) or "ok", fixes)
+    return CheckResult(
+        "Shadow dirs / package roots", status, "; ".join(info_parts) or "ok", fixes
+    )
 
 
 def check_bom() -> CheckResult:
@@ -113,14 +135,18 @@ def check_bom() -> CheckResult:
     fixes = []
     for rel in bad:
         abspath = ROOT / rel
-        fixes.append((
-            "CMD",
-            f"powershell -Command \"(Get-Content -Raw '{abspath}') -replace '^\\uFEFF','' | Set-Content '{abspath}' -Encoding UTF8\"",
-        ))
-        fixes.append((
-            "PS",
-            f"(Get-Content -Raw '{abspath}') -replace '^\uFEFF','' | Set-Content '{abspath}' -Encoding UTF8",
-        ))
+        fixes.append(
+            (
+                "CMD",
+                f"powershell -Command \"(Get-Content -Raw '{abspath}') -replace '^\\uFEFF','' | Set-Content '{abspath}' -Encoding UTF8\"",
+            )
+        )
+        fixes.append(
+            (
+                "PS",
+                f"(Get-Content -Raw '{abspath}') -replace '^\ufeff','' | Set-Content '{abspath}' -Encoding UTF8",
+            )
+        )
     return CheckResult("BOM in JSON", status, info, fixes)
 
 
@@ -136,10 +162,12 @@ def check_scripts() -> CheckResult:
     missing = [s for s in ("dev", "build", "start") if s not in scripts]
     if missing:
         fixes = [
-            ("CMD", " && ".join([f"npm set-script {s} \"<cmd>\"" for s in missing])),
+            ("CMD", " && ".join([f'npm set-script {s} "<cmd>"' for s in missing])),
             ("PS", "; ".join([f"npm set-script {s} '<cmd>'" for s in missing])),
         ]
-        return CheckResult("npm scripts", "FAIL", f"missing: {', '.join(missing)}", fixes)
+        return CheckResult(
+            "npm scripts", "FAIL", f"missing: {', '.join(missing)}", fixes
+        )
     return CheckResult("npm scripts", "PASS", "dev/build/start present")
 
 
@@ -169,7 +197,9 @@ def check_ports() -> CheckResult:
 
 def check_env_and_config() -> CheckResult:
     cfg = _load_runtime_config()
-    missing_cfg = [k for k in ("apiBaseUrl", "uiBaseUrl", "bind", "port") if k not in cfg]
+    missing_cfg = [
+        k for k in ("apiBaseUrl", "uiBaseUrl", "bind", "port") if k not in cfg
+    ]
     env_warn = []
     if not os.getenv("SWARMZ_OPERATOR_PIN"):
         env_warn.append("SWARMZ_OPERATOR_PIN not set (auto-generated will be used)")
@@ -200,7 +230,7 @@ def check_writable_dirs() -> CheckResult:
     status = "FAIL" if failures else "PASS"
     fixes = [
         ("CMD", "Run shell as Administrator or fix permissions on data/ and config/"),
-        ("PS", "Run as Administrator or take ownership: takeown /F data /A /R")
+        ("PS", "Run as Administrator or take ownership: takeown /F data /A /R"),
     ]
     return CheckResult("Writable dirs", status, "; ".join(failures) or "ok", fixes)
 
@@ -272,4 +302,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

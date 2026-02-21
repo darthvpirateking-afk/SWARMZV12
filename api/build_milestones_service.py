@@ -20,7 +20,9 @@ class BuildMilestonesService:
     def get_status(self) -> BuildMilestonesStatusResponse:
         state = self._read_state()
         stages = [BuildStageRecord(**entry) for entry in state["stages"]]
-        history = [BuildStageExecutionRecord(**entry) for entry in state.get("history", [])]
+        history = [
+            BuildStageExecutionRecord(**entry) for entry in state.get("history", [])
+        ]
         return BuildMilestonesStatusResponse(
             ok=True,
             current_stage=int(state["current_stage"]),
@@ -86,8 +88,12 @@ class BuildMilestonesService:
             try:
                 payload = json.loads(self._state_file.read_text(encoding="utf-8"))
                 if isinstance(payload, dict):
-                    current_stage = max(1, min(int(payload.get("current_stage", 30)), 30))
-                    target_stage = max(current_stage, min(int(payload.get("target_stage", 30)), 30))
+                    current_stage = max(
+                        1, min(int(payload.get("current_stage", 30)), 30)
+                    )
+                    target_stage = max(
+                        current_stage, min(int(payload.get("target_stage", 30)), 30)
+                    )
                     stages = payload.get("stages")
                     history = payload.get("history")
                     if isinstance(stages, list) and len(stages) == 30:

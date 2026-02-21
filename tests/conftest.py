@@ -30,6 +30,7 @@ from fastapi.testclient import TestClient
 # Simplify the import of create_app
 from swarmz_runtime.api.server import app
 
+
 @pytest.fixture
 def client():
     """FastAPI TestClient using a fresh app instance."""

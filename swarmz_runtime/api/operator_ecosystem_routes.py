@@ -7,7 +7,6 @@ from pydantic import BaseModel, Field
 from swarmz_runtime.core.operator_ecosystem import OperatorEcosystem
 from swarmz_runtime.core.primal_state import load_primal_state_slate
 
-
 router = APIRouter()
 _ecosystem = OperatorEcosystem(Path(__file__).resolve().parent.parent.parent)
 
@@ -173,12 +172,18 @@ def missions(status: Optional[str] = Query(default=None)):
 
 @router.post("/operator-os/money-risk/snapshot")
 def money_risk_snapshot(payload: MoneyRiskSnapshotRequest):
-    return {"ok": True, "snapshot": _ecosystem.set_money_risk_snapshot(payload.model_dump())}
+    return {
+        "ok": True,
+        "snapshot": _ecosystem.set_money_risk_snapshot(payload.model_dump()),
+    }
 
 
 @router.post("/identity/profiles")
 def create_profile(payload: OperatorProfileRequest):
-    return {"ok": True, "profile": _ecosystem.create_operator_profile(**payload.model_dump())}
+    return {
+        "ok": True,
+        "profile": _ecosystem.create_operator_profile(**payload.model_dump()),
+    }
 
 
 @router.get("/identity/profiles")

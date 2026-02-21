@@ -39,11 +39,15 @@ class BaseLayer(ABC):
         pass
 
     @staticmethod
-    def make_record(layer: str, variable: str, value: Any,
-                    units: str = "abstract",
-                    confidence: float = 0.8,
-                    directionality: str = "neutral",
-                    source: str = "") -> dict:
+    def make_record(
+        layer: str,
+        variable: str,
+        value: Any,
+        units: str = "abstract",
+        confidence: float = 0.8,
+        directionality: str = "neutral",
+        source: str = "",
+    ) -> dict:
         """Helper to build a valid STATE record."""
         return {
             "layer": layer,

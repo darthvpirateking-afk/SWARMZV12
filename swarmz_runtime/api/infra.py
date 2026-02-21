@@ -15,7 +15,6 @@ from swarmz_runtime.core.infra_backup import compute_backup_plan
 from swarmz_runtime.core.infra_missions import emit_infra_missions
 from swarmz_runtime.storage.infra_state import load_infra_events, load_infra_state
 
-
 router = APIRouter(prefix="/v1/infra", tags=["infra"])
 
 
@@ -108,7 +107,12 @@ def infra_backup_plan():
 
 
 @router.post("/plan_missions")
-def infra_plan_missions(limit: int = 500, target_cpu: float = 0.6, max_cpu: float = 0.85, min_cpu: float = 0.15):
+def infra_plan_missions(
+    limit: int = 500,
+    target_cpu: float = 0.6,
+    max_cpu: float = 0.85,
+    min_cpu: float = 0.15,
+):
     """Emit simulation-only missions for infra autoscale/backup plans.
 
     This translates the current autoscale and backup recommendations
@@ -139,7 +143,12 @@ def infra_plan_missions(limit: int = 500, target_cpu: float = 0.6, max_cpu: floa
 
 
 @router.get("/autoscale_plan")
-def infra_autoscale_plan(limit: int = 500, target_cpu: float = 0.6, max_cpu: float = 0.85, min_cpu: float = 0.15):
+def infra_autoscale_plan(
+    limit: int = 500,
+    target_cpu: float = 0.6,
+    max_cpu: float = 0.85,
+    min_cpu: float = 0.15,
+):
     """Return a conservative autoscaling-style recommendation.
 
     This endpoint is read-only: it inspects recent metrics and suggests
@@ -158,4 +167,3 @@ def infra_autoscale_plan(limit: int = 500, target_cpu: float = 0.6, max_cpu: flo
         min_cpu=min_cpu,
     )
     return plan
-

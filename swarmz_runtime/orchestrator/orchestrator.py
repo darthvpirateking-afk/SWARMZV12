@@ -11,10 +11,10 @@ import urllib.error
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional
 
-
 # -----------------------------
 # Data models
 # -----------------------------
+
 
 @dataclass
 class Agent:
@@ -25,6 +25,7 @@ class Agent:
       - role/goal/backstory provide "persona"
       - tools is metadata for later routing (not required for v0)
     """
+
     name: str
     role: str
     goal: str
@@ -38,6 +39,7 @@ class Task:
     """
     A unit of work assigned to a specific agent.
     """
+
     name: str
     description: str
     expected_output: str
@@ -55,6 +57,7 @@ class CrewResult:
 # OpenAI Responses API client (stdlib-only)
 # -----------------------------
 
+
 class OpenAIResponsesClient:
     """
     Minimal OpenAI Responses API client using only stdlib (urllib).
@@ -70,7 +73,9 @@ class OpenAIResponsesClient:
     def __init__(self):
         self.api_key = os.getenv("OPENAI_API_KEY", "").strip()
         self.model = os.getenv("SWARMZ_MODEL", "gpt-4.1-mini").strip()
-        self.base_url = os.getenv("OPENAI_BASE_URL", "https://api.openai.com/v1").rstrip("/")
+        self.base_url = os.getenv(
+            "OPENAI_BASE_URL", "https://api.openai.com/v1"
+        ).rstrip("/")
         self.timeout_s = int(os.getenv("SWARMZ_TIMEOUT_S", "60"))
         self.retries = int(os.getenv("SWARMZ_RETRIES", "2"))
 
@@ -94,7 +99,9 @@ class OpenAIResponsesClient:
         last_err: Optional[str] = None
         for attempt in range(self.retries + 1):
             try:
-                req = urllib.request.Request(url, data=body, headers=headers, method="POST")
+                req = urllib.request.Request(
+                    url, data=body, headers=headers, method="POST"
+                )
                 with urllib.request.urlopen(req, timeout=self.timeout_s) as resp:
                     raw = resp.read().decode("utf-8", errors="replace")
                 return json.loads(raw)
@@ -112,7 +119,9 @@ class OpenAIResponsesClient:
                     last_err = f"HTTP {e.code}: {raw or str(e)}"
                     continue
 
-                raise RuntimeError(f"OpenAI Responses HTTPError {e.code}: {raw or str(e)}") from e
+                raise RuntimeError(
+                    f"OpenAI Responses HTTPError {e.code}: {raw or str(e)}"
+                ) from e
 
             except urllib.error.URLError as e:
                 if attempt < self.retries:
@@ -128,7 +137,9 @@ class OpenAIResponsesClient:
                     continue
                 raise
 
-        raise RuntimeError(f"OpenAI call failed after retries: {last_err or 'unknown error'}")
+        raise RuntimeError(
+            f"OpenAI call failed after retries: {last_err or 'unknown error'}"
+        )
 
 
 def _extract_output_text(resp: Dict[str, Any]) -> str:
@@ -169,6 +180,7 @@ def _extract_output_text(resp: Dict[str, Any]) -> str:
 # Crew runner (now real)
 # -----------------------------
 
+
 class Crew:
     """
     Minimal "crew" runner.
@@ -195,7 +207,10 @@ class Crew:
         for task in self.tasks:
             agent = self.agents.get(task.agent_name)
             if not agent:
-                result = {"task": task.name, "error": f"Agent '{task.agent_name}' not found"}
+                result = {
+                    "task": task.name,
+                    "error": f"Agent '{task.agent_name}' not found",
+                }
                 outputs.append(result)
                 if self.verbose:
                     print(result["error"])
@@ -279,17 +294,21 @@ class Crew:
         if not self.llm.enabled():
             # Execute simulation mode logic early and prevent further processing
             return CrewResult(
-                tasks=[Task(
-                    name="Master Coordination",
-                    description=f"Simulated coordination for goal: {high_level_goal}",
-                    expected_output="Simulated output",
-                    agent_name="MasterAI",
-                )],
-                outputs=[{
-                    "task": "Master Coordination",
-                    "result": f"[SIMULATED] Master AI simulated coordination for goal: {high_level_goal}",
-                    "provider": "simulated",
-                }]
+                tasks=[
+                    Task(
+                        name="Master Coordination",
+                        description=f"Simulated coordination for goal: {high_level_goal}",
+                        expected_output="Simulated output",
+                        agent_name="MasterAI",
+                    )
+                ],
+                outputs=[
+                    {
+                        "task": "Master Coordination",
+                        "result": f"[SIMULATED] Master AI simulated coordination for goal: {high_level_goal}",
+                        "provider": "simulated",
+                    }
+                ],
             )
 
         # Define a high-level task for the Master AI
@@ -316,23 +335,27 @@ class Crew:
 
             return CrewResult(
                 tasks=[master_task],
-                outputs=[{
-                    "task": master_task.name,
-                    "result": result_text,
-                    "provider": "openai_responses",
-                    "model": self.llm.model,
-                }]
+                outputs=[
+                    {
+                        "task": master_task.name,
+                        "result": result_text,
+                        "provider": "openai_responses",
+                        "model": self.llm.model,
+                    }
+                ],
             )
 
         except Exception as e:
             return CrewResult(
                 tasks=[master_task],
-                outputs=[{
-                    "task": master_task.name,
-                    "error": str(e),
-                    "provider": "openai_responses",
-                    "model": self.llm.model,
-                }]
+                outputs=[
+                    {
+                        "task": master_task.name,
+                        "error": str(e),
+                        "provider": "openai_responses",
+                        "model": self.llm.model,
+                    }
+                ],
             )
 
 
@@ -377,5 +400,3 @@ def crew_from_config(config: Dict[str, Any]) -> Crew:
         )
 
     return Crew(agents=agents, tasks=tasks, verbose=verbose)
-
-

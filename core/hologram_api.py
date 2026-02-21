@@ -12,8 +12,8 @@ from typing import Optional, List, Dict, Any
 from pydantic import BaseModel, Field
 from fastapi import FastAPI, HTTPException
 
-
 # â”€â”€ Request models â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
 
 class BurstToggleRequest(BaseModel):
     enabled: bool
@@ -56,6 +56,7 @@ def register_hologram_api(app: FastAPI) -> None:
         """Full evolution state: level, XP, currencies, powers."""
         try:
             from core.hologram import compute_level
+
             state = compute_level()
             return {"ok": True, **state}
         except Exception as exc:
@@ -68,6 +69,7 @@ def register_hologram_api(app: FastAPI) -> None:
         """Quick XP check."""
         try:
             from core.hologram import compute_xp, compute_level
+
             xp = compute_xp()
             level_data = compute_level()
             return {
@@ -86,6 +88,7 @@ def register_hologram_api(app: FastAPI) -> None:
         """Power currencies: stability, novelty, reversibility."""
         try:
             from core.hologram import compute_power_currencies
+
             currencies = compute_power_currencies()
             return {"ok": True, **currencies}
         except Exception as exc:
@@ -98,6 +101,7 @@ def register_hologram_api(app: FastAPI) -> None:
         """Currently unlocked powers."""
         try:
             from core.hologram import compute_level
+
             state = compute_level()
             return {
                 "ok": True,
@@ -115,6 +119,7 @@ def register_hologram_api(app: FastAPI) -> None:
         """All level definitions."""
         try:
             from core.hologram import LEVELS
+
             return {"ok": True, "levels": LEVELS}
         except Exception as exc:
             return {"ok": False, "error": str(exc)[:300]}
@@ -126,9 +131,12 @@ def register_hologram_api(app: FastAPI) -> None:
         """Level-gated trial detail for the hologram panel."""
         try:
             from core.hologram import hologram_trial_detail
+
             detail = hologram_trial_detail(trial_id)
             if not detail.get("ok"):
-                raise HTTPException(status_code=404, detail=detail.get("error", "Not found"))
+                raise HTTPException(
+                    status_code=404, detail=detail.get("error", "Not found")
+                )
             return detail
         except HTTPException:
             raise
@@ -143,6 +151,7 @@ def register_hologram_api(app: FastAPI) -> None:
         try:
             from core.hologram import compute_effects, compute_level
             from core.trials import get_trial
+
             trial = get_trial(trial_id)
             if not trial:
                 raise HTTPException(status_code=404, detail="Trial not found")
@@ -161,6 +170,7 @@ def register_hologram_api(app: FastAPI) -> None:
         """Check for metric drift (LV4+ power)."""
         try:
             from core.hologram import detect_drift, compute_level
+
             level_data = compute_level()
             if level_data["level"] < 4:
                 return {
@@ -183,6 +193,7 @@ def register_hologram_api(app: FastAPI) -> None:
         """Suggest drift correction trial (LV4+ power, never auto-exec)."""
         try:
             from core.hologram import suggest_drift_correction, compute_level
+
             level_data = compute_level()
             if level_data["level"] < 4:
                 return {
@@ -206,6 +217,7 @@ def register_hologram_api(app: FastAPI) -> None:
         """Toggle Burst Mode on/off."""
         try:
             from core.hologram import toggle_burst_mode
+
             result = toggle_burst_mode(payload.enabled)
             return result
         except Exception as exc:
@@ -218,6 +230,7 @@ def register_hologram_api(app: FastAPI) -> None:
         """Create a burst batch of parallel trials."""
         try:
             from core.hologram import create_burst_batch
+
             specs = [t.model_dump() for t in payload.trials]
             result = create_burst_batch(
                 trials_specs=specs,
@@ -236,6 +249,7 @@ def register_hologram_api(app: FastAPI) -> None:
         """Kill switch: revert all trials in a burst batch."""
         try:
             from core.hologram import kill_burst_batch
+
             result = kill_burst_batch(batch_id)
             return result
         except Exception as exc:
@@ -248,6 +262,7 @@ def register_hologram_api(app: FastAPI) -> None:
         """List recent burst batches."""
         try:
             from core.hologram import list_burst_batches
+
             batches = list_burst_batches()
             return {"ok": True, "batches": batches}
         except Exception as exc:
@@ -260,6 +275,7 @@ def register_hologram_api(app: FastAPI) -> None:
         """Suggest best follow-up trials based on survival scores (LV3+)."""
         try:
             from core.hologram import suggest_best_followups, compute_level
+
             level_data = compute_level()
             if level_data["level"] < 3:
                 return {
@@ -273,4 +289,3 @@ def register_hologram_api(app: FastAPI) -> None:
             return {"ok": True, "suggestions": suggestions}
         except Exception as exc:
             return {"ok": False, "error": str(exc)[:300]}
-

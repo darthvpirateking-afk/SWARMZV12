@@ -19,8 +19,10 @@ from datetime import datetime, timezone
 
 ROOT = Path.cwd()
 
+
 def now_utc_iso() -> str:
     return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
 
 def prompt_default(prompt: str, default: str) -> str:
     try:
@@ -29,11 +31,13 @@ def prompt_default(prompt: str, default: str) -> str:
         s = ""
     return s if s else default
 
+
 def sanitize_single_line(s: str) -> str:
     s = (s or "").strip()
     s = re.sub(r"[\r\n\t]+", " ", s)
     s = re.sub(r"\s+", " ", s).strip()
     return s
+
 
 def atomic_write_new(path: Path, content: str) -> bool:
     """
@@ -48,8 +52,10 @@ def atomic_write_new(path: Path, content: str) -> bool:
     tmp.replace(path)
     return True
 
+
 def ensure_dir(path: Path) -> None:
     path.mkdir(parents=True, exist_ok=True)
+
 
 def rel(p: Path) -> str:
     try:
@@ -57,21 +63,39 @@ def rel(p: Path) -> str:
     except Exception:
         return str(p)
 
+
 def main() -> int:
     print("SWARMZ â€” ONE BUTTON OWNERSHIP PACK (AU Pty Ltd) :: GENERATOR")
     print(f"REPO ROOT: {ROOT}")
     print("MODE: additive only (no overwrites)\n")
 
     # Minimal inputs (press Enter to accept defaults)
-    company_legal_name = sanitize_single_line(prompt_default("Company legal name", "SWARMZ PTY LTD"))
+    company_legal_name = sanitize_single_line(
+        prompt_default("Company legal name", "SWARMZ PTY LTD")
+    )
     acn = sanitize_single_line(prompt_default("ACN (if known, else TBA)", "TBA"))
     abn = sanitize_single_line(prompt_default("ABN (if known, else TBA)", "TBA"))
-    jurisdiction_state = sanitize_single_line(prompt_default("State/Territory (e.g., VIC/NSW/QLD)", "VIC"))
-    registered_address = sanitize_single_line(prompt_default("Registered office address (short)", "TBA"))
-    principal_place = sanitize_single_line(prompt_default("Principal place of business (short)", "TBA"))
+    jurisdiction_state = sanitize_single_line(
+        prompt_default("State/Territory (e.g., VIC/NSW/QLD)", "VIC")
+    )
+    registered_address = sanitize_single_line(
+        prompt_default("Registered office address (short)", "TBA")
+    )
+    principal_place = sanitize_single_line(
+        prompt_default("Principal place of business (short)", "TBA")
+    )
     director_name = sanitize_single_line(prompt_default("Director full name", "TBA"))
-    secretary_name = sanitize_single_line(prompt_default("Secretary full name (or same as director)", director_name if director_name else "TBA"))
-    founder_name = sanitize_single_line(prompt_default("Founder full name (owner)", director_name if director_name else "TBA"))
+    secretary_name = sanitize_single_line(
+        prompt_default(
+            "Secretary full name (or same as director)",
+            director_name if director_name else "TBA",
+        )
+    )
+    founder_name = sanitize_single_line(
+        prompt_default(
+            "Founder full name (owner)", director_name if director_name else "TBA"
+        )
+    )
     founder_email = sanitize_single_line(prompt_default("Founder email", "TBA"))
     project_name = sanitize_single_line(prompt_default("Project / repo name", "SWARMZ"))
 
@@ -95,7 +119,9 @@ def main() -> int:
             created.append(rel(path))
 
     # -------- docs/ownership --------
-    add(docs_dir / "README_OWNERSHIP_STACK.md", f"""# {project_name} â€” Ownership Stack v1 (AU)
+    add(
+        docs_dir / "README_OWNERSHIP_STACK.md",
+        f"""# {project_name} â€” Ownership Stack v1 (AU)
 
 Generated: {stamp}
 
@@ -121,9 +147,12 @@ This pack exists to make {project_name} a **sellable asset**:
 
 ## NOTE
 These templates are not legal advice. Use them as a starting pack for AU accountant/lawyer review.
-""")
+""",
+    )
 
-    add(docs_dir / "OUTCOME_METRICS.md", """# Outcome Metrics (Ownership â†’ Net Worth Mechanism)
+    add(
+        docs_dir / "OUTCOME_METRICS.md",
+        """# Outcome Metrics (Ownership â†’ Net Worth Mechanism)
 
 ## Target (12 months)
 - Paying users: yes
@@ -138,9 +167,12 @@ These templates are not legal advice. Use them as a starting pack for AU account
 - No paying users after 90 days of shipping
 - Maintenance burden exceeds operator capacity
 - Legal/tax exposure cannot be resolved under current structure
-""")
+""",
+    )
 
-    add(docs_dir / "CAP_TABLE_INTENT.md", f"""# Cap Table Intent (Founder-Controlled)
+    add(
+        docs_dir / "CAP_TABLE_INTENT.md",
+        f"""# Cap Table Intent (Founder-Controlled)
 
 Company: {company_legal_name}
 ACN: {acn}
@@ -160,9 +192,12 @@ Generated: {stamp}
 ## Rules
 - No equity-for-favours.
 - No share/option action without board minutes + register updates + cap table update.
-""")
+""",
+    )
 
-    add(docs_dir / "DATA_ROOM_CHECKLIST.md", f"""# Data Room Checklist (Sellable Asset Readiness)
+    add(
+        docs_dir / "DATA_ROOM_CHECKLIST.md",
+        f"""# Data Room Checklist (Sellable Asset Readiness)
 
 Company: {company_legal_name}
 Project: {project_name}
@@ -191,9 +226,12 @@ Project: {project_name}
 - [ ] Repo access controls
 - [ ] Release process documented
 - [ ] Backups + export/import
-""")
+""",
+    )
 
-    add(docs_dir / "SIGNING_CHECKLIST.md", """# Signing Checklist (Do Not Skip)
+    add(
+        docs_dir / "SIGNING_CHECKLIST.md",
+        """# Signing Checklist (Do Not Skip)
 
 Before anyone contributes code/design:
 - [ ] Contributor/Contractor signs IP assignment
@@ -211,10 +249,13 @@ Before any options grant:
 - [ ] Board approval
 - [ ] Grant letter + vesting schedule
 - [ ] Cap table updated (fully diluted)
-""")
+""",
+    )
 
     # -------- legal/templates --------
-    add(legal_templates / "FOUNDER_IP_ASSIGNMENT.md", f"""# Founder IP Assignment (Template)
+    add(
+        legal_templates / "FOUNDER_IP_ASSIGNMENT.md",
+        f"""# Founder IP Assignment (Template)
 
 IMPORTANT: Starting template only. Get AU legal review before signing.
 
@@ -263,9 +304,12 @@ Signed by Founder/Assignor:
 Name: {founder_name}
 Signature: ___________________________
 Date: _______________________________
-""")
+""",
+    )
 
-    add(legal_templates / "CONTRIBUTOR_IP_ASSIGNMENT.md", f"""# Contributor IP Assignment (Template)
+    add(
+        legal_templates / "CONTRIBUTOR_IP_ASSIGNMENT.md",
+        f"""# Contributor IP Assignment (Template)
 
 IMPORTANT: Starting template only. Get AU legal review.
 
@@ -307,9 +351,12 @@ Contributor:
 Name: _______________________________
 Signature: ___________________________
 Date: _______________________________
-""")
+""",
+    )
 
-    add(legal_templates / "CONTRACTOR_AGREEMENT_IP_FOCUS.md", f"""# Contractor Agreement (IP-Focus Template)
+    add(
+        legal_templates / "CONTRACTOR_AGREEMENT_IP_FOCUS.md",
+        f"""# Contractor Agreement (IP-Focus Template)
 
 IMPORTANT: Starting template only. Not a full contractor agreement. Get AU legal review.
 
@@ -345,9 +392,12 @@ Laws of {jurisdiction_state}, Australia.
 
 Company (Director): ___________________  Date: _______________
 Contractor: ___________________________  Date: _______________
-""")
+""",
+    )
 
-    add(legal_templates / "OPTION_PLAN_STUB.md", f"""# Employee Option Plan (Stub)
+    add(
+        legal_templates / "OPTION_PLAN_STUB.md",
+        f"""# Employee Option Plan (Stub)
 
 NOT READY TO USE WITHOUT PROFESSIONAL SETUP.
 This is a placeholder to define intent.
@@ -376,9 +426,12 @@ Grant options to key contributors while preserving founder control.
 ## Next actions (when revenue exists)
 - Engage AU accountant/lawyer for ESS plan + documentation
 - Decide pool size + grant bands
-""")
+""",
+    )
 
-    add(legal_templates / "BOARD_MINUTES_SHARE_ISSUE.md", f"""# Board Minutes â€” Share Issue (Template)
+    add(
+        legal_templates / "BOARD_MINUTES_SHARE_ISSUE.md",
+        f"""# Board Minutes â€” Share Issue (Template)
 
 Company: {company_legal_name}
 ACN: {acn}
@@ -412,9 +465,12 @@ Signed:
 ___________________________
 {director_name}
 Director
-""")
+""",
+    )
 
-    add(legal_templates / "OPEN_SOURCE_POLICY.md", f"""# Open Source Policy (Minimal)
+    add(
+        legal_templates / "OPEN_SOURCE_POLICY.md",
+        f"""# Open Source Policy (Minimal)
 
 Project: {project_name}
 Company: {company_legal_name}
@@ -431,9 +487,12 @@ Company: {company_legal_name}
 - dependencies must be lockfile-pinned where possible
 - no unlicensed snippets
 - if in doubt: treat as blocked until reviewed
-""")
+""",
+    )
 
-    add(legal_templates / "IP_CHAIN_SUMMARY.md", f"""# IP Chain Summary (Fill + keep updated)
+    add(
+        legal_templates / "IP_CHAIN_SUMMARY.md",
+        f"""# IP Chain Summary (Fill + keep updated)
 
 Company: {company_legal_name}
 Project: {project_name}
@@ -457,14 +516,23 @@ List everyone who touched code/design:
 - Domain registrar: __________  Owner: Company/Personal  Transfer planned: YES/NO
 - Payments: __________ owner: Company/Personal
 - Git hosting: __________ owner: Company/Personal
-""")
+""",
+    )
 
     # -------- legal/registers --------
-    add(legal_registers / "MEMBER_REGISTER.csv", "MemberName,MemberAddress,Email,ShareClass,Shares,IssueDate,IssuePriceAUD,CertificateNumber,Notes\n")
-    add(legal_registers / "CAP_TABLE.csv", "Holder,Instrument,Class,SharesOrOptions,PercentFullyDiluted,Notes\nFounder,Share,Ordinary,100,100.00,Initial issue\nOptionPool,Option,Ordinary,0,0.00,Create only when needed\n")
+    add(
+        legal_registers / "MEMBER_REGISTER.csv",
+        "MemberName,MemberAddress,Email,ShareClass,Shares,IssueDate,IssuePriceAUD,CertificateNumber,Notes\n",
+    )
+    add(
+        legal_registers / "CAP_TABLE.csv",
+        "Holder,Instrument,Class,SharesOrOptions,PercentFullyDiluted,Notes\nFounder,Share,Ordinary,100,100.00,Initial issue\nOptionPool,Option,Ordinary,0,0.00,Create only when needed\n",
+    )
 
     # -------- placeholders / notes --------
-    add(ROOT / "OWNERSHIP_STACK_NOTE.md", f"""# Ownership Stack Note (Quick)
+    add(
+        ROOT / "OWNERSHIP_STACK_NOTE.md",
+        f"""# Ownership Stack Note (Quick)
 
 Company: {company_legal_name}
 Project: {project_name}
@@ -477,31 +545,40 @@ This repo now includes:
 - legal/signed/    (store signed PDFs here)
 
 Rule: company owns IP; no equity-for-help; options later with vesting after revenue.
-""")
+""",
+    )
 
     add(legal_signed / ".gitkeep", "")
     add(legal_templates / ".gitkeep", "")
     add(legal_registers / ".gitkeep", "")
 
     # -------- launchers (one button) --------
-    add(ROOT / "SWARMZ_OWNERSHIP_PACK_UP.cmd", """@echo off
+    add(
+        ROOT / "SWARMZ_OWNERSHIP_PACK_UP.cmd",
+        """@echo off
 setlocal
 cd /d %~dp0
 py ONE_BUTTON_SWARMZ_OWNERSHIP_PACK.py
 echo.
 echo DONE. Check: docs\\ownership and legal\\*
 endlocal
-""")
+""",
+    )
 
-    add(ROOT / "SWARMZ_OWNERSHIP_PACK_UP.ps1", r"""$ErrorActionPreference = "Stop"
+    add(
+        ROOT / "SWARMZ_OWNERSHIP_PACK_UP.ps1",
+        r"""$ErrorActionPreference = "Stop"
 Set-Location -LiteralPath $PSScriptRoot
 python .\ONE_BUTTON_SWARMZ_OWNERSHIP_PACK.py
 Write-Host ""
 Write-Host "DONE. Check: docs\ownership and legal\*"
-""")
+""",
+    )
 
     # -------- self-check --------
-    add(ROOT / "SWARMZ_OWNERSHIP_PACK_SELF_CHECK.py", r"""#!/usr/bin/env python3
+    add(
+        ROOT / "SWARMZ_OWNERSHIP_PACK_SELF_CHECK.py",
+        r"""#!/usr/bin/env python3
 from pathlib import Path
 import sys
 
@@ -535,7 +612,8 @@ print(" 1) Put signed PDFs in legal/signed/")
 print(" 2) Require IP assignment before repo access for any contributor")
 print(" 3) Keep cap table founder-controlled; do not issue equity casually")
 sys.exit(0)
-""")
+""",
+    )
 
     # Output
     print("\nCREATED:")
@@ -554,6 +632,6 @@ sys.exit(0)
 
     return 0
 
+
 if __name__ == "__main__":
     raise SystemExit(main())
-

@@ -2,6 +2,7 @@ import unittest
 from unittest.mock import patch, MagicMock
 from kernel_runtime.orchestrator import SwarmzOrchestrator
 
+
 class TestRuntimeIgnition(unittest.TestCase):
 
     @patch("kernel_runtime.orchestrator.SwarmzOrchestrator.activate")
@@ -17,6 +18,7 @@ class TestRuntimeIgnition(unittest.TestCase):
 
         # Assert that the activate method was called once
         mock_activate.assert_called_once()
+
 
 if __name__ == "__main__":
     unittest.main()

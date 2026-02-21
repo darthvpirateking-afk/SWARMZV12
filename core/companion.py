@@ -26,14 +26,21 @@ AUDIT_FILE = DATA_DIR / "audit.jsonl"
 PROMPT_DIR = Path(__file__).resolve().parent / "prompt_templates"
 
 # import sibling
-from core.model_router import call as model_call, is_offline, record_call, get_model_config
+from core.model_router import (
+    call as model_call,
+    is_offline,
+    record_call,
+    get_model_config,
+)
 
 # lazy write_jsonl import
 try:
     import sys
+
     sys.path.insert(0, str(ROOT))
     from jsonl_utils import write_jsonl
 except ImportError:
+
     def write_jsonl(path, obj):
         path.parent.mkdir(parents=True, exist_ok=True)
         with open(path, "a", encoding="utf-8") as f:
@@ -41,6 +48,7 @@ except ImportError:
 
 
 # â”€â”€ Config helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
 
 def _load_config() -> Dict[str, Any]:
     if CONFIG_FILE.exists():
@@ -56,6 +64,7 @@ def _companion_config() -> Dict[str, Any]:
 
 
 # â”€â”€ Memory file â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
 
 def _memory_path() -> Path:
     cfg = _companion_config()
@@ -97,17 +106,21 @@ def save_memory(mem: Dict[str, Any]) -> None:
 MAX_OUTCOMES = 50
 
 
-def record_mission_outcome(mission_id: str, intent: str, status: str, summary: str = "") -> None:
+def record_mission_outcome(
+    mission_id: str, intent: str, status: str, summary: str = ""
+) -> None:
     """Append a mission outcome to companion memory (capped at MAX_OUTCOMES)."""
     mem = load_memory()
     outcomes = mem.get("mission_outcomes", [])
-    outcomes.append({
-        "mission_id": mission_id,
-        "intent": intent,
-        "status": status,
-        "summary": summary[:200],
-        "timestamp": datetime.now(timezone.utc).isoformat() + "Z",
-    })
+    outcomes.append(
+        {
+            "mission_id": mission_id,
+            "intent": intent,
+            "status": status,
+            "summary": summary[:200],
+            "timestamp": datetime.now(timezone.utc).isoformat() + "Z",
+        }
+    )
     # prune oldest if over limit
     if len(outcomes) > MAX_OUTCOMES:
         outcomes = outcomes[-MAX_OUTCOMES:]
@@ -125,6 +138,7 @@ def update_summary(new_summary: str) -> None:
 
 
 # â”€â”€ System prompt builder â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
 
 def _load_system_prompt() -> str:
     p = PROMPT_DIR / "companion_system.txt"
@@ -150,6 +164,7 @@ def _build_context_block(mem: Dict[str, Any]) -> str:
 
 
 # â”€â”€ Main chat function â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
 
 def chat(user_text: str) -> Dict[str, Any]:
     """
@@ -204,12 +219,18 @@ def chat(user_text: str) -> Dict[str, Any]:
         }
     else:
         # AI failed â€” fall back to rule engine
-        reply = _rule_engine(user_text, mem) + "\n[AI unavailable: " + (result.get("error", "?"))[:100] + "]"
+        reply = (
+            _rule_engine(user_text, mem)
+            + "\n[AI unavailable: "
+            + (result.get("error", "?"))[:100]
+            + "]"
+        )
         _audit_companion(now, user_text, reply, "rule_engine_fallback")
         return {"ok": True, "reply": reply, "source": "rule_engine_fallback"}
 
 
 # â”€â”€ Rule engine (deterministic fallback) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
 
 def _rule_engine(text: str, mem: Dict[str, Any]) -> str:
     """Simple keyword-based replies when AI is not available."""
@@ -235,15 +256,19 @@ def _rule_engine(text: str, mem: Dict[str, Any]) -> str:
 
 # â”€â”€ Audit helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
+
 def _audit_companion(timestamp: str, user_text: str, reply: str, source: str) -> None:
     text_hash = hashlib.sha256(user_text.encode("utf-8")).hexdigest()[:16]
-    write_jsonl(AUDIT_FILE, {
-        "timestamp": timestamp,
-        "event": "companion_message",
-        "source": source,
-        "text_sha256": text_hash,
-        "reply_len": len(reply),
-    })
+    write_jsonl(
+        AUDIT_FILE,
+        {
+            "timestamp": timestamp,
+            "event": "companion_message",
+            "source": source,
+            "text_sha256": text_hash,
+            "reply_len": len(reply),
+        },
+    )
 
 
 def _audit_model_call(timestamp: str, result: Dict[str, Any]) -> None:
@@ -258,8 +283,9 @@ def _audit_model_call(timestamp: str, result: Dict[str, Any]) -> None:
     usage = result.get("usage", {})
     if usage:
         entry["input_tokens"] = usage.get("input_tokens", usage.get("prompt_tokens", 0))
-        entry["output_tokens"] = usage.get("output_tokens", usage.get("completion_tokens", 0))
+        entry["output_tokens"] = usage.get(
+            "output_tokens", usage.get("completion_tokens", 0)
+        )
     if result.get("error"):
         entry["error"] = str(result["error"])[:200]
     write_jsonl(AUDIT_FILE, entry)
-

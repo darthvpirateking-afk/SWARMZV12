@@ -26,4 +26,3 @@ def evaluate(op_str: str, actual, threshold) -> bool:
     if fn is None:
         raise ValueError(f"Unsupported operator: {op_str}")
     return fn(actual, threshold)
-

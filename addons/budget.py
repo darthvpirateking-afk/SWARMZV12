@@ -75,17 +75,29 @@ def spend(amount: float, label: str) -> Dict[str, Any]:
     state = _load()
     remaining = state["hard_cap"] - state["spent"] - state["reserved"]
     if amount > remaining:
-        _audit("budget_breach_blocked", {"amount": amount, "remaining": remaining, "label": label})
+        _audit(
+            "budget_breach_blocked",
+            {"amount": amount, "remaining": remaining, "label": label},
+        )
         return {"error": "Budget breach â€” spend blocked", "remaining": remaining}
     state["spent"] += amount
-    state["history"].append({
-        "amount": amount,
-        "label": label,
-        "timestamp": datetime.now(timezone.utc).isoformat(),
-    })
+    state["history"].append(
+        {
+            "amount": amount,
+            "label": label,
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+        }
+    )
     _save(state)
-    _audit("budget_spent", {"amount": amount, "label": label, "total_spent": state["spent"]})
-    return {"status": "ok", "total_spent": state["spent"], "remaining": state["hard_cap"] - state["spent"] - state["reserved"]}
+    _audit(
+        "budget_spent",
+        {"amount": amount, "label": label, "total_spent": state["spent"]},
+    )
+    return {
+        "status": "ok",
+        "total_spent": state["spent"],
+        "remaining": state["hard_cap"] - state["spent"] - state["reserved"],
+    }
 
 
 def reserve(amount: float, label: str) -> Dict[str, Any]:
@@ -109,4 +121,3 @@ def reset_budget(hard_cap: Optional[float] = None) -> Dict[str, Any]:
     _save(state)
     _audit("budget_reset", {"hard_cap": state["hard_cap"]})
     return state
-

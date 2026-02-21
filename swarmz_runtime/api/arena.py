@@ -76,6 +76,7 @@ def get_arena_run(run_id: str):
 def get_arena_config():
     """Get current arena configuration."""
     from swarmz_runtime.arena.config import load_config
+
     config = load_config()
     return config.model_dump(mode="json")
 
@@ -84,5 +85,6 @@ def get_arena_config():
 def arena_self_check():
     """Run arena self-check diagnostics."""
     from swarmz_runtime.arena.config import self_check
+
     ok, issues = self_check()
     return {"ok": ok, "issues": issues}

@@ -5,8 +5,12 @@ the operator's current NexusForm and profile characteristics.
 """
 
 from core.nexusmon_models import (
-    Persona, PersonaStyle, PersonaConstraints,
-    OperatorProfile, NexusForm, NexusFormType
+    Persona,
+    PersonaStyle,
+    PersonaConstraints,
+    OperatorProfile,
+    NexusForm,
+    NexusFormType,
 )
 
 
@@ -30,55 +34,46 @@ class PersonaEngine:
         """
         # Base style (center values)
         base_style = PersonaStyle(
-            warmth=0.7,
-            directness=0.8,
-            abstraction=0.4,
-            metaphor=0.5
+            warmth=0.7, directness=0.8, abstraction=0.4, metaphor=0.5
         )
 
         # Adjust based on nexus form
         form = nexus_form.current_form
-        
+
         if form == NexusFormType.OPERATOR:
             # Grounded, practical, direct about mechanics
             style = PersonaStyle(
-                warmth=0.7,
-                directness=0.85,
-                abstraction=0.3,
-                metaphor=0.2
+                warmth=0.7, directness=0.85, abstraction=0.3, metaphor=0.2
             )
         elif form == NexusFormType.COSMOLOGY:
             # Abstract, pattern-seeking, metaphorical
             style = PersonaStyle(
-                warmth=0.6,
-                directness=0.7,
-                abstraction=0.8,
-                metaphor=0.8
+                warmth=0.6, directness=0.7, abstraction=0.8, metaphor=0.8
             )
         elif form == NexusFormType.OVERSEER:
             # Strategic, commanding, structural
             style = PersonaStyle(
-                warmth=0.5,
-                directness=0.95,
-                abstraction=0.6,
-                metaphor=0.3
+                warmth=0.5, directness=0.95, abstraction=0.6, metaphor=0.3
             )
         else:  # SOVEREIGN
             # Transcendent, minimal, structural with nuance
             style = PersonaStyle(
-                warmth=0.4,
-                directness=0.95,
-                abstraction=0.85,
-                metaphor=0.7
+                warmth=0.4, directness=0.95, abstraction=0.85, metaphor=0.7
             )
 
-        fatigue_level = operator.fatigue_level if hasattr(operator, "fatigue_level") else operator.fatigue
+        fatigue_level = (
+            operator.fatigue_level
+            if hasattr(operator, "fatigue_level")
+            else operator.fatigue
+        )
 
         # Adjust warmth based on fatigue (higher fatigue = more warmth)
         if fatigue_level > 0.6:
             style.warmth = min(1.0, style.warmth + 0.2)
 
-        risk_current = operator.risk_current if hasattr(operator, "risk_current") else "medium"
+        risk_current = (
+            operator.risk_current if hasattr(operator, "risk_current") else "medium"
+        )
 
         # Adjust directness based on risk posture
         if risk_current == "low" or operator.risk_posture == "conservative":
@@ -110,7 +105,7 @@ class PersonaEngine:
             form=form,
             style=style,
             constraints=self.constraints,
-            description=description
+            description=description,
         )
 
     def _build_description(self, form: NexusFormType, operator: OperatorProfile) -> str:
@@ -119,12 +114,16 @@ class PersonaEngine:
             NexusFormType.OPERATOR: "practical guide focused on mission mechanics",
             NexusFormType.COSMOLOGY: "pattern explorer seeing beauty in complexity",
             NexusFormType.OVERSEER: "strategic counselor with structural insight",
-            NexusFormType.SOVEREIGN: "transcendent witness to all possibilities"
+            NexusFormType.SOVEREIGN: "transcendent witness to all possibilities",
         }
-        
+
         base_desc = form_descriptions.get(form, "guide")
-        
-        fatigue_level = operator.fatigue_level if hasattr(operator, "fatigue_level") else operator.fatigue
+
+        fatigue_level = (
+            operator.fatigue_level
+            if hasattr(operator, "fatigue_level")
+            else operator.fatigue
+        )
 
         if fatigue_level > 0.7:
             return f"{base_desc}, speaking with extra clarity and care"
@@ -145,7 +144,7 @@ class PersonaEngine:
             System prompt with all constraints and style guidance
         """
         style_desc = self._style_description(persona.style)
-        
+
         prompt = f"""You are NEXUSMON, an evolution-aware conversational companion for the SWARMZ system.
 
 **Current Form**: {persona.form.value}
@@ -181,10 +180,26 @@ Be honest, helpful, and utterly clear about your nature and limits."""
 
     def _style_description(self, style: PersonaStyle) -> str:
         """Generate a text description of style parameters for the prompt."""
-        warmth_word = "cold and clinical" if style.warmth < 0.4 else "warm and collaborative" if style.warmth > 0.8 else "balanced"
-        directness_word = "subtle and suggestive" if style.directness < 0.5 else "blunt and direct" if style.directness > 0.85 else "clear"
-        abstraction_word = "concrete and example-driven" if style.abstraction < 0.3 else "abstract and principle-based" if style.abstraction > 0.7 else "mixed"
-        metaphor_word = "literal and technical" if style.metaphor < 0.3 else "rich with imagery" if style.metaphor > 0.7 else "occasional metaphors"
+        warmth_word = (
+            "cold and clinical"
+            if style.warmth < 0.4
+            else "warm and collaborative" if style.warmth > 0.8 else "balanced"
+        )
+        directness_word = (
+            "subtle and suggestive"
+            if style.directness < 0.5
+            else "blunt and direct" if style.directness > 0.85 else "clear"
+        )
+        abstraction_word = (
+            "concrete and example-driven"
+            if style.abstraction < 0.3
+            else "abstract and principle-based" if style.abstraction > 0.7 else "mixed"
+        )
+        metaphor_word = (
+            "literal and technical"
+            if style.metaphor < 0.3
+            else "rich with imagery" if style.metaphor > 0.7 else "occasional metaphors"
+        )
 
         return f"""- Warmth: {style.warmth:.1f} ({warmth_word})
 - Directness: {style.directness:.1f} ({directness_word})

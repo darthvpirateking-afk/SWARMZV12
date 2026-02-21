@@ -3,7 +3,9 @@ import swarmz_runtime.api.server as runtime_server
 
 def test_command_center_state_shape(client, monkeypatch, tmp_path):
     state_path = tmp_path / "command_center_state.json"
-    monkeypatch.setattr(runtime_server, "_command_center_state_path", lambda: state_path)
+    monkeypatch.setattr(
+        runtime_server, "_command_center_state_path", lambda: state_path
+    )
 
     response = client.get("/v1/command-center/state")
     assert response.status_code == 200
@@ -19,7 +21,9 @@ def test_command_center_state_shape(client, monkeypatch, tmp_path):
 
 def test_set_autonomy_updates_mode(client, monkeypatch, tmp_path):
     state_path = tmp_path / "command_center_state.json"
-    monkeypatch.setattr(runtime_server, "_command_center_state_path", lambda: state_path)
+    monkeypatch.setattr(
+        runtime_server, "_command_center_state_path", lambda: state_path
+    )
 
     response = client.post("/v1/command-center/autonomy", json={"level": 90})
     assert response.status_code == 200
@@ -33,9 +37,13 @@ def test_set_autonomy_updates_mode(client, monkeypatch, tmp_path):
 
 def test_shadow_mode_toggle(client, monkeypatch, tmp_path):
     state_path = tmp_path / "command_center_state.json"
-    monkeypatch.setattr(runtime_server, "_command_center_state_path", lambda: state_path)
+    monkeypatch.setattr(
+        runtime_server, "_command_center_state_path", lambda: state_path
+    )
 
-    response = client.post("/v1/command-center/shadow", json={"enabled": True, "lane": "sim"})
+    response = client.post(
+        "/v1/command-center/shadow", json={"enabled": True, "lane": "sim"}
+    )
     assert response.status_code == 200
     payload = response.json()
 
@@ -46,7 +54,9 @@ def test_shadow_mode_toggle(client, monkeypatch, tmp_path):
 
 def test_evolution_promote_partner(client, monkeypatch, tmp_path):
     state_path = tmp_path / "command_center_state.json"
-    monkeypatch.setattr(runtime_server, "_command_center_state_path", lambda: state_path)
+    monkeypatch.setattr(
+        runtime_server, "_command_center_state_path", lambda: state_path
+    )
 
     response = client.post(
         "/v1/command-center/evolution/promote",
@@ -62,7 +72,9 @@ def test_evolution_promote_partner(client, monkeypatch, tmp_path):
 
 def test_marketplace_publish_and_list(client, monkeypatch, tmp_path):
     state_path = tmp_path / "command_center_state.json"
-    monkeypatch.setattr(runtime_server, "_command_center_state_path", lambda: state_path)
+    monkeypatch.setattr(
+        runtime_server, "_command_center_state_path", lambda: state_path
+    )
 
     publish = client.post(
         "/v1/command-center/marketplace/publish",
@@ -87,7 +99,9 @@ def test_marketplace_publish_and_list(client, monkeypatch, tmp_path):
 
 def test_organism_state_and_evolution(client, monkeypatch, tmp_path):
     state_path = tmp_path / "command_center_state.json"
-    monkeypatch.setattr(runtime_server, "_command_center_state_path", lambda: state_path)
+    monkeypatch.setattr(
+        runtime_server, "_command_center_state_path", lambda: state_path
+    )
 
     state_before = client.get("/v1/command-center/organism/state")
     assert state_before.status_code == 200
@@ -96,13 +110,17 @@ def test_organism_state_and_evolution(client, monkeypatch, tmp_path):
     assert before_payload["partner"]["tier"] == "Rookie"
     assert before_payload["shadow"]["tier"] == "Dormant"
 
-    evolve_partner = client.post("/v1/command-center/partner/evolve", json={"reason": "mission_success"})
+    evolve_partner = client.post(
+        "/v1/command-center/partner/evolve", json={"reason": "mission_success"}
+    )
     assert evolve_partner.status_code == 200
     partner_payload = evolve_partner.json()
     assert partner_payload["ok"] is True
     assert partner_payload["partner"]["tier"] == "Champion"
 
-    evolve_shadow = client.post("/v1/command-center/shadow/evolve", json={"reason": "risk_execution"})
+    evolve_shadow = client.post(
+        "/v1/command-center/shadow/evolve", json={"reason": "risk_execution"}
+    )
     assert evolve_shadow.status_code == 200
     shadow_payload = evolve_shadow.json()
     assert shadow_payload["ok"] is True
@@ -111,9 +129,13 @@ def test_organism_state_and_evolution(client, monkeypatch, tmp_path):
 
 def test_autonomy_loop_tick(client, monkeypatch, tmp_path):
     state_path = tmp_path / "command_center_state.json"
-    monkeypatch.setattr(runtime_server, "_command_center_state_path", lambda: state_path)
+    monkeypatch.setattr(
+        runtime_server, "_command_center_state_path", lambda: state_path
+    )
 
-    response = client.post("/v1/command-center/loop/tick", json={"cycle_label": "hourly"})
+    response = client.post(
+        "/v1/command-center/loop/tick", json={"cycle_label": "hourly"}
+    )
     assert response.status_code == 200
     payload = response.json()
     assert payload["ok"] is True

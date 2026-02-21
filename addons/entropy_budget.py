@@ -83,18 +83,26 @@ def spend_entropy(points: int, label: str) -> Dict[str, Any]:
     state = _maybe_reset(_load())
     remaining = state["weekly_cap"] - state["spent"]
     if points > remaining:
-        _audit("entropy_over_cap", {"points": points, "label": label, "remaining": remaining})
+        _audit(
+            "entropy_over_cap",
+            {"points": points, "label": label, "remaining": remaining},
+        )
         return {
             "error": "Entropy over-cap â€” trigger merge/delete tasks before adding complexity",
             "remaining": remaining,
         }
     state["spent"] += points
-    state["entries"].append({
-        "points": points,
-        "label": label,
-        "timestamp": datetime.now(timezone.utc).isoformat(),
-    })
+    state["entries"].append(
+        {
+            "points": points,
+            "label": label,
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+        }
+    )
     _save(state)
     _audit("entropy_spent", {"points": points, "label": label, "total": state["spent"]})
-    return {"status": "ok", "spent": state["spent"], "remaining": state["weekly_cap"] - state["spent"]}
-
+    return {
+        "status": "ok",
+        "spent": state["spent"],
+        "remaining": state["weekly_cap"] - state["spent"],
+    }

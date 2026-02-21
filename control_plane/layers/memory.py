@@ -15,6 +15,4 @@ class MemoryLayer(BaseLayer):
 
     def collect(self) -> list[dict]:
         current = self._state.get_value("memory.context_usage", 0)
-        return [self._make_record("memory.context_usage", current,
-                                  units="tokens")]
-
+        return [self._make_record("memory.context_usage", current, units="tokens")]

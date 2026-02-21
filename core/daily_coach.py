@@ -4,6 +4,7 @@
 # SWARMZ Daily Coach
 # Purpose: Generate actionable daily suggestions.
 
+
 class DailyCoach:
     def generate_daily_coaching(self):
         try:

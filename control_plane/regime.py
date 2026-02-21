@@ -68,8 +68,10 @@ class RegimeManager:
 
             if met and not rs.active:
                 # Check cooldown (deactivated_at == 0 means never deactivated)
-                cooldown_elapsed = (rs.deactivated_at == 0.0
-                                    or now - rs.deactivated_at >= obj.get("cooldown_after_exit", 0))
+                cooldown_elapsed = (
+                    rs.deactivated_at == 0.0
+                    or now - rs.deactivated_at >= obj.get("cooldown_after_exit", 0)
+                )
                 if cooldown_elapsed:
                     rs.active = True
                     rs.activated_at = now
@@ -87,4 +89,3 @@ class RegimeManager:
     def all_regimes(self) -> dict[str, bool]:
         """Return a snapshot of regime activation states."""
         return {name: rs.active for name, rs in self._regimes.items()}
-
