@@ -153,7 +153,7 @@ Both implementations have been scanned:
 
 ## License
 
-MIT License (see LICENSE file)
+SWARMZ Proprietary License (see LICENSE file)
 
 ## Contributing
 

@@ -1,15 +1,44 @@
+SWARMZ PROPRIETARY LICENSE
+
 Copyright (c) 2026 SWARMZ. All Rights Reserved.
 
-This software and associated documentation files (the "Software") are proprietary and confidential.
+This software and associated documentation files (the "Software") are proprietary and confidential
+to SWARMZ. All rights are reserved.
 
-No permission is granted to use, copy, modify, merge, publish, distribute, sublicense, sell,
-reverse engineer, or create derivative works of the Software, in whole or in part, by any means,
-without prior written permission from SWARMZ.
+RESTRICTIONS
 
-Unauthorized use, reproduction, disclosure, or distribution of this Software is strictly prohibited.
+The following actions are strictly prohibited without prior written permission from SWARMZ:
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
-NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-DAMAGES, OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT, OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+1. Copying, reproducing, or duplicating the Software or any portion thereof.
+2. Modifying, adapting, translating, or creating derivative works based on the Software.
+3. Distributing, publishing, sublicensing, transferring, or making the Software available to
+   any third party.
+4. Selling, renting, leasing, or otherwise commercializing the Software.
+5. Reverse engineering, decompiling, disassembling, or attempting to derive the source code
+   of the Software (except to the extent permitted by applicable law).
+6. Removing or altering any proprietary notices, labels, or marks on the Software.
+
+Unauthorized use, reproduction, disclosure, or distribution of this Software is strictly
+prohibited and may result in civil and criminal penalties.
+
+DEVELOPER EXCEPTIONS
+
+Authorized SWARMZ developers and contributors who have been granted explicit written permission
+by SWARMZ may:
+
+1. Access, read, and modify the source code solely for the purpose of contributing to the
+   official SWARMZ project repository.
+2. Build, test, and run the Software locally for development and debugging purposes.
+3. Submit contributions (pull requests, patches) back to the official SWARMZ repository,
+   subject to the project's contribution guidelines.
+
+These developer exceptions do not grant any rights to distribute, sublicense, or use the
+Software outside of the official SWARMZ development workflow.
+
+DISCLAIMER
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND
+NON-INFRINGEMENT. IN NO EVENT SHALL SWARMZ OR ITS AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES,
+OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT, OR OTHERWISE, ARISING FROM, OUT
+OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
