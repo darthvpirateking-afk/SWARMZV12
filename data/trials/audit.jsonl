@@ -79,3 +79,6 @@
 {"event_id":"a1eadb7b-0f98-496f-a53e-13d00ee16acd","ts":"2026-02-20T16:08:59.272425Z","event_type":"drift_detected","trial_id":"NONE","payload":{"metric_name":"conv","context":"ctx","drift_magnitude":131.2899,"older_mean":0.5045,"recent_mean":0.902,"older_std":0.003}}
 {"event_id":"cfaba797-8852-4da7-be69-6c77315f8801","ts":"2026-02-20T16:08:59.279537Z","event_type":"followup_suggestions_generated","trial_id":"NONE","payload":{"context":"ctx","limit":5,"count":0}}
 {"event_id":"4b534f94-6528-4545-bfb1-212cdfdbe152","ts":"2026-02-20T16:08:59.280350Z","event_type":"followup_suggestions_generated","trial_id":"NONE","payload":{"context":"","limit":5,"count":2}}
+{"event_id":"54793079-f715-4f45-9e51-e63ad4221b8c","ts":"2026-02-21T02:15:01.318629Z","event_type":"drift_detected","trial_id":"NONE","payload":{"metric_name":"conv","context":"ctx","drift_magnitude":131.2899,"older_mean":0.5045,"recent_mean":0.902,"older_std":0.003}}
+{"event_id":"1b1154bc-f9bc-463b-a03b-cd6642b6c108","ts":"2026-02-21T02:15:01.325081Z","event_type":"followup_suggestions_generated","trial_id":"NONE","payload":{"context":"ctx","limit":5,"count":0}}
+{"event_id":"71018e94-915d-4ac7-a0aa-84ac75647d3d","ts":"2026-02-21T02:15:01.325965Z","event_type":"followup_suggestions_generated","trial_id":"NONE","payload":{"context":"","limit":5,"count":2}}
