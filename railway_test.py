@@ -17,7 +17,7 @@ def test_imports():
     """Test critical imports."""
     print("\n1. Testing imports...")
     try:
-        import uvicorn
+        import uvicorn  # noqa: F401
 
         print("   ✓ uvicorn")
     except ImportError as e:
@@ -25,7 +25,7 @@ def test_imports():
         return False
 
     try:
-        import fastapi
+        import fastapi  # noqa: F401
 
         print("   ✓ fastapi")
     except ImportError as e:
@@ -33,7 +33,7 @@ def test_imports():
         return False
 
     try:
-        from server import app
+        from server import app  # noqa: F401
 
         print("   ✓ server:app")
     except Exception as e:
