@@ -1,15 +1,3 @@
-# ---------- helpers ----------
-function Get-LanIp {
-  try {
-    $udp = New-Object System.Net.Sockets.UdpClient
-    $udp.Connect("8.8.8.8", 53)
-    $ip = $udp.Client.LocalEndPoint.Address.ToString()
-    $udp.Close()
-    return $ip
-  } catch {
-    return $null
-  }
-}
 #!/usr/bin/env pwsh
 # SWARMZ_HOLOGRAM_SERVICE.ps1 — Windows service launcher for SWARMZ hologram system
 
@@ -44,6 +32,18 @@ function Get-ListeningPid($targetPort) {
     }
   }
   return $null
+}
+
+function Get-LanIp {
+  try {
+    $udp = New-Object System.Net.Sockets.UdpClient
+    $udp.Connect("8.8.8.8", 53)
+    $ip = $udp.Client.LocalEndPoint.Address.ToString()
+    $udp.Close()
+    return $ip
+  } catch {
+    return $null
+  }
 }
 
 function Show-Urls($lanIp, $p) {
