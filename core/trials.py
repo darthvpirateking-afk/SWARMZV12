@@ -65,20 +65,13 @@ def new_trial(
     # against their first measurement.
     baseline = None
     baseline_evidence = None
-    allow_auto_baseline = True
+    # LV1 ROOKIE unlocks at >=5 verified trials (checked_at is set).
+    # Compute directly to avoid a circular import with core.hologram.
     try:
-        # Lazy import to avoid hard dependency during bootstrap.
-        from core.hologram import compute_level  # type: ignore
-
-        try:
-            level_state = compute_level()
-            allow_auto_baseline = level_state.get("level", 0) >= 1
-        except Exception:
-            # If hologram state is unavailable, default to current behaviour
-            # to avoid surprising users in legacy environments.
-            allow_auto_baseline = True
+        all_trials = load_all_trials()
+        verified_count = sum(1 for t in all_trials if t.get("checked_at") is not None)
+        allow_auto_baseline = verified_count >= 5
     except Exception:
-        # Hologram module not present â€” default to legacy behaviour.
         allow_auto_baseline = True
 
     if allow_auto_baseline:
