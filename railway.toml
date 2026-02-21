@@ -3,7 +3,6 @@
 
 [build]
 builder = "NIXPACKS"
-watchPatterns = ["**/*.py", "**/*.ts", "**/*.tsx", "**/*.json"]
 buildCommand = "pip install -r requirements.txt && cd frontend && npm ci && npm run build"
 
 [deploy]
@@ -12,4 +11,3 @@ healthcheckPath = "/health"
 healthcheckTimeout = 300
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 10
-
