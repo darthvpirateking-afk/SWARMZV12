@@ -44,32 +44,32 @@ class SwarmzOrchestrator:
     def load_mesh(self) -> Any:
         _log.info("Loading mesh...")
         try:
-            from backend.core.cosmology.mesh_router import MeshRouter
+            from swarmz_runtime.universe_mesh.universe_mesh import MeshRouter
 
             return MeshRouter()
         except ImportError:
-            _log.info("Mesh subsystem not implemented, using stub.")
-            return object()
+            _log.warning("Mesh subsystem not available, skipping.")
+            return None
 
     def start_governor(self) -> Any:
         _log.info("Starting governor...")
         try:
-            from backend.governor import Governor
+            from swarmz_runtime.core.authority import Governor
 
             return Governor()
         except ImportError:
-            _log.info("Governor subsystem not implemented, using stub.")
-            return object()
+            _log.warning("Governor/authority subsystem not available, skipping.")
+            return None
 
     def start_patchpack(self) -> Any:
         _log.info("Starting patchpack...")
         try:
-            from backend.patchpack import Patchpack
+            from swarmz_runtime.verify.patchpacks import Patchpack
 
             return Patchpack()
         except ImportError:
-            _log.info("Patchpack subsystem not implemented, using stub.")
-            return object()
+            _log.warning("Patchpack subsystem not available, skipping.")
+            return None
 
     def start_session(self) -> Any:
         _log.info("Starting session...")

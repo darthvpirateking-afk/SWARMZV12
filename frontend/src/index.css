@@ -1,0 +1,42 @@
+@import "tailwindcss";
+
+/* Custom cosmic animations */
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+@keyframes heartbeat-healthy {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes heartbeat-degraded {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+
+/* Base styles */
+body {
+  margin: 0;
+  background: #050712;
+  color: #F5F7FF;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0C1020;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1E2A40;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #2E3A50;
+}

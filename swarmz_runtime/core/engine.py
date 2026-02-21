@@ -27,16 +27,56 @@ from swarmz_runtime.core.cadence import CadenceEngine
 from swarmz_runtime.core.maintenance import MaintenanceScheduler
 from swarmz_runtime.core.visibility import VisibilityManager
 from swarmz_runtime.core.brain import BrainMapping
-from core.evolution_memory import EvolutionMemory
-from core.operator_anchor import load_or_create_anchor, verify_fingerprint
-from core.perf_ledger import PerfLedger
-from core.trajectory_engine import TrajectoryEngine
-from core.world_model import WorldModel
-from core.divergence_engine import DivergenceEngine
-from core.entropy_monitor import EntropyMonitor
-from core.counterfactual_engine import CounterfactualEngine
-from core.relevance_engine import RelevanceEngine
-from core.phase_engine import PhaseEngine
+try:
+    from core.evolution_memory import EvolutionMemory
+except ImportError:
+    EvolutionMemory = None  # type: ignore[misc,assignment]
+
+try:
+    from core.operator_anchor import load_or_create_anchor, verify_fingerprint
+except ImportError:
+    load_or_create_anchor = None  # type: ignore[misc,assignment]
+    verify_fingerprint = None  # type: ignore[misc,assignment]
+
+try:
+    from core.perf_ledger import PerfLedger
+except ImportError:
+    PerfLedger = None  # type: ignore[misc,assignment]
+
+try:
+    from core.trajectory_engine import TrajectoryEngine
+except ImportError:
+    TrajectoryEngine = None  # type: ignore[misc,assignment]
+
+try:
+    from core.world_model import WorldModel
+except ImportError:
+    WorldModel = None  # type: ignore[misc,assignment]
+
+try:
+    from core.divergence_engine import DivergenceEngine
+except ImportError:
+    DivergenceEngine = None  # type: ignore[misc,assignment]
+
+try:
+    from core.entropy_monitor import EntropyMonitor
+except ImportError:
+    EntropyMonitor = None  # type: ignore[misc,assignment]
+
+try:
+    from core.counterfactual_engine import CounterfactualEngine
+except ImportError:
+    CounterfactualEngine = None  # type: ignore[misc,assignment]
+
+try:
+    from core.relevance_engine import RelevanceEngine
+except ImportError:
+    RelevanceEngine = None  # type: ignore[misc,assignment]
+
+try:
+    from core.phase_engine import PhaseEngine
+except ImportError:
+    PhaseEngine = None  # type: ignore[misc,assignment]
 from swarmz_runtime.meta import MetaSelector
 from swarmz_runtime.meta.task_matrix import NextTaskMatrix
 
