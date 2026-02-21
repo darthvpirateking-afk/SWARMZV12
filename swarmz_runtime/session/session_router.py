@@ -3,8 +3,15 @@ from .operator_session import OperatorSession
 from .session_store import SessionStore
 
 router = APIRouter()
-session_store = SessionStore()
+_session_store: SessionStore | None = None
 current_session = None
+
+
+def _get_session_store() -> SessionStore:
+    global _session_store
+    if _session_store is None:
+        _session_store = SessionStore()
+    return _session_store
 
 
 @router.post("/session/start")
@@ -26,7 +33,7 @@ def end_session():
     global current_session
     if current_session:
         session_data = current_session.end_session()
-        session_store.append_session(session_data)
+        _get_session_store().append_session(session_data)
         current_session = None
         return {"message": "Session ended", "session_data": session_data}
     return {"message": "No active session to end"}
