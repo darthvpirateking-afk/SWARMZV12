@@ -232,7 +232,7 @@ async def create_mission(req: MissionCreateRequest):
     """Create a new mission."""
     missions_file = Path("data/missions.jsonl")
     audit_file = Path("data/audit.jsonl")
-    mission_id = f"mission_{int(datetime.now(timezone.utc).timestamp()*1000)}"
+    mission_id = f"mission_{int(datetime.now(timezone.utc).timestamp() * 1000)}"
     created_at = _utc_now_iso_z()
     mission = {
         "mission_id": mission_id,

@@ -31,9 +31,9 @@ LOG_FILES = [
 
 
 def section(title):
-    print(f"\n{'='*50}")
+    print(f"\n{'=' * 50}")
     print(f"  {title}")
-    print(f"{'='*50}")
+    print(f"{'=' * 50}")
 
 
 def load_config():
