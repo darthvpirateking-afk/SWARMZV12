@@ -225,64 +225,57 @@ def compute_power_currencies(verified: Optional[List[Dict]] = None) -> Dict[str,
     now = datetime.now(timezone.utc)
     cutoff = now - timedelta(days=30)
 
-    recent = []
+    # Single pass: collect recent IDs, templates, survival count, and rollback count
+    recent_ids: set[str] = set()
+    recent_templates: set[str] = set()
+    recent_count = 0
+    survived_count = 0
+    with_rollback = 0
+
     for t in verified:
+        tags = t.get("tags", [])
+        if t.get("reverted") or "revert" in tags or "followup" in tags:
+            with_rollback += 1
         try:
             ca = t.get("checked_at", "")
             if ca:
                 ca_dt = datetime.fromisoformat(ca.replace("Z", "+00:00"))
                 if ca_dt >= cutoff:
-                    recent.append(t)
+                    tid = t.get("id")
+                    if tid:
+                        recent_ids.add(tid)
+                    tmpl = (
+                        t.get("action", "").split(":")[0].strip() or "unknown"
+                    ).lower()
+                    recent_templates.add(tmpl)
+                    recent_count += 1
+                    if t.get("survived") is True:
+                        survived_count += 1
         except Exception:
             pass
 
     # STABILITY: % survived in last 30 days
-    if recent:
-        survived_count = sum(1 for t in recent if t.get("survived") is True)
-        stability = round(survived_count / len(recent), 4)
-    else:
-        stability = 0.0
+    stability = round(survived_count / recent_count, 4) if recent_count else 0.0
 
     # NOVELTY: % of unique action_templates in last 30 days vs all-time
-    all_templates = set()
+    # Novel = templates that appeared for the first time in last 30 days
+    old_templates: set[str] = set()
     for t in verified:
-        tmpl = (t.get("action", "").split(":")[0].strip() or "unknown").lower()
-        all_templates.add(tmpl)
-
-    recent_templates = set()
-    for t in recent:
-        tmpl = (t.get("action", "").split(":")[0].strip() or "unknown").lower()
-        recent_templates.add(tmpl)
-
-    # Novel = templates that appeared for first time in last 30 days
-    older = []
-    for t in verified:
-        if t not in recent:
-            older.append(t)
-    old_templates = set()
-    for t in older:
-        tmpl = (t.get("action", "").split(":")[0].strip() or "unknown").lower()
-        old_templates.add(tmpl)
+        if t.get("id") not in recent_ids:
+            old_templates.add(
+                (t.get("action", "").split(":")[0].strip() or "unknown").lower()
+            )
 
     novel_templates = recent_templates - old_templates
-    if recent_templates:
-        novelty = round(len(novel_templates) / len(recent_templates), 4)
-    else:
-        novelty = 0.0
+    novelty = (
+        round(len(novel_templates) / len(recent_templates), 4)
+        if recent_templates
+        else 0.0
+    )
 
     # REVERSIBILITY: % of verified trials with rollback path
     # A trial has rollback if: reverted=True, or has "revert" tag, or followup exists
-    if verified:
-        with_rollback = sum(
-            1
-            for t in verified
-            if t.get("reverted")
-            or "revert" in t.get("tags", [])
-            or "followup" in t.get("tags", [])
-        )
-        reversibility = round(with_rollback / len(verified), 4)
-    else:
-        reversibility = 0.0
+    reversibility = round(with_rollback / len(verified), 4) if verified else 0.0
 
     return {
         "stability": stability,

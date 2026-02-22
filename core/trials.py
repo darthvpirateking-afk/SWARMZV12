@@ -198,10 +198,12 @@ def load_all_trials() -> List[Dict[str, Any]]:
 
 def get_trial(trial_id: str) -> Optional[Dict[str, Any]]:
     """Get a single trial by id."""
-    for t in reversed(load_all_trials()):
-        if t.get("id") == trial_id:
-            return t
-    return None
+    rows = _read_jsonl(_TRIALS_FILE)
+    result = None
+    for r in rows:
+        if r.get("id") == trial_id:
+            result = r  # keep last version (append-only log, last entry wins)
+    return result
 
 
 def update_trial(

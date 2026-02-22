@@ -569,7 +569,7 @@ jobs:
           fi
 
           echo "Commit/PR subject: $MSG"
-          if ! echo "$MSG" | grep -Eq '^(feat|fix|build|chore|docs|refactor|test|ci)(\(.+\))?: .+'; then
+          if ! echo "$MSG" | grep -Eq '^(feat|fix|build|chore|docs|perf|refactor|test|ci)(\(.+\))?: .+'; then
             echo "Commit message policy failed."
             echo "Expected Conventional Commit style, e.g. 'fix(api): handle null value'."
             exit 1
