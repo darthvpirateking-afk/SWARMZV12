@@ -5,7 +5,8 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc && node scripts/generate-marketplace.js",
+    "build": "tsc",
+    "marketplace:generate": "node scripts/generate-marketplace.js",
     "typecheck": "tsc --noEmit",
     "test": "jest",
     "test:ci": "jest --ci",
