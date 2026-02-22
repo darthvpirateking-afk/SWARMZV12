@@ -370,18 +370,18 @@ async def traceback_last():
     }
 
 
-# --- Console UI Route (now serves static HUD from web/) ---
+# --- Console UI Route (redirects to NEXUSMON) ---
 @app.get("/console")
 async def console_page():
-    """Serve the SWARMZ Console HUD UI."""
-    return FileResponse("web/index.html", media_type="text/html")
+    """Serve the NEXUSMON Console UI."""
+    return FileResponse("web/nexusmon_console.html", media_type="text/html")
 
 
-# --- Home route (serve HUD directly - no redirect loop) ---
+# --- Home route — NEXUSMON is the face of this system ---
 @app.get("/")
 async def home_page():
-    """Serve the SWARMZ Console HUD at root."""
-    return FileResponse("web/index.html", media_type="text/html")
+    """NEXUSMON wakes up here."""
+    return FileResponse("web/nexusmon_console.html", media_type="text/html")
 
 
 # --- Manifest, Icons, and Other PWA Routes ---
