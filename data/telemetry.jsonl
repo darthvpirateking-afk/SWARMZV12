@@ -45,3 +45,95 @@
 {"ts":"2026-02-21T14:51:52.726626+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T01:51:52.726599"}}
 {"ts":"2026-02-21T15:08:55.151492+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T02:08:55.151465"}}
 {"ts":"2026-02-21T15:09:25.270353+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T02:09:25.270327"}}
+{"ts":"2026-02-21T15:21:34.684783+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T02:21:34.684753"}}
+{"ts":"2026-02-21T15:22:01.398079+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T02:22:01.398054"}}
+{"ts":"2026-02-21T15:22:34.567642+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T02:22:34.567617"}}
+{"ts":"2026-02-21T15:23:09.718866+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T02:23:09.718840"}}
+{"ts":"2026-02-21T15:23:35.750833+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T02:23:35.750807"}}
+{"ts":"2026-02-21T15:25:23.556364+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T02:25:23.556336"}}
+{"ts":"2026-02-21T15:28:16.605357+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T02:28:16.605329"}}
+{"ts":"2026-02-21T15:38:45.736526+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T02:38:45.736499"}}
+{"ts":"2026-02-21T15:42:47.623401+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T02:42:47.623373"}}
+{"ts":"2026-02-21T15:59:34.245352+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T02:59:34.245325"}}
+{"ts":"2026-02-21T15:59:58.017361+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T02:59:58.017335"}}
+{"ts":"2026-02-22T03:15:17.916163+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T14:15:17.916151"}}
+{"ts":"2026-02-22T03:15:19.145647+00:00","type":"mission_created","payload":{"mission_id":"37b2f4dd","goal":"E2E dispatch test","category":"forge"}}
+{"ts":"2026-02-22T03:16:09.478439+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T14:16:09.478427"}}
+{"ts":"2026-02-22T03:16:10.507111+00:00","type":"mission_created","payload":{"mission_id":"ae0e2730","goal":"E2E dispatch test","category":"forge"}}
+{"ts":"2026-02-22T03:16:54.472038+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T14:16:54.472028"}}
+{"ts":"2026-02-22T03:16:55.304846+00:00","type":"mission_created","payload":{"mission_id":"5ab45e12","goal":"E2E dispatch test","category":"forge"}}
+{"ts":"2026-02-22T03:20:49.776598+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T14:20:49.776587"}}
+{"ts":"2026-02-22T03:20:50.691074+00:00","type":"mission_created","payload":{"mission_id":"18fd8b3d","goal":"E2E dispatch test","category":"forge"}}
+{"ts":"2026-02-22T03:20:58.435355+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T14:20:58.435345"}}
+{"ts":"2026-02-22T03:20:59.365868+00:00","type":"mission_created","payload":{"mission_id":"2a4f589b","goal":"E2E dispatch test","category":"forge"}}
+{"ts":"2026-02-22T03:24:34.341035+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T14:24:34.341023"}}
+{"ts":"2026-02-22T03:24:35.123429+00:00","type":"mission_created","payload":{"mission_id":"2a935680","goal":"E2E dispatch test","category":"forge"}}
+{"ts":"2026-02-22T03:33:04.890682+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T14:33:04.890672"}}
+{"ts":"2026-02-22T03:33:05.656962+00:00","type":"mission_created","payload":{"mission_id":"ee5ed655","goal":"E2E dispatch test","category":"forge"}}
+{"ts":"2026-02-22T03:33:14.527812+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T14:33:14.527802"}}
+{"ts":"2026-02-22T03:33:15.361539+00:00","type":"mission_created","payload":{"mission_id":"30726bf7","goal":"E2E dispatch test","category":"forge"}}
+{"ts":"2026-02-22T03:33:23.999779+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T14:33:23.999769"}}
+{"ts":"2026-02-22T03:33:24.792788+00:00","type":"mission_created","payload":{"mission_id":"02806a68","goal":"E2E dispatch test","category":"forge"}}
+{"ts":"2026-02-22T03:34:24.084665+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T14:34:24.084653"}}
+{"ts":"2026-02-22T03:37:05.936205+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T14:37:05.936178"}}
+{"ts":"2026-02-22T03:42:05.325823+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T14:42:05.325794"}}
+{"ts":"2026-02-22T03:45:28.636941+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T14:45:28.636914"}}
+{"ts":"2026-02-22T03:52:59.478811+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T14:52:59.478781"}}
+{"ts":"2026-02-22T03:59:36.431360+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T14:59:36.431334"}}
+{"ts":"2026-02-22T04:39:33.529333+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T15:39:33.529323"}}
+{"ts":"2026-02-22T04:39:34.406672+00:00","type":"mission_created","payload":{"mission_id":"42df3504","goal":"E2E dispatch test","category":"forge"}}
+{"ts":"2026-02-22T04:39:53.577471+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T15:39:53.577460"}}
+{"ts":"2026-02-22T04:39:54.406709+00:00","type":"mission_created","payload":{"mission_id":"43ff2979","goal":"E2E dispatch test","category":"forge"}}
+{"ts":"2026-02-22T04:40:17.920654+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T15:40:17.920643"}}
+{"ts":"2026-02-22T04:40:18.824244+00:00","type":"mission_created","payload":{"mission_id":"11fa0424","goal":"E2E dispatch test","category":"forge"}}
+{"ts":"2026-02-22T04:49:01.771105+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T15:49:01.771080"}}
+{"ts":"2026-02-22T04:54:31.265263+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T15:54:31.265236"}}
+{"ts":"2026-02-22T05:17:35.082651+00:00","type":"mission_created","payload":{"mission_id":"30663f25","goal":"E2E dispatch test","category":"forge"}}
+{"ts":"2026-02-22T05:18:08.077491+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T16:18:08.077479"}}
+{"ts":"2026-02-22T05:18:08.913528+00:00","type":"mission_created","payload":{"mission_id":"d76cdb22","goal":"E2E dispatch test","category":"forge"}}
+{"ts":"2026-02-22T05:27:21.863436+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T16:27:21.863425"}}
+{"ts":"2026-02-22T05:27:22.700929+00:00","type":"mission_created","payload":{"mission_id":"8c54f34e","goal":"E2E dispatch test","category":"forge"}}
+{"ts":"2026-02-22T05:27:32.178690+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T16:27:32.178680"}}
+{"ts":"2026-02-22T05:27:32.994587+00:00","type":"mission_created","payload":{"mission_id":"dd918389","goal":"E2E dispatch test","category":"forge"}}
+{"ts":"2026-02-22T05:27:38.374112+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T16:27:38.374101"}}
+{"ts":"2026-02-22T05:27:39.194047+00:00","type":"mission_created","payload":{"mission_id":"72bee1e8","goal":"E2E dispatch test","category":"forge"}}
+{"ts":"2026-02-22T05:38:13.936769+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T16:38:13.936740"}}
+{"ts":"2026-02-22T05:38:54.920194+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T16:38:54.920167"}}
+{"ts":"2026-02-22T05:52:37.593753+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T16:52:37.593721"}}
+{"ts":"2026-02-22T05:53:59.235503+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T16:53:59.235491"}}
+{"ts":"2026-02-22T05:54:00.039269+00:00","type":"mission_created","payload":{"mission_id":"860fd231","goal":"E2E dispatch test","category":"forge"}}
+{"ts":"2026-02-22T05:54:15.307835+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T16:54:15.307823"}}
+{"ts":"2026-02-22T05:54:16.146240+00:00","type":"mission_created","payload":{"mission_id":"8e5684d2","goal":"E2E dispatch test","category":"forge"}}
+{"ts":"2026-02-22T05:57:29.774729+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T16:57:29.774704"}}
+{"ts":"2026-02-22T05:57:35.849637+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T16:57:35.849612"}}
+{"ts":"2026-02-22T05:59:10.913498+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T16:59:10.913473"}}
+{"ts":"2026-02-22T05:59:19.081529+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T16:59:19.081505"}}
+{"ts":"2026-02-22T05:59:27.481240+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T16:59:27.481216"}}
+{"ts":"2026-02-22T06:05:24.214241+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T17:05:24.214215"}}
+{"ts":"2026-02-22T06:08:52.812228+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T17:08:52.812218"}}
+{"ts":"2026-02-22T06:08:53.652651+00:00","type":"mission_created","payload":{"mission_id":"36f75038","goal":"E2E dispatch test","category":"forge"}}
+{"ts":"2026-02-22T06:13:47.040895+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T17:13:47.040883"}}
+{"ts":"2026-02-22T06:13:47.870461+00:00","type":"mission_created","payload":{"mission_id":"fd947c21","goal":"E2E dispatch test","category":"forge"}}
+{"ts":"2026-02-22T06:14:29.437505+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T17:14:29.437480"}}
+{"ts":"2026-02-22T06:20:53.161860+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T17:20:53.161848"}}
+{"ts":"2026-02-22T06:20:54.037877+00:00","type":"mission_created","payload":{"mission_id":"102c1551","goal":"E2E dispatch test","category":"forge"}}
+{"ts":"2026-02-22T06:21:15.994495+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T17:21:15.994469"}}
+{"ts":"2026-02-22T06:25:47.378560+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T17:25:47.378548"}}
+{"ts":"2026-02-22T06:25:48.412246+00:00","type":"mission_created","payload":{"mission_id":"80ff459f","goal":"E2E dispatch test","category":"forge"}}
+{"ts":"2026-02-22T06:26:13.412496+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T17:26:13.412471"}}
+{"ts":"2026-02-22T06:52:44.956386+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T17:52:44.956374"}}
+{"ts":"2026-02-22T06:52:45.758366+00:00","type":"mission_created","payload":{"mission_id":"80615ad2","goal":"E2E dispatch test","category":"forge"}}
+{"ts":"2026-02-22T06:52:51.310946+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T17:52:51.310935"}}
+{"ts":"2026-02-22T06:52:52.178335+00:00","type":"mission_created","payload":{"mission_id":"fcac9626","goal":"E2E dispatch test","category":"forge"}}
+{"ts":"2026-02-22T06:53:01.032844+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T17:53:01.032833"}}
+{"ts":"2026-02-22T06:53:01.874897+00:00","type":"mission_created","payload":{"mission_id":"6641e828","goal":"E2E dispatch test","category":"forge"}}
+{"ts":"2026-02-22T06:56:41.473706+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T17:56:41.473682"}}
+{"ts":"2026-02-22T06:57:04.388315+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T17:57:04.388290"}}
+{"ts":"2026-02-22T06:58:36.181494+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T17:58:36.181469"}}
+{"ts":"2026-02-22T07:00:04.803865+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T18:00:04.803835"}}
+{"ts":"2026-02-22T07:01:48.818758+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T18:01:48.818747"}}
+{"ts":"2026-02-22T07:01:49.644374+00:00","type":"mission_created","payload":{"mission_id":"699629f8","goal":"E2E dispatch test","category":"forge"}}
+{"ts":"2026-02-22T07:24:54.838100+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T18:24:54.838087"}}
+{"ts":"2026-02-22T07:24:55.650518+00:00","type":"mission_created","payload":{"mission_id":"da103e56","goal":"E2E dispatch test","category":"forge"}}
+{"ts":"2026-02-22T07:25:01.069041+00:00","type":"event","payload":{"event":"lan_ip_discovery","ip":"192.168.1.102","timestamp":"2026-02-22T18:25:01.069030"}}
+{"ts":"2026-02-22T07:25:01.926226+00:00","type":"mission_created","payload":{"mission_id":"3bf96d1a","goal":"E2E dispatch test","category":"forge"}}

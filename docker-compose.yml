@@ -1,45 +1,21 @@
 version: "3.9"
 
 services:
-  api:
+  swarmz:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: swarmz_api
-    restart: always
+    container_name: swarmz_enhanced
+    restart: unless-stopped
     ports:
-      - "8000:8000"
+      - "8012:8012"
     environment:
-      DATABASE_URL: postgresql://swarmz:swarmz@db:5432/swarmz
-    depends_on:
-      - db
+      - PORT=8012
+      - PYTHONPATH=/app
     volumes:
       - .:/app
-
-  db:
-    image: postgres:15
-    container_name: swarmz_db
-    restart: always
-    environment:
-      POSTGRES_USER: swarmz
-      POSTGRES_PASSWORD: swarmz
-      POSTGRES_DB: swarmz
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-
-  backend:
-    build: .
-    ports:
-      - "8000:8000"
-
-  ui:
-    build: ./ui
-    ports:
-      - "5173:5173"
-    depends_on:
-      - backend
+    working_dir: /app
+    command: python run_server.py
 
 volumes:
-  postgres_data:
+  swarmz_data:

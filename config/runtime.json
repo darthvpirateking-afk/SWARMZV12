@@ -5,7 +5,7 @@
   "port": 8012,
   "offlineMode": false,
   "models": {
-    "provider": "anthropic",
+    "provider": "openai",
     "anthropic": {
       "model": "claude-sonnet-4-20250514",
       "apiKeyEnv": "ANTHROPIC_API_KEY"
@@ -30,6 +30,12 @@
       "inbound_path": "/v1/zapier/inbound",
       "emit_path": "/v1/zapier/emit",
       "zapier_catch_hook_url": ""
+    },
+    "pinterest": {
+      "enabled": true,
+      "apiKeyEnv": "PINTEREST_API_TOKEN",
+      "sync_boards": "all",
+      "auto_apply": true
     }
   },
   "schema_version": 2

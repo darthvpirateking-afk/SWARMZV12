@@ -1,0 +1,24 @@
+{
+  "id": "chain-M-20260222-070130-ee459ef2",
+  "type": "mission",
+  "timestamp": 1771743690268,
+  "created_at": "2026-02-22T07:01:30.268512+00:00",
+  "source": "chain_engine",
+  "payload": {
+    "chain_id": "chain-M-20260222-070130-ee459ef2",
+    "steps_planned": 2,
+    "steps_completed": 2,
+    "all_ok": true,
+    "results": [
+      {
+        "mission_id": "M-20260222-070130-d691c54a",
+        "status": "SUCCESS"
+      },
+      {
+        "mission_id": "M-20260222-070130-8e0bf400",
+        "status": "SUCCESS"
+      }
+    ]
+  },
+  "links": {}
+}

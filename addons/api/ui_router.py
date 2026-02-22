@@ -1,19 +1,19 @@
-# SWARMZ Source Available License
+﻿# SWARMZ Source Available License
 # Commercial use, hosting, and resale prohibited.
 # See LICENSE file for details.
 """
-Interactive web UI for SWARMZ â€” serves a single-page application
+Interactive web UI for SWARMZ Ã¢â‚¬â€ serves a single-page application
 that lets operators browse capabilities, execute tasks, and view
 the audit log directly from a browser.
 
 API endpoints (JSON):
-    GET  /ui/api/capabilities  â€” list registered tasks
-    POST /ui/api/execute       â€” run a task by name with JSON params
-    GET  /ui/api/audit         â€” return the audit log
-    GET  /ui/api/info          â€” system information
+    GET  /ui/api/capabilities  Ã¢â‚¬â€ list registered tasks
+    POST /ui/api/execute       Ã¢â‚¬â€ run a task by name with JSON params
+    GET  /ui/api/audit         Ã¢â‚¬â€ return the audit log
+    GET  /ui/api/info          Ã¢â‚¬â€ system information
 
 HTML UI:
-    GET  /ui                   â€” interactive operator console
+    GET  /ui                   Ã¢â‚¬â€ interactive operator console
 """
 
 from __future__ import annotations
@@ -39,6 +39,23 @@ router = APIRouter()
 _FALLBACK_CORE = None
 
 
+def _select_self_name_from_presence(
+  presence: Dict[str, Any], avoid_pattern: bool = False
+) -> str:
+  if avoid_pattern:
+    return "Vesper"
+  style = presence.get("style", {})
+  context = presence.get("context", {})
+  realm = str(context.get("realm", "COSMOS")).upper()
+  form = str(context.get("form", "CORE")).upper()
+  intensity = str(style.get("intensity", "medium-high")).lower()
+  if realm == "COSMOS" and form == "CORE":
+    return "AstraCore Regent"
+  if "high" in intensity:
+    return "Sovereign Vector"
+  return "Master Swarmz Prime"
+
+
 def _get_fallback_core():
   global _FALLBACK_CORE
   if _FALLBACK_CORE is not None:
@@ -55,15 +72,61 @@ def _get_fallback_core():
 # Dependency-based SwarmzCore access via orchestrator
 # ---------------------------------------------------------------------------
 def _get_core(orchestrator=Depends(get_orchestrator)):
-<<<<<<< HEAD
-  if orchestrator and hasattr(orchestrator, "core"):
-    return orchestrator.core
-  return _get_fallback_core()
-=======
     if orchestrator and hasattr(orchestrator, "core"):
         return orchestrator.core
-    return None
->>>>>>> 1d4159f8b2fb9f9a9285afa0a908f7e6e9146070
+    return _get_fallback_core()
+
+
+def _build_presence_bundle() -> Dict[str, Any]:
+  from swarmz_runtime.core.form_evolution_map import FormEvolutionMap
+  from swarmz_runtime.core.persona_layer import (
+    Form,
+    MissionRank,
+    PersonaContext,
+    PersonaLayer,
+    Realm,
+    SwarmTier,
+  )
+  from swarmz_runtime.core.presence_engine import PresenceConfig, PresenceEngine
+  from swarmz_runtime.core.realm_tone_matrix import RealmToneMatrix
+  from swarmz_runtime.core.swarm_behavior_model import SwarmBehaviorModel
+  from swarmz_runtime.core.throne_governance import ThroneGovernance
+
+  realm_matrix = RealmToneMatrix()
+  form_map = FormEvolutionMap()
+  swarm_model = SwarmBehaviorModel()
+  throne = ThroneGovernance(operator_id="regan")
+
+  persona_layer = PersonaLayer(realm_matrix, form_map, swarm_model)
+  presence_engine = PresenceEngine(persona_layer, throne, PresenceConfig())
+
+  ctx = PersonaContext(
+    realm=Realm.COSMOS,
+    form=Form.CORE,
+    mission_rank=MissionRank.S,
+    swarm_tier=SwarmTier.T3,
+  )
+  style = presence_engine.render_style(ctx)
+
+  return {
+    "context": {
+      "realm": ctx.realm.value,
+      "form": ctx.form.value,
+      "mission_rank": ctx.mission_rank.value,
+      "swarm_tier": ctx.swarm_tier.value,
+    },
+    "style": {
+      "tone": style.tone,
+      "metaphor_level": style.metaphor_level,
+      "density": style.density,
+      "formality": style.formality,
+      "pacing": style.pacing,
+      "intensity": style.intensity,
+    },
+    "constraints": throne.describe_constraints(),
+    "presence_engine": presence_engine,
+    "style_obj": style,
+  }
 
 
 # ---------------------------------------------------------------------------
@@ -114,6 +177,162 @@ def api_info(core=Depends(_get_core)):
 
 
 # ---------------------------------------------------------------------------
+# Enhanced Companion Chat Endpoint
+# ---------------------------------------------------------------------------
+class ChatRequest(BaseModel):
+  message: str
+
+
+@router.post("/ui/api/companion/chat")
+def api_companion_chat(req: ChatRequest):
+  """Enhanced SWARMZ companion chat with sophisticated personality"""
+  try:
+    from core.companion import chat
+    from core.companion_master import rename_master
+
+    presence = _build_presence_bundle()
+    message_lower = req.message.lower()
+    asks_name_decision = (
+      "name" in message_lower
+      and (
+        "decide" in message_lower
+        or "choose" in message_lower
+        or "regan asked" in message_lower
+        or "what would you like to be called" in message_lower
+      )
+    )
+    asks_better_non_pattern_name = (
+      "better" in message_lower
+      and ("not pattern" in message_lower or "non pattern" in message_lower)
+    )
+
+    if asks_name_decision or asks_better_non_pattern_name:
+      chosen_name = _select_self_name_from_presence(
+        presence, avoid_pattern=asks_better_non_pattern_name
+      )
+      rename_master(chosen_name)
+      if asks_better_non_pattern_name:
+        reply = (
+          f"Regan asked for something better and not pattern-based. "
+          f"I choose: {chosen_name}."
+        )
+      else:
+        reply = (
+          f"Regan asked me to decide, and I choose this name: {chosen_name}. "
+          "I accept this designation."
+        )
+      constrained_reply = presence["presence_engine"].apply_constraints(
+        reply, presence["style_obj"]
+      )
+      return JSONResponse(
+        {
+          "ok": True,
+          "reply": constrained_reply,
+          "raw_reply": reply,
+          "source": "name_decision",
+          "personality_active": True,
+          "display_name": chosen_name,
+          "presence_context": presence["context"],
+          "presence_style": presence["style"],
+          "constraints": presence["constraints"],
+        }
+      )
+
+    result = chat(req.message)
+    reply = result.get("reply", "I'm processing that...")
+    constrained_reply = presence["presence_engine"].apply_constraints(
+      reply, presence["style_obj"]
+    )
+    return JSONResponse(
+      {
+        "ok": True,
+        "reply": constrained_reply,
+        "raw_reply": reply,
+        "source": result.get("source", "Enhanced Companion"),
+        "personality_active": True,
+        "presence_context": presence["context"],
+        "presence_style": presence["style"],
+        "constraints": presence["constraints"],
+      }
+    )
+  except Exception as exc:
+    return JSONResponse(
+      {
+        "ok": False,
+        "error": str(exc),
+        "reply": "I'm having trouble accessing my enhanced systems right now.",
+        "personality_active": False,
+      },
+      status_code=500,
+    )
+
+
+class _RenameRequest(BaseModel):
+    name: str
+
+
+@router.post("/ui/api/companion/rename")
+def api_companion_rename(body: _RenameRequest):
+    """Set a new display name for the companion. Persists to companion_master.json."""
+    try:
+        from core.companion_master import rename_master
+        updated = rename_master(body.name)
+        return JSONResponse({"ok": True, "display_name": updated.get("display_name", body.name)})
+    except Exception as exc:
+        logger.warning("rename_master failed: %s", exc)
+        return JSONResponse({"ok": False, "display_name": body.name, "error": str(exc)}, status_code=500)
+
+
+@router.get("/ui/api/companion/presence")
+def api_companion_presence():
+  """Get current derived persona context and expression profile."""
+  presence = _build_presence_bundle()
+  return JSONResponse(
+    {
+      "ok": True,
+      "context": presence["context"],
+      "style": presence["style"],
+      "constraints": presence["constraints"],
+    }
+  )
+
+
+@router.get("/ui/api/companion/avatar")
+def api_companion_avatar():
+  """Get avatar appearance data for enhanced SWARMZ"""
+  presence = _build_presence_bundle()
+  try:
+    from core.companion_master import get_display_name
+    display_name = get_display_name()
+  except Exception:
+    display_name = "SWARMZ Runtime"
+  return JSONResponse(
+    {
+      "display_name": display_name,
+      "appearance": {
+        "form": "cybernetic_humanoid",
+        "body_color": "matte_black",
+        "circuit_color": "electric_blue",
+        "core_color": "golden_energy",
+        "crown_fragments": True,
+        "height": "ethereal_tall",
+        "mode": "focused",
+      },
+      "personality_traits": [
+        "governed",
+        "deterministic",
+        "doctrine_aligned",
+        "technically_advanced",
+        "operator_controlled",
+      ],
+      "presence_context": presence["context"],
+      "presence_style": presence["style"],
+      "constraints": presence["constraints"],
+    }
+  )
+
+
+# ---------------------------------------------------------------------------
 # HTML interface
 # ---------------------------------------------------------------------------
 _UI_HTML = """\
@@ -122,7 +341,7 @@ _UI_HTML = """\
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>SWARMZ â€” Operator Console</title>
+<title>SWARMZ Ã¢â‚¬â€ Operator Console</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;

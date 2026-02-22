@@ -1,29 +1,29 @@
 {
   "failure_clusters": {
-    "count": 0,
-    "confidence": 0.0,
-    "recent": []
+    "count": 19,
+    "confidence": 1.0,
+    "recent": [
+      "at_risk",
+      "at_risk",
+      "at_risk",
+      "at_risk",
+      "at_risk",
+      "at_risk"
+    ]
   },
   "abandoned": {
-    "count": 32,
-    "confidence": 0.95,
-    "recent": [
-      "stabilizing",
-      "stabilizing",
-      "stabilizing",
-      "stabilizing",
-      "stabilizing",
-      "stabilizing"
-    ]
+    "count": 0,
+    "confidence": 0.05,
+    "recent": []
   },
   "slowdowns": {
     "count": 0,
-    "confidence": 0.0,
+    "confidence": 0.05,
     "recent": []
   },
   "recoveries": {
-    "count": 105,
-    "confidence": 0.95,
+    "count": 23,
+    "confidence": 1.0,
     "recent": [
       "stabilizing",
       "stabilizing",
@@ -35,7 +35,7 @@
   },
   "bursts": {
     "count": 0,
-    "confidence": 0.0,
+    "confidence": 0.05,
     "recent": []
   }
 }

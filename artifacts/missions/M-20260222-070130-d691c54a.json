@@ -1,0 +1,35 @@
+{
+  "id": "M-20260222-070130-d691c54a",
+  "type": "mission",
+  "timestamp": 1771743690200,
+  "created_at": "2026-02-22T07:01:30.200227+00:00",
+  "source": "mission_engine",
+  "payload": {
+    "mission_id": "M-20260222-070130-d691c54a",
+    "intent": "diagnose system",
+    "status": "SUCCESS",
+    "worker_id": "diagnose-worker",
+    "duration_ms": 8,
+    "result": {
+      "ok": true,
+      "type": "diagnose",
+      "runner_heartbeat": {
+        "status": "up",
+        "last_tick": "2026-02-22T07:01:29.616404Z"
+      },
+      "state": {
+        "mode": "COMPANION",
+        "updated_at": "2026-02-22T05:53:51.878701Z",
+        "version": 21
+      },
+      "missions": {
+        "total": 166,
+        "success": 120,
+        "failure": 37,
+        "pending": 0
+      },
+      "success_rate": 72.3
+    }
+  },
+  "links": {}
+}

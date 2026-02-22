@@ -1600,3 +1600,515 @@
 {"timestamp": "2026-02-21T15:08:38.631504+00:00", "event": "companion_message", "source": "rule_engine", "text_sha256": "8fc884a0cc60f49d", "reply_len": 142}
 {"timestamp": "2026-02-21T15:08:43.454690+00:00", "event": "companion_message", "source": "rule_engine", "text_sha256": "64e543598f5b142f", "reply_len": 165}
 {"timestamp": "2026-02-21T15:08:48.466862+00:00", "event": "companion_message", "source": "rule_engine", "text_sha256": "6e28f3dee70cde76", "reply_len": 431}
+{"timestamp": "2026-02-21T15:20:09.840485+00:00", "event": "companion_message", "source": "rule_engine", "text_sha256": "bd898219cdcb7bcb", "reply_len": 142}
+{"timestamp": "2026-02-21T15:28:49.019828+00:00", "event": "companion_message", "source": "rule_engine", "text_sha256": "c13350fee7bb5ebe", "reply_len": 157}
+{"timestamp":"2026-02-21T15:35:41.631003Z","event":"mode_changed","old_mode":"COMPANION","new_mode":"BUILD","operator":true}
+{"timestamp": "2026-02-21T15:39:15.385396+00:00", "event": "companion_message", "source": "rule_engine", "text_sha256": "673f130a6e0f02f4", "reply_len": 165}
+{"timestamp":"2026-02-21T15:40:05.725345Z","event":"mode_changed","old_mode":"BUILD","new_mode":"COMPANION","operator":true}
+{"timestamp":"2026-02-21T15:40:06.558324Z","event":"mode_changed","old_mode":"COMPANION","new_mode":"BUILD","operator":true}
+{"timestamp": "2026-02-21T15:43:18.497350+00:00", "event": "companion_message", "source": "rule_engine", "text_sha256": "a8ecdfc2cf8ae4c1", "reply_len": 142}
+{"timestamp": "2026-02-21T16:45:08.735481+00:00", "event": "companion_message", "source": "rule_engine", "text_sha256": "04f92dc92decc8ce", "reply_len": 165}
+{"timestamp": "2026-02-21T16:45:23.582548+00:00", "event": "companion_message", "source": "rule_engine", "text_sha256": "04f92dc92decc8ce", "reply_len": 165}
+{"timestamp": "2026-02-22T14:15:19.146062", "event_type": "mission_created", "mission_id": "37b2f4dd", "details": {"goal": "E2E dispatch test", "category": "forge"}, "visibility": "visible"}
+{"ts": "2026-02-22T03:15:19.163294Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-031519-c7cc5bea"}
+{"ts": "2026-02-22T03:15:19.203087Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-031519-452f43f7"}
+{"timestamp": "2026-02-22T14:16:10.507550", "event_type": "mission_created", "mission_id": "ae0e2730", "details": {"goal": "E2E dispatch test", "category": "forge"}, "visibility": "visible"}
+{"ts": "2026-02-22T03:16:10.526332Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-031610-1ced8597"}
+{"ts": "2026-02-22T03:16:10.567543Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-031610-a0499c9b"}
+{"timestamp": "2026-02-22T14:16:55.305258", "event_type": "mission_created", "mission_id": "5ab45e12", "details": {"goal": "E2E dispatch test", "category": "forge"}, "visibility": "visible"}
+{"ts": "2026-02-22T03:16:55.322021Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-031655-f46aa13c"}
+{"ts": "2026-02-22T03:16:55.361389Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-031655-ceefa75f"}
+{"timestamp": "2026-02-22T14:20:50.691543", "event_type": "mission_created", "mission_id": "18fd8b3d", "details": {"goal": "E2E dispatch test", "category": "forge"}, "visibility": "visible"}
+{"ts": "2026-02-22T03:20:50.708831Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-032050-1e059537"}
+{"ts": "2026-02-22T03:20:50.747353Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-032050-ba179657"}
+{"timestamp": "2026-02-22T14:20:59.366293", "event_type": "mission_created", "mission_id": "2a4f589b", "details": {"goal": "E2E dispatch test", "category": "forge"}, "visibility": "visible"}
+{"ts": "2026-02-22T03:20:59.382339Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-032059-90ecb742"}
+{"ts": "2026-02-22T03:20:59.417564Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-032059-be4c2b94"}
+{"timestamp": "2026-02-22T03:24:29.147586+00:00", "event": "companion_message", "source": "rule_engine", "text_sha256": "2cf24dba5fb0a30e", "reply_len": 158}
+{"timestamp": "2026-02-22T14:24:35.123920", "event_type": "mission_created", "mission_id": "2a935680", "details": {"goal": "E2E dispatch test", "category": "forge"}, "visibility": "visible"}
+{"ts": "2026-02-22T03:24:35.141002Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-032435-cf922d29"}
+{"ts": "2026-02-22T03:24:35.176685Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-032435-855197b4"}
+{"timestamp": "2026-02-22T03:26:13.071621+00:00", "event": "companion_message", "source": "rule_engine", "text_sha256": "2cf24dba5fb0a30e", "reply_len": 144}
+{"timestamp": "2026-02-22T14:33:05.657387", "event_type": "mission_created", "mission_id": "ee5ed655", "details": {"goal": "E2E dispatch test", "category": "forge"}, "visibility": "visible"}
+{"ts": "2026-02-22T03:33:05.672969Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-033305-ebf3df79"}
+{"ts": "2026-02-22T03:33:05.706881Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-033305-dbbf5b31"}
+{"timestamp": "2026-02-22T03:33:07.861716+00:00", "event": "companion_message", "source": "rule_engine", "text_sha256": "2cf24dba5fb0a30e", "reply_len": 144}
+{"timestamp": "2026-02-22T14:33:15.361952", "event_type": "mission_created", "mission_id": "30726bf7", "details": {"goal": "E2E dispatch test", "category": "forge"}, "visibility": "visible"}
+{"ts": "2026-02-22T03:33:15.377461Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-033315-b75c1507"}
+{"ts": "2026-02-22T03:33:15.411888Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-033315-1e8b6afa"}
+{"timestamp": "2026-02-22T03:33:17.648598+00:00", "event": "companion_message", "source": "rule_engine", "text_sha256": "2cf24dba5fb0a30e", "reply_len": 158}
+{"timestamp": "2026-02-22T14:33:24.793198", "event_type": "mission_created", "mission_id": "02806a68", "details": {"goal": "E2E dispatch test", "category": "forge"}, "visibility": "visible"}
+{"ts": "2026-02-22T03:33:24.808985Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-033324-d10d4f0b"}
+{"ts": "2026-02-22T03:33:24.842818Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-033324-ed79b8a2"}
+{"timestamp": "2026-02-22T03:33:26.948604+00:00", "event": "companion_message", "source": "rule_engine", "text_sha256": "2cf24dba5fb0a30e", "reply_len": 183}
+{"timestamp": "2026-02-22T03:34:23.480878Z", "event": "mission_started", "mission_id": "M-20260222-031519-c7cc5bea", "intent": "E2E sovereign dispatch", "strategy": "baseline"}
+{"timestamp": "2026-02-22T03:34:23.483611Z", "event": "mission_finished", "mission_id": "M-20260222-031519-c7cc5bea", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T03:34:24.557444Z", "event": "mission_started", "mission_id": "M-20260222-031519-452f43f7", "intent": "roundtrip-e2e", "strategy": "baseline"}
+{"timestamp": "2026-02-22T03:34:24.560236Z", "event": "mission_finished", "mission_id": "M-20260222-031519-452f43f7", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T03:34:25.666272Z", "event": "mission_started", "mission_id": "M-20260222-031610-1ced8597", "intent": "E2E sovereign dispatch", "strategy": "baseline"}
+{"timestamp": "2026-02-22T03:34:25.668865Z", "event": "mission_finished", "mission_id": "M-20260222-031610-1ced8597", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T03:34:26.757058Z", "event": "mission_started", "mission_id": "M-20260222-031610-a0499c9b", "intent": "roundtrip-e2e", "strategy": "baseline"}
+{"timestamp": "2026-02-22T03:34:26.760168Z", "event": "mission_finished", "mission_id": "M-20260222-031610-a0499c9b", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T03:34:27.855223Z", "event": "mission_started", "mission_id": "M-20260222-031655-f46aa13c", "intent": "E2E sovereign dispatch", "strategy": "baseline"}
+{"timestamp": "2026-02-22T03:34:27.857758Z", "event": "mission_finished", "mission_id": "M-20260222-031655-f46aa13c", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T03:34:28.958154Z", "event": "mission_started", "mission_id": "M-20260222-031655-ceefa75f", "intent": "roundtrip-e2e", "strategy": "baseline"}
+{"timestamp": "2026-02-22T03:34:28.961298Z", "event": "mission_finished", "mission_id": "M-20260222-031655-ceefa75f", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T03:34:30.049712Z", "event": "mission_started", "mission_id": "M-20260222-032050-1e059537", "intent": "E2E sovereign dispatch", "strategy": "baseline"}
+{"timestamp": "2026-02-22T03:34:30.052442Z", "event": "mission_finished", "mission_id": "M-20260222-032050-1e059537", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T03:34:31.283449Z", "event": "mission_started", "mission_id": "M-20260222-032050-ba179657", "intent": "roundtrip-e2e", "strategy": "baseline"}
+{"timestamp": "2026-02-22T03:34:31.286035Z", "event": "mission_finished", "mission_id": "M-20260222-032050-ba179657", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T03:34:32.372152Z", "event": "mission_started", "mission_id": "M-20260222-032059-90ecb742", "intent": "E2E sovereign dispatch", "strategy": "baseline"}
+{"timestamp": "2026-02-22T03:34:32.375531Z", "event": "mission_finished", "mission_id": "M-20260222-032059-90ecb742", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T03:34:33.461448Z", "event": "mission_started", "mission_id": "M-20260222-032059-be4c2b94", "intent": "roundtrip-e2e", "strategy": "baseline"}
+{"timestamp": "2026-02-22T03:34:33.464137Z", "event": "mission_finished", "mission_id": "M-20260222-032059-be4c2b94", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T03:34:34.574157Z", "event": "mission_started", "mission_id": "M-20260222-032435-cf922d29", "intent": "E2E sovereign dispatch", "strategy": "baseline"}
+{"timestamp": "2026-02-22T03:34:34.576920Z", "event": "mission_finished", "mission_id": "M-20260222-032435-cf922d29", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T03:34:35.666734Z", "event": "mission_started", "mission_id": "M-20260222-032435-855197b4", "intent": "roundtrip-e2e", "strategy": "baseline"}
+{"timestamp": "2026-02-22T03:34:35.669648Z", "event": "mission_finished", "mission_id": "M-20260222-032435-855197b4", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T03:34:36.757010Z", "event": "mission_started", "mission_id": "M-20260222-033305-ebf3df79", "intent": "E2E sovereign dispatch", "strategy": "baseline"}
+{"timestamp": "2026-02-22T03:34:36.759622Z", "event": "mission_finished", "mission_id": "M-20260222-033305-ebf3df79", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T03:34:37.845739Z", "event": "mission_started", "mission_id": "M-20260222-033305-dbbf5b31", "intent": "roundtrip-e2e", "strategy": "baseline"}
+{"timestamp": "2026-02-22T03:34:37.848530Z", "event": "mission_finished", "mission_id": "M-20260222-033305-dbbf5b31", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T03:34:38.935067Z", "event": "mission_started", "mission_id": "M-20260222-033315-b75c1507", "intent": "E2E sovereign dispatch", "strategy": "baseline"}
+{"timestamp": "2026-02-22T03:34:38.937847Z", "event": "mission_finished", "mission_id": "M-20260222-033315-b75c1507", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T03:34:40.027506Z", "event": "mission_started", "mission_id": "M-20260222-033315-1e8b6afa", "intent": "roundtrip-e2e", "strategy": "baseline"}
+{"timestamp": "2026-02-22T03:34:40.029909Z", "event": "mission_finished", "mission_id": "M-20260222-033315-1e8b6afa", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T03:34:41.115306Z", "event": "mission_started", "mission_id": "M-20260222-033324-d10d4f0b", "intent": "E2E sovereign dispatch", "strategy": "baseline"}
+{"timestamp": "2026-02-22T03:34:41.117921Z", "event": "mission_finished", "mission_id": "M-20260222-033324-d10d4f0b", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T03:34:42.205165Z", "event": "mission_started", "mission_id": "M-20260222-033324-ed79b8a2", "intent": "roundtrip-e2e", "strategy": "baseline"}
+{"timestamp": "2026-02-22T03:34:42.207683Z", "event": "mission_finished", "mission_id": "M-20260222-033324-ed79b8a2", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T03:35:16.997641+00:00", "event": "companion_message", "source": "rule_engine", "text_sha256": "0917beb6afcdf826", "reply_len": 165}
+{"timestamp": "2026-02-22T03:35:21.949585+00:00", "event": "companion_message", "source": "rule_engine", "text_sha256": "6fd31defb3f790d2", "reply_len": 142}
+{"timestamp": "2026-02-22T03:35:55.379313+00:00", "event": "companion_message", "source": "rule_engine", "text_sha256": "95cf9979e60f7575", "reply_len": 165}
+{"timestamp": "2026-02-22T03:38:29.349498+00:00", "event": "companion_message", "source": "rule_engine", "text_sha256": "0e00edab0a463660", "reply_len": 157}
+{"timestamp": "2026-02-22T03:42:29.035076+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 331, "ok": false, "error": "OpenAI HTTP 401: {\n  \"error\": {\n    \"message\": \"Incorrect API key provided: sk-proj-********************************************************************************************************************"}
+{"timestamp": "2026-02-22T03:42:29.035076+00:00", "event": "companion_message", "source": "rule_engine_fallback", "text_sha256": "f2b4725d523169fc", "reply_len": 387}
+{"timestamp": "2026-02-22T03:42:35.579486+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 312, "ok": false, "error": "OpenAI HTTP 401: {\n  \"error\": {\n    \"message\": \"Incorrect API key provided: sk-proj-********************************************************************************************************************"}
+{"timestamp": "2026-02-22T03:42:35.579486+00:00", "event": "companion_message", "source": "rule_engine_fallback", "text_sha256": "f2b4725d523169fc", "reply_len": 387}
+{"timestamp": "2026-02-22T03:42:43.367035+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 268, "ok": false, "error": "OpenAI HTTP 401: {\n  \"error\": {\n    \"message\": \"Incorrect API key provided: sk-proj-********************************************************************************************************************"}
+{"timestamp": "2026-02-22T03:42:43.367035+00:00", "event": "companion_message", "source": "rule_engine_fallback", "text_sha256": "f2b4725d523169fc", "reply_len": 387}
+{"timestamp": "2026-02-22T03:45:51.204276+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 416, "ok": false, "error": "OpenAI HTTP 401: {\n  \"error\": {\n    \"message\": \"Incorrect API key provided: sk-proj-********************************************************************************************************************"}
+{"timestamp": "2026-02-22T03:45:51.204276+00:00", "event": "companion_message", "source": "rule_engine_fallback", "text_sha256": "753ed007e6df33c2", "reply_len": 267}
+{"timestamp": "2026-02-22T03:45:56.284199+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 283, "ok": false, "error": "OpenAI HTTP 401: {\n  \"error\": {\n    \"message\": \"Incorrect API key provided: sk-proj-********************************************************************************************************************"}
+{"timestamp": "2026-02-22T03:45:56.284199+00:00", "event": "companion_message", "source": "rule_engine_fallback", "text_sha256": "753ed007e6df33c2", "reply_len": 267}
+{"timestamp": "2026-02-22T03:46:01.807241+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 283, "ok": false, "error": "OpenAI HTTP 401: {\n  \"error\": {\n    \"message\": \"Incorrect API key provided: sk-proj-********************************************************************************************************************"}
+{"timestamp": "2026-02-22T03:46:01.807241+00:00", "event": "companion_message", "source": "rule_engine_fallback", "text_sha256": "753ed007e6df33c2", "reply_len": 267}
+{"timestamp": "2026-02-22T03:46:08.111804+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 302, "ok": false, "error": "OpenAI HTTP 401: {\n  \"error\": {\n    \"message\": \"Incorrect API key provided: sk-proj-********************************************************************************************************************"}
+{"timestamp": "2026-02-22T03:46:08.111804+00:00", "event": "companion_message", "source": "rule_engine_fallback", "text_sha256": "753ed007e6df33c2", "reply_len": 267}
+{"timestamp": "2026-02-22T03:53:21.576853+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 4956, "ok": true, "input_tokens": 316, "output_tokens": 128}
+{"timestamp": "2026-02-22T03:53:21.576853+00:00", "event": "companion_message", "source": "ai", "text_sha256": "753ed007e6df33c2", "reply_len": 611}
+{"timestamp": "2026-02-22T03:53:30.338092+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 3051, "ok": true, "input_tokens": 316, "output_tokens": 165}
+{"timestamp": "2026-02-22T03:53:30.338092+00:00", "event": "companion_message", "source": "ai", "text_sha256": "753ed007e6df33c2", "reply_len": 788}
+{"timestamp": "2026-02-22T03:56:53.326692+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 4371, "ok": true, "input_tokens": 316, "output_tokens": 88}
+{"timestamp": "2026-02-22T03:56:53.326692+00:00", "event": "companion_message", "source": "ai", "text_sha256": "d1efaab6277bef3c", "reply_len": 420}
+{"timestamp": "2026-02-22T03:57:02.759911+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 2557, "ok": true, "input_tokens": 316, "output_tokens": 136}
+{"timestamp": "2026-02-22T03:57:02.759911+00:00", "event": "companion_message", "source": "ai", "text_sha256": "d1efaab6277bef3c", "reply_len": 693}
+{"timestamp": "2026-02-22T03:57:09.108103+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 3044, "ok": true, "input_tokens": 316, "output_tokens": 200}
+{"timestamp": "2026-02-22T03:57:09.108103+00:00", "event": "companion_message", "source": "ai", "text_sha256": "d1efaab6277bef3c", "reply_len": 1003}
+{"timestamp":"2026-02-22T03:57:53.154250Z","event":"mode_changed","old_mode":"BUILD","new_mode":"COMPANION","operator":true}
+{"timestamp": "2026-02-22T04:02:42.935600+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 2096, "ok": true, "input_tokens": 315, "output_tokens": 51}
+{"timestamp": "2026-02-22T04:02:42.935600+00:00", "event": "companion_message", "source": "ai", "text_sha256": "2cf24dba5fb0a30e", "reply_len": 231}
+{"timestamp": "2026-02-22T04:06:37.558979+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 684, "ok": true, "input_tokens": 621, "output_tokens": 11}
+{"timestamp": "2026-02-22T04:06:37.558979+00:00", "event": "companion_message", "source": "ai", "text_sha256": "3cab9a34310b887d", "reply_len": 53}
+{"timestamp": "2026-02-22T04:06:51.954867+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 627, "ok": true, "input_tokens": 621, "output_tokens": 11}
+{"timestamp": "2026-02-22T04:06:51.954867+00:00", "event": "companion_message", "source": "ai", "text_sha256": "3cab9a34310b887d", "reply_len": 53}
+{"timestamp": "2026-02-22T04:07:00.065251+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 1076, "ok": true, "input_tokens": 315, "output_tokens": 70}
+{"timestamp": "2026-02-22T04:07:00.065251+00:00", "event": "companion_message", "source": "ai", "text_sha256": "fa8847b0c3318327", "reply_len": 324}
+{"timestamp": "2026-02-22T04:07:26.089977+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 2031, "ok": true, "input_tokens": 317, "output_tokens": 145}
+{"timestamp": "2026-02-22T04:07:26.089977+00:00", "event": "companion_message", "source": "ai", "text_sha256": "a05a23800e997794", "reply_len": 729}
+{"timestamp": "2026-02-22T04:08:01.660561+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 4113, "ok": true, "input_tokens": 320, "output_tokens": 294}
+{"timestamp": "2026-02-22T04:08:01.660561+00:00", "event": "companion_message", "source": "ai", "text_sha256": "ccdf6c85f236902a", "reply_len": 1520}
+{"timestamp": "2026-02-22T04:08:35.928995+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 1207, "ok": true, "input_tokens": 317, "output_tokens": 80}
+{"timestamp": "2026-02-22T04:08:35.928995+00:00", "event": "companion_message", "source": "ai", "text_sha256": "3d21daccf67d8845", "reply_len": 408}
+{"timestamp": "2026-02-22T04:08:55.868847+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 1777, "ok": true, "input_tokens": 317, "output_tokens": 119}
+{"timestamp": "2026-02-22T04:08:55.868847+00:00", "event": "companion_message", "source": "ai", "text_sha256": "4728b110db6e8f14", "reply_len": 523}
+{"timestamp": "2026-02-22T04:09:22.021462+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 1277, "ok": true, "input_tokens": 319, "output_tokens": 60}
+{"timestamp": "2026-02-22T04:09:22.021462+00:00", "event": "companion_message", "source": "ai", "text_sha256": "9e2d95eb4077990d", "reply_len": 285}
+{"timestamp": "2026-02-22T04:09:34.757352+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 3013, "ok": true, "input_tokens": 315, "output_tokens": 139}
+{"timestamp": "2026-02-22T04:09:34.757352+00:00", "event": "companion_message", "source": "ai", "text_sha256": "8a798890fe938171", "reply_len": 592}
+{"timestamp": "2026-02-22T04:10:00.372853+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 2702, "ok": true, "input_tokens": 316, "output_tokens": 142}
+{"timestamp": "2026-02-22T04:10:00.372853+00:00", "event": "companion_message", "source": "ai", "text_sha256": "8a667759da579f6c", "reply_len": 728}
+{"timestamp": "2026-02-22T04:10:22.045373+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 4101, "ok": true, "input_tokens": 322, "output_tokens": 331}
+{"timestamp": "2026-02-22T04:10:22.045373+00:00", "event": "companion_message", "source": "ai", "text_sha256": "db20462fdc48a5a2", "reply_len": 1585}
+{"timestamp": "2026-02-22T04:11:05.243359+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 2882, "ok": true, "input_tokens": 316, "output_tokens": 251}
+{"timestamp": "2026-02-22T04:11:05.243359+00:00", "event": "companion_message", "source": "ai", "text_sha256": "4311d5b32311026e", "reply_len": 1241}
+{"timestamp": "2026-02-22T04:11:20.539455+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 1878, "ok": true, "input_tokens": 316, "output_tokens": 40}
+{"timestamp": "2026-02-22T04:11:20.539455+00:00", "event": "companion_message", "source": "ai", "text_sha256": "ca3704aa0b06f595", "reply_len": 190}
+{"timestamp": "2026-02-22T04:11:29.808419+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 1290, "ok": true, "input_tokens": 317, "output_tokens": 77}
+{"timestamp": "2026-02-22T04:11:29.808419+00:00", "event": "companion_message", "source": "ai", "text_sha256": "3c947aadf7ade9a0", "reply_len": 386}
+{"timestamp": "2026-02-22T04:11:51.337140+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 3506, "ok": true, "input_tokens": 326, "output_tokens": 315}
+{"timestamp": "2026-02-22T04:11:51.337140+00:00", "event": "companion_message", "source": "ai", "text_sha256": "1d0756f3fa2e6f17", "reply_len": 1451}
+{"timestamp": "2026-02-22T04:12:19.997569+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 1803, "ok": true, "input_tokens": 316, "output_tokens": 91}
+{"timestamp": "2026-02-22T04:12:19.997569+00:00", "event": "companion_message", "source": "ai", "text_sha256": "3b5e9ca38c27d732", "reply_len": 455}
+{"timestamp": "2026-02-22T04:12:39.115384+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 2714, "ok": true, "input_tokens": 319, "output_tokens": 231}
+{"timestamp": "2026-02-22T04:12:39.115384+00:00", "event": "companion_message", "source": "ai", "text_sha256": "c737923d972e9b90", "reply_len": 1166}
+{"timestamp": "2026-02-22T04:13:04.364353+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 5445, "ok": true, "input_tokens": 316, "output_tokens": 524}
+{"timestamp": "2026-02-22T04:13:04.364353+00:00", "event": "companion_message", "source": "ai", "text_sha256": "7d2302e6f29b6c20", "reply_len": 2609}
+{"timestamp": "2026-02-22T04:14:04.256491+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 2551, "ok": true, "input_tokens": 357, "output_tokens": 159}
+{"timestamp": "2026-02-22T04:14:04.256491+00:00", "event": "companion_message", "source": "ai", "text_sha256": "eac56ce50bb2e086", "reply_len": 867}
+{"timestamp": "2026-02-22T04:14:28.479535+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 2394, "ok": true, "input_tokens": 316, "output_tokens": 146}
+{"timestamp": "2026-02-22T04:14:28.479535+00:00", "event": "companion_message", "source": "ai", "text_sha256": "cb4c5704f9507dda", "reply_len": 683}
+{"timestamp": "2026-02-22T04:15:02.257378+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 2476, "ok": true, "input_tokens": 434, "output_tokens": 163}
+{"timestamp": "2026-02-22T04:15:02.257378+00:00", "event": "companion_message", "source": "ai", "text_sha256": "635ad1f6bec9dae4", "reply_len": 878}
+{"timestamp": "2026-02-22T15:39:34.407199", "event_type": "mission_created", "mission_id": "42df3504", "details": {"goal": "E2E dispatch test", "category": "forge"}, "visibility": "visible"}
+{"ts": "2026-02-22T04:39:34.424073Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-043934-541d16ee"}
+{"ts": "2026-02-22T04:39:34.463103Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-043934-82d6bf27"}
+{"timestamp": "2026-02-22T04:39:34.912916Z", "event": "mission_started", "mission_id": "M-20260222-043934-541d16ee", "intent": "E2E sovereign dispatch", "strategy": "baseline"}
+{"timestamp": "2026-02-22T04:39:34.915635Z", "event": "mission_finished", "mission_id": "M-20260222-043934-541d16ee", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T04:39:35.978022Z", "event": "mission_started", "mission_id": "M-20260222-043934-82d6bf27", "intent": "roundtrip-e2e", "strategy": "baseline"}
+{"timestamp": "2026-02-22T04:39:35.981033Z", "event": "mission_finished", "mission_id": "M-20260222-043934-82d6bf27", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T15:39:54.407108", "event_type": "mission_created", "mission_id": "43ff2979", "details": {"goal": "E2E dispatch test", "category": "forge"}, "visibility": "visible"}
+{"ts": "2026-02-22T04:39:54.423663Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-043954-add80711"}
+{"ts": "2026-02-22T04:39:54.462028Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-043954-6402e53e"}
+{"timestamp": "2026-02-22T04:39:55.107819Z", "event": "mission_started", "mission_id": "M-20260222-043954-add80711", "intent": "E2E sovereign dispatch", "strategy": "baseline"}
+{"timestamp": "2026-02-22T04:39:55.110714Z", "event": "mission_finished", "mission_id": "M-20260222-043954-add80711", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T04:39:56.169761Z", "event": "mission_started", "mission_id": "M-20260222-043954-6402e53e", "intent": "roundtrip-e2e", "strategy": "baseline"}
+{"timestamp": "2026-02-22T04:39:56.172987Z", "event": "mission_finished", "mission_id": "M-20260222-043954-6402e53e", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T15:40:18.824683", "event_type": "mission_created", "mission_id": "11fa0424", "details": {"goal": "E2E dispatch test", "category": "forge"}, "visibility": "visible"}
+{"ts": "2026-02-22T04:40:18.842197Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-044018-ec9003f1"}
+{"ts": "2026-02-22T04:40:18.883642Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-044018-6572e5d8"}
+{"timestamp": "2026-02-22T04:40:19.315539Z", "event": "mission_started", "mission_id": "M-20260222-044018-ec9003f1", "intent": "E2E sovereign dispatch", "strategy": "baseline"}
+{"timestamp": "2026-02-22T04:40:19.318146Z", "event": "mission_finished", "mission_id": "M-20260222-044018-ec9003f1", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T04:40:20.377990Z", "event": "mission_started", "mission_id": "M-20260222-044018-6572e5d8", "intent": "roundtrip-e2e", "strategy": "baseline"}
+{"timestamp": "2026-02-22T04:40:20.380805Z", "event": "mission_finished", "mission_id": "M-20260222-044018-6572e5d8", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T04:47:14.910533+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 1204, "ok": true, "input_tokens": 307, "output_tokens": 72}
+{"timestamp": "2026-02-22T04:47:14.910533+00:00", "event": "companion_message", "source": "ai", "text_sha256": "8f434346648f6b96", "reply_len": 292}
+{"timestamp": "2026-02-22T05:06:56.171181+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 1291, "ok": true, "input_tokens": 309, "output_tokens": 48}
+{"timestamp": "2026-02-22T05:06:56.171181+00:00", "event": "companion_message", "source": "ai", "text_sha256": "469dcc0013551644", "reply_len": 205}
+{"timestamp": "2026-02-22T05:07:11.970455+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 3241, "ok": true, "input_tokens": 310, "output_tokens": 264}
+{"timestamp": "2026-02-22T05:07:11.970455+00:00", "event": "companion_message", "source": "ai", "text_sha256": "bdc76c5871820433", "reply_len": 1305}
+{"timestamp": "2026-02-22T05:07:35.288340+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 1475, "ok": true, "input_tokens": 308, "output_tokens": 121}
+{"timestamp": "2026-02-22T05:07:35.288340+00:00", "event": "companion_message", "source": "ai", "text_sha256": "b1eb18946cd434f5", "reply_len": 568}
+{"timestamp": "2026-02-22T05:08:03.760894+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 1726, "ok": true, "input_tokens": 312, "output_tokens": 141}
+{"timestamp": "2026-02-22T05:08:03.760894+00:00", "event": "companion_message", "source": "ai", "text_sha256": "da2d6ca6df2042b1", "reply_len": 633}
+{"timestamp": "2026-02-22T05:08:11.444477+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 1439, "ok": true, "input_tokens": 307, "output_tokens": 53}
+{"timestamp": "2026-02-22T05:08:11.444477+00:00", "event": "companion_message", "source": "ai", "text_sha256": "3f267c2ab422e502", "reply_len": 245}
+{"timestamp": "2026-02-22T05:08:30.420365+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 1496, "ok": true, "input_tokens": 307, "output_tokens": 79}
+{"timestamp": "2026-02-22T05:08:30.420365+00:00", "event": "companion_message", "source": "ai", "text_sha256": "9bf5a24e4aa77998", "reply_len": 326}
+{"timestamp": "2026-02-22T05:08:50.390296+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 2900, "ok": true, "input_tokens": 309, "output_tokens": 187}
+{"timestamp": "2026-02-22T05:08:50.390296+00:00", "event": "companion_message", "source": "ai", "text_sha256": "a231d368ae1522f1", "reply_len": 887}
+{"timestamp": "2026-02-22T05:09:18.390079+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 3560, "ok": true, "input_tokens": 324, "output_tokens": 267}
+{"timestamp": "2026-02-22T05:09:18.390079+00:00", "event": "companion_message", "source": "ai", "text_sha256": "da3c13550b029cf4", "reply_len": 1149}
+{"timestamp": "2026-02-22T05:10:30.160877+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 4596, "ok": true, "input_tokens": 311, "output_tokens": 312}
+{"timestamp": "2026-02-22T05:10:30.160877+00:00", "event": "companion_message", "source": "ai", "text_sha256": "36ce7e9539d2ca5e", "reply_len": 1502}
+{"timestamp": "2026-02-22T05:11:22.854446+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 2605, "ok": true, "input_tokens": 329, "output_tokens": 215}
+{"timestamp": "2026-02-22T05:11:22.854446+00:00", "event": "companion_message", "source": "ai", "text_sha256": "e144edcb4b6b17ab", "reply_len": 838}
+{"timestamp": "2026-02-22T05:12:36.575833+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 2756, "ok": true, "input_tokens": 312, "output_tokens": 182}
+{"timestamp": "2026-02-22T05:12:36.575833+00:00", "event": "companion_message", "source": "ai", "text_sha256": "43ca50a747ca5e54", "reply_len": 848}
+{"timestamp": "2026-02-22T05:12:51.551992+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 1144, "ok": true, "input_tokens": 310, "output_tokens": 81}
+{"timestamp": "2026-02-22T05:12:51.551992+00:00", "event": "companion_message", "source": "ai", "text_sha256": "c5891f9c190ead3d", "reply_len": 397}
+{"timestamp": "2026-02-22T05:13:17.453701+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 2219, "ok": true, "input_tokens": 313, "output_tokens": 199}
+{"timestamp": "2026-02-22T05:13:17.453701+00:00", "event": "companion_message", "source": "ai", "text_sha256": "6b6d790ea70eb6f5", "reply_len": 955}
+{"timestamp": "2026-02-22T05:13:43.584528+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 2294, "ok": true, "input_tokens": 310, "output_tokens": 214}
+{"timestamp": "2026-02-22T05:13:43.584528+00:00", "event": "companion_message", "source": "ai", "text_sha256": "d996d4ba201d7bba", "reply_len": 1013}
+{"timestamp": "2026-02-22T05:14:12.379265+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 2207, "ok": true, "input_tokens": 314, "output_tokens": 162}
+{"timestamp": "2026-02-22T05:14:12.379265+00:00", "event": "companion_message", "source": "ai", "text_sha256": "cb4591d022280f18", "reply_len": 845}
+{"timestamp": "2026-02-22T05:14:42.127134+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 2712, "ok": true, "input_tokens": 314, "output_tokens": 118}
+{"timestamp": "2026-02-22T05:14:42.127134+00:00", "event": "companion_message", "source": "ai", "text_sha256": "5e30b690fdf1672f", "reply_len": 513}
+{"timestamp": "2026-02-22T05:15:01.562983+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 1121, "ok": true, "input_tokens": 309, "output_tokens": 92}
+{"timestamp": "2026-02-22T05:15:01.562983+00:00", "event": "companion_message", "source": "ai", "text_sha256": "bb64ac61af15100f", "reply_len": 403}
+{"timestamp": "2026-02-22T16:17:35.083120", "event_type": "mission_created", "mission_id": "30663f25", "details": {"goal": "E2E dispatch test", "category": "forge"}, "visibility": "visible"}
+{"ts": "2026-02-22T05:17:35.099781Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-051735-83272648"}
+{"ts": "2026-02-22T05:17:35.136102Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-051735-61c3916c"}
+{"timestamp": "2026-02-22T05:17:35.921300Z", "event": "mission_started", "mission_id": "M-20260222-051735-83272648", "intent": "E2E sovereign dispatch", "strategy": "baseline"}
+{"timestamp": "2026-02-22T05:17:35.924935Z", "event": "mission_finished", "mission_id": "M-20260222-051735-83272648", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T05:17:36.995785Z", "event": "mission_started", "mission_id": "M-20260222-051735-61c3916c", "intent": "roundtrip-e2e", "strategy": "baseline"}
+{"timestamp": "2026-02-22T05:17:36.998705Z", "event": "mission_finished", "mission_id": "M-20260222-051735-61c3916c", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T16:18:08.914017", "event_type": "mission_created", "mission_id": "d76cdb22", "details": {"goal": "E2E dispatch test", "category": "forge"}, "visibility": "visible"}
+{"ts": "2026-02-22T05:18:08.930993Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-051808-10c01224"}
+{"ts": "2026-02-22T05:18:08.968554Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-051808-ad166342"}
+{"timestamp": "2026-02-22T05:18:09.175424Z", "event": "mission_started", "mission_id": "M-20260222-051808-10c01224", "intent": "E2E sovereign dispatch", "strategy": "baseline"}
+{"timestamp": "2026-02-22T05:18:09.178015Z", "event": "mission_finished", "mission_id": "M-20260222-051808-10c01224", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T05:18:10.247201Z", "event": "mission_started", "mission_id": "M-20260222-051808-ad166342", "intent": "roundtrip-e2e", "strategy": "baseline"}
+{"timestamp": "2026-02-22T05:18:10.250777Z", "event": "mission_finished", "mission_id": "M-20260222-051808-ad166342", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T05:18:14.984897+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 3692, "ok": true, "input_tokens": 331, "output_tokens": 300}
+{"timestamp": "2026-02-22T05:18:14.984897+00:00", "event": "companion_message", "source": "ai", "text_sha256": "e6cd58d14e1819fe", "reply_len": 1513}
+{"timestamp": "2026-02-22T05:19:03.660287+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 4337, "ok": true, "input_tokens": 312, "output_tokens": 373}
+{"timestamp": "2026-02-22T05:19:03.660287+00:00", "event": "companion_message", "source": "ai", "text_sha256": "2874a58e629d3f09", "reply_len": 1754}
+{"timestamp": "2026-02-22T05:19:29.096201+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 1234, "ok": true, "input_tokens": 308, "output_tokens": 87}
+{"timestamp": "2026-02-22T05:19:29.096201+00:00", "event": "companion_message", "source": "ai", "text_sha256": "8349f373015a84f5", "reply_len": 405}
+{"timestamp": "2026-02-22T05:19:53.825849+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 2910, "ok": true, "input_tokens": 309, "output_tokens": 162}
+{"timestamp": "2026-02-22T05:19:53.825849+00:00", "event": "companion_message", "source": "ai", "text_sha256": "7bf6efe4f7a94afc", "reply_len": 732}
+{"timestamp": "2026-02-22T05:20:15.226217+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 1555, "ok": true, "input_tokens": 310, "output_tokens": 121}
+{"timestamp": "2026-02-22T05:20:15.226217+00:00", "event": "companion_message", "source": "ai", "text_sha256": "b92ffcdfbaed9753", "reply_len": 578}
+{"timestamp": "2026-02-22T05:20:35.801517+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 1809, "ok": true, "input_tokens": 308, "output_tokens": 98}
+{"timestamp": "2026-02-22T05:20:35.801517+00:00", "event": "companion_message", "source": "ai", "text_sha256": "0ab6df1892b395ba", "reply_len": 424}
+{"timestamp": "2026-02-22T05:20:55.044536+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 1772, "ok": true, "input_tokens": 311, "output_tokens": 111}
+{"timestamp": "2026-02-22T05:20:55.044536+00:00", "event": "companion_message", "source": "ai", "text_sha256": "0db7010f0e96bd7a", "reply_len": 495}
+{"timestamp": "2026-02-22T05:21:18.438145+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 2280, "ok": true, "input_tokens": 311, "output_tokens": 173}
+{"timestamp": "2026-02-22T05:21:18.438145+00:00", "event": "companion_message", "source": "ai", "text_sha256": "a33640fe66ae5f1b", "reply_len": 850}
+{"timestamp":"2026-02-22T05:23:42.091022Z","event":"mode_changed","old_mode":"COMPANION","new_mode":"BUILD","operator":true}
+{"timestamp":"2026-02-22T05:23:47.382817Z","event":"mode_changed","old_mode":"BUILD","new_mode":"COMPANION","operator":true}
+{"timestamp":"2026-02-22T05:23:49.612187Z","event":"mode_changed","old_mode":"COMPANION","new_mode":"BUILD","operator":true}
+{"event": "mission_run", "mission_id": "M-20260220-023023-fe60d74e", "timestamp": "2026-02-22T05:25:15.388659Z"}
+{"event": "mission_run", "mission_id": "M-20260220-023023-fe60d74e", "timestamp": "2026-02-22T05:25:17.394506Z"}
+{"timestamp":"2026-02-22T05:26:13.877338Z","event":"mission_created","mission_id":"mission_1771698373877","intent":"make better"}
+{"timestamp": "2026-02-22T05:26:14.761996Z", "event": "mission_started", "mission_id": "mission_1771698373877", "intent": "make better", "strategy": "baseline"}
+{"timestamp": "2026-02-22T05:26:14.769506Z", "event": "mission_finished", "mission_id": "mission_1771698373877", "outcome": "SUCCESS", "duration_ms": 3}
+{"event": "mission_run", "mission_id": "M-20260220-023023-fe60d74e", "timestamp": "2026-02-22T05:27:04.776157Z"}
+{"timestamp": "2026-02-22T16:27:22.701459", "event_type": "mission_created", "mission_id": "8c54f34e", "details": {"goal": "E2E dispatch test", "category": "forge"}, "visibility": "visible"}
+{"ts": "2026-02-22T05:27:22.717058Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-052722-fc83b17c"}
+{"ts": "2026-02-22T05:27:22.750720Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-052722-6338e311"}
+{"timestamp": "2026-02-22T05:27:23.115725Z", "event": "mission_started", "mission_id": "M-20260222-052722-fc83b17c", "intent": "E2E sovereign dispatch", "strategy": "baseline"}
+{"timestamp": "2026-02-22T05:27:23.118466Z", "event": "mission_finished", "mission_id": "M-20260222-052722-fc83b17c", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T05:27:24.177186Z", "event": "mission_started", "mission_id": "M-20260222-052722-6338e311", "intent": "roundtrip-e2e", "strategy": "baseline"}
+{"timestamp": "2026-02-22T05:27:24.179902Z", "event": "mission_finished", "mission_id": "M-20260222-052722-6338e311", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T16:27:32.995066", "event_type": "mission_created", "mission_id": "dd918389", "details": {"goal": "E2E dispatch test", "category": "forge"}, "visibility": "visible"}
+{"ts": "2026-02-22T05:27:33.010631Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-052733-51f5dfc3"}
+{"ts": "2026-02-22T05:27:33.043972Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-052733-6bacf6db"}
+{"timestamp": "2026-02-22T05:27:33.287472Z", "event": "mission_started", "mission_id": "M-20260222-052733-51f5dfc3", "intent": "E2E sovereign dispatch", "strategy": "baseline"}
+{"timestamp": "2026-02-22T05:27:33.290208Z", "event": "mission_finished", "mission_id": "M-20260222-052733-51f5dfc3", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T05:27:34.349946Z", "event": "mission_started", "mission_id": "M-20260222-052733-6bacf6db", "intent": "roundtrip-e2e", "strategy": "baseline"}
+{"timestamp": "2026-02-22T05:27:34.352749Z", "event": "mission_finished", "mission_id": "M-20260222-052733-6bacf6db", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T16:27:39.194450", "event_type": "mission_created", "mission_id": "72bee1e8", "details": {"goal": "E2E dispatch test", "category": "forge"}, "visibility": "visible"}
+{"ts": "2026-02-22T05:27:39.210365Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-052739-6731f27c"}
+{"ts": "2026-02-22T05:27:39.244302Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-052739-7b41a9f6"}
+{"timestamp": "2026-02-22T05:27:39.436727Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:27:40.438683Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:27:41.440921Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:27:42.446651Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:27:43.449366Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:27:44.453702Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:27:45.459748Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:27:46.466589Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:27:47.473245Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:27:48.481681Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:27:49.484703Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:27:50.491246Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:27:51.497649Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:27:52.500033Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:27:53.502890Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:27:54.505082Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:27:55.510988Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:27:56.515140Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:27:57.517043Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:27:58.519376Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:27:59.521454Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:28:00.523622Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:28:01.530020Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:28:02.537456Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:28:03.543683Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:28:04.553897Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:28:05.561478Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:28:06.563903Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:28:07.568694Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:28:08.571621Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:28:09.577566Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:28:10.583578Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:28:11.589508Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:28:12.595584Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:28:13.597805Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:28:14.603663Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:28:15.606095Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:28:16.608653Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:28:17.610789Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:28:18.613446Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:28:19.616170Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:28:20.619439Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:28:21.623105Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:28:22.626341Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:28:23.629576Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:28:24.632227Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:28:25.635326Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:28:26.637669Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:28:27.675768Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:28:28.678659Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:28:29.684700Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:28:30.690582Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:28:31.694176Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:28:32.696181Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:28:33.698274Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:28:34.705315Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:28:35.710041Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:28:36.713256Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:28:37.715787Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:28:38.717937Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:28:39.724372Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:28:40.726473Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:28:41.732056Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:28:42.734791Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:28:43.740111Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:28:44.747487Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:28:45.756379Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:28:46.760486Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:28:47.766497Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:28:48.773811Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:28:49.778316Z", "event": "quarantine_blocked", "pending_count": 2, "total": 135, "success_rate": 0.296}
+{"timestamp": "2026-02-22T05:28:50.784089Z", "event": "mission_started", "mission_id": "M-20260222-052739-6731f27c", "intent": "E2E sovereign dispatch", "strategy": "baseline"}
+{"timestamp": "2026-02-22T05:28:50.786881Z", "event": "mission_finished", "mission_id": "M-20260222-052739-6731f27c", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T05:28:51.876924Z", "event": "mission_started", "mission_id": "M-20260222-052739-7b41a9f6", "intent": "roundtrip-e2e", "strategy": "baseline"}
+{"timestamp": "2026-02-22T05:28:51.880514Z", "event": "mission_finished", "mission_id": "M-20260222-052739-7b41a9f6", "outcome": "FAILURE", "duration_ms": 0}
+{"ts": "2026-02-22T05:29:06.191810Z", "event": "quarantine_resolved", "success_rate": 0.7407}
+{"timestamp": "2026-02-22T05:29:24.097467Z", "event": "mission_started", "mission_id": "unknown", "intent": "E2E dispatch test", "strategy": "baseline"}
+{"timestamp": "2026-02-22T05:29:24.100255Z", "event": "mission_finished", "mission_id": "unknown", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T05:29:25.167399Z", "event": "mission_started", "mission_id": "unknown", "intent": "E2E dispatch test", "strategy": "baseline"}
+{"timestamp": "2026-02-22T05:29:25.174135Z", "event": "mission_finished", "mission_id": "unknown", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T05:29:26.254736Z", "event": "mission_started", "mission_id": "unknown", "intent": "E2E dispatch test", "strategy": "baseline"}
+{"timestamp": "2026-02-22T05:29:26.257905Z", "event": "mission_finished", "mission_id": "unknown", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T05:29:27.337348Z", "event": "mission_started", "mission_id": "unknown", "intent": "E2E dispatch test", "strategy": "baseline"}
+{"timestamp": "2026-02-22T05:29:27.340008Z", "event": "mission_finished", "mission_id": "unknown", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T05:29:28.424266Z", "event": "mission_started", "mission_id": "unknown", "intent": "E2E dispatch test", "strategy": "baseline"}
+{"timestamp": "2026-02-22T05:29:28.427324Z", "event": "mission_finished", "mission_id": "unknown", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T05:29:29.509737Z", "event": "mission_started", "mission_id": "unknown", "intent": "E2E dispatch test", "strategy": "baseline"}
+{"timestamp": "2026-02-22T05:29:29.519305Z", "event": "mission_finished", "mission_id": "unknown", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T05:29:30.603522Z", "event": "mission_started", "mission_id": "unknown", "intent": "E2E dispatch test", "strategy": "baseline"}
+{"timestamp": "2026-02-22T05:29:30.607161Z", "event": "mission_finished", "mission_id": "unknown", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T05:29:31.696405Z", "event": "mission_started", "mission_id": "unknown", "intent": "E2E dispatch test", "strategy": "baseline"}
+{"timestamp": "2026-02-22T05:29:31.699865Z", "event": "mission_finished", "mission_id": "unknown", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T05:29:32.778324Z", "event": "mission_started", "mission_id": "unknown", "intent": "E2E dispatch test", "strategy": "baseline"}
+{"timestamp": "2026-02-22T05:29:32.780981Z", "event": "mission_finished", "mission_id": "unknown", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T05:29:33.878962Z", "event": "mission_started", "mission_id": "unknown", "intent": "E2E dispatch test", "strategy": "baseline"}
+{"timestamp": "2026-02-22T05:29:33.881723Z", "event": "mission_finished", "mission_id": "unknown", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T05:29:34.963088Z", "event": "mission_started", "mission_id": "unknown", "intent": "E2E dispatch test", "strategy": "baseline"}
+{"timestamp": "2026-02-22T05:29:34.966349Z", "event": "mission_finished", "mission_id": "unknown", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T05:29:36.046399Z", "event": "mission_started", "mission_id": "unknown", "intent": "E2E dispatch test", "strategy": "baseline"}
+{"timestamp": "2026-02-22T05:29:36.049882Z", "event": "mission_finished", "mission_id": "unknown", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T05:29:37.126922Z", "event": "mission_started", "mission_id": "unknown", "intent": "E2E dispatch test", "strategy": "baseline"}
+{"timestamp": "2026-02-22T05:29:37.129640Z", "event": "mission_finished", "mission_id": "unknown", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T05:29:38.228251Z", "event": "mission_started", "mission_id": "unknown", "intent": "E2E dispatch test", "strategy": "baseline"}
+{"timestamp": "2026-02-22T05:29:38.231229Z", "event": "mission_finished", "mission_id": "unknown", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T05:29:39.307823Z", "event": "mission_started", "mission_id": "unknown", "intent": "E2E dispatch test", "strategy": "baseline"}
+{"timestamp": "2026-02-22T05:29:39.310734Z", "event": "mission_finished", "mission_id": "unknown", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T05:29:40.465655Z", "event": "mission_started", "mission_id": "unknown", "intent": "E2E dispatch test", "strategy": "baseline"}
+{"timestamp": "2026-02-22T05:29:40.470406Z", "event": "mission_finished", "mission_id": "unknown", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T05:29:41.563917Z", "event": "mission_started", "mission_id": "unknown", "intent": "E2E dispatch test", "strategy": "baseline"}
+{"timestamp": "2026-02-22T05:29:41.566804Z", "event": "mission_finished", "mission_id": "unknown", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T05:29:42.644650Z", "event": "mission_started", "mission_id": "unknown", "intent": "E2E dispatch test", "strategy": "baseline"}
+{"timestamp": "2026-02-22T05:29:42.648327Z", "event": "mission_finished", "mission_id": "unknown", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T05:29:43.728399Z", "event": "mission_started", "mission_id": "unknown", "intent": "E2E dispatch test", "strategy": "baseline"}
+{"timestamp": "2026-02-22T05:29:43.731199Z", "event": "mission_finished", "mission_id": "unknown", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T05:29:44.831127Z", "event": "mission_started", "mission_id": "unknown", "intent": "E2E dispatch test", "strategy": "baseline"}
+{"timestamp": "2026-02-22T05:29:44.833865Z", "event": "mission_finished", "mission_id": "unknown", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T05:29:45.953589Z", "event": "mission_started", "mission_id": "unknown", "intent": "E2E dispatch test", "strategy": "baseline"}
+{"timestamp": "2026-02-22T05:29:45.956613Z", "event": "mission_finished", "mission_id": "unknown", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T05:29:47.020777Z", "event": "mission_started", "mission_id": "unknown", "intent": "E2E dispatch test", "strategy": "baseline"}
+{"timestamp": "2026-02-22T05:29:47.023562Z", "event": "mission_finished", "mission_id": "unknown", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T05:29:48.102452Z", "event": "mission_started", "mission_id": "unknown", "intent": "E2E dispatch test", "strategy": "baseline"}
+{"timestamp": "2026-02-22T05:29:48.106040Z", "event": "mission_finished", "mission_id": "unknown", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T05:29:49.174497Z", "event": "mission_started", "mission_id": "unknown", "intent": "E2E dispatch test", "strategy": "baseline"}
+{"timestamp": "2026-02-22T05:29:49.178077Z", "event": "mission_finished", "mission_id": "unknown", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T05:29:50.251987Z", "event": "mission_started", "mission_id": "unknown", "intent": "E2E dispatch test", "strategy": "baseline"}
+{"timestamp": "2026-02-22T05:29:50.254889Z", "event": "mission_finished", "mission_id": "unknown", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T05:29:51.326548Z", "event": "mission_started", "mission_id": "unknown", "intent": "E2E dispatch test", "strategy": "baseline"}
+{"timestamp": "2026-02-22T05:29:51.329475Z", "event": "mission_finished", "mission_id": "unknown", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T05:29:52.409019Z", "event": "mission_started", "mission_id": "unknown", "intent": "E2E dispatch test", "strategy": "baseline"}
+{"timestamp": "2026-02-22T05:29:52.412375Z", "event": "mission_finished", "mission_id": "unknown", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T05:29:53.478826Z", "event": "mission_started", "mission_id": "unknown", "intent": "E2E dispatch test", "strategy": "baseline"}
+{"timestamp": "2026-02-22T05:29:53.481389Z", "event": "mission_finished", "mission_id": "unknown", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T05:29:54.559702Z", "event": "mission_started", "mission_id": "unknown", "intent": "E2E dispatch test", "strategy": "baseline"}
+{"timestamp": "2026-02-22T05:29:54.562867Z", "event": "mission_finished", "mission_id": "unknown", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T05:29:55.654500Z", "event": "mission_started", "mission_id": "unknown", "intent": "E2E dispatch test", "strategy": "baseline"}
+{"timestamp": "2026-02-22T05:29:55.658486Z", "event": "mission_finished", "mission_id": "unknown", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp":"2026-02-22T05:30:09.652586Z","event":"mode_changed","old_mode":"BUILD","new_mode":"COMPANION","operator":true}
+{"timestamp":"2026-02-22T05:38:18.993172Z","event":"mode_changed","old_mode":"COMPANION","new_mode":"COMPANION","operator":true}
+{"timestamp":"2026-02-22T05:38:19.264904Z","event":"mode_changed","old_mode":"COMPANION","new_mode":"BUILD","operator":true}
+{"timestamp":"2026-02-22T05:38:21.019468Z","event":"mode_changed","old_mode":"BUILD","new_mode":"COMPANION","operator":true}
+{"timestamp":"2026-02-22T05:53:44.265429Z","event":"mode_changed","old_mode":"COMPANION","new_mode":"HOLOGRAM","operator":true}
+{"timestamp":"2026-02-22T05:53:51.878701Z","event":"mode_changed","old_mode":"HOLOGRAM","new_mode":"COMPANION","operator":true}
+{"timestamp": "2026-02-22T16:54:00.039716", "event_type": "mission_created", "mission_id": "860fd231", "details": {"goal": "E2E dispatch test", "category": "forge"}, "visibility": "visible"}
+{"ts": "2026-02-22T05:54:00.057446Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-055400-6d85454c"}
+{"ts": "2026-02-22T05:54:00.092063Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-055400-1546fcdb"}
+{"timestamp": "2026-02-22T05:54:00.326930Z", "event": "mission_started", "mission_id": "M-20260222-055400-6d85454c", "intent": "E2E sovereign dispatch", "strategy": "baseline"}
+{"timestamp": "2026-02-22T05:54:00.329824Z", "event": "mission_finished", "mission_id": "M-20260222-055400-6d85454c", "outcome": "SUCCESS", "duration_ms": 0}
+{"timestamp": "2026-02-22T05:54:01.399290Z", "event": "mission_started", "mission_id": "M-20260222-055400-1546fcdb", "intent": "roundtrip-e2e", "strategy": "baseline"}
+{"timestamp": "2026-02-22T05:54:01.402422Z", "event": "mission_finished", "mission_id": "M-20260222-055400-1546fcdb", "outcome": "SUCCESS", "duration_ms": 0}
+{"timestamp": "2026-02-22T16:54:16.146666", "event_type": "mission_created", "mission_id": "8e5684d2", "details": {"goal": "E2E dispatch test", "category": "forge"}, "visibility": "visible"}
+{"ts": "2026-02-22T05:54:16.162783Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-055416-353b67b4"}
+{"ts": "2026-02-22T05:54:16.197582Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-055416-605cac59"}
+{"timestamp": "2026-02-22T05:54:16.534947Z", "event": "mission_started", "mission_id": "M-20260222-055416-353b67b4", "intent": "E2E sovereign dispatch", "strategy": "baseline"}
+{"timestamp": "2026-02-22T05:54:16.537829Z", "event": "mission_finished", "mission_id": "M-20260222-055416-353b67b4", "outcome": "SUCCESS", "duration_ms": 0}
+{"timestamp": "2026-02-22T05:54:17.605832Z", "event": "mission_started", "mission_id": "M-20260222-055416-605cac59", "intent": "roundtrip-e2e", "strategy": "baseline"}
+{"timestamp": "2026-02-22T05:54:17.609889Z", "event": "mission_finished", "mission_id": "M-20260222-055416-605cac59", "outcome": "SUCCESS", "duration_ms": 0}
+{"timestamp":"2026-02-22T06:07:25.566681Z","event":"deploy_dispatched","mission_id":"deploy_1771700845566","target":"test"}
+{"timestamp": "2026-02-22T06:07:26.239776Z", "event": "mission_started", "mission_id": "deploy_1771700845566", "intent": "deploy:test", "strategy": "baseline"}
+{"timestamp": "2026-02-22T06:07:26.243280Z", "event": "mission_finished", "mission_id": "deploy_1771700845566", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp":"2026-02-22T06:08:37.847916Z","event":"mission_created","mission_id":"mission_1771700917847","intent":"smoke"}
+{"timestamp": "2026-02-22T06:08:38.597931Z", "event": "mission_started", "mission_id": "mission_1771700917847", "intent": "smoke", "strategy": "baseline"}
+{"timestamp": "2026-02-22T06:08:38.601072Z", "event": "mission_finished", "mission_id": "mission_1771700917847", "outcome": "SUCCESS", "duration_ms": 0}
+{"timestamp":"2026-02-22T06:08:39.910815Z","event":"deploy_dispatched","mission_id":"deploy_1771700919910","target":"test"}
+{"timestamp": "2026-02-22T06:08:40.674455Z", "event": "mission_started", "mission_id": "deploy_1771700919910", "intent": "deploy:test", "strategy": "baseline"}
+{"timestamp": "2026-02-22T06:08:40.677525Z", "event": "mission_finished", "mission_id": "deploy_1771700919910", "outcome": "FAILURE", "duration_ms": 0}
+{"timestamp": "2026-02-22T17:08:53.653054", "event_type": "mission_created", "mission_id": "36f75038", "details": {"goal": "E2E dispatch test", "category": "forge"}, "visibility": "visible"}
+{"ts": "2026-02-22T06:08:53.670162Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-060853-cc4cad85"}
+{"ts": "2026-02-22T06:08:53.707961Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-060853-b1e04f26"}
+{"timestamp": "2026-02-22T06:08:53.794732Z", "event": "mission_started", "mission_id": "M-20260222-060853-cc4cad85", "intent": "E2E sovereign dispatch", "strategy": "baseline"}
+{"timestamp": "2026-02-22T06:08:53.797744Z", "event": "mission_finished", "mission_id": "M-20260222-060853-cc4cad85", "outcome": "SUCCESS", "duration_ms": 0}
+{"timestamp": "2026-02-22T06:08:54.859917Z", "event": "mission_started", "mission_id": "M-20260222-060853-b1e04f26", "intent": "roundtrip-e2e", "strategy": "baseline"}
+{"timestamp": "2026-02-22T06:08:54.863506Z", "event": "mission_finished", "mission_id": "M-20260222-060853-b1e04f26", "outcome": "SUCCESS", "duration_ms": 0}
+{"timestamp": "2026-02-22T17:13:47.870889", "event_type": "mission_created", "mission_id": "fd947c21", "details": {"goal": "E2E dispatch test", "category": "forge"}, "visibility": "visible"}
+{"ts": "2026-02-22T06:13:47.889026Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-061347-9cd4a320"}
+{"ts": "2026-02-22T06:13:47.926305Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-061347-11870f39"}
+{"timestamp": "2026-02-22T06:13:48.153633Z", "event": "mission_started", "mission_id": "M-20260222-061347-9cd4a320", "intent": "E2E sovereign dispatch", "strategy": "baseline"}
+{"timestamp": "2026-02-22T06:13:48.156735Z", "event": "mission_finished", "mission_id": "M-20260222-061347-9cd4a320", "outcome": "SUCCESS", "duration_ms": 0}
+{"timestamp": "2026-02-22T06:13:49.217573Z", "event": "mission_started", "mission_id": "M-20260222-061347-11870f39", "intent": "roundtrip-e2e", "strategy": "baseline"}
+{"timestamp": "2026-02-22T06:13:49.221297Z", "event": "mission_finished", "mission_id": "M-20260222-061347-11870f39", "outcome": "SUCCESS", "duration_ms": 0}
+{"timestamp": "2026-02-22T06:15:52.415262+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 2132, "ok": true, "input_tokens": 307, "output_tokens": 71}
+{"timestamp": "2026-02-22T06:15:52.415262+00:00", "event": "companion_message", "source": "ai", "text_sha256": "2cf24dba5fb0a30e", "reply_len": 308}
+{"timestamp": "2026-02-22T17:20:54.038338", "event_type": "mission_created", "mission_id": "102c1551", "details": {"goal": "E2E dispatch test", "category": "forge"}, "visibility": "visible"}
+{"ts": "2026-02-22T06:20:54.056817Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-062054-2399c812"}
+{"ts": "2026-02-22T06:20:54.096145Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-062054-71e831fe"}
+{"timestamp": "2026-02-22T06:20:54.806879Z", "event": "mission_started", "mission_id": "M-20260222-062054-2399c812", "intent": "E2E sovereign dispatch", "strategy": "baseline"}
+{"timestamp": "2026-02-22T06:20:54.810063Z", "event": "mission_finished", "mission_id": "M-20260222-062054-2399c812", "outcome": "SUCCESS", "duration_ms": 0}
+{"timestamp": "2026-02-22T06:20:55.881698Z", "event": "mission_started", "mission_id": "M-20260222-062054-71e831fe", "intent": "roundtrip-e2e", "strategy": "baseline"}
+{"timestamp": "2026-02-22T06:20:55.887577Z", "event": "mission_finished", "mission_id": "M-20260222-062054-71e831fe", "outcome": "SUCCESS", "duration_ms": 0}
+{"timestamp": "2026-02-22T06:22:47.634771+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 3952, "ok": true, "input_tokens": 352, "output_tokens": 341}
+{"timestamp": "2026-02-22T06:22:47.634771+00:00", "event": "companion_message", "source": "ai", "text_sha256": "123a73d7be4457e8", "reply_len": 1680}
+{"timestamp": "2026-02-22T06:22:53.643341+00:00", "event": "model_call", "provider": "openai", "model": "gpt-4.1", "latencyMs": 4075, "ok": true, "input_tokens": 331, "output_tokens": 338}
+{"timestamp": "2026-02-22T06:22:53.643341+00:00", "event": "companion_message", "source": "ai", "text_sha256": "02592a705d3ca241", "reply_len": 1854}
+{"timestamp": "2026-02-22T17:25:48.412774", "event_type": "mission_created", "mission_id": "80ff459f", "details": {"goal": "E2E dispatch test", "category": "forge"}, "visibility": "visible"}
+{"ts": "2026-02-22T06:25:48.432558Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-062548-dc4fe1bc"}
+{"timestamp": "2026-02-22T06:25:48.462558Z", "event": "mission_started", "mission_id": "M-20260222-062548-dc4fe1bc", "intent": "E2E sovereign dispatch", "strategy": "baseline"}
+{"timestamp": "2026-02-22T06:25:48.466766Z", "event": "mission_finished", "mission_id": "M-20260222-062548-dc4fe1bc", "outcome": "SUCCESS", "duration_ms": 0}
+{"ts": "2026-02-22T06:25:48.486053Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-062548-d0121d4a"}
+{"timestamp": "2026-02-22T06:25:49.541098Z", "event": "mission_started", "mission_id": "M-20260222-062548-d0121d4a", "intent": "roundtrip-e2e", "strategy": "baseline"}
+{"timestamp": "2026-02-22T06:25:49.544565Z", "event": "mission_finished", "mission_id": "M-20260222-062548-d0121d4a", "outcome": "SUCCESS", "duration_ms": 0}
+{"timestamp": "2026-02-22T17:52:45.758767", "event_type": "mission_created", "mission_id": "80615ad2", "details": {"goal": "E2E dispatch test", "category": "forge"}, "visibility": "visible"}
+{"ts": "2026-02-22T06:52:45.775004Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-065245-1a3c7254"}
+{"ts": "2026-02-22T06:52:45.809578Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-065245-cd2e3e62"}
+{"timestamp": "2026-02-22T06:52:46.537957Z", "event": "mission_started", "mission_id": "M-20260222-065245-1a3c7254", "intent": "E2E sovereign dispatch", "strategy": "baseline"}
+{"timestamp": "2026-02-22T06:52:46.541271Z", "event": "mission_finished", "mission_id": "M-20260222-065245-1a3c7254", "outcome": "SUCCESS", "duration_ms": 0}
+{"timestamp": "2026-02-22T06:52:47.605215Z", "event": "mission_started", "mission_id": "M-20260222-065245-cd2e3e62", "intent": "roundtrip-e2e", "strategy": "baseline"}
+{"timestamp": "2026-02-22T06:52:47.608072Z", "event": "mission_finished", "mission_id": "M-20260222-065245-cd2e3e62", "outcome": "SUCCESS", "duration_ms": 0}
+{"timestamp": "2026-02-22T17:52:52.178738", "event_type": "mission_created", "mission_id": "fcac9626", "details": {"goal": "E2E dispatch test", "category": "forge"}, "visibility": "visible"}
+{"ts": "2026-02-22T06:52:52.195446Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-065252-d1813adc"}
+{"ts": "2026-02-22T06:52:52.233684Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-065252-28fd9059"}
+{"timestamp": "2026-02-22T06:52:52.697410Z", "event": "mission_started", "mission_id": "M-20260222-065252-d1813adc", "intent": "E2E sovereign dispatch", "strategy": "baseline"}
+{"timestamp": "2026-02-22T06:52:52.701173Z", "event": "mission_finished", "mission_id": "M-20260222-065252-d1813adc", "outcome": "SUCCESS", "duration_ms": 0}
+{"timestamp": "2026-02-22T06:52:53.764865Z", "event": "mission_started", "mission_id": "M-20260222-065252-28fd9059", "intent": "roundtrip-e2e", "strategy": "baseline"}
+{"timestamp": "2026-02-22T06:52:53.767861Z", "event": "mission_finished", "mission_id": "M-20260222-065252-28fd9059", "outcome": "SUCCESS", "duration_ms": 0}
+{"timestamp": "2026-02-22T17:53:01.875307", "event_type": "mission_created", "mission_id": "6641e828", "details": {"goal": "E2E dispatch test", "category": "forge"}, "visibility": "visible"}
+{"ts": "2026-02-22T06:53:01.892212Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-065301-bae25df9"}
+{"ts": "2026-02-22T06:53:01.928289Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-065301-587656d4"}
+{"timestamp": "2026-02-22T06:53:02.861629Z", "event": "mission_started", "mission_id": "M-20260222-065301-bae25df9", "intent": "E2E sovereign dispatch", "strategy": "baseline"}
+{"timestamp": "2026-02-22T06:53:02.864645Z", "event": "mission_finished", "mission_id": "M-20260222-065301-bae25df9", "outcome": "SUCCESS", "duration_ms": 0}
+{"timestamp": "2026-02-22T06:53:03.926972Z", "event": "mission_started", "mission_id": "M-20260222-065301-587656d4", "intent": "roundtrip-e2e", "strategy": "baseline"}
+{"timestamp": "2026-02-22T06:53:03.929863Z", "event": "mission_finished", "mission_id": "M-20260222-065301-587656d4", "outcome": "SUCCESS", "duration_ms": 0}
+{"timestamp":"2026-02-22T07:01:25.401786+00:00","event_type":"mission_engine_start","details":{"mission_id":"M-20260222-070125-03b27a57","intent":"smoke test","worker":"smoke-worker"}}
+{"timestamp":"2026-02-22T07:01:25.425054+00:00","event_type":"mission_engine_done","details":{"mission_id":"M-20260222-070125-03b27a57","status":"SUCCESS","duration_ms":0}}
+{"timestamp":"2026-02-22T07:01:30.152733+00:00","event_type":"chain_start","details":{"chain_id":"chain-M-20260222-070130-ee459ef2","steps":2}}
+{"timestamp":"2026-02-22T07:01:30.154922+00:00","event_type":"mission_engine_start","details":{"mission_id":"M-20260222-070130-d691c54a","intent":"diagnose system","worker":"diagnose-worker"}}
+{"timestamp":"2026-02-22T07:01:30.218694+00:00","event_type":"mission_engine_done","details":{"mission_id":"M-20260222-070130-d691c54a","status":"SUCCESS","duration_ms":8}}
+{"timestamp":"2026-02-22T07:01:30.219830+00:00","event_type":"mission_engine_start","details":{"mission_id":"M-20260222-070130-8e0bf400","intent":"analyze results","worker":"analysis-worker"}}
+{"timestamp":"2026-02-22T07:01:30.266600+00:00","event_type":"mission_engine_done","details":{"mission_id":"M-20260222-070130-8e0bf400","status":"SUCCESS","duration_ms":0}}
+{"timestamp":"2026-02-22T07:01:30.284517+00:00","event_type":"chain_done","details":{"chain_id":"chain-M-20260222-070130-ee459ef2","ok":true,"steps_completed":2}}
+{"timestamp": "2026-02-22T18:01:49.645090", "event_type": "mission_created", "mission_id": "699629f8", "details": {"goal": "E2E dispatch test", "category": "forge"}, "visibility": "visible"}
+{"ts": "2026-02-22T07:01:49.661695Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-070149-fe941c89"}
+{"ts": "2026-02-22T07:01:49.698165Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-070149-0562923d"}
+{"timestamp": "2026-02-22T07:01:49.712644Z", "event": "mission_started", "mission_id": "M-20260222-070149-fe941c89", "intent": "E2E sovereign dispatch", "strategy": "baseline"}
+{"timestamp": "2026-02-22T07:01:49.716082Z", "event": "mission_finished", "mission_id": "M-20260222-070149-fe941c89", "outcome": "SUCCESS", "duration_ms": 0}
+{"timestamp": "2026-02-22T07:01:50.783833Z", "event": "mission_started", "mission_id": "M-20260222-070149-0562923d", "intent": "roundtrip-e2e", "strategy": "baseline"}
+{"timestamp": "2026-02-22T07:01:50.786827Z", "event": "mission_finished", "mission_id": "M-20260222-070149-0562923d", "outcome": "SUCCESS", "duration_ms": 0}
+{"timestamp": "2026-02-22T18:24:55.650917", "event_type": "mission_created", "mission_id": "da103e56", "details": {"goal": "E2E dispatch test", "category": "forge"}, "visibility": "visible"}
+{"ts": "2026-02-22T07:24:55.667072Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-072455-c55787d3"}
+{"ts": "2026-02-22T07:24:55.701275Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-072455-8b6647f3"}
+{"timestamp": "2026-02-22T07:24:56.374663Z", "event": "mission_started", "mission_id": "M-20260222-072455-c55787d3", "intent": "E2E sovereign dispatch", "strategy": "baseline"}
+{"timestamp": "2026-02-22T07:24:56.378241Z", "event": "mission_finished", "mission_id": "M-20260222-072455-c55787d3", "outcome": "SUCCESS", "duration_ms": 0}
+{"timestamp": "2026-02-22T07:24:57.453580Z", "event": "mission_started", "mission_id": "M-20260222-072455-8b6647f3", "intent": "roundtrip-e2e", "strategy": "baseline"}
+{"timestamp": "2026-02-22T07:24:57.457902Z", "event": "mission_finished", "mission_id": "M-20260222-072455-8b6647f3", "outcome": "SUCCESS", "duration_ms": 0}
+{"timestamp": "2026-02-22T18:25:01.926662", "event_type": "mission_created", "mission_id": "3bf96d1a", "details": {"goal": "E2E dispatch test", "category": "forge"}, "visibility": "visible"}
+{"ts": "2026-02-22T07:25:01.943096Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-072501-847bccb0"}
+{"ts": "2026-02-22T07:25:01.981334Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-072501-4a58a9e7"}
+{"timestamp": "2026-02-22T07:25:02.569812Z", "event": "mission_started", "mission_id": "M-20260222-072501-847bccb0", "intent": "E2E sovereign dispatch", "strategy": "baseline"}
+{"timestamp": "2026-02-22T07:25:02.573146Z", "event": "mission_finished", "mission_id": "M-20260222-072501-847bccb0", "outcome": "SUCCESS", "duration_ms": 0}
+{"timestamp": "2026-02-22T07:25:03.635702Z", "event": "mission_started", "mission_id": "M-20260222-072501-4a58a9e7", "intent": "roundtrip-e2e", "strategy": "baseline"}
+{"timestamp": "2026-02-22T07:25:03.638783Z", "event": "mission_finished", "mission_id": "M-20260222-072501-4a58a9e7", "outcome": "SUCCESS", "duration_ms": 0}

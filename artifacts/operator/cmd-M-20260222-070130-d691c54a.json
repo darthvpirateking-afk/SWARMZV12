@@ -1,0 +1,16 @@
+{
+  "id": "cmd-M-20260222-070130-d691c54a",
+  "type": "operator",
+  "timestamp": 1771743690160,
+  "created_at": "2026-02-22T07:01:30.160928+00:00",
+  "source": "mission_engine",
+  "payload": {
+    "command": "run mission diagnose system",
+    "mission_id": "M-20260222-070130-d691c54a",
+    "payload": {
+      "chain_id": "chain-M-20260222-070130-ee459ef2",
+      "chain_step": 0
+    }
+  },
+  "links": {}
+}

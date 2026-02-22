@@ -1,0 +1,13 @@
+{
+  "id": "cmd-M-20260222-070125-03b27a57",
+  "type": "operator",
+  "timestamp": 1771743685403,
+  "created_at": "2026-02-22T07:01:25.403137+00:00",
+  "source": "mission_engine",
+  "payload": {
+    "command": "run mission smoke test",
+    "mission_id": "M-20260222-070125-03b27a57",
+    "payload": {}
+  },
+  "links": {}
+}

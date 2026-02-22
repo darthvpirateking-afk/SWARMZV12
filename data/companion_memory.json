@@ -4,357 +4,357 @@
   "preferences": {},
   "mission_outcomes": [
     {
-      "mission_id": "test_m1",
-      "intent": "smoke",
-      "status": "SUCCESS",
-      "summary": "test summary",
-      "timestamp": "2026-02-20T03:16:07.890239+00:00Z"
-    },
-    {
       "mission_id": "test_ap",
       "intent": "smoke",
       "status": "SUCCESS",
       "summary": "test",
-      "timestamp": "2026-02-20T03:16:08.121823+00:00Z"
+      "timestamp": "2026-02-22T05:53:59.655021+00:00Z"
     },
     {
-      "mission_id": "test_m1",
-      "intent": "smoke",
+      "mission_id": "M-20260222-055400-6d85454c",
+      "intent": "E2E sovereign dispatch",
       "status": "SUCCESS",
-      "summary": "test summary",
-      "timestamp": "2026-02-20T03:19:22.697430+00:00Z"
+      "summary": "Sovereign dispatch contract validated. Operator authority confirmed.",
+      "timestamp": "2026-02-22T05:54:00.393108+00:00Z"
     },
     {
-      "mission_id": "test_ap",
-      "intent": "smoke",
+      "mission_id": "M-20260222-055400-1546fcdb",
+      "intent": "roundtrip-e2e",
       "status": "SUCCESS",
-      "summary": "test",
-      "timestamp": "2026-02-20T03:19:22.940605+00:00Z"
+      "summary": "Round-trip E2E dispatch verified: mission recorded and audit written.",
+      "timestamp": "2026-02-22T05:54:01.468036+00:00Z"
     },
     {
       "mission_id": "test_m1",
       "intent": "smoke",
       "status": "SUCCESS",
       "summary": "test summary",
-      "timestamp": "2026-02-20T03:22:08.138343+00:00Z"
+      "timestamp": "2026-02-22T05:54:15.508716+00:00Z"
     },
     {
       "mission_id": "test_ap",
       "intent": "smoke",
       "status": "SUCCESS",
       "summary": "test",
-      "timestamp": "2026-02-20T03:22:08.356154+00:00Z"
+      "timestamp": "2026-02-22T05:54:15.739684+00:00Z"
+    },
+    {
+      "mission_id": "M-20260222-055416-353b67b4",
+      "intent": "E2E sovereign dispatch",
+      "status": "SUCCESS",
+      "summary": "Sovereign dispatch contract validated. Operator authority confirmed.",
+      "timestamp": "2026-02-22T05:54:16.596718+00:00Z"
+    },
+    {
+      "mission_id": "M-20260222-055416-605cac59",
+      "intent": "roundtrip-e2e",
+      "status": "SUCCESS",
+      "summary": "Round-trip E2E dispatch verified: mission recorded and audit written.",
+      "timestamp": "2026-02-22T05:54:17.684802+00:00Z"
+    },
+    {
+      "mission_id": "deploy_1771700845566",
+      "intent": "deploy:test",
+      "status": "FAILURE",
+      "summary": "",
+      "timestamp": "2026-02-22T06:07:26.303295+00:00Z"
+    },
+    {
+      "mission_id": "mission_1771700917847",
+      "intent": "smoke",
+      "status": "SUCCESS",
+      "summary": "",
+      "timestamp": "2026-02-22T06:08:38.655069+00:00Z"
+    },
+    {
+      "mission_id": "deploy_1771700919910",
+      "intent": "deploy:test",
+      "status": "FAILURE",
+      "summary": "",
+      "timestamp": "2026-02-22T06:08:40.734969+00:00Z"
     },
     {
       "mission_id": "test_m1",
       "intent": "smoke",
       "status": "SUCCESS",
       "summary": "test summary",
-      "timestamp": "2026-02-20T03:31:30.555346+00:00Z"
+      "timestamp": "2026-02-22T06:08:53.020748+00:00Z"
     },
     {
       "mission_id": "test_ap",
       "intent": "smoke",
       "status": "SUCCESS",
       "summary": "test",
-      "timestamp": "2026-02-20T03:31:30.788484+00:00Z"
+      "timestamp": "2026-02-22T06:08:53.255242+00:00Z"
+    },
+    {
+      "mission_id": "M-20260222-060853-cc4cad85",
+      "intent": "E2E sovereign dispatch",
+      "status": "SUCCESS",
+      "summary": "Sovereign dispatch contract validated. Operator authority confirmed.",
+      "timestamp": "2026-02-22T06:08:53.851964+00:00Z"
+    },
+    {
+      "mission_id": "M-20260222-060853-b1e04f26",
+      "intent": "roundtrip-e2e",
+      "status": "SUCCESS",
+      "summary": "Round-trip E2E dispatch verified: mission recorded and audit written.",
+      "timestamp": "2026-02-22T06:08:54.932659+00:00Z"
     },
     {
       "mission_id": "test_m1",
       "intent": "smoke",
       "status": "SUCCESS",
       "summary": "test summary",
-      "timestamp": "2026-02-20T03:39:47.253423+00:00Z"
+      "timestamp": "2026-02-22T06:13:47.238724+00:00Z"
     },
     {
       "mission_id": "test_ap",
       "intent": "smoke",
       "status": "SUCCESS",
       "summary": "test",
-      "timestamp": "2026-02-20T03:39:47.471454+00:00Z"
+      "timestamp": "2026-02-22T06:13:47.477169+00:00Z"
+    },
+    {
+      "mission_id": "M-20260222-061347-9cd4a320",
+      "intent": "E2E sovereign dispatch",
+      "status": "SUCCESS",
+      "summary": "Sovereign dispatch contract validated. Operator authority confirmed.",
+      "timestamp": "2026-02-22T06:13:48.211126+00:00Z"
+    },
+    {
+      "mission_id": "M-20260222-061347-11870f39",
+      "intent": "roundtrip-e2e",
+      "status": "SUCCESS",
+      "summary": "Round-trip E2E dispatch verified: mission recorded and audit written.",
+      "timestamp": "2026-02-22T06:13:49.292236+00:00Z"
     },
     {
       "mission_id": "test_m1",
       "intent": "smoke",
       "status": "SUCCESS",
       "summary": "test summary",
-      "timestamp": "2026-02-20T09:43:48.265422+00:00Z"
+      "timestamp": "2026-02-22T06:20:53.359598+00:00Z"
     },
     {
       "mission_id": "test_ap",
       "intent": "smoke",
       "status": "SUCCESS",
       "summary": "test",
-      "timestamp": "2026-02-20T09:43:48.490854+00:00Z"
+      "timestamp": "2026-02-22T06:20:53.612282+00:00Z"
+    },
+    {
+      "mission_id": "M-20260222-062054-2399c812",
+      "intent": "E2E sovereign dispatch",
+      "status": "SUCCESS",
+      "summary": "Sovereign dispatch contract validated. Operator authority confirmed.",
+      "timestamp": "2026-02-22T06:20:54.871566+00:00Z"
+    },
+    {
+      "mission_id": "M-20260222-062054-71e831fe",
+      "intent": "roundtrip-e2e",
+      "status": "SUCCESS",
+      "summary": "Round-trip E2E dispatch verified: mission recorded and audit written.",
+      "timestamp": "2026-02-22T06:20:55.968730+00:00Z"
     },
     {
       "mission_id": "test_m1",
       "intent": "smoke",
       "status": "SUCCESS",
       "summary": "test summary",
-      "timestamp": "2026-02-20T13:46:43.536487+00:00Z"
+      "timestamp": "2026-02-22T06:25:47.606400+00:00Z"
     },
     {
       "mission_id": "test_ap",
       "intent": "smoke",
       "status": "SUCCESS",
       "summary": "test",
-      "timestamp": "2026-02-20T13:46:43.777328+00:00Z"
+      "timestamp": "2026-02-22T06:25:48.004478+00:00Z"
+    },
+    {
+      "mission_id": "M-20260222-062548-dc4fe1bc",
+      "intent": "E2E sovereign dispatch",
+      "status": "SUCCESS",
+      "summary": "Sovereign dispatch contract validated. Operator authority confirmed.",
+      "timestamp": "2026-02-22T06:25:48.534615+00:00Z"
+    },
+    {
+      "mission_id": "M-20260222-062548-d0121d4a",
+      "intent": "roundtrip-e2e",
+      "status": "SUCCESS",
+      "summary": "Round-trip E2E dispatch verified: mission recorded and audit written.",
+      "timestamp": "2026-02-22T06:25:49.610177+00:00Z"
     },
     {
       "mission_id": "test_m1",
       "intent": "smoke",
       "status": "SUCCESS",
       "summary": "test summary",
-      "timestamp": "2026-02-21T10:52:47.161189+00:00Z"
+      "timestamp": "2026-02-22T06:52:45.153530+00:00Z"
     },
     {
       "mission_id": "test_ap",
       "intent": "smoke",
       "status": "SUCCESS",
       "summary": "test",
-      "timestamp": "2026-02-21T10:52:47.417577+00:00Z"
+      "timestamp": "2026-02-22T06:52:45.384339+00:00Z"
+    },
+    {
+      "mission_id": "M-20260222-065245-1a3c7254",
+      "intent": "E2E sovereign dispatch",
+      "status": "SUCCESS",
+      "summary": "Sovereign dispatch contract validated. Operator authority confirmed.",
+      "timestamp": "2026-02-22T06:52:46.598178+00:00Z"
+    },
+    {
+      "mission_id": "M-20260222-065245-cd2e3e62",
+      "intent": "roundtrip-e2e",
+      "status": "SUCCESS",
+      "summary": "Round-trip E2E dispatch verified: mission recorded and audit written.",
+      "timestamp": "2026-02-22T06:52:47.672832+00:00Z"
     },
     {
       "mission_id": "test_m1",
       "intent": "smoke",
       "status": "SUCCESS",
       "summary": "test summary",
-      "timestamp": "2026-02-21T10:52:49.419476+00:00Z"
+      "timestamp": "2026-02-22T06:52:51.519886+00:00Z"
     },
     {
       "mission_id": "test_ap",
       "intent": "smoke",
       "status": "SUCCESS",
       "summary": "test",
-      "timestamp": "2026-02-21T10:52:49.673250+00:00Z"
+      "timestamp": "2026-02-22T06:52:51.757415+00:00Z"
+    },
+    {
+      "mission_id": "M-20260222-065252-d1813adc",
+      "intent": "E2E sovereign dispatch",
+      "status": "SUCCESS",
+      "summary": "Sovereign dispatch contract validated. Operator authority confirmed.",
+      "timestamp": "2026-02-22T06:52:52.757187+00:00Z"
+    },
+    {
+      "mission_id": "M-20260222-065252-28fd9059",
+      "intent": "roundtrip-e2e",
+      "status": "SUCCESS",
+      "summary": "Round-trip E2E dispatch verified: mission recorded and audit written.",
+      "timestamp": "2026-02-22T06:52:53.834270+00:00Z"
     },
     {
       "mission_id": "test_m1",
       "intent": "smoke",
       "status": "SUCCESS",
       "summary": "test summary",
-      "timestamp": "2026-02-21T10:52:56.604032+00:00Z"
+      "timestamp": "2026-02-22T06:53:01.236068+00:00Z"
     },
     {
       "mission_id": "test_ap",
       "intent": "smoke",
       "status": "SUCCESS",
       "summary": "test",
-      "timestamp": "2026-02-21T10:52:56.951444+00:00Z"
+      "timestamp": "2026-02-22T06:53:01.465878+00:00Z"
     },
     {
-      "mission_id": "M-20260220-030636-6fc5b8ff",
+      "mission_id": "M-20260222-065301-bae25df9",
       "intent": "E2E sovereign dispatch",
-      "status": "FAILURE",
-      "summary": "",
-      "timestamp": "2026-02-21T14:12:35.178669+00:00Z"
+      "status": "SUCCESS",
+      "summary": "Sovereign dispatch contract validated. Operator authority confirmed.",
+      "timestamp": "2026-02-22T06:53:02.919711+00:00Z"
     },
     {
-      "mission_id": "M-20260220-030636-92fa7ac4",
+      "mission_id": "M-20260222-065301-587656d4",
       "intent": "roundtrip-e2e",
-      "status": "FAILURE",
-      "summary": "",
-      "timestamp": "2026-02-21T14:12:36.258951+00:00Z"
+      "status": "SUCCESS",
+      "summary": "Round-trip E2E dispatch verified: mission recorded and audit written.",
+      "timestamp": "2026-02-22T06:53:03.998500+00:00Z"
     },
     {
-      "mission_id": "M-20260220-030821-47ccc83a",
+      "mission_id": "test_m1",
+      "intent": "smoke",
+      "status": "SUCCESS",
+      "summary": "test summary",
+      "timestamp": "2026-02-22T07:01:49.014440+00:00Z"
+    },
+    {
+      "mission_id": "test_ap",
+      "intent": "smoke",
+      "status": "SUCCESS",
+      "summary": "test",
+      "timestamp": "2026-02-22T07:01:49.247729+00:00Z"
+    },
+    {
+      "mission_id": "M-20260222-070149-fe941c89",
       "intent": "E2E sovereign dispatch",
-      "status": "FAILURE",
-      "summary": "",
-      "timestamp": "2026-02-21T14:12:37.339928+00:00Z"
+      "status": "SUCCESS",
+      "summary": "Sovereign dispatch contract validated. Operator authority confirmed.",
+      "timestamp": "2026-02-22T07:01:49.775897+00:00Z"
     },
     {
-      "mission_id": "M-20260220-030822-6897391c",
+      "mission_id": "M-20260222-070149-0562923d",
       "intent": "roundtrip-e2e",
-      "status": "FAILURE",
-      "summary": "",
-      "timestamp": "2026-02-21T14:12:38.421647+00:00Z"
+      "status": "SUCCESS",
+      "summary": "Round-trip E2E dispatch verified: mission recorded and audit written.",
+      "timestamp": "2026-02-22T07:01:50.849720+00:00Z"
     },
     {
-      "mission_id": "M-20260220-031255-e4fd7b63",
+      "mission_id": "test_m1",
+      "intent": "smoke",
+      "status": "SUCCESS",
+      "summary": "test summary",
+      "timestamp": "2026-02-22T07:24:55.032216+00:00Z"
+    },
+    {
+      "mission_id": "test_ap",
+      "intent": "smoke",
+      "status": "SUCCESS",
+      "summary": "test",
+      "timestamp": "2026-02-22T07:24:55.261868+00:00Z"
+    },
+    {
+      "mission_id": "M-20260222-072455-c55787d3",
       "intent": "E2E sovereign dispatch",
-      "status": "FAILURE",
-      "summary": "",
-      "timestamp": "2026-02-21T14:12:39.504686+00:00Z"
+      "status": "SUCCESS",
+      "summary": "Sovereign dispatch contract validated. Operator authority confirmed.",
+      "timestamp": "2026-02-22T07:24:56.444965+00:00Z"
     },
     {
-      "mission_id": "M-20260220-031255-fa00da9c",
+      "mission_id": "M-20260222-072455-8b6647f3",
       "intent": "roundtrip-e2e",
-      "status": "FAILURE",
-      "summary": "",
-      "timestamp": "2026-02-21T14:12:40.588936+00:00Z"
+      "status": "SUCCESS",
+      "summary": "Round-trip E2E dispatch verified: mission recorded and audit written.",
+      "timestamp": "2026-02-22T07:24:57.535678+00:00Z"
     },
     {
-      "mission_id": "M-20260220-031316-8201866b",
+      "mission_id": "test_m1",
+      "intent": "smoke",
+      "status": "SUCCESS",
+      "summary": "test summary",
+      "timestamp": "2026-02-22T07:25:01.277007+00:00Z"
+    },
+    {
+      "mission_id": "test_ap",
+      "intent": "smoke",
+      "status": "SUCCESS",
+      "summary": "test",
+      "timestamp": "2026-02-22T07:25:01.508500+00:00Z"
+    },
+    {
+      "mission_id": "M-20260222-072501-847bccb0",
       "intent": "E2E sovereign dispatch",
-      "status": "FAILURE",
-      "summary": "",
-      "timestamp": "2026-02-21T14:12:41.670111+00:00Z"
+      "status": "SUCCESS",
+      "summary": "Sovereign dispatch contract validated. Operator authority confirmed.",
+      "timestamp": "2026-02-22T07:25:02.628061+00:00Z"
     },
     {
-      "mission_id": "M-20260220-031316-17c585b7",
+      "mission_id": "M-20260222-072501-4a58a9e7",
       "intent": "roundtrip-e2e",
-      "status": "FAILURE",
-      "summary": "",
-      "timestamp": "2026-02-21T14:12:42.752598+00:00Z"
-    },
-    {
-      "mission_id": "M-20260220-031608-4207dc54",
-      "intent": "E2E sovereign dispatch",
-      "status": "FAILURE",
-      "summary": "",
-      "timestamp": "2026-02-21T14:12:43.835825+00:00Z"
-    },
-    {
-      "mission_id": "M-20260220-031608-7fe42a82",
-      "intent": "roundtrip-e2e",
-      "status": "FAILURE",
-      "summary": "",
-      "timestamp": "2026-02-21T14:12:45.016221+00:00Z"
-    },
-    {
-      "mission_id": "M-20260220-031923-6e54c181",
-      "intent": "E2E sovereign dispatch",
-      "status": "FAILURE",
-      "summary": "",
-      "timestamp": "2026-02-21T14:12:46.108787+00:00Z"
-    },
-    {
-      "mission_id": "M-20260220-031923-1ad375fb",
-      "intent": "roundtrip-e2e",
-      "status": "FAILURE",
-      "summary": "",
-      "timestamp": "2026-02-21T14:12:47.191475+00:00Z"
-    },
-    {
-      "mission_id": "M-20260220-032208-122991f2",
-      "intent": "E2E sovereign dispatch",
-      "status": "FAILURE",
-      "summary": "",
-      "timestamp": "2026-02-21T14:12:48.280856+00:00Z"
-    },
-    {
-      "mission_id": "M-20260220-032208-894b223e",
-      "intent": "roundtrip-e2e",
-      "status": "FAILURE",
-      "summary": "",
-      "timestamp": "2026-02-21T14:12:49.365480+00:00Z"
-    },
-    {
-      "mission_id": "M-20260220-033131-14cb3f9e",
-      "intent": "E2E sovereign dispatch",
-      "status": "FAILURE",
-      "summary": "",
-      "timestamp": "2026-02-21T14:12:50.448867+00:00Z"
-    },
-    {
-      "mission_id": "M-20260220-033131-e4c0eb11",
-      "intent": "roundtrip-e2e",
-      "status": "FAILURE",
-      "summary": "",
-      "timestamp": "2026-02-21T14:12:51.556854+00:00Z"
-    },
-    {
-      "mission_id": "M-20260220-033947-f0afc9c9",
-      "intent": "E2E sovereign dispatch",
-      "status": "FAILURE",
-      "summary": "",
-      "timestamp": "2026-02-21T14:12:52.636252+00:00Z"
-    },
-    {
-      "mission_id": "M-20260220-033947-6c54fd1b",
-      "intent": "roundtrip-e2e",
-      "status": "FAILURE",
-      "summary": "",
-      "timestamp": "2026-02-21T14:12:53.724933+00:00Z"
-    },
-    {
-      "mission_id": "M-20260220-094348-c6421c2e",
-      "intent": "E2E sovereign dispatch",
-      "status": "FAILURE",
-      "summary": "",
-      "timestamp": "2026-02-21T14:12:54.808249+00:00Z"
-    },
-    {
-      "mission_id": "M-20260220-094348-3f5bda15",
-      "intent": "roundtrip-e2e",
-      "status": "FAILURE",
-      "summary": "",
-      "timestamp": "2026-02-21T14:12:55.902636+00:00Z"
-    },
-    {
-      "mission_id": "M-20260220-134644-5aea5d42",
-      "intent": "E2E sovereign dispatch",
-      "status": "FAILURE",
-      "summary": "",
-      "timestamp": "2026-02-21T14:12:56.993605+00:00Z"
-    },
-    {
-      "mission_id": "M-20260220-134644-d9b4baa6",
-      "intent": "roundtrip-e2e",
-      "status": "FAILURE",
-      "summary": "",
-      "timestamp": "2026-02-21T14:12:58.081062+00:00Z"
-    },
-    {
-      "mission_id": "M-20260221-105247-6182bc76",
-      "intent": "E2E sovereign dispatch",
-      "status": "FAILURE",
-      "summary": "",
-      "timestamp": "2026-02-21T14:12:59.162599+00:00Z"
-    },
-    {
-      "mission_id": "M-20260221-105247-e727a932",
-      "intent": "roundtrip-e2e",
-      "status": "FAILURE",
-      "summary": "",
-      "timestamp": "2026-02-21T14:13:00.261158+00:00Z"
-    },
-    {
-      "mission_id": "M-20260221-105250-715df0f1",
-      "intent": "E2E sovereign dispatch",
-      "status": "FAILURE",
-      "summary": "",
-      "timestamp": "2026-02-21T14:13:01.359045+00:00Z"
-    },
-    {
-      "mission_id": "M-20260221-105250-ec2999e1",
-      "intent": "roundtrip-e2e",
-      "status": "FAILURE",
-      "summary": "",
-      "timestamp": "2026-02-21T14:13:02.446065+00:00Z"
-    },
-    {
-      "mission_id": "M-20260221-105258-246c44bb",
-      "intent": "E2E sovereign dispatch",
-      "status": "FAILURE",
-      "summary": "",
-      "timestamp": "2026-02-21T14:13:03.532811+00:00Z"
-    },
-    {
-      "mission_id": "M-20260221-105258-a5e4e3f7",
-      "intent": "roundtrip-e2e",
-      "status": "FAILURE",
-      "summary": "",
-      "timestamp": "2026-02-21T14:13:04.620119+00:00Z"
-    },
-    {
-      "mission_id": "M-2991ca3bcccc",
-      "intent": "test_buttons",
-      "status": "FAILURE",
-      "summary": "",
-      "timestamp": "2026-02-21T14:48:13.024878+00:00Z"
-    },
-    {
-      "mission_id": "M-a6d243137cd3",
-      "intent": "ui_test",
-      "status": "FAILURE",
-      "summary": "",
-      "timestamp": "2026-02-21T14:48:26.151927+00:00Z"
+      "status": "SUCCESS",
+      "summary": "Round-trip E2E dispatch verified: mission recorded and audit written.",
+      "timestamp": "2026-02-22T07:25:03.702821+00:00Z"
     }
   ],
   "learned_constraints": [],
-  "version": 87,
-  "updated_at": "2026-02-21T14:48:26.152286+00:00Z"
+  "version": 236,
+  "updated_at": "2026-02-22T07:25:03.703246+00:00Z"
 }

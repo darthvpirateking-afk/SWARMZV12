@@ -3,7 +3,22 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SWARMZ Cockpit</title>
+    <title>SWARMZ</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body, #root {
+        width: 100%; height: 100%; min-height: 100vh;
+        background: #060a10;
+        color: #c0dce8;
+        font-family: 'Segoe UI', 'Inter', system-ui, sans-serif;
+        overflow-x: hidden;
+      }
+      ::-webkit-scrollbar { width: 6px; }
+      ::-webkit-scrollbar-track { background: #0a0f18; }
+      ::-webkit-scrollbar-thumb { background: #1a3a4a; border-radius: 3px; }
+      ::-webkit-scrollbar-thumb:hover { background: #00ffff44; }
+      ::selection { background: #00ffff33; color: #fff; }
+    </style>
   </head>
   <body>
     <div id="root"></div>

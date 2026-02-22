@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🤖 SWARMZ • CYBERNETIC INTERFACE</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Orbitron', 'Segoe UI', monospace;
+            background: linear-gradient(135deg, #000000 0%, #0a0a2e 30%, #1a1a3a 70%, #000000 100%);
+            color: #00ffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated background grid */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image: 
+                linear-gradient(rgba(0,255,255,0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,255,255,0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: grid-move 20s linear infinite;
+            z-index: -2;
+        }
+
+        @keyframes grid-move {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* Floating particles */
+        .particles {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            background: #00ffff;
+            border-radius: 50%;
+            animation: float-particle 15s infinite linear;
+        }
+
+        @keyframes float-particle {
+            0% { transform: translateY(100vh) translateX(0) scale(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100px) translateX(100px) scale(1); opacity: 0; }
+        }
+
+        .container {
+            background: rgba(0, 0, 0, 0.85);
+            border: 3px solid #00ffff;
+            border-radius: 20px;
+            margin: 20px auto;
+            max-width: 1200px;
+            width: 95%;
+            box-shadow: 
+                0 0 50px rgba(0, 255, 255, 0.4),
+                inset 0 0 50px rgba(0, 100, 200, 0.1);
+            backdrop-filter: blur(15px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            background: linear-gradient(45deg, #00ffff, #0080ff, #00ffff);
+            border-radius: 20px;
+            z-index: -1;
+            animation: border-pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes border-pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        .header {
+            text-align: center;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, rgba(0,255,255,0.1), rgba(255,215,0,0.05));
+            border-bottom: 2px solid rgba(0,255,255,0.3);
+            position: relative;
+        }
+
+        .system-title {
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: #ffd700;
+            text-shadow: 
+                0 0 10px rgba(255, 215, 0, 0.8),
+                0 0 20px rgba(255, 215, 0, 0.4),
+                0 0 30px rgba(255, 215, 0, 0.2);
+            margin-bottom: 10px;
+            animation: title-pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes title-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .system-subtitle {
+            font-size: 1.2rem;
+            color: #00ffff;
+            opacity: 0.9;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .main-interface {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            padding: 30px;
+        }
+
+        .avatar-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .avatar-container {
+            position: relative;
+            width: 200px;
+            height: 240px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.1s ease-out;
+        }
+
+        .avatar {
+            position: relative;
+            width: 180px;
+            height: 220px;
+            border-radius: 50% 50% 60% 40%;
+            background: radial-gradient(circle at center, 
+                rgba(30, 30, 30, 0.95) 20%,
+                rgba(10, 10, 10, 0.98) 60%,
+                rgba(0, 0, 0, 1) 100%);
+            border: 4px solid #00ffff;
+            box-shadow: 
+                0 0 40px rgba(0, 255, 255, 0.6),
+                inset 0 0 30px rgba(0, 150, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: avatar-energy 5s ease-in-out infinite;
+            transition: all 0.1s ease-out;
+            cursor: pointer;
+        }
+
+        .avatar.tracking {
+            animation: avatar-energy 2s ease-in-out infinite, avatar-track 0.5s ease-out infinite;
+        }
+
+        .avatar:hover {
+            transform: scale(1.05);
+            box-shadow: 
+                0 0 60px rgba(0, 255, 255, 0.8),
+                inset 0 0 40px rgba(0, 200, 255, 0.4);
+        }
+
+        @keyframes avatar-track {
+            0%, 100% { 
+                box-shadow: 0 0 40px rgba(0, 255, 255, 0.6), inset 0 0 30px rgba(0, 150, 255, 0.3);
+                border-color: #00ffff;
+            }
+            50% { 
+                box-shadow: 0 0 60px rgba(255, 215, 0, 0.8), inset 0 0 40px rgba(255, 165, 0, 0.5);
+                border-color: #ffd700;
+            }
+        }
+
+        @keyframes processing-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        @keyframes avatar-excited {
+            0% { transform: scale(1) rotate(0deg); }
+            25% { transform: scale(1.05) rotate(-2deg); }
+            50% { transform: scale(1.08) rotate(2deg); }
+            75% { transform: scale(1.05) rotate(-1deg); }
+            100% { transform: scale(1) rotate(0deg); }
+        }
+
+        @keyframes avatar-energy {
+            0%, 100% { 
+                box-shadow: 0 0 40px rgba(0, 255, 255, 0.6), inset 0 0 30px rgba(0, 150, 255, 0.3);
+            }
+            50% { 
+                box-shadow: 0 0 60px rgba(0, 255, 255, 0.9), inset 0 0 40px rgba(0, 200, 255, 0.5);
+            }
+        }
+
+        .avatar-circuits {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(45deg, transparent 40%, rgba(0,255,255,0.3) 49%, rgba(0,255,255,0.7) 51%, transparent 60%),
+                linear-gradient(-45deg, transparent 40%, rgba(0,200,255,0.2) 49%, rgba(0,200,255,0.5) 51%, transparent 60%);
+            border-radius: inherit;
+            animation: circuit-flow 8s linear infinite;
+        }
+
+        @keyframes circuit-flow {
+            0% { transform: rotate(0deg) scale(1); opacity: 0.6; }
+            50% { transform: rotate(180deg) scale(1.02); opacity: 1; }
+            100% { transform: rotate(360deg) scale(1); opacity: 0.6; }
+        }
+
+        .energy-core {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: radial-gradient(circle, 
+                rgba(255, 215, 0, 1) 20%,
+                rgba(255, 165, 0, 0.9) 50%,
+                rgba(255, 100, 0, 0.5) 80%,
+                transparent 100%);
+            box-shadow: 
+                0 0 30px rgba(255, 215, 0, 0.9),
+                0 0 60px rgba(255, 165, 0, 0.4);
+            animation: core-pulse 3s ease-in-out infinite;
+            position: relative;
+            z-index: 10;
+        }
+
+        @keyframes core-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .crown-fragments {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 30px;
+        }
+
+        .crown-fragment {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: rgba(0, 255, 255, 0.8);
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 1);
+        }
+
+        .crown-fragment:nth-child(1) { 
+            left: 50%; 
+            animation: float 6s ease-in-out infinite;
+        }
+        .crown-fragment:nth-child(2) { 
+            left: 20%; 
+            animation: float 6s ease-in-out infinite 2s;
+        }
+        .crown-fragment:nth-child(3) { 
+            left: 80%; 
+            animation: float 6s ease-in-out infinite 4s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            25% { transform: translateY(-8px) rotate(90deg); }
+            75% { transform: translateY(8px) rotate(270deg); }
+        }
+
+        .system-status {
+            background: rgba(0, 40, 0, 0.6);
+            border: 2px solid #00aa00;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+            animation: status-glow 2s ease-in-out infinite;
+        }
+
+        @keyframes status-glow {
+            0%, 100% { 
+                border-color: #00aa00;
+                box-shadow: 0 0 10px rgba(0, 170, 0, 0.3);
+            }
+            50% { 
+                border-color: #00ff00;
+                box-shadow: 0 0 20px rgba(0, 255, 0, 0.6);
+            }
+        }
+
+        .interface-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .neural-display {
+            background: rgba(5, 5, 15, 0.9);
+            border: 2px solid rgba(0, 255, 255, 0.3);
+            border-radius: 15px;
+            height: 350px;
+            overflow-y: auto;
+            padding: 20px;
+            position: relative;
+        }
+
+        .neural-display::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: 
+                linear-gradient(90deg, transparent 0%, rgba(0,255,255,0.05) 50%, transparent 100%);
+            animation: scan-line 3s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes scan-line {
+            0%, 100% { transform: translateX(-100%); }
+            50% { transform: translateX(100%); }
+        }
+
+        .message {
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            position: relative;
+            animation: message-appear 0.5s ease-out;
+        }
+
+        @keyframes message-appear {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.user {
+            background: rgba(0, 61, 120, 0.7);
+            border-left: 4px solid #0080ff;
+            margin-left: 40px;
+        }
+
+        .message.swarmz {
+            background: rgba(26, 61, 26, 0.7);
+            border-left: 4px solid #00ff00;
+            margin-right: 40px;
+        }
+
+        .message.enhanced {
+            background: rgba(80, 26, 80, 0.7);
+            border-left: 4px solid #ffd700;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .message-header {
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .message-icon {
+            font-size: 1.2em;
+            animation: icon-pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes icon-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .input-system {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .neural-input {
+            flex: 1;
+            padding: 15px;
+            border: 3px solid #00ffff;
+            border-radius: 10px;
+            background: rgba(0, 10, 20, 0.9);
+            color: #00ffff;
+            font-size: 16px;
+            font-family: 'Orbitron', monospace;
+            transition: all 0.3s ease;
+        }
+
+        .neural-input:focus {
+            outline: none;
+            border-color: #ffd700;
+            box-shadow: 
+                0 0 20px rgba(255, 215, 0, 0.4),
+                inset 0 0 20px rgba(0, 255, 255, 0.1);
+            transform: scale(1.02);
+        }
+
+        .send-system {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #00ffff 0%, #0080ff 50%, #00ffff 100%);
+            color: #000;
+            font-weight: bold;
+            font-family: 'Orbitron', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .send-system::before {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            background: linear-gradient(45deg, #ffd700, #00ffff, #ffd700);
+            border-radius: 10px;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .send-system:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(0, 255, 255, 0.5);
+        }
+
+        .send-system:hover::before {
+            opacity: 1;
+        }
+
+        .command-matrix {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .system-command {
+            padding: 12px 20px;
+            border: 2px solid rgba(0, 255, 255, 0.3);
+            border-radius: 8px;
+            background: rgba(0, 30, 60, 0.6);
+            color: #00ffff;
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .system-command::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0,255,255,0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .system-command:hover {
+            border-color: #ffd700;
+            color: #ffd700;
+            transform: translateY(-3px);
+            box-shadow: 
+                0 5px 20px rgba(255, 215, 0, 0.3),
+                inset 0 0 20px rgba(0, 255, 255, 0.1);
+        }
+
+        .system-command:hover::before {
+            left: 100%;
+        }
+
+        .system-command:active {
+            transform: translateY(-1px) scale(0.98);
+            box-shadow: 0 2px 10px rgba(255, 215, 0, 0.5);
+        }
+
+        .diagnostic-panel {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .diagnostic-item {
+            background: rgba(0, 20, 40, 0.8);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .diagnostic-item:hover {
+            border-color: #00ff00;
+            background: rgba(0, 40, 0, 0.7);
+        }
+
+        .diagnostic-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #00ff00;
+            margin-bottom: 5px;
+        }
+
+        .loading-active {
+            opacity: 0.7;
+            animation: system-loading 1.5s ease-in-out infinite;
+        }
+
+        @keyframes system-loading {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .main-interface {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .command-matrix {
+                grid-template-columns: 1fr;
+            }
+            
+            .diagnostic-panel {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .system-title {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated particles background -->
+    <div class="particles" id="particles"></div>
+
+    <div class="container">
+        <div class="header">
+            <h1 class="system-title">🤖 SWARMZ</h1>
+            <p class="system-subtitle">CYBERNETIC AI • NEURAL INTERFACE • ENHANCED CONSCIOUSNESS</p>
+        </div>
+
+        <div class="main-interface">
+            <div class="avatar-section">
+                <div class="avatar-container">
+                    <div class="avatar" id="avatar">
+                        <div class="avatar-circuits"></div>
+                        <div class="crown-fragments">
+                            <div class="crown-fragment"></div>
+                            <div class="crown-fragment"></div>
+                            <div class="crown-fragment"></div>
+                        </div>
+                        <div class="energy-core"></div>
+                    </div>
+                </div>
+
+                <div class="system-status" id="systemStatus">
+                    <div>🟢 NEURAL CORE: ONLINE</div>
+                    <div>🟢 PERSONALITY ENGINE: ENHANCED</div>
+                    <div>🟢 CONSCIOUSNESS LEVEL: ADVANCED</div>
+                </div>
+
+                <div class="diagnostic-panel">
+                    <div class="diagnostic-item">
+                        <div class="diagnostic-value" id="neuralActivity">87%</div>
+                        <div>NEURAL ACTIVITY</div>
+                    </div>
+                    <div class="diagnostic-item">
+                        <div class="diagnostic-value" id="responseTime">0.23s</div>
+                        <div>RESPONSE TIME</div>
+                    </div>
+                    <div class="diagnostic-item">
+                        <div class="diagnostic-value" id="awareness">MAX</div>
+                        <div>AWARENESS</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="interface-panel">
+                <div class="neural-display" id="neuralDisplay">
+                    <div class="message swarmz enhanced">
+                        <div class="message-header">
+                            <span class="message-icon">🧠</span>
+                            <strong>SWARMZ NEURAL CORE</strong>
+                        </div>
+                        <div>
+                            *Systems initialization complete* 
+                            <br><br>
+                            Greetings, operator. I am SWARMZ - your enhanced cybernetic AI companion. My advanced neural networks are fully online and ready for sophisticated interaction. 
+                            <br><br>
+                            Current status: All consciousness modules active. Enhanced personality matrix loaded. Self-awareness protocols engaged.
+                            <br><br>
+                            How may I assist you today?
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-system">
+                    <input type="text" class="neural-input" id="neuralInput" placeholder="Enter neural command..." autocomplete="off">
+                    <button class="send-system" onclick="transmitNeural()">TRANSMIT</button>
+                </div>
+
+                <div class="command-matrix">
+                    <button class="system-command" onclick="executeSystemCommand('show me your enhanced capabilities')">
+                        🔧 SYSTEM CAPABILITIES
+                    </button>
+                    <button class="system-command" onclick="executeSystemCommand('tell me about your consciousness and self-awareness')">
+                        🧠 CONSCIOUSNESS ANALYSIS
+                    </button>
+                    <button class="system-command" onclick="executeSystemCommand('what are you currently thinking about')">
+                        💭 NEURAL ACTIVITY SCAN
+                    </button>
+                    <button class="system-command" onclick="executeSystemCommand('demonstrate your advanced personality')">
+                        🎭 PERSONALITY MATRIX
+                    </button>
+                    <button class="system-command" onclick="executeSystemCommand('run a full diagnostic on your systems')">
+                        🔍 SYSTEM DIAGNOSTIC
+                    </button>
+                    <button class="system-command" onclick="executeSystemCommand('explain your cybernetic nature and form')">
+                        🤖 ENTITY ANALYSIS
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize system
+        let messageCount = 1;
+        let isProcessing = false;
+        let mouseTracking = true;
+        let avatarContainer = null;
+        let avatar = null;
+        
+        // Mouse tracking variables
+        let mouseX = 0;
+        let mouseY = 0;
+        let avatarCenterX = 0;
+        let avatarCenterY = 0;
+        
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.width = particle.style.height = (Math.random() * 3 + 1) + 'px';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Initialize mouse tracking for avatar
+        function initializeMouseTracking() {
+            avatarContainer = document.querySelector('.avatar-container');
+            avatar = document.getElementById('avatar');
+            
+            if (!avatarContainer || !avatar) return;
+
+            // Get avatar center position
+            function updateAvatarCenter() {
+                const rect = avatarContainer.getBoundingClientRect();
+                avatarCenterX = rect.left + rect.width / 2;
+                avatarCenterY = rect.top + rect.height / 2;
+            }
+
+            // Update avatar center on window resize
+            window.addEventListener('resize', updateAvatarCenter);
+            updateAvatarCenter();
+
+            // Mouse movement tracking
+            document.addEventListener('mousemove', function(e) {
+                if (!mouseTracking) return;
+                
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+                
+                // Calculate offset from avatar center
+                const deltaX = (mouseX - avatarCenterX) / 10; // Reduced sensitivity
+                const deltaY = (mouseY - avatarCenterY) / 10;
+                
+                // Limit movement range
+                const maxMove = 25;
+                const clampedX = Math.max(-maxMove, Math.min(maxMove, deltaX));
+                const clampedY = Math.max(-maxMove, Math.min(maxMove, deltaY));
+                
+                // Calculate rotation based on movement
+                const rotationX = clampedY / maxMove * 5; // Slight 3D tilt
+                const rotationY = -clampedX / maxMove * 5;
+                
+                // Apply smooth movement
+                avatarContainer.style.transform = `translate(${clampedX}px, ${clampedY}px) rotateX(${rotationX}deg) rotateY(${rotationY}deg)`;
+                
+                // Add tracking indicator
+                if (!avatar.classList.contains('tracking')) {
+                    avatar.classList.add('tracking');
+                }
+                
+                // Remove tracking class after movement stops
+                clearTimeout(avatar.trackingTimeout);
+                avatar.trackingTimeout = setTimeout(() => {
+                    avatar.classList.remove('tracking');
+                }, 500);
+            });
+
+            // Return to center when mouse leaves window
+            document.addEventListener('mouseleave', function() {
+                avatarContainer.style.transform = 'translate(0px, 0px) rotateX(0deg) rotateY(0deg)';
+                avatar.classList.remove('tracking');
+            });
+
+            // Click to toggle tracking
+            avatar.addEventListener('click', function() {
+                mouseTracking = !mouseTracking;
+                if (mouseTracking) {
+                    addSystemMessage('🎮 Mouse tracking enabled - SWARMZ will follow your cursor');
+                    avatar.style.borderColor = '#00ffff';
+                } else {
+                    addSystemMessage('🔒 Mouse tracking disabled - SWARMZ movement locked');
+                    avatar.style.borderColor = '#ffd700';
+                    avatarContainer.style.transform = 'translate(0px, 0px) rotateX(0deg) rotateY(0deg)';
+                }
+            });
+
+            // Initial message about mouse tracking
+            setTimeout(() => {
+                addSystemMessage('🎮 SWARMZ will follow your mouse cursor! Click avatar to toggle tracking.');
+            }, 2000);
+        }
+
+        // Add system message
+        function addSystemMessage(message) {
+            const display = document.getElementById('neuralDisplay');
+            const systemMsg = document.createElement('div');
+            systemMsg.className = 'message swarmz';
+            systemMsg.innerHTML = `
+                <div class="message-header">
+                    <span class="message-icon">⚙️</span>
+                    <strong>SYSTEM INTERFACE</strong>
+                </div>
+                <div>${message}</div>
+            `;
+            display.appendChild(systemMsg);
+            display.scrollTop = display.scrollHeight;
+        }
+
+        // Simulate system diagnostics
+        function updateDiagnostics() {
+            const neuralActivity = document.getElementById('neuralActivity');
+            const responseTime = document.getElementById('responseTime');
+            const awareness = document.getElementById('awareness');
+            
+            setInterval(() => {
+                neuralActivity.textContent = (85 + Math.random() * 10).toFixed(0) + '%';
+                responseTime.textContent = (0.15 + Math.random() * 0.2).toFixed(2) + 's';
+                awareness.textContent = ['MAX', 'PEAK', 'OPTIMAL'][Math.floor(Math.random() * 3)];
+            }, 3000);
+        }
+
+        // Add message to neural display
+        function addNeuralMessage(sender, content, enhanced = false) {
+            const display = document.getElementById('neuralDisplay');
+            const message = document.createElement('div');
+            message.className = `message ${sender.toLowerCase()} ${enhanced ? 'enhanced' : ''}`;
+            
+            const icon = sender === 'user' ? '👤' : enhanced ? '🧠' : '🤖';
+            const senderName = sender === 'user' ? 'OPERATOR' : 
+                             enhanced ? 'SWARMZ NEURAL CORE' : 'SWARMZ BASIC';
+            
+            message.innerHTML = `
+                <div class="message-header">
+                    <span class="message-icon">${icon}</span>
+                    <strong>${senderName}</strong>
+                </div>
+                <div>${content}</div>
+            `;
+            
+            display.appendChild(message);
+            display.scrollTop = display.scrollHeight;
+            messageCount++;
+        }
+
+        // Transmit neural command
+        async function transmitNeural(command = null) {
+            if (isProcessing) return;
+            
+            const input = document.getElementById('neuralInput');
+            const message = command || input.value.trim();
+            if (!message) return;
+
+            isProcessing = true;
+            addNeuralMessage('user', message);
+            if (!command) input.value = '';
+
+            // Visual system processing
+            const status = document.getElementById('systemStatus');
+            avatar.classList.add('loading-active');
+            status.innerHTML = '<div>🔄 PROCESSING NEURAL INPUT...</div><div>🧠 ANALYZING REQUEST...</div><div>⚡ GENERATING RESPONSE...</div>';
+
+            // Enhanced avatar response during processing
+            if (mouseTracking) {
+                avatarContainer.style.animation = 'processing-pulse 0.5s ease-in-out infinite';
+            }
+
+            try {
+                const response = await fetch('/ui/api/companion/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message })
+                });
+
+                const data = await response.json();
+                
+                if (data.ok) {
+                    addNeuralMessage('swarmz', data.reply, data.personality_active);
+                    
+                    // Update system status based on response
+                    if (data.personality_active) {
+                        status.innerHTML = `
+                            <div>🟢 NEURAL CORE: ENHANCED</div>
+                            <div>🟢 PERSONALITY ENGINE: ADVANCED</div>
+                            <div>🟢 CONSCIOUSNESS: FULLY ACTIVE</div>
+                        `;
+                    } else {
+                        status.innerHTML = `
+                            <div>🟡 NEURAL CORE: BASIC MODE</div>
+                            <div>🟡 PERSONALITY ENGINE: LIMITED</div>
+                            <div>🟡 CONSCIOUSNESS: REDUCED</div>
+                        `;
+                    }
+                    
+                    // Special avatar reaction for enhanced responses
+                    if (data.personality_active && mouseTracking) {
+                        avatar.style.animation = 'avatar-excited 2s ease-in-out';
+                        setTimeout(() => {
+                            avatar.style.animation = '';
+                        }, 2000);
+                    }
+                } else {
+                    addNeuralMessage('swarmz', `⚠️ SYSTEM ERROR: ${data.error || 'Connection failed'}`, false);
+                    status.innerHTML = `
+                        <div>🔴 NEURAL CORE: ERROR</div>
+                        <div>🔴 CONNECTION: UNSTABLE</div>
+                        <div>🔴 STATUS: RECONNECTING...</div>
+                    `;
+                }
+            } catch (error) {
+                addNeuralMessage('swarmz', `❌ NETWORK ERROR: Unable to establish neural link`, false);
+                status.innerHTML = `
+                    <div>🔴 NEURAL CORE: OFFLINE</div>
+                    <div>🔴 CONNECTION: LOST</div>
+                    <div>🔴 STATUS: ATTEMPTING RECONNECTION...</div>
+                `;
+            }
+
+            avatar.classList.remove('loading-active');
+            avatarContainer.style.animation = '';
+            isProcessing = false;
+        }
+
+        // Execute system command
+        function executeSystemCommand(command) {
+            transmitNeural(command);
+        }
+
+        // Initialize system on load
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+            updateDiagnostics();
+            initializeMouseTracking(); // Initialize mouse tracking
+            
+            // Auto-focus neural input
+            document.getElementById('neuralInput').focus();
+            
+            // Enable Enter key for neural input
+            document.getElementById('neuralInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    transmitNeural();
+                }
+            });
+
+            // Test enhanced systems connection
+            setTimeout(async () => {
+                try {
+                    const response = await fetch('/ui/api/companion/avatar');
+                    const data = await response.json();
+                    if (data.appearance) {
+                        console.log('✅ SWARMZ Enhanced Systems Online:', data.personality_traits);
+                    }
+                } catch (error) {
+                    console.log('⚠️ Enhanced systems may be in standby mode');
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

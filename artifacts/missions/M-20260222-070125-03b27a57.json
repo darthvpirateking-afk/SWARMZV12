@@ -1,0 +1,20 @@
+{
+  "id": "M-20260222-070125-03b27a57",
+  "type": "mission",
+  "timestamp": 1771743685405,
+  "created_at": "2026-02-22T07:01:25.405860+00:00",
+  "source": "mission_engine",
+  "payload": {
+    "mission_id": "M-20260222-070125-03b27a57",
+    "intent": "smoke test",
+    "status": "SUCCESS",
+    "worker_id": "smoke-worker",
+    "duration_ms": 0,
+    "result": {
+      "ok": true,
+      "type": "smoke",
+      "message": "Smoke test passed"
+    }
+  },
+  "links": {}
+}

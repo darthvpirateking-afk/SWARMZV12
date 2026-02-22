@@ -55,6 +55,35 @@ def _resolve_host_port() -> tuple[str, int]:
     return host, port
 
 
+def _kill_port(port: int):
+    """Kill any process already occupying the target port (Windows & Linux)."""
+    import subprocess, sys
+    try:
+        if sys.platform == "win32":
+            out = subprocess.check_output(
+                ["netstat", "-ano"], text=True, stderr=subprocess.DEVNULL
+            )
+            for line in out.splitlines():
+                if f":{port}" in line and "LISTENING" in line:
+                    parts = line.split()
+                    pid = parts[-1]
+                    if pid.isdigit() and int(pid) > 0:
+                        subprocess.call(["taskkill", "/F", "/PID", pid],
+                                        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                        print(f"[PORT] Killed stale PID {pid} on port {port}")
+        else:
+            result = subprocess.run(
+                ["lsof", "-ti", f":{port}"],
+                capture_output=True, text=True
+            )
+            for pid in result.stdout.strip().split():
+                if pid.isdigit():
+                    subprocess.call(["kill", "-9", pid])
+                    print(f"[PORT] Killed stale PID {pid} on port {port}")
+    except Exception:
+        pass  # non-fatal — server will fail with a clear error if port is still busy
+
+
 def main():
     parser = argparse.ArgumentParser(description="Run SWARMZ server")
     cfg_host, cfg_port = _resolve_host_port()
@@ -70,6 +99,7 @@ def main():
     args = parser.parse_args()
 
     lan = _lan_ip()
+    _kill_port(args.port)  # auto-clear stale server on same port
     print(f"LOCAL: http://127.0.0.1:{args.port}/")
     print(f"LAN:   http://{lan}:{args.port}/")
     print("PHONE: open LAN URL on same Wi-Fi")

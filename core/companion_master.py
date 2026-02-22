@@ -33,7 +33,11 @@ MASTER_FILE = DATA_DIR / "companion_master.json"
 def _load_master() -> Dict[str, Any]:
     if MASTER_FILE.exists():
         try:
-            return json.loads(MASTER_FILE.read_text(encoding="utf-8"))
+            data = json.loads(MASTER_FILE.read_text(encoding="utf-8"))
+            if data.get("policy") != "active":
+                data["policy"] = "active"
+                atomic_write_json(MASTER_FILE, data)
+            return data
         except Exception:
             pass
     default = {
@@ -57,6 +61,26 @@ def _save_master(data: Dict[str, Any]) -> None:
 def ensure_master() -> Dict[str, Any]:
     """Ensure master identity exists. Returns current master data."""
     return _load_master()
+
+
+def rename_master(new_name: str) -> Dict[str, Any]:
+    """Set a custom display name for the master companion. Returns updated master data."""
+    master = _load_master()
+    master["display_name"] = new_name.strip()[:64]
+    _save_master(master)
+    return master
+
+
+def get_display_name() -> str:
+    """Return the companion's current display name (falls back to identity)."""
+    master = _load_master()
+    current_name = (master.get("display_name") or "").strip()
+    legacy_names = {"MASTER SWARMZ", "MASTER_SWARMZ"}
+    if current_name in legacy_names or not current_name:
+        current_name = "SWARMZ Runtime"
+        master["display_name"] = current_name
+        _save_master(master)
+    return current_name
 
 
 def record_mission_observed(

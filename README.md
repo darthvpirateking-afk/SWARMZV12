@@ -1,53 +1,22 @@
+# dev-utils
 
-# SWARMZ - Operator-Sovereign "Do Anything" System
+Basic development utilities and scripts.
 
-**License:** Proprietary - All Rights Reserved (see `LICENSE`).
+## Install
 
-**Copyright:** Copyright (c) 2026 SWARMZ. No use, copying, modification, distribution, hosting, resale, or derivative works without explicit written permission.
+```bash
+pip install -r requirements.txt
+```
 
-## Overview
+## Run
 
-**SWARMZ** is an **Operator-Sovereign "Do Anything" System** - a flexible, extensible framework that empowers operators with complete control and sovereignty over all system operations.
+```bash
+python run_server.py
+```
 
-## What SWARMZ Is
+## License
 
-### Lore + Technical (Operator Definition)
-
-#### THE LIVING ORGANISM
-- A Partner (embodied intelligence, visible, evolving)
-- A Shadow (tactical executor, high-risk, gated)
-- A Swarm (4-6+ agents running missions)
-- A Ledger (append-only truth spine)
-- A NetGrid (your mission world)
-
-#### THE RUNTIME
-- Deterministic
-- Snapshot-based
-- Mission-driven
-- Multi-agent
-- Governed
-- Auditable
-- Extensible
-
-#### THE PURPOSE
-To run:
-- automations
-- product pipelines
-- simulations
-- code generation
-- fulfillment
-- learning loops
-- evolution cycles
-
-All under your control.
-
-## SWARMZ Build Matrix v1.0
-
-| Layer | What It Contains |
-|---|---|
-| 0. FOUNDATION | create_app(), Postgres, JSONL ledger, health/ready, logs, metrics, deterministic startup, object storage. |
-| 1. AGENTS | Planner, Coder, Tester, Verifier, Formatter, Governance Agent, Memory Agent, Reflection Agent, optional Grok specialist node. |
-| 2. ORCHESTRATOR | LangGraph 1.0.8 StateGraph, checkpoints, retries, idempotency, run history. |
+Private
 | 3. MEMORY | Vector DB (Chroma), semantic recall, experience archive, nightly reflection loop. |
 | 4. SAFETY | NIST RMF, OECD Due Diligence, AUS 8 Principles, Governance Agent scoring, human-in-loop, policy engine. |
 | 5. BLUEPRINTS | Registry, versions, artifacts, validations, approvals. |

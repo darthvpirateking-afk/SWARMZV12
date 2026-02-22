@@ -22,7 +22,7 @@ def get_personality_vector() -> Dict[str, Any]:
     Returns:
         dict: The personality vector.
     """
-    return {"traits": ["adaptive", "supportive", "analytical"]}
+    return {"traits": ["governed", "deterministic", "operator_controlled"]}
 
 
 def get_current_phase() -> str:

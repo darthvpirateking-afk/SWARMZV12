@@ -113,6 +113,44 @@ class TestUIApiInfo(unittest.TestCase):
         self.assertIn("platform", data["info"])
 
 
+class TestUICompanionPresence(unittest.TestCase):
+    """Test companion presence/profile wiring endpoints."""
+
+    def test_presence_endpoint_returns_style_and_constraints(self):
+        resp = client.get("/ui/api/companion/presence")
+        self.assertEqual(resp.status_code, 200)
+        data = resp.json()
+
+        self.assertTrue(data.get("ok"))
+        self.assertIn("context", data)
+        self.assertIn("style", data)
+        self.assertIn("constraints", data)
+        self.assertEqual(data["style"]["tone"], "grand-ceremonial")
+        self.assertEqual(data["constraints"]["autonomy"], "disabled")
+
+    def test_avatar_endpoint_includes_presence_bundle(self):
+        resp = client.get("/ui/api/companion/avatar")
+        self.assertEqual(resp.status_code, 200)
+        data = resp.json()
+
+        self.assertIn("appearance", data)
+        self.assertIn("presence_context", data)
+        self.assertIn("presence_style", data)
+        self.assertEqual(data["presence_style"]["density"], "high")
+
+    def test_chat_endpoint_returns_presence_style_when_available(self):
+        resp = client.post("/ui/api/companion/chat", json={"message": "hello"})
+        data = resp.json()
+
+        if resp.status_code == 200:
+            self.assertTrue(data.get("ok"))
+            self.assertIn("presence_style", data)
+            self.assertIn("constraints", data)
+        else:
+            self.assertFalse(data.get("ok"))
+            self.assertIn("reply", data)
+
+
 def test_ui():
     pass
 

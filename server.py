@@ -19,17 +19,14 @@ swarmz_server and layers the required control routes.
 import os
 import uuid
 import json
-<<<<<<< HEAD
 import hashlib
 from types import SimpleNamespace
-=======
->>>>>>> 1d4159f8b2fb9f9a9285afa0a908f7e6e9146070
 from datetime import datetime
 from pathlib import Path
 from typing import Optional, Dict, Any
 
 from fastapi import Depends, Header, HTTPException, Request
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse, HTMLResponse
 from pydantic import BaseModel
 
 from swarmz_server import app, _swarmz_core  # reuse the existing app instance
@@ -136,6 +133,109 @@ async def system_log(tail: int = 10):
     return {"entries": entries}
 
 
+@app.get("/system-log", response_class=HTMLResponse)
+async def system_log_viewer(tail: int = 100):
+    """Human-readable system log viewer with navigation back to the cockpit."""
+    return HTMLResponse(content="""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SWARMZ — System Log</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#060a10;color:#00ffff;font-family:'Courier New',monospace;min-height:100vh;padding:0}
+.topbar{display:flex;align-items:center;gap:16px;padding:12px 24px;background:rgba(6,10,16,0.96);border-bottom:1px solid #0e2a3a;position:sticky;top:0;z-index:50;backdrop-filter:blur(12px)}
+.back-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:7px;border:1px solid #00ffff;background:rgba(0,255,255,0.07);color:#00ffff;text-decoration:none;font-size:13px;font-weight:700;letter-spacing:1px;transition:background .2s}
+.back-btn:hover{background:rgba(0,255,255,0.18)}
+.title{font-size:14px;font-weight:700;letter-spacing:3px;color:#00ffff}
+.subtitle{font-size:11px;color:#334455;margin-left:auto;font-family:monospace}
+.container{max-width:1100px;margin:0 auto;padding:24px 20px}
+.controls{display:flex;gap:10px;align-items:center;margin-bottom:18px;flex-wrap:wrap}
+.tail-btn{padding:5px 12px;border-radius:5px;border:1px solid #1a3a4a;background:rgba(10,16,24,0.9);color:#00ffff;cursor:pointer;font-size:12px;font-family:monospace;transition:border-color .2s}
+.tail-btn:hover,.tail-btn.active{border-color:#00ffff;background:rgba(0,255,255,0.1)}
+.log-table{width:100%;border-collapse:collapse;font-size:12px}
+.log-table th{text-align:left;padding:8px 10px;border-bottom:1px solid #0e2a3a;color:#445566;font-weight:600;letter-spacing:1px;white-space:nowrap}
+.log-table td{padding:7px 10px;border-bottom:1px solid #0a1822;vertical-align:top;word-break:break-word}
+.log-table tr:hover td{background:rgba(0,255,255,0.04)}
+.event-pill{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;letter-spacing:.5px;white-space:nowrap}
+.pill-dispatch{background:rgba(0,180,255,0.15);color:#00b4ff;border:1px solid #003a5a}
+.pill-success{background:rgba(0,255,136,0.12);color:#00ff88;border:1px solid #004422}
+.pill-failure{background:rgba(255,60,60,0.12);color:#ff6060;border:1px solid #4a1010}
+.pill-quarantine{background:rgba(255,165,0,0.12);color:#ffa500;border:1px solid #4a2e00}
+.pill-default{background:rgba(100,100,100,0.12);color:#888;border:1px solid #222}
+.ts{color:#334466;font-size:11px;white-space:nowrap}
+.mid{color:#ffd700;font-size:11px}
+.empty{text-align:center;padding:48px;color:#334455;font-size:14px}
+.count-badge{font-size:11px;color:#445566;margin-left:8px}
+.refresh-btn{padding:5px 12px;border-radius:5px;border:1px solid #ffd700;background:rgba(255,215,0,0.07);color:#ffd700;cursor:pointer;font-size:12px;font-family:monospace;margin-left:auto}
+.refresh-btn:hover{background:rgba(255,215,0,0.15)}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <a class="back-btn" href="/app">← SWARMZ Cockpit</a>
+  <span class="title">SYSTEM LOG</span>
+  <span class="subtitle" id="clock"></span>
+</div>
+<div class="container">
+  <div class="controls">
+    <span style="font-size:12px;color:#445566">Showing last:</span>
+    <button class="tail-btn" onclick="load(25)">25</button>
+    <button class="tail-btn active" onclick="load(100)" id="btn-100">100</button>
+    <button class="tail-btn" onclick="load(250)">250</button>
+    <button class="tail-btn" onclick="load(500)">500</button>
+    <button class="refresh-btn" onclick="load(currentTail)">&#8635; Refresh</button>
+  </div>
+  <div id="log-wrap"><p class="empty">Loading...</p></div>
+</div>
+<script>
+var currentTail=100;
+function pillClass(ev){
+  if(!ev)return'pill-default';
+  if(ev.includes('dispatch'))return'pill-dispatch';
+  if(ev.includes('success')||ev.includes('resolved')||ev.includes('started'))return'pill-success';
+  if(ev.includes('fail')||ev.includes('quarantine_blocked')||ev.includes('error'))return'pill-failure';
+  if(ev.includes('quarantine'))return'pill-quarantine';
+  return'pill-default';
+}
+function fmt(entry){
+  var ev=entry.event||entry.type||'—';
+  var ts=entry.ts||entry.timestamp||'';
+  var mid=entry.mission_id||'';
+  var note=entry.note||entry.detail||entry.intent||entry.error||'';
+  var rate=entry.success_rate!=null?' (rate: '+(entry.success_rate*100).toFixed(1)+'%)':'';
+  var extra=Object.keys(entry).filter(function(k){return!['event','type','ts','timestamp','mission_id','note','detail','intent','error','success_rate'].includes(k)}).map(function(k){return k+'='+JSON.stringify(entry[k])}).join(' ');
+  return '<tr>'
+    +'<td class="ts">'+ts.replace('T',' ').replace(/\\.\\d+Z$/,'Z')+'</td>'
+    +'<td><span class="event-pill '+pillClass(ev)+'">'+ev+'</span></td>'
+    +'<td class="mid">'+mid+'</td>'
+    +'<td style="color:#aaa">'+note+rate+' <span style="color:#334455">'+extra+'</span></td>'
+    +'</tr>';
+}
+function load(n){
+  currentTail=n;
+  document.querySelectorAll('.tail-btn').forEach(function(b){b.classList.remove('active')});
+  fetch('/v1/system/log?tail='+n).then(function(r){return r.json()}).then(function(d){
+    var entries=(d.entries||[]).slice().reverse();
+    var w=document.getElementById('log-wrap');
+    if(!entries.length){w.innerHTML='<p class="empty">No log entries found.</p>';return;}
+    var html='<table class="log-table"><thead><tr><th>TIMESTAMP</th><th>EVENT</th><th>MISSION ID</th><th>DETAIL</th></tr></thead><tbody>';
+    entries.forEach(function(e){html+=fmt(e);});
+    html+='</tbody></table><p class="count-badge">'+entries.length+' entries (newest first) • auto-refresh every 10s</p>';
+    w.innerHTML=html;
+  }).catch(function(){document.getElementById('log-wrap').innerHTML='<p class="empty" style="color:#ff6060">Failed to fetch log. Is the server running?</p>';});
+}
+function tick(){document.getElementById('clock').textContent=new Date().toLocaleTimeString();}
+load(100);
+setInterval(function(){load(currentTail);},10000);
+setInterval(tick,1000);tick();
+</script>
+</body>
+</html>""")
+
+
+
 # â”€â”€ helpers for state.json â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 
@@ -180,8 +280,8 @@ async def get_mode():
 @app.post("/v1/mode")
 async def set_mode(payload: ModeRequest, op_key: str = Depends(_get_operator_key)):
     mode = payload.mode.upper()
-    if mode not in ("COMPANION", "BUILD"):
-        raise HTTPException(status_code=400, detail="mode must be COMPANION or BUILD")
+    if mode not in ("COMPANION", "BUILD", "HOLOGRAM"):
+        raise HTTPException(status_code=400, detail="mode must be COMPANION, BUILD, or HOLOGRAM")
     now = datetime.utcnow().isoformat() + "Z"
     s = _read_state()
     old_mode = s.get("mode")
@@ -288,6 +388,195 @@ async def swarm_status():
         "running_count": counts["RUNNING"],
         "success_count": counts["SUCCESS"],
         "failure_count": counts["FAILURE"],
+    }
+
+
+# -- System control endpoints --------------------------------------------------
+# /system/start, /system/stop, /system/restart, /system/status
+
+
+@app.get("/system/status")
+async def system_status():
+    """Aggregate system status: runner, mode, missions, health."""
+    runner_state = "down"
+    last_tick = None
+    if HEARTBEAT_FILE.exists():
+        try:
+            hb = json.loads(HEARTBEAT_FILE.read_text(encoding="utf-8"))
+            runner_state = hb.get("status", "down")
+            last_tick = hb.get("last_tick")
+        except Exception:
+            pass
+    s = _read_state()
+    missions, _, _ = read_jsonl(MISSIONS_FILE)
+    total = len(missions)
+    success = sum(1 for m in missions if m.get("status") == "SUCCESS")
+    return {
+        "ok": True,
+        "mode": s.get("mode"),
+        "runner": runner_state,
+        "last_tick": last_tick,
+        "total_missions": total,
+        "success_count": success,
+        "success_rate": round(success / total, 3) if total else 0.0,
+        "version": s.get("version"),
+        "updated_at": s.get("updated_at"),
+    }
+
+
+@app.post("/system/start")
+async def system_start():
+    """Start/restart the swarm runner loop (if not already running)."""
+    import threading
+    try:
+        from swarm_runner import run_loop as _runner_loop
+        for t in threading.enumerate():
+            if t.name == "swarm-runner" and t.is_alive():
+                return {"ok": True, "status": "already_running"}
+        runner_thread = threading.Thread(
+            target=_runner_loop, daemon=True, name="swarm-runner"
+        )
+        runner_thread.start()
+        return {"ok": True, "status": "started"}
+    except Exception as e:
+        return {"ok": False, "error": str(e)}
+
+
+@app.post("/system/stop")
+async def system_stop():
+    """Signal the swarm runner to stop."""
+    try:
+        import swarm_runner
+        swarm_runner._STOP_FLAG = True
+        return {"ok": True, "status": "stop_signalled"}
+    except Exception as e:
+        return {"ok": False, "error": str(e)}
+
+
+@app.post("/system/restart")
+async def system_restart():
+    """Stop and re-start the swarm runner."""
+    try:
+        import swarm_runner, threading, time
+        swarm_runner._STOP_FLAG = True
+        time.sleep(0.5)
+        swarm_runner._STOP_FLAG = False
+        from swarm_runner import run_loop as _runner_loop
+        runner_thread = threading.Thread(
+            target=_runner_loop, daemon=True, name="swarm-runner"
+        )
+        runner_thread.start()
+        return {"ok": True, "status": "restarted"}
+    except Exception as e:
+        return {"ok": False, "error": str(e)}
+
+
+# -- /deploy -------------------------------------------------------------------
+
+
+class DeployRequest(BaseModel):
+    target: Optional[str] = "local"
+    spec: Optional[Dict[str, Any]] = None
+
+
+@app.post("/deploy")
+async def deploy(payload: DeployRequest, op_key: str = Depends(_get_operator_key)):
+    """Deploy a mission package."""
+    now = datetime.utcnow().isoformat() + "Z"
+    mission_id = f"deploy_{int(datetime.utcnow().timestamp() * 1000)}"
+    mission = {
+        "mission_id": mission_id,
+        "intent": f"deploy:{payload.target}",
+        "spec": payload.spec or {},
+        "goal": f"Deploy to {payload.target}",
+        "category": "deploy",
+        "status": "PENDING",
+        "created_at": now,
+    }
+    write_jsonl(MISSIONS_FILE, mission)
+    _append_jsonl(
+        AUDIT_FILE,
+        {"timestamp": now, "event": "deploy_dispatched",
+         "mission_id": mission_id, "target": payload.target},
+    )
+    return {"ok": True, "mission_id": mission_id, "status": "PENDING"}
+
+
+# -- /evolve -------------------------------------------------------------------
+
+
+@app.get("/evolve")
+async def evolve():
+    """Return current evolution/hologram state."""
+    try:
+        from core.hologram import compute_level, load_all_trials
+        trials = load_all_trials()
+        state = compute_level(trials)
+        return {"ok": True, **state}
+    except Exception as e:
+        return {"ok": False, "error": str(e), "level": 0, "name": "EGG"}
+
+
+# -- /mission ------------------------------------------------------------------
+
+
+class MissionRequest(BaseModel):
+    intent: str
+    scope: Optional[str] = "general"
+    spec: Optional[Dict[str, Any]] = None
+
+
+@app.post("/mission")
+async def create_mission(
+    payload: MissionRequest, op_key: str = Depends(_get_operator_key)
+):
+    """Create a new mission (mode-independent shorthand)."""
+    now = datetime.utcnow().isoformat() + "Z"
+    mission_id = f"mission_{int(datetime.utcnow().timestamp() * 1000)}"
+    mission = {
+        "mission_id": mission_id,
+        "intent": payload.intent,
+        "scope": payload.scope,
+        "spec": payload.spec or {},
+        "status": "PENDING",
+        "created_at": now,
+    }
+    write_jsonl(MISSIONS_FILE, mission)
+    _append_jsonl(
+        AUDIT_FILE,
+        {"timestamp": now, "event": "mission_created",
+         "mission_id": mission_id, "intent": payload.intent},
+    )
+    return {"ok": True, "mission_id": mission_id, "status": "PENDING"}
+
+
+@app.get("/mission")
+async def list_missions(limit: int = 50):
+    """List recent missions."""
+    missions, _, _ = read_jsonl(MISSIONS_FILE)
+    return {"ok": True, "missions": missions[-limit:], "total": len(missions)}
+
+
+# -- /api/governor -------------------------------------------------------------
+
+
+@app.get("/api/governor")
+async def api_governor():
+    """Governor status for the React cockpit StatusCard."""
+    missions, _, _ = read_jsonl(MISSIONS_FILE)
+    total = len(missions)
+    success = sum(1 for m in missions if m.get("status") == "SUCCESS")
+    rate = round(success / total, 3) if total else 0.0
+    quarantine = total >= 10 and rate < 0.30
+    s = _read_state()
+    return {
+        "ok": True,
+        "mode": s.get("mode"),
+        "total_missions": total,
+        "success_count": success,
+        "success_rate": rate,
+        "quarantine_active": quarantine,
+        "version": s.get("version"),
     }
 
 
@@ -533,13 +822,10 @@ try:
         """Serve the Hologram Evolution Ladder UI."""
         return _HoloFileResponse("web/hologram.html", media_type="text/html")
 
-<<<<<<< HEAD
     @app.get("/avatar")
     async def avatar_page():
         """Serve the MASTER SWARMZ interactive avatar + chat UI."""
         return _HoloFileResponse("web/avatar.html", media_type="text/html")
-=======
->>>>>>> 1d4159f8b2fb9f9a9285afa0a908f7e6e9146070
 except Exception:
     pass
 
@@ -613,6 +899,14 @@ try:
 except Exception:
     pass  # fail-open: zapier bridge unavailable
 
+# ── Pinterest Integration Bridge ──────────────────────────
+try:
+    from core.pinterest_bridge import register_pinterest_bridge
+
+    register_pinterest_bridge(app)
+except Exception:
+    pass  # fail-open: pinterest bridge unavailable
+
 
 # Minimal scaffold for server.py
 
@@ -636,6 +930,11 @@ try:
     _dashboard_available = True
 except Exception:
     _dashboard_available = False
+try:
+    from core.engine_api import router as engine_router
+    _engine_available = True
+except Exception:
+    _engine_available = False
 
 # Register all routers in the FastAPI app
 app.include_router(system_router, prefix="/v1/system", tags=["system"])
@@ -647,6 +946,58 @@ app.include_router(guardrails_router, prefix="/v1/guardrails", tags=["guardrails
 app.include_router(ui_router, tags=["ui"])
 if _dashboard_available:
     app.include_router(dashboard_router, tags=["dashboard"])
+if _engine_available:
+    app.include_router(engine_router, tags=["engine"])
+
+# --- Enhanced SWARMZ UI Routes ---
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+import os
+
+# Serve static files
+if os.path.exists("static"):
+    app.mount("/static", StaticFiles(directory="static"), name="static")
+
+# Serve modern React UI assets
+_ui_dist_assets = os.path.join("ui", "dist", "assets")
+if os.path.exists(_ui_dist_assets):
+    app.mount("/assets", StaticFiles(directory=_ui_dist_assets), name="ui-assets")
+
+
+def _modern_ui_index_path() -> str | None:
+    candidate = os.path.join("ui", "dist", "index.html")
+    return candidate if os.path.exists(candidate) else None
+
+# Serve enhanced UI at root
+@app.get("/", response_class=FileResponse)
+async def serve_enhanced_ui():
+    """Serve the primary SWARMZ UI."""
+    modern_ui = _modern_ui_index_path()
+    if modern_ui:
+        return FileResponse(modern_ui, media_type="text/html")
+    legacy_ui = os.path.join("static", "enhanced_ui.html")
+    if os.path.exists(legacy_ui):
+        return FileResponse(legacy_ui, media_type="text/html")
+    else:
+        return HTMLResponse("""
+        <html><body style='background:#0a0a0a; color:#00ffff; text-align:center; padding:50px;'>
+        <h1>🤖 SWARMZ Enhanced UI</h1>
+        <p>Enhanced interface loading...</p>
+        <p><a href='/ui/api/capabilities' style='color:#ffd700;'>API Capabilities</a></p>
+        </body></html>
+        """)
+
+
+@app.get("/app", response_class=FileResponse)
+async def serve_app_ui():
+    """Serve SWARMZ app entry route explicitly."""
+    return await serve_enhanced_ui()
+
+# Alternative enhanced UI access
+@app.get("/enhanced", response_class=FileResponse)
+async def serve_enhanced_ui_alt():
+    """Alternative path to enhanced UI"""
+    return await serve_enhanced_ui()
 
 # --- Wire in additional capability routers (fail-open) ---
 _extra_routers = [
@@ -683,7 +1034,6 @@ elif getattr(app.state.orchestrator, "core", None) is None:
 from swarmz_runtime.api.companion_state import companion_state
 
 # Register the companion_state endpoint
-<<<<<<< HEAD
 app.add_api_route("/v1/companion/state", companion_state, methods=["GET"], tags=["companion"])
 
 
@@ -727,8 +1077,6 @@ async def command_center_state():
     }
 
 
-=======
 app.add_api_route(
     "/v1/companion/state", companion_state, methods=["GET"], tags=["companion"]
 )
->>>>>>> 1d4159f8b2fb9f9a9285afa0a908f7e6e9146070
