@@ -19,11 +19,7 @@ swarmz_server and layers the required control routes.
 import os
 import uuid
 import json
-<<<<<<< HEAD
-import hashlib
 from types import SimpleNamespace
-=======
->>>>>>> 1d4159f8b2fb9f9a9285afa0a908f7e6e9146070
 from datetime import datetime
 from pathlib import Path
 from typing import Optional, Dict, Any
@@ -358,13 +354,15 @@ async def companion_state_endpoint():
     except Exception as exc:
         return {"ok": False, "error": str(exc)[:200]}
 
+
 # â"€â"€ POST /v1/operator-os/dispatch â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
+
 
 @app.post("/v1/operator-os/dispatch")
 async def operator_os_dispatch(request: Request):
     """
     UI Dispatch endpoint - route to sovereign dispatch with simplified interface.
-    
+
     Expected payload: {"intent": "...", "spec": {...}, "goal": "..."}
     """
     try:
@@ -372,16 +370,18 @@ async def operator_os_dispatch(request: Request):
         intent = data.get("intent", "").strip()
         spec = data.get("spec", {})
         goal = data.get("goal", "").strip()
-        
+
         if not intent:
-            return JSONResponse({"ok": False, "error": "Intent required"}, status_code=400)
-            
+            return JSONResponse(
+                {"ok": False, "error": "Intent required"}, status_code=400
+            )
+
         # Route to sovereign dispatch
         try:
             dispatch_payload = DispatchRequest(
                 intent=intent,
                 scope=str(spec) if spec else "",
-                limits={"goal": goal} if goal else None
+                limits={"goal": goal} if goal else None,
             )
             # Note: This is for UI - skip auth for now, add later if needed
             result = await sovereign_dispatch(dispatch_payload, "ui-bypass")
@@ -389,27 +389,30 @@ async def operator_os_dispatch(request: Request):
         except Exception as dispatch_err:
             # Fallback: basic mission logging
             import uuid
-            from datetime import datetime
+
             mission_id = f"M-{uuid.uuid4().hex[:8]}"
-            return JSONResponse({
-                "ok": True,
-                "mission_id": mission_id,
-                "status": "dispatched",
-                "intent": intent,
-                "note": "Logged via UI (fallback)"
-            })
-            
+            return JSONResponse(
+                {
+                    "ok": True,
+                    "mission_id": mission_id,
+                    "status": "dispatched",
+                    "intent": intent,
+                    "note": "Logged via UI (fallback)",
+                }
+            )
+
     except Exception as exc:
         return JSONResponse({"ok": False, "error": str(exc)[:200]}, status_code=500)
 
 
 # â"€â"€ GET /v1/operator-os/prime-state â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
 
+
 @app.get("/v1/operator-os/prime-state")
 async def operator_os_prime_state():
     """
     UI Prime State endpoint - return system overview for main dashboard.
-    
+
     This provides the core status information that the UI needs to display.
     """
     try:
@@ -418,27 +421,31 @@ async def operator_os_prime_state():
             missions, _, _ = read_jsonl(MISSIONS_FILE)
             if not isinstance(missions, list):
                 missions = []
-            
+
             total_missions = len(missions)
             success_count = sum(1 for m in missions if m.get("status") == "SUCCESS")
             pending_count = sum(1 for m in missions if m.get("status") == "PENDING")
-            success_rate = (success_count / total_missions * 100) if total_missions > 0 else 0
-            
+            success_rate = (
+                (success_count / total_missions * 100) if total_missions > 0 else 0
+            )
+
         except Exception:
             total_missions = success_count = pending_count = 0
             success_rate = 0
-            
+
         # Phase calculation
         from swarmz_server import compute_phase
+
         phase = compute_phase(total_missions, success_count)
-        
+
         # AI status
         try:
             from core.model_router import get_status as _ai_status
+
             ai_status = _ai_status()
         except Exception:
             ai_status = {"status": "offline", "provider": "rule_engine"}
-            
+
         return {
             "ok": True,
             "phase": phase,
@@ -447,14 +454,15 @@ async def operator_os_prime_state():
                 "total": total_missions,
                 "success": success_count,
                 "pending": pending_count,
-                "success_rate": success_rate
+                "success_rate": success_rate,
             },
             "ai": ai_status,
-            "timestamp": datetime.utcnow().isoformat() + "Z"
+            "timestamp": datetime.utcnow().isoformat() + "Z",
         }
-        
+
     except Exception as exc:
         return {"ok": False, "error": str(exc)[:200]}
+
 
 # â”€â”€ GET /v1/companion/history â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
@@ -533,13 +541,11 @@ try:
         """Serve the Hologram Evolution Ladder UI."""
         return _HoloFileResponse("web/hologram.html", media_type="text/html")
 
-<<<<<<< HEAD
     @app.get("/avatar")
     async def avatar_page():
         """Serve the MASTER SWARMZ interactive avatar + chat UI."""
         return _HoloFileResponse("web/avatar.html", media_type="text/html")
-=======
->>>>>>> 1d4159f8b2fb9f9a9285afa0a908f7e6e9146070
+
 except Exception:
     pass
 
@@ -631,8 +637,10 @@ from swarmz_runtime.api.meta_routes import router as meta_routes_router
 from addons.api.addons_router import router as addons_router
 from addons.api.guardrails_router import router as guardrails_router
 from addons.api.ui_router import router as ui_router
+
 try:
     from addons.api.dashboard_router import router as dashboard_router
+
     _dashboard_available = True
 except Exception:
     _dashboard_available = False
@@ -660,8 +668,11 @@ _extra_routers = [
     ("swarmz_runtime.ui.cockpit", "router", "", "cockpit"),
     ("swarmz_runtime.arena.ui", "router", "", "arena-ui"),
     ("swarmz_app.api.hologram", "router", "", "hologram"),
+    # SWARMZ V3.0 feature routers
+    ("swarmz_runtime.api.operator_identity_routes", "router", "", "operator-identity"),
 ]
 import importlib as _il
+
 for _mod_name, _var, _prefix, _tag in _extra_routers:
     try:
         _mod = _il.import_module(_mod_name)
@@ -683,8 +694,9 @@ elif getattr(app.state.orchestrator, "core", None) is None:
 from swarmz_runtime.api.companion_state import companion_state
 
 # Register the companion_state endpoint
-<<<<<<< HEAD
-app.add_api_route("/v1/companion/state", companion_state, methods=["GET"], tags=["companion"])
+app.add_api_route(
+    "/v1/companion/state", companion_state, methods=["GET"], tags=["companion"]
+)
 
 
 # --- Stub endpoints for commonly expected paths ---
@@ -692,6 +704,7 @@ app.add_api_route("/v1/companion/state", companion_state, methods=["GET"], tags=
 async def runtime_status():
     """Runtime status aggregate — combines ui/state + companion/state."""
     from swarmz_server import compute_phase
+
     missions_file = Path("data/missions.jsonl")
     missions, _, _ = read_jsonl(missions_file)
     total = len(missions)
@@ -716,19 +729,141 @@ async def command_center_state():
     missions, _, _ = read_jsonl(missions_file)
     audits, _, _ = read_jsonl(audit_file)
     total_m = len(missions)
-    success_m = sum(1 for m in missions if str(m.get("status", "")).upper() == "SUCCESS")
+    success_m = sum(
+        1 for m in missions if str(m.get("status", "")).upper() == "SUCCESS"
+    )
     return {
         "ok": True,
-        "missions": {"total": total_m, "success": success_m, "pending": total_m - success_m},
+        "missions": {
+            "total": total_m,
+            "success": success_m,
+            "pending": total_m - success_m,
+        },
         "audit_entries": len(audits),
         "policy": "active",
         "companion": "online",
-        "phase": "SOVEREIGN" if total_m >= 50 and success_m / max(total_m, 1) >= 0.3 else "FORGING",
+        "phase": (
+            "SOVEREIGN"
+            if total_m >= 50 and success_m / max(total_m, 1) >= 0.3
+            else "FORGING"
+        ),
     }
 
 
-=======
-app.add_api_route(
-    "/v1/companion/state", companion_state, methods=["GET"], tags=["companion"]
-)
->>>>>>> 1d4159f8b2fb9f9a9285afa0a908f7e6e9146070
+# --- SWARMZ V3.0 — Throne Layer endpoints ---
+from swarmz_runtime.core.throne import get_throne
+
+
+class _DecreeRequest(BaseModel):
+    title: str
+    body: str
+    authority_level: str = "SOVEREIGN"
+
+
+@app.get("/v1/throne/state", tags=["throne"])
+def throne_state():
+    """Return the current Throne sovereign state."""
+    return get_throne().get_state()
+
+
+@app.get("/v1/throne/ledger", tags=["throne"])
+def throne_ledger():
+    """Return the full Throne decree ledger."""
+    return {"ledger": get_throne().get_ledger()}
+
+
+@app.post("/v1/throne/decree", tags=["throne"])
+def throne_decree(req: _DecreeRequest):
+    """Issue a new sovereign decree."""
+    decree = get_throne().issue_decree(req.title, req.body, req.authority_level)
+    return {"ok": True, "decree_id": decree.decree_id, "issued_at": decree.issued_at}
+
+
+# --- SWARMZ V3.0 — Realms endpoints ---
+from swarmz_runtime.core.realms import get_realm_registry
+
+
+class _RealmCreateRequest(BaseModel):
+    name: str
+    description: str
+
+
+@app.get("/v1/realms", tags=["realms"])
+def list_realms():
+    """List all operational realms."""
+    return {"realms": get_realm_registry().list_realms()}
+
+
+@app.post("/v1/realms", tags=["realms"])
+def create_realm(req: _RealmCreateRequest):
+    """Create a new operational realm."""
+    realm = get_realm_registry().create_realm(req.name, req.description)
+    return {"ok": True, "realm": realm}
+
+
+@app.get("/v1/realms/{realm_id}", tags=["realms"])
+def get_realm(realm_id: str):
+    """Get a specific realm by ID."""
+    realm = get_realm_registry().get_realm(realm_id)
+    if realm is None:
+        raise HTTPException(status_code=404, detail=f"Realm '{realm_id}' not found")
+    return realm
+
+
+# --- SWARMZ V3.0 — Swarm Tiers endpoints ---
+from swarmz_runtime.core.swarm_tiers import get_tier, list_tiers
+
+
+@app.get("/v1/swarm/tiers", tags=["swarm-tiers"])
+def swarm_tiers():
+    """List all swarm agent tiers."""
+    return {"tiers": list_tiers()}
+
+
+@app.get("/v1/swarm/tiers/{tier_id}", tags=["swarm-tiers"])
+def swarm_tier_detail(tier_id: str):
+    """Get a specific swarm tier by ID."""
+    tier = get_tier(tier_id)
+    if tier is None:
+        raise HTTPException(status_code=404, detail=f"Tier '{tier_id}' not found")
+    return tier
+
+
+# --- SWARMZ V3.0 — Mission Ranks endpoints ---
+from swarmz_runtime.core.mission_ranks import get_rank, list_ranks
+
+
+@app.get("/v1/missions/ranks", tags=["mission-ranks"])
+def mission_ranks():
+    """List all mission rank classifications."""
+    return {"ranks": list_ranks()}
+
+
+@app.get("/v1/missions/ranks/{rank_id}", tags=["mission-ranks"])
+def mission_rank_detail(rank_id: str):
+    """Get a specific mission rank by ID."""
+    rank = get_rank(rank_id)
+    if rank is None:
+        raise HTTPException(status_code=404, detail=f"Rank '{rank_id}' not found")
+    return rank
+
+
+# --- SWARMZ V3.0 — Avatar Matrix endpoints ---
+from swarmz_runtime.avatar.avatar_matrix import get_avatar_matrix
+
+
+class _AvatarStateRequest(BaseModel):
+    state: str
+    variant: str | None = None
+
+
+@app.get("/v1/avatar/matrix", tags=["avatar-matrix"])
+def avatar_matrix_state():
+    """Get the current Avatar Matrix state."""
+    return get_avatar_matrix().get_matrix_state()
+
+
+@app.post("/v1/avatar/matrix/state", tags=["avatar-matrix"])
+def avatar_matrix_set_state(req: _AvatarStateRequest):
+    """Set the avatar state, optionally switching variant."""
+    return get_avatar_matrix().set_state(req.state, req.variant)

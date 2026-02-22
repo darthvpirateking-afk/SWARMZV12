@@ -40,30 +40,25 @@ _FALLBACK_CORE = None
 
 
 def _get_fallback_core():
-  global _FALLBACK_CORE
-  if _FALLBACK_CORE is not None:
+    global _FALLBACK_CORE
+    if _FALLBACK_CORE is not None:
+        return _FALLBACK_CORE
+    try:
+        from swarmz import SwarmzCore
+
+        _FALLBACK_CORE = SwarmzCore()
+    except Exception:
+        _FALLBACK_CORE = None
     return _FALLBACK_CORE
-  try:
-    from swarmz import SwarmzCore
-    _FALLBACK_CORE = SwarmzCore()
-  except Exception:
-    _FALLBACK_CORE = None
-  return _FALLBACK_CORE
 
 
 # ---------------------------------------------------------------------------
 # Dependency-based SwarmzCore access via orchestrator
 # ---------------------------------------------------------------------------
 def _get_core(orchestrator=Depends(get_orchestrator)):
-<<<<<<< HEAD
-  if orchestrator and hasattr(orchestrator, "core"):
-    return orchestrator.core
-  return _get_fallback_core()
-=======
     if orchestrator and hasattr(orchestrator, "core"):
         return orchestrator.core
     return None
->>>>>>> 1d4159f8b2fb9f9a9285afa0a908f7e6e9146070
 
 
 # ---------------------------------------------------------------------------
