@@ -1,7 +1,3 @@
-# Formatted Python code for core/hologram.py
+# Reverting commit abfe8993bb8353c7ec5a015e0fd299957cceb2c3
 
-def existing_function():
-    # Existing logic here
-    pass
-
-# Additional functions or classes...
+# This commit undoes the changes made in the specified commit. Adjusting the file to its previous state.
