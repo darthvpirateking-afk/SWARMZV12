@@ -324,6 +324,4 @@ Responsibility for usage and exposure rests with the operator.
 | file_operations | 1.0.0 | storage | Read, write, and manage files in the operator's workspace. |
 | mission_execution | 1.0.0 | execution | Execute a validated mission contract through the SWARMZ runtime. |
 | nexusmon_interact | 1.0.0 | interface | Interact with the Nexusmon avatar - absorb data, execute directives, and receive results. |
-
-*Generated at: 2026-02-22T07:37:01.751Z*
 <!-- MARKETPLACE_END -->

@@ -17,30 +17,48 @@ const readmeFile = path.join(ROOT, 'README.md');
 
 function loadPlugins() {
   if (!fs.existsSync(pluginsDir)) return [];
-  return fs.readdirSync(pluginsDir)
+  let hasError = false;
+  const results = fs.readdirSync(pluginsDir)
     .filter(f => f.endsWith('.manifest.json'))
     .map(f => {
+      const filePath = path.join(pluginsDir, f);
       try {
-        return JSON.parse(fs.readFileSync(path.join(pluginsDir, f), 'utf8'));
-      } catch (_) {
+        return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+      } catch (err) {
+        console.error(`ERROR: Could not parse ${path.relative(process.cwd(), filePath)}: ${err.message}`);
+        hasError = true;
         return null;
       }
     })
     .filter(Boolean);
+  if (hasError) {
+    console.error('Aborting marketplace generation due to plugin manifest parse errors.');
+    process.exit(1);
+  }
+  return results;
 }
 
 function loadSkills() {
   if (!fs.existsSync(skillsDir)) return [];
-  return fs.readdirSync(skillsDir)
+  let hasError = false;
+  const results = fs.readdirSync(skillsDir)
     .filter(f => f.endsWith('.json'))
     .map(f => {
+      const filePath = path.join(skillsDir, f);
       try {
-        return JSON.parse(fs.readFileSync(path.join(skillsDir, f), 'utf8'));
-      } catch (_) {
+        return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+      } catch (err) {
+        console.error(`ERROR: Could not parse ${path.relative(process.cwd(), filePath)}: ${err.message}`);
+        hasError = true;
         return null;
       }
     })
     .filter(Boolean);
+  if (hasError) {
+    console.error('Aborting marketplace generation due to skill definition parse errors.');
+    process.exit(1);
+  }
+  return results;
 }
 
 function getGeneratedAt() {
@@ -105,8 +123,6 @@ ${pluginRows}
 | Name | Version | Category | Description |
 |------|---------|----------|-------------|
 ${skillRows}
-
-*Generated at: ${marketplace.generated_at}*
 ${endMarker}`;
 
   let updated;

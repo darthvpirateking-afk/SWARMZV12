@@ -19,8 +19,8 @@ git ls-files -z | while IFS= read -r -d '' file; do
   fi
 
   # Convert CRLF to LF if needed
-  if grep -qP "\r" "$file" 2>/dev/null; then
-    sed -i 's/\r$//' "$file"
+  if LC_ALL=C grep -q "$(printf '\r')" "$file" 2>/dev/null; then
+    perl -pi -e 's/\r$//' "$file"
     echo "  Fixed: $file"
   fi
 done

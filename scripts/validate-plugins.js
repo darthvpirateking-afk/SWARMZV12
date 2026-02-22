@@ -22,6 +22,11 @@ function validateManifest(filePath) {
     return false;
   }
 
+  if (!data || typeof data !== 'object' || Array.isArray(data)) {
+    console.error(`  ERROR: ${rel} must contain a JSON object at the top level`);
+    return false;
+  }
+
   let valid = true;
   for (const field of REQUIRED_FIELDS) {
     if (data[field] === undefined || data[field] === null || data[field] === '') {

@@ -13,6 +13,10 @@ const REQUIRED_FIELDS = ['name', 'version', 'description', 'category', 'inputs',
 const skillsDir = path.resolve(__dirname, '..', 'skills');
 
 function validateInput(input, skillName, idx) {
+  if (!input || typeof input !== 'object') {
+    console.error(`  ERROR: ${skillName} input[${idx}] must be an object, got ${JSON.stringify(input)}`);
+    return false;
+  }
   const required = ['name', 'type'];
   let valid = true;
   for (const field of required) {
@@ -25,6 +29,10 @@ function validateInput(input, skillName, idx) {
 }
 
 function validateOutput(output, skillName, idx) {
+  if (!output || typeof output !== 'object') {
+    console.error(`  ERROR: ${skillName} output[${idx}] must be an object, got ${JSON.stringify(output)}`);
+    return false;
+  }
   const required = ['name', 'type'];
   let valid = true;
   for (const field of required) {
@@ -43,6 +51,11 @@ function validateSkill(filePath) {
     data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
   } catch (err) {
     console.error(`  ERROR: Could not parse ${rel}: ${err.message}`);
+    return false;
+  }
+
+  if (!data || typeof data !== 'object' || Array.isArray(data)) {
+    console.error(`  ERROR: ${rel} must contain a JSON object at the top level`);
     return false;
   }
 
