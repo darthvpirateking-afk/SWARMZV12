@@ -19,7 +19,6 @@ swarmz_server and layers the required control routes.
 import os
 import uuid
 import json
-import hashlib
 from types import SimpleNamespace
 from datetime import datetime
 from pathlib import Path
@@ -390,7 +389,6 @@ async def operator_os_dispatch(request: Request):
         except Exception as dispatch_err:
             # Fallback: basic mission logging
             import uuid
-            from datetime import datetime
 
             mission_id = f"M-{uuid.uuid4().hex[:8]}"
             return JSONResponse(
