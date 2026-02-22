@@ -222,7 +222,7 @@ def run_galileo(
 - Seed: {seed}
 - Total hypotheses generated: {len(hypotheses)}
 - Accepted: {len(accepted_ids)}
-- Timestamp: {run_record['timestamp']}
+- Timestamp: {run_record["timestamp"]}
 
 ## Accepted Hypotheses
 """
@@ -314,7 +314,7 @@ def _specify_experiment(
     else:
         # Synthetic experiment
         return {
-            "goal": f'Test {hyp.get("title", "hypothesis")}',
+            "goal": f"Test {hyp.get('title', 'hypothesis')}",
             "protocol": {
                 "dataset": "./data/synthetic",
                 "variables": {

@@ -271,22 +271,28 @@ async def chat(payload: ChatRequest, request: Request) -> ChatReply:
             )
 
         # 3a. Run self-monitoring diagnostics
-        anomalies = monitor.run_diagnostics({
-            "drift": health.drift,
-            "entropy": health.entropy,
-            "coherence": health.coherence
-        })
+        anomalies = monitor.run_diagnostics(
+            {
+                "drift": health.drift,
+                "entropy": health.entropy,
+                "coherence": health.coherence,
+            }
+        )
 
         # 3b. Parse intent with hierarchical modeling
         intent = intent_modeler.parse_intent(payload.message)
 
         # 3c. Log to persistent audit trail
-        log_audit_event("chat_initiated", {
-            "operator_id": operator_id,
-            "message": payload.message[:100],
-            "anomalies": anomalies,
-            "intent": intent
-        }, actor=operator_id)
+        log_audit_event(
+            "chat_initiated",
+            {
+                "operator_id": operator_id,
+                "message": payload.message[:100],
+                "anomalies": anomalies,
+                "intent": intent,
+            },
+            actor=operator_id,
+        )
 
         # 4. Build conversation context
         context = ConversationContext(
@@ -442,15 +448,14 @@ async def get_system_health():
         SystemHealth
     """
     health = _get_system_health()
-    anomalies = monitor.run_diagnostics({
-        "drift": health.drift,
-        "entropy": health.entropy,
-        "coherence": health.coherence
-    })
-    return {
-        **health.model_dump(mode="json"),
-        "anomalies": anomalies
-    }
+    anomalies = monitor.run_diagnostics(
+        {
+            "drift": health.drift,
+            "entropy": health.entropy,
+            "coherence": health.coherence,
+        }
+    )
+    return {**health.model_dump(mode="json"), "anomalies": anomalies}
 
 
 @router.post("/system/upgrade/propose")
@@ -459,10 +464,7 @@ async def system_upgrade_propose(payload: Dict[str, Any]):
     proposal = payload.get("proposal", {})
     simulation_results = payload.get("simulation_results", {})
     decision = propose_upgrade(proposal, simulation_results)
-    log_audit_event("upgrade_proposal", {
-        "proposal": proposal,
-        "decision": decision
-    })
+    log_audit_event("upgrade_proposal", {"proposal": proposal, "decision": decision})
     return decision
 
 

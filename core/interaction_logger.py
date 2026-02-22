@@ -7,7 +7,9 @@ from jsonl_utils import write_jsonl
 AUDIT_PATH = "data/audit.jsonl"
 
 
-def log_event(event_type: str, role: str, details: Dict[str, Any], path: str = AUDIT_PATH) -> Dict[str, Any]:
+def log_event(
+    event_type: str, role: str, details: Dict[str, Any], path: str = AUDIT_PATH
+) -> Dict[str, Any]:
     """Write an auditable event with explicit role tag.
 
     Allowed roles: user, agent, system.

@@ -2,12 +2,14 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 class ReasoningCore:
     def __init__(self, name: str):
         self.name = name
 
     def analyze(self, context: dict) -> dict:
         raise NotImplementedError
+
 
 class DefaultReasoningCore(ReasoningCore):
     def __init__(self):
@@ -16,6 +18,7 @@ class DefaultReasoningCore(ReasoningCore):
     def analyze(self, context: dict) -> dict:
         logger.info(f"[{self.name}] Analyzing context...")
         return {"analysis": "default_analysis", "confidence": 0.8}
+
 
 class ReasoningEngine:
     def __init__(self):
@@ -37,5 +40,6 @@ class ReasoningEngine:
         if core:
             return core.analyze(context)
         return {"error": "No active core"}
+
 
 reasoning_engine = ReasoningEngine()

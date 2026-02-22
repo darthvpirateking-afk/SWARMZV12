@@ -535,7 +535,7 @@ def _build_trajectory(context: str) -> Dict[str, Any]:
             }
         )
         if i > 0:
-            prev_id = f"n{i-1}"
+            prev_id = f"n{i - 1}"
             survived = t.get("survived")
             # Compute edge survival score
             tmpl = (t.get("action", "").split(":")[0].strip() or "unknown").lower()
@@ -866,12 +866,12 @@ def create_burst_batch(
         trial = new_trial(
             created_by=created_by,
             context=spec.get("context", "burst"),
-            action=spec.get("action", f"Burst trial {i+1}"),
+            action=spec.get("action", f"Burst trial {i + 1}"),
             metric_name=spec.get("metric_name", "conversion_rate"),
             check_after_sec=check_sec,
             expected_delta=spec.get("expected_delta"),
             tags=["burst", f"batch:{batch_id}"] + spec.get("tags", []),
-            notes=f"Burst batch {batch_id}, trial {i+1}/{len(trials_specs)}",
+            notes=f"Burst batch {batch_id}, trial {i + 1}/{len(trials_specs)}",
         )
         created_trials.append(trial)
 
