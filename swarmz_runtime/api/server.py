@@ -467,6 +467,26 @@ def health():
     return {"ok": True, "status": "ok"}
 
 
+@app.get("/health/live")
+def health_live():
+    """Kubernetes/Railway liveness probe."""
+    return {"status": "alive", "runtime": "swarmz-core", "pulse": True}
+
+
+@app.get("/health/ready")
+def health_ready():
+    """Kubernetes/Railway readiness probe."""
+    ai_ok = bool(os.environ.get("SWARMZ_AI_ENDPOINT"))
+    return {
+        "status": "ready",
+        "services": {
+            "db": "ok",
+            "ai": "ok" if ai_ok else "offline",
+            "engine": "ok",
+        },
+    }
+
+
 @app.get("/arena", response_class=HTMLResponse)
 def arena_page():
     return """
