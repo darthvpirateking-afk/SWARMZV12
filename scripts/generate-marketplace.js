@@ -43,10 +43,21 @@ function loadSkills() {
     .filter(Boolean);
 }
 
+function getGeneratedAt() {
+  const epoch = process.env.SOURCE_DATE_EPOCH;
+  if (epoch) {
+    const parsed = Number(epoch);
+    if (Number.isFinite(parsed)) {
+      return new Date(parsed * 1000).toISOString();
+    }
+  }
+  return new Date().toISOString();
+}
+
 function generateMarketplace(plugins, skills) {
   return {
     version: '1.0.0',
-    generated_at: new Date().toISOString(),
+    generated_at: getGeneratedAt(),
     plugins: plugins.map(p => ({
       name: p.name,
       version: p.version,
