@@ -5,13 +5,15 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && node scripts/generate-marketplace.js",
     "typecheck": "tsc --noEmit",
     "test": "jest",
     "test:ci": "jest --ci",
     "clean": "rm -rf dist",
     "dev": "tsc --watch",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "plugin:validate": "node scripts/validate-plugins.js",
+    "skill:validate": "node scripts/validate-skills.js"
   },
   "repository": {
     "type": "git",

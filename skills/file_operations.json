@@ -1,0 +1,17 @@
+{
+  "name": "file_operations",
+  "version": "1.0.0",
+  "description": "Read, write, and manage files in the operator's workspace.",
+  "category": "storage",
+  "inputs": [
+    { "name": "operation", "type": "string", "required": true, "description": "Operation: read|write|list|delete" },
+    { "name": "path", "type": "string", "required": true, "description": "File or directory path" },
+    { "name": "content", "type": "string", "required": false, "description": "Content to write (for write operation)" }
+  ],
+  "outputs": [
+    { "name": "result", "type": "any", "description": "Operation result" },
+    { "name": "status", "type": "string", "description": "Success or error status" }
+  ],
+  "author": "SWARMZ",
+  "tags": ["files", "storage", "io"]
+}

@@ -300,3 +300,30 @@ Notice
 
 The system executes exactly what it is instructed to execute.
 Responsibility for usage and exposure rests with the operator.
+
+
+<!-- MARKETPLACE_START -->
+## Marketplace
+
+### Plugins (5)
+
+| Name | Version | Category | Description |
+|------|---------|----------|-------------|
+| dataprocessing | 1.0.0 | data | Data manipulation and processing capabilities including JSON parsing, hashing, and data transformation. |
+| filesystem | 1.0.0 | storage | File system manipulation capabilities including read, write, and directory operations. |
+| lead_audit | 1.0.0 | analytics | Deterministic lead scoring and prioritization for decision bottleneck product. |
+| mission_contract | 1.0.0 | governance | Converts 12 laws into hard preflight validation. Enforces minimum required fields and external signal requirements. |
+| reality_gate | 1.0.0 | safety | Ensures SWARMZ only learns and mutates based on external signals, not internal reflections. |
+
+### Skills (5)
+
+| Name | Version | Category | Description |
+|------|---------|----------|-------------|
+| artifact_management | 1.0.0 | storage | Create, store, retrieve, and manage artifact packs produced by the SWARMZ factory. |
+| data_analysis | 1.0.0 | analytics | Analyze structured data, compute statistics, and identify patterns. |
+| file_operations | 1.0.0 | storage | Read, write, and manage files in the operator's workspace. |
+| mission_execution | 1.0.0 | execution | Execute a validated mission contract through the SWARMZ runtime. |
+| nexusmon_interact | 1.0.0 | interface | Interact with the Nexusmon avatar - absorb data, execute directives, and receive results. |
+
+*Generated at: 2026-02-22T07:37:01.751Z*
+<!-- MARKETPLACE_END -->

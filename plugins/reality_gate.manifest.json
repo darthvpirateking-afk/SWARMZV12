@@ -1,0 +1,10 @@
+{
+  "name": "reality_gate",
+  "version": "1.0.0",
+  "description": "Ensures SWARMZ only learns and mutates based on external signals, not internal reflections.",
+  "entry_point": "reality_gate.py",
+  "capabilities": ["reality_gate", "validate_external_signal", "signal_check"],
+  "category": "safety",
+  "author": "SWARMZ",
+  "license": "SWARMZ-SAL"
+}
