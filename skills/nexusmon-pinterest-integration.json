@@ -1,0 +1,33 @@
+{
+  "name": "nexusmon-pinterest-integration",
+  "version": "1.0.0",
+  "description": "Enables Nexusmon to connect to Pinterest and integrate ideas from boards into the SWARMZ ecosystem.",
+  "agent": "nexusmon",
+  "triggers": [
+    "connect pinterest",
+    "fetch pinterest ideas",
+    "browse pinterest",
+    "integrate from pinterest"
+  ],
+  "actions": [
+    {
+      "id": "fetch_pins",
+      "type": "api_call",
+      "config": {
+        "provider": "pinterest",
+        "endpoint": "https://api.pinterest.com/v5/pins",
+        "method": "GET",
+        "auth": "oauth2"
+      }
+    },
+    {
+      "id": "store_ideas",
+      "type": "artifact_write",
+      "config": {
+        "target": "artifacts/ideas/",
+        "format": "json"
+      }
+    }
+  ],
+  "tags": ["nexusmon", "pinterest", "integration", "ideas", "external"]
+}

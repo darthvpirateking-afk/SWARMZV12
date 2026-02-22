@@ -1,0 +1,92 @@
+{
+  "generated_at": "2026-02-22T07:35:59.725Z",
+  "total": 4,
+  "plugins": [
+    {
+      "name": "dataprocessing",
+      "version": "1.0.0",
+      "title": "Data Processing",
+      "description": "Data manipulation and processing capabilities including JSON parsing, hashing, transformation, and encoding.",
+      "category": "data",
+      "icon": "🔄",
+      "price": "free",
+      "tags": [
+        "data",
+        "json",
+        "hash",
+        "transform",
+        "encode"
+      ],
+      "capabilities": [
+        "data_json_parse",
+        "data_json_stringify",
+        "data_hash",
+        "data_transform",
+        "data_encode"
+      ]
+    },
+    {
+      "name": "filesystem",
+      "version": "1.0.0",
+      "title": "Filesystem",
+      "description": "File system operations including read, write, list, and delete capabilities.",
+      "category": "filesystem",
+      "icon": "📁",
+      "price": "free",
+      "tags": [
+        "filesystem",
+        "file",
+        "io",
+        "storage"
+      ],
+      "capabilities": [
+        "fs_read_file",
+        "fs_write_file",
+        "fs_list_dir",
+        "fs_delete_file",
+        "fs_file_exists"
+      ]
+    },
+    {
+      "name": "mission-contract",
+      "version": "1.0.0",
+      "title": "Mission Contract",
+      "description": "Mission contract management for creating, tracking, and fulfilling agent missions.",
+      "category": "ai",
+      "icon": "📋",
+      "price": "free",
+      "tags": [
+        "mission",
+        "contract",
+        "agent",
+        "task"
+      ],
+      "capabilities": [
+        "mission_create",
+        "mission_update",
+        "mission_complete",
+        "mission_list"
+      ]
+    },
+    {
+      "name": "reality-gate",
+      "version": "1.0.0",
+      "title": "Reality Gate",
+      "description": "Reality gate plugin for validating and controlling agent action execution flow.",
+      "category": "ai",
+      "icon": "🚦",
+      "price": "free",
+      "tags": [
+        "gate",
+        "control",
+        "safety",
+        "approval"
+      ],
+      "capabilities": [
+        "gate_check",
+        "gate_approve",
+        "gate_reject"
+      ]
+    }
+  ]
+}

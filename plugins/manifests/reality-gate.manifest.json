@@ -1,0 +1,19 @@
+{
+  "name": "reality-gate",
+  "version": "1.0.0",
+  "description": "Reality gate plugin for validating and controlling agent action execution flow.",
+  "author": "SWARMZ",
+  "category": "ai",
+  "capabilities": [
+    "gate_check",
+    "gate_approve",
+    "gate_reject"
+  ],
+  "entry": "plugins/reality_gate.py",
+  "tags": ["gate", "control", "safety", "approval"],
+  "marketplace": {
+    "title": "Reality Gate",
+    "icon": "🚦",
+    "price": "free"
+  }
+}

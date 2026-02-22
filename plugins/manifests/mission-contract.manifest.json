@@ -1,0 +1,20 @@
+{
+  "name": "mission-contract",
+  "version": "1.0.0",
+  "description": "Mission contract management for creating, tracking, and fulfilling agent missions.",
+  "author": "SWARMZ",
+  "category": "ai",
+  "capabilities": [
+    "mission_create",
+    "mission_update",
+    "mission_complete",
+    "mission_list"
+  ],
+  "entry": "plugins/mission_contract.py",
+  "tags": ["mission", "contract", "agent", "task"],
+  "marketplace": {
+    "title": "Mission Contract",
+    "icon": "📋",
+    "price": "free"
+  }
+}

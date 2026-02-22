@@ -1,0 +1,21 @@
+{
+  "name": "dataprocessing",
+  "version": "1.0.0",
+  "description": "Data manipulation and processing capabilities including JSON parsing, hashing, transformation, and encoding.",
+  "author": "SWARMZ",
+  "category": "data",
+  "capabilities": [
+    "data_json_parse",
+    "data_json_stringify",
+    "data_hash",
+    "data_transform",
+    "data_encode"
+  ],
+  "entry": "plugins/dataprocessing.py",
+  "tags": ["data", "json", "hash", "transform", "encode"],
+  "marketplace": {
+    "title": "Data Processing",
+    "icon": "🔄",
+    "price": "free"
+  }
+}

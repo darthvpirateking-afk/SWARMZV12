@@ -1,0 +1,31 @@
+{
+  "name": "nexusmon-artifact-absorption",
+  "version": "1.0.0",
+  "description": "Enables Nexusmon to absorb data from artifacts and display them on the cockpit screen.",
+  "agent": "nexusmon",
+  "triggers": [
+    "absorb artifact",
+    "load artifact",
+    "display artifact",
+    "read artifact"
+  ],
+  "actions": [
+    {
+      "id": "scan_artifact",
+      "type": "artifact_read",
+      "config": {
+        "sources": ["artifacts/"],
+        "formats": ["json", "jsonl", "txt", "md"]
+      }
+    },
+    {
+      "id": "render_cockpit",
+      "type": "ui_display",
+      "config": {
+        "target": "cockpit_screen",
+        "animation": "state_driven"
+      }
+    }
+  ],
+  "tags": ["nexusmon", "artifact", "cockpit", "display", "absorption"]
+}

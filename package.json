@@ -5,13 +5,18 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && node dist/cli/build-extras.js",
     "typecheck": "tsc --noEmit",
     "test": "jest",
     "test:ci": "jest --ci",
     "clean": "rm -rf dist",
     "dev": "tsc --watch",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "plugin:validate": "node dist/cli/plugin-validate.js",
+    "plugin:generate-marketplace": "node dist/cli/plugin-generate-marketplace.js",
+    "plugin:create": "node dist/cli/plugin-create.js",
+    "skill:validate": "node dist/cli/skill-validate.js",
+    "skill:create": "node dist/cli/skill-create.js"
   },
   "repository": {
     "type": "git",
