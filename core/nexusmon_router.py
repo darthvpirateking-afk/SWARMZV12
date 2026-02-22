@@ -84,9 +84,10 @@ def _ensure_operator_profile(operator_id: str) -> OperatorProfile:
             pass
 
     # Create new profile
-    profile = OperatorProfile(
-        operator_id=operator_id, username=operator_id.replace("op-", "")
-    )
+    # Sovereign operator identity — Regan Stewart Harris is the primary operator
+    _known_names = {"op-001": "Regan Stewart Harris"}
+    username = _known_names.get(operator_id, operator_id.replace("op-", ""))
+    profile = OperatorProfile(operator_id=operator_id, username=username)
 
     # Store it
     write_jsonl(OPERATOR_PROFILES_FILE, profile.model_dump(mode="json"))
@@ -352,6 +353,50 @@ async def chat(payload: ChatRequest, request: Request) -> ChatReply:
 async def nexusmon_health():
     """Health check for NEXUSMON service."""
     return {"ok": True, "service": "NEXUSMON Console", "status": "operational"}
+
+
+@router.get("/entity/state")
+async def get_entity_state():
+    """Get NEXUSMON entity state for cockpit display."""
+    try:
+        from nexusmon.entity import get_entity
+
+        _XP_THRESHOLDS = {
+            "ROOKIE": 100.0,
+            "CHAMPION": 500.0,
+            "ULTIMATE": 2000.0,
+            "MEGA": 10000.0,
+            "SOVEREIGN": float("inf"),
+        }
+
+        entity = get_entity()
+        state = entity.get_state()
+        traits = entity.get_traits()
+
+        form_raw = state.get("current_form", "ROOKIE")
+        form = form_raw.capitalize() if form_raw else "Rookie"
+        mood_raw = state.get("mood", "CALM")
+        mood = mood_raw.lower() if mood_raw else "calm"
+        xp = float(state.get("evolution_xp") or 0.0)
+        xp_to_next = _XP_THRESHOLDS.get(form_raw, 100.0)
+        xp_pct = (
+            min(100.0, xp / xp_to_next * 100.0) if xp_to_next != float("inf") else 100.0
+        )
+
+        return {
+            "name": "NEXUSMON",
+            "form": form,
+            "mood": mood,
+            "xp": xp,
+            "xp_to_next": None if xp_to_next == float("inf") else xp_to_next,
+            "xp_pct": round(xp_pct, 1),
+            "boot_count": state.get("boot_count", 0),
+            "interaction_count": state.get("interaction_count", 0),
+            "traits": traits,
+            "operator_name": state.get("operator_name", ""),
+        }
+    except Exception as e:
+        return {"error": str(e)}
 
 
 @router.get("/operators/{operator_id}/profile")

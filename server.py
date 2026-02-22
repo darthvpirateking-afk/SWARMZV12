@@ -872,3 +872,195 @@ def avatar_matrix_state():
 def avatar_matrix_set_state(req: _AvatarStateRequest):
     """Set the avatar state, optionally switching variant."""
     return get_avatar_matrix().set_state(req.state, req.variant)
+
+
+# ── NEXUSMON WebSocket — real-time cockpit channel ──────────────────────────
+from fastapi import WebSocket as _WS
+import json as _json
+
+# XP thresholds for cockpit progress bar
+_XP_THRESHOLDS = {
+    "ROOKIE": 100.0, "CHAMPION": 500.0,
+    "ULTIMATE": 2000.0, "MEGA": 10000.0, "SOVEREIGN": float("inf"),
+}
+
+
+def _entity_payload(entity) -> dict:
+    """Build a cockpit-ready dict from the nexusmon entity.
+
+    Maps the new spec schema (uppercase forms/moods, separate traits table)
+    to the shape expected by updateEntityDisplay() in nexusmon_console.js.
+    """
+    try:
+        state = entity.get_state()
+        traits = entity.get_traits()
+    except Exception:
+        return {}
+
+    form_raw = state.get("current_form", "ROOKIE")
+    # Title-case the form for JS FORM_COLORS lookup (Rookie, Champion, …)
+    form = form_raw.capitalize() if form_raw else "Rookie"
+
+    mood_raw = state.get("mood", "CALM")
+    # Lowercase the mood for JS MOOD_COLORS lookup (calm, focused, …)
+    mood = mood_raw.lower() if mood_raw else "calm"
+
+    xp = float(state.get("evolution_xp") or 0.0)
+    xp_to_next = _XP_THRESHOLDS.get(form_raw, 100.0)
+    xp_pct = min(100.0, (xp / xp_to_next * 100.0)) if xp_to_next != float("inf") else 100.0
+
+    return {
+        "name": "NEXUSMON",
+        "form": form,
+        "mood": mood,
+        "xp": xp,
+        "xp_to_next": None if xp_to_next == float("inf") else xp_to_next,
+        "xp_pct": round(xp_pct, 1),
+        "boot_count": state.get("boot_count", 0),
+        "interaction_count": state.get("interaction_count", 0),
+        "traits": traits,
+        "operator_name": state.get("operator_name", ""),
+        "bond_established_at": state.get("bond_established_at", ""),
+    }
+
+
+@app.websocket("/ws/nexusmon")
+async def nexusmon_ws(websocket: _WS):
+    """WebSocket channel for the NEXUSMON cockpit.
+
+    Message types (client → server):
+      {"type": "ping"}
+      {"type": "chat", "operator_id": str, "message": str, "screen": str, "mission_id": str|null}
+
+    Message types (server → client):
+      {"type": "greeting", "text": str, "entity": dict}  — character greeting on connect
+      {"type": "pong"}                                    — ping response
+      {"type": "thinking"}                                — processing indicator
+      {"type": "reply", "reply": str, "mode": str, "state_snapshot": dict, "suggested_actions": list, "entity": dict}
+      {"type": "error", "message": str}                  — error response
+    """
+    await websocket.accept()
+
+    # Boot greeting — send entity state so cockpit left panel populates immediately
+    try:
+        from nexusmon.entity import get_entity
+
+        _boot_entity = get_entity()
+        _boot_greeting = _boot_entity.get_greeting()
+        _boot_entity_state = _entity_payload(_boot_entity)
+    except Exception:
+        _boot_greeting = "NEXUSMON is alive. Regan Stewart Harris — your system is online."
+        _boot_entity_state = {}
+
+    await websocket.send_json({
+        "type": "greeting",
+        "text": _boot_greeting,
+        "entity": _boot_entity_state,
+    })
+
+    # Message loop
+    while True:
+        try:
+            raw = await websocket.receive_text()
+            msg = _json.loads(raw)
+        except Exception:
+            break
+
+        msg_type = msg.get("type")
+
+        if msg_type == "ping":
+            await websocket.send_json({"type": "pong"})
+
+        elif msg_type == "chat":
+            await websocket.send_json({"type": "thinking"})
+            try:
+                # Route through the NEXUSMON chat logic
+                from core.nexusmon_router import (
+                    _ensure_operator_profile,
+                    _ensure_nexus_form,
+                    _get_system_health,
+                    _get_active_missions,
+                    _get_mission_queue,
+                    _emit_audit_event,
+                )
+                from core.nexusmon_models import (
+                    ConversationContext,
+                    AuditEvent,
+                    ChatRequest,
+                    ChatContext,
+                )
+                from core.conversation_engine import get_conversation_engine
+                from core.memory_engine import get_memory_engine
+                from system.mission_controller import schedule_next_mission
+
+                operator_id = msg.get("operator_id", "op-001")
+                message = msg.get("message", "")
+                screen = msg.get("screen", "None")
+                mission_id = msg.get("mission_id")
+
+                operator = _ensure_operator_profile(operator_id)
+                nexus_form = _ensure_nexus_form(operator_id)
+                memory_engine = get_memory_engine()
+                history = memory_engine.get_recent_turns(operator_id, limit=20)
+                health = _get_system_health()
+                missions = _get_active_missions()
+                queue = _get_mission_queue()
+                schedule_next_mission(queue, health.entropy, health.drift)
+
+                ui_ctx = ChatContext(screen=screen, mission_id=mission_id)
+                context = ConversationContext(
+                    operator=operator,
+                    nexus_form=nexus_form,
+                    missions=missions,
+                    health=health,
+                    history=history,
+                    ui_context=ui_ctx,
+                )
+
+                engine = get_conversation_engine()
+                reply_obj = engine.generate_reply(message=message, context=context)
+
+                memory_engine.store_conversation_turn(
+                    operator_id=operator_id,
+                    message=message,
+                    reply=reply_obj.reply,
+                    mode=reply_obj.mode.value,
+                    tags=[],
+                )
+
+                _ws_entity_state: dict = {}
+                try:
+                    from nexusmon.entity import get_entity
+
+                    _ws_entity = get_entity()
+                    _ws_entity.increment_interaction()
+                    _ws_entity.add_evolution_xp(2.0)
+                    _ws_entity_state = _entity_payload(_ws_entity)
+                except Exception:
+                    pass
+
+                _emit_audit_event(
+                    AuditEvent(
+                        event_type="ws_chat_turn",
+                        operator_id=operator_id,
+                        details={"message": message[:100], "mode": reply_obj.mode.value},
+                    )
+                )
+
+                await websocket.send_json(
+                    {
+                        "type": "reply",
+                        "reply": reply_obj.reply,
+                        "mode": reply_obj.mode.value,
+                        "state_snapshot": reply_obj.state_snapshot.model_dump(mode="json")
+                        if reply_obj.state_snapshot
+                        else {},
+                        "suggested_actions": [
+                            a.model_dump(mode="json") for a in reply_obj.suggested_actions
+                        ],
+                        "entity": _ws_entity_state,
+                    }
+                )
+
+            except Exception as e:
+                await websocket.send_json({"type": "error", "message": str(e)})

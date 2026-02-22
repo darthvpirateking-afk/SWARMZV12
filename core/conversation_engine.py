@@ -192,8 +192,13 @@ class ConversationEngine:
 
         # Operator state
         if context.operator:
+            name_part = (
+                f"name={context.operator.username}, "
+                if context.operator.username
+                else ""
+            )
             parts.append(
-                f"Operator state: risk={context.operator.risk_posture}, "
+                f"Operator state: {name_part}risk={context.operator.risk_posture}, "
                 f"drift={context.operator.drift_score:.2f}, "
                 f"fatigue={context.operator.fatigue:.2f}"
             )

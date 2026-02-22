@@ -18,7 +18,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, Optional
 
-from fastapi import Depends, FastAPI, HTTPException, Request
+from fastapi import Depends, FastAPI, HTTPException, Request, WebSocket
 from fastapi.responses import HTMLResponse, JSONResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
@@ -184,6 +184,13 @@ app.add_middleware(
 # Include NEXUSMON conversational interface router
 if _nexusmon_available:
     app.include_router(nexusmon_router)
+
+# Include NEXUSMON entity state routes (/v1/nexusmon/entity/*)
+try:
+    from nexusmon.routes.entity import router as _nexus_entity_router
+    app.include_router(_nexus_entity_router)
+except Exception as _e:
+    pass  # Non-fatal if entity routes fail to load
 
 if _bootstrap_router_available:
     app.include_router(bootstrap_router)
@@ -598,7 +605,7 @@ async def icon_svg():
     </linearGradient>
   </defs>
   <rect width="200" height="200" rx="40" fill="url(#grad)"/>
-  <text x="100" y="130" font-family="Arial, sans-serif" font-size="100" font-weight="bold" 
+  <text x="100" y="130" font-family="Arial, sans-serif" font-size="100" font-weight="bold"
         text-anchor="middle" fill="#ffffff">âš¡</text>
 </svg>"""
     return HTMLResponse(content=svg, media_type="image/svg+xml")
@@ -615,7 +622,7 @@ async def apple_touch_icon():
     </linearGradient>
   </defs>
   <rect width="180" height="180" fill="url(#grad)"/>
-  <text x="90" y="120" font-family="Arial, sans-serif" font-size="90" font-weight="bold" 
+  <text x="90" y="120" font-family="Arial, sans-serif" font-size="90" font-weight="bold"
         text-anchor="middle" fill="#ffffff">âš¡</text>
 </svg>"""
     return HTMLResponse(content=svg, media_type="image/svg+xml")
@@ -1116,6 +1123,14 @@ async def companion_message(request: Request):
             )
     except Exception as e:
         return JSONResponse({"ok": False, "error": str(e)}, status_code=500)
+
+
+# --- NEXUSMON WebSocket — real-time chat ---
+@app.websocket("/ws/nexusmon")
+async def nexusmon_websocket(websocket: WebSocket):
+    """Real-time WebSocket chat endpoint for NEXUSMON console."""
+    from nexusmon.console.ws_handler import handle_ws_chat
+    await handle_ws_chat(websocket)
 
 
 # --- Static file mount for HUD assets (CSS, JS) ---

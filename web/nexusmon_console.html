@@ -3,255 +3,1374 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEXUSMON Console - SWARMZ Conversational Interface</title>
+    <title>NEXUSMON Cockpit</title>
     <style>
-        * {
+        /* ============================================================
+           CSS Reset & Variables
+           ============================================================ */
+        *, *::before, *::after {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        body {
-            background: #0d1117;
-            color: #c9d1d9;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            height: 100vh;
+        :root {
+            --void: #050510;
+            --void-light: #0a0a1a;
+            --electric: #00AAFF;
+            --electric-dim: rgba(0, 170, 255, 0.15);
+            --electric-glow: rgba(0, 170, 255, 0.35);
+            --accent: #FF6B00;
+            --accent-dim: rgba(255, 107, 0, 0.15);
+            --text-primary: #E0E8F0;
+            --text-secondary: #607090;
+            --border-glow: rgba(0, 170, 255, 0.15);
+            --success: #22C55E;
+            --danger: #EF4444;
+            --warning: #F59E0B;
+            --panel-bg: rgba(8, 12, 24, 0.85);
+            --panel-border: rgba(0, 170, 255, 0.12);
+            --sidebar-width: 250px;
+        }
+
+        /* ============================================================
+           Body & Root Layout
+           ============================================================ */
+        html, body {
+            height: 100%;
             overflow: hidden;
         }
 
-        #app {
-            display: flex;
-            height: 100vh;
-            gap: 16px;
-            padding: 16px;
-            background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+        body {
+            background: var(--void);
+            color: var(--text-primary);
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            font-size: 13px;
+            line-height: 1.5;
         }
 
-        #sidebar {
-            width: 250px;
-            background: #161b22;
-            border: 1px solid #30363d;
-            border-radius: 8px;
-            padding: 16px;
+        #cockpit {
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            height: 100vh;
+            background:
+                radial-gradient(ellipse at 20% 50%, rgba(0, 170, 255, 0.03) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 50%, rgba(255, 107, 0, 0.02) 0%, transparent 60%),
+                linear-gradient(180deg, #050510 0%, #070718 100%);
+        }
+
+        #panels {
+            display: flex;
+            flex: 1;
+            min-height: 0;
+            gap: 1px;
+        }
+
+        /* ============================================================
+           LEFT Panel
+           ============================================================ */
+        #panel-left {
+            width: var(--sidebar-width);
+            min-width: var(--sidebar-width);
+            background: var(--panel-bg);
+            border-right: 1px solid var(--panel-border);
+            display: flex;
+            flex-direction: column;
             overflow-y: auto;
+            overflow-x: hidden;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(0,170,255,0.2) transparent;
         }
 
-        .sidebar-section {
-            border-bottom: 1px solid #30363d;
-            padding-bottom: 12px;
+        #panel-left::-webkit-scrollbar { width: 4px; }
+        #panel-left::-webkit-scrollbar-thumb { background: rgba(0,170,255,0.2); border-radius: 2px; }
+
+        .panel-section {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--panel-border);
         }
 
-        .sidebar-section:last-child {
+        .panel-section:last-child {
             border-bottom: none;
         }
 
-        .sidebar-section h3 {
-            font-size: 12px;
+        .section-title {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
             text-transform: uppercase;
-            color: #8b949e;
-            margin-bottom: 8px;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+        }
+
+        /* --- NEXUSMON Badge --- */
+        .nexusmon-badge {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: linear-gradient(135deg, rgba(0,170,255,0.08), rgba(0,170,255,0.02));
+            border: 1px solid var(--electric-dim);
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nexusmon-badge::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--electric), var(--accent));
+            opacity: 0;
+            z-index: 0;
+            animation: badge-pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes badge-pulse {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 0.1; }
+        }
+
+        .badge-icon {
+            position: relative;
+            z-index: 1;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--electric), #0066CC);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 900;
+            color: #fff;
+            box-shadow: 0 0 12px rgba(0,170,255,0.4);
+            flex-shrink: 0;
+            animation: icon-glow 3s ease-in-out infinite;
+        }
+
+        @keyframes icon-glow {
+            0%, 100% { box-shadow: 0 0 12px rgba(0,170,255,0.4); }
+            50% { box-shadow: 0 0 20px rgba(0,170,255,0.7), 0 0 40px rgba(0,170,255,0.2); }
+        }
+
+        .badge-info {
+            position: relative;
+            z-index: 1;
+            min-width: 0;
+        }
+
+        .badge-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--electric);
+            letter-spacing: 1px;
+        }
+
+        .badge-subtitle {
+            font-size: 10px;
+            color: var(--text-secondary);
+            margin-top: 1px;
+        }
+
+        /* --- Operator Info --- */
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 0;
+        }
+
+        .info-label {
+            color: var(--text-secondary);
+            font-size: 11px;
+        }
+
+        .info-value {
+            color: var(--text-primary);
             font-weight: 600;
+            font-size: 12px;
         }
 
-        .sidebar-item {
-            padding: 8px 12px;
-            background: #0d1117;
-            border: 1px solid #30363d;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 13px;
-            transition: all 0.2s;
-        }
+        .info-value.accent { color: var(--accent); }
+        .info-value.electric { color: var(--electric); }
 
-        .sidebar-item:hover {
-            background: #161b22;
-            border-color: #58a6ff;
-            color: #58a6ff;
-        }
-
-        .sidebar-item.active {
-            background: #238636;
-            border-color: #238636;
-            color: white;
-        }
-
-        #main-console {
-            flex: 1;
+        /* --- Health Bars --- */
+        .health-bar-group {
             display: flex;
             flex-direction: column;
-            min-height: 0;
+            gap: 8px;
+        }
+
+        .health-bar-item {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .health-bar-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+        }
+
+        .health-bar-label { color: var(--text-secondary); }
+        .health-bar-value { color: var(--text-primary); font-weight: 600; }
+
+        .health-bar-track {
+            width: 100%;
+            height: 4px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .health-bar-fill {
+            height: 100%;
+            border-radius: 2px;
+            transition: width 0.6s ease, background 0.6s ease;
+        }
+
+        .health-bar-fill.good { background: var(--success); }
+        .health-bar-fill.warn { background: var(--warning); }
+        .health-bar-fill.bad { background: var(--danger); }
+
+        /* --- Entity State --- */
+        .entity-stat {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            font-size: 11px;
+        }
+
+        .entity-stat-label { color: var(--text-secondary); }
+        .entity-stat-value { color: var(--text-primary); font-weight: 600; }
+
+        /* --- Anomalies --- */
+        .anomaly-list {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            margin-top: 6px;
+        }
+
+        .anomaly-chip {
+            padding: 4px 8px;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.25);
+            border-radius: 4px;
+            font-size: 10px;
+            color: #F87171;
+        }
+
+        .no-anomalies {
+            font-size: 10px;
+            color: var(--success);
+            opacity: 0.7;
+        }
+
+        /* ============================================================
+           CENTER Panel
+           ============================================================ */
+        #panel-center {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            background: transparent;
         }
 
         #nexusmon-console {
             flex: 1;
             display: flex;
             flex-direction: column;
+            min-height: 0;
+            height: 100%;
         }
 
-        .info-panel {
-            background: #161b22;
-            border: 1px solid #30363d;
-            border-radius: 8px;
-            padding: 12px;
+        /* ============================================================
+           RIGHT Panel
+           ============================================================ */
+        #panel-right {
+            width: var(--sidebar-width);
+            min-width: var(--sidebar-width);
+            background: var(--panel-bg);
+            border-left: 1px solid var(--panel-border);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            overflow-x: hidden;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(0,170,255,0.2) transparent;
+        }
+
+        #panel-right::-webkit-scrollbar { width: 4px; }
+        #panel-right::-webkit-scrollbar-thumb { background: rgba(0,170,255,0.2); border-radius: 2px; }
+
+        /* --- Swarm Status --- */
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 10px;
+            background: rgba(0,0,0,0.2);
+            border: 1px solid var(--panel-border);
+            border-radius: 6px;
+            margin-bottom: 8px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .status-dot.online {
+            background: var(--success);
+            box-shadow: 0 0 6px rgba(34,197,94,0.5);
+        }
+
+        .status-dot.offline {
+            background: var(--danger);
+            box-shadow: 0 0 6px rgba(239,68,68,0.5);
+        }
+
+        .status-dot.unknown {
+            background: var(--text-secondary);
+        }
+
+        .status-text {
             font-size: 12px;
-            margin-top: auto;
+            font-weight: 600;
         }
 
-        .info-item {
+        .status-text.online { color: var(--success); }
+        .status-text.offline { color: var(--danger); }
+        .status-text.unknown { color: var(--text-secondary); }
+
+        /* --- Mission Counts --- */
+        .mission-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+        }
+
+        .mission-stat {
+            padding: 8px;
+            background: rgba(0,0,0,0.2);
+            border: 1px solid var(--panel-border);
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .mission-stat-number {
+            font-size: 18px;
+            font-weight: 800;
+            line-height: 1.2;
+        }
+
+        .mission-stat-number.pending { color: var(--warning); }
+        .mission-stat-number.running { color: var(--electric); }
+        .mission-stat-number.success { color: var(--success); }
+        .mission-stat-number.failure { color: var(--danger); }
+
+        .mission-stat-label {
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        /* --- Scoreboard --- */
+        .scoreboard-items {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .scoreboard-item {
             display: flex;
             justify-content: space-between;
-            margin: 4px 0;
-            color: #8b949e;
+            align-items: center;
+            padding: 6px 8px;
+            background: rgba(0,0,0,0.2);
+            border: 1px solid var(--panel-border);
+            border-radius: 4px;
+            font-size: 11px;
         }
 
-        .info-value {
-            color: #c9d1d9;
-            font-weight: 500;
+        .scoreboard-key {
+            color: var(--text-secondary);
+            max-width: 55%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        .loading-spinner {
+        .scoreboard-val {
+            color: var(--electric);
+            font-weight: 600;
+            text-align: right;
+            max-width: 45%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* --- Metrics mini display --- */
+        .metrics-mini {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 4px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+        }
+
+        .metric-row:last-child { border-bottom: none; }
+        .metric-label { color: var(--text-secondary); font-size: 11px; }
+        .metric-value { color: var(--text-primary); font-weight: 600; font-size: 12px; }
+
+        /* --- Last Tick --- */
+        .last-tick {
+            font-size: 10px;
+            color: var(--text-secondary);
+            margin-top: 6px;
+            text-align: right;
+        }
+
+        /* --- Error display --- */
+        .panel-error {
+            font-size: 10px;
+            color: var(--text-secondary);
+            opacity: 0.6;
+            font-style: italic;
+            padding: 4px 0;
+        }
+
+        /* ============================================================
+           Bottom Bar
+           ============================================================ */
+        #bottom-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: var(--panel-bg);
+            border-top: 1px solid var(--panel-border);
+            overflow-x: auto;
+            scrollbar-width: none;
+            flex-shrink: 0;
+        }
+
+        #bottom-bar::-webkit-scrollbar { display: none; }
+
+        .bottom-label {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .action-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 6px 12px;
+            background: rgba(0,170,255,0.06);
+            border: 1px solid var(--electric-dim);
+            border-radius: 16px;
+            color: var(--electric);
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .action-chip:hover {
+            background: rgba(0,170,255,0.12);
+            border-color: var(--electric-glow);
+            box-shadow: 0 0 12px rgba(0,170,255,0.15);
+            transform: translateY(-1px);
+        }
+
+        .action-chip:active {
+            transform: translateY(0);
+        }
+
+        .action-chip .chip-icon {
+            font-size: 12px;
+        }
+
+        .action-chip.accent-chip {
+            background: rgba(255,107,0,0.06);
+            border-color: var(--accent-dim);
+            color: var(--accent);
+        }
+
+        .action-chip.accent-chip:hover {
+            background: rgba(255,107,0,0.12);
+            border-color: rgba(255,107,0,0.35);
+            box-shadow: 0 0 12px rgba(255,107,0,0.15);
+        }
+
+        /* ============================================================
+           Responsive
+           ============================================================ */
+        @media (max-width: 960px) {
+            #panel-right {
+                display: none;
+            }
+            :root {
+                --sidebar-width: 220px;
+            }
+        }
+
+        @media (max-width: 720px) {
+            #panel-left {
+                display: none;
+            }
+            #bottom-bar {
+                padding: 6px 10px;
+                gap: 6px;
+            }
+            .bottom-label { display: none; }
+        }
+
+        /* --- XP Bar --- */
+        .xp-bar-wrap {
+            margin-top: 10px;
+        }
+
+        .xp-bar-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            margin-bottom: 4px;
+        }
+
+        .xp-label { color: var(--text-secondary); font-weight: 700; letter-spacing: 0.5px; }
+        .xp-value { color: var(--electric); font-weight: 700; }
+
+        .xp-bar-track {
+            width: 100%;
+            height: 5px;
+            background: rgba(0,170,255,0.07);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .xp-bar-fill {
+            height: 100%;
+            border-radius: 3px;
+            background: linear-gradient(90deg, var(--electric), #7DF9FF);
+            box-shadow: 0 0 6px rgba(0,170,255,0.5);
+            transition: width 1s ease;
+        }
+
+        /* --- Traits --- */
+        .trait-list {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-top: 4px;
+        }
+
+        .trait-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .trait-name {
+            width: 78px;
+            flex-shrink: 0;
+            font-size: 10px;
+            color: var(--text-secondary);
+            text-transform: capitalize;
+        }
+
+        .trait-track {
+            flex: 1;
+            height: 3px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .trait-fill {
+            height: 100%;
+            border-radius: 2px;
+            background: var(--electric);
+            transition: width 0.8s ease;
+        }
+
+        .trait-fill.high  { background: var(--electric); }
+        .trait-fill.mid   { background: var(--warning); }
+        .trait-fill.low   { background: var(--text-secondary); }
+
+        .trait-val {
+            width: 28px;
+            text-align: right;
+            font-size: 10px;
+            color: var(--text-primary);
+            flex-shrink: 0;
+        }
+
+        /* --- Mood chip --- */
+        .mood-chip {
             display: inline-block;
-            width: 12px;
-            height: 12px;
-            border: 2px solid #30363d;
-            border-top-color: #58a6ff;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            border: 1px solid rgba(0,170,255,0.2);
+            background: rgba(0,170,255,0.06);
+            color: var(--electric);
+            transition: all 0.4s ease;
         }
 
-        @keyframes spin {
+        /* ============================================================
+           Spinner for loading states
+           ============================================================ */
+        .spinner-sm {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border: 1.5px solid rgba(0,170,255,0.2);
+            border-top-color: var(--electric);
+            border-radius: 50%;
+            animation: spin-sm 0.7s linear infinite;
+        }
+
+        @keyframes spin-sm {
             to { transform: rotate(360deg); }
+        }
+
+        /* ============================================================
+           Panel transitions
+           ============================================================ */
+        .panel-section {
+            transition: opacity 0.3s ease;
+        }
+
+        .panel-section.loading-state {
+            opacity: 0.5;
         }
     </style>
 </head>
 <body>
-    <div id="app">
-        <!-- Sidebar with navigation and info -->
-        <div id="sidebar">
-            <div class="sidebar-section">
-                <h3>📊 Navigation</h3>
-                <div class="sidebar-item active" data-screen="Console">NEXUSMON Console</div>
-                <div class="sidebar-item" data-screen="Missions">Missions</div>
-                <div class="sidebar-item" data-screen="Audit">Audit Log</div>
-                <div class="sidebar-item" data-screen="Metrics">Metrics</div>
-            </div>
+    <div id="cockpit">
+        <!-- === Three-Panel Layout === -->
+        <div id="panels">
 
-            <div class="sidebar-section">
-                <h3>⚡ Quick Actions</h3>
-                <div class="sidebar-item" onclick="quickAction('create_mission')">+ Create Mission</div>
-                <div class="sidebar-item" onclick="quickAction('view_recent')">📜 Recent Events</div>
-                <div class="sidebar-item" onclick="quickAction('system_status')">🔍 System Status</div>
-            </div>
+            <!-- LEFT PANEL: NEXUSMON Status, Operator, Health, Entity -->
+            <div id="panel-left">
 
-            <div class="sidebar-section">
-                <h3>👤 Operator</h3>
-                <div id="operator-info" class="info-panel">
-                    <div class="info-item">
-                        <span>ID</span>
-                        <span class="info-value" id="op-id">op-001</span>
+                <!-- NEXUSMON Identity Badge -->
+                <div class="panel-section">
+                    <div class="nexusmon-badge">
+                        <div class="badge-icon">N</div>
+                        <div class="badge-info">
+                            <div class="badge-name" id="entity-name">NEXUSMON</div>
+                            <div class="badge-subtitle" id="entity-form-subtitle">Rookie Form</div>
+                        </div>
                     </div>
-                    <div class="info-item">
-                        <span>Form</span>
-                        <span class="info-value" id="op-form">Operator</span>
-                    </div>
-                    <div class="info-item">
-                        <span>Drift</span>
-                        <span class="info-value" id="op-drift">0.0%</span>
+                    <!-- XP Bar -->
+                    <div class="xp-bar-wrap">
+                        <div class="xp-bar-header">
+                            <span class="xp-label">XP</span>
+                            <span class="xp-value" id="entity-xp-val">0 / 100</span>
+                        </div>
+                        <div class="xp-bar-track">
+                            <div class="xp-bar-fill" id="entity-xp-bar" style="width:0%"></div>
+                        </div>
                     </div>
                 </div>
+
+                <!-- Operator Info -->
+                <div class="panel-section">
+                    <div class="section-title">Entity</div>
+                    <div class="info-row">
+                        <span class="info-label">Operator</span>
+                        <span class="info-value electric" id="left-op-id">--</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Form</span>
+                        <span class="info-value" id="left-op-form">--</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Mood</span>
+                        <span class="mood-chip" id="entity-mood">--</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Drift</span>
+                        <span class="info-value accent" id="left-op-drift">0.0%</span>
+                    </div>
+                </div>
+
+                <!-- System Health -->
+                <div class="panel-section" id="section-health">
+                    <div class="section-title">System Health</div>
+                    <div class="health-bar-group">
+                        <div class="health-bar-item">
+                            <div class="health-bar-header">
+                                <span class="health-bar-label">Entropy</span>
+                                <span class="health-bar-value" id="health-entropy-val">--</span>
+                            </div>
+                            <div class="health-bar-track">
+                                <div class="health-bar-fill good" id="health-entropy-bar" style="width:0%"></div>
+                            </div>
+                        </div>
+                        <div class="health-bar-item">
+                            <div class="health-bar-header">
+                                <span class="health-bar-label">Drift</span>
+                                <span class="health-bar-value" id="health-drift-val">--</span>
+                            </div>
+                            <div class="health-bar-track">
+                                <div class="health-bar-fill good" id="health-drift-bar" style="width:0%"></div>
+                            </div>
+                        </div>
+                        <div class="health-bar-item">
+                            <div class="health-bar-header">
+                                <span class="health-bar-label">Coherence</span>
+                                <span class="health-bar-value" id="health-coherence-val">--</span>
+                            </div>
+                            <div class="health-bar-track">
+                                <div class="health-bar-fill good" id="health-coherence-bar" style="width:0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="anomaly-container" class="anomaly-list" style="display:none;"></div>
+                </div>
+
+                <!-- Entity State -->
+                <div class="panel-section" id="section-entity">
+                    <div class="section-title">Entity State</div>
+                    <div class="entity-stat">
+                        <span class="entity-stat-label">Boot Count</span>
+                        <span class="entity-stat-value" id="entity-boot-count">--</span>
+                    </div>
+                    <div class="entity-stat">
+                        <span class="entity-stat-label">Last Boot</span>
+                        <span class="entity-stat-value" id="entity-last-boot">--</span>
+                    </div>
+                    <div class="entity-stat">
+                        <span class="entity-stat-label">Service</span>
+                        <span class="entity-stat-value" id="entity-service-status">--</span>
+                    </div>
+                </div>
+
+                <!-- Traits Panel -->
+                <div class="panel-section" id="section-traits">
+                    <div class="section-title">Traits</div>
+                    <div class="trait-list" id="trait-list">
+                        <div class="panel-error">Loading...</div>
+                    </div>
+                </div>
+
             </div>
+
+            <!-- CENTER PANEL: Chat Console -->
+            <div id="panel-center">
+                <div id="nexusmon-console"></div>
+            </div>
+
+            <!-- RIGHT PANEL: Swarm, Scoreboard, Metrics -->
+            <div id="panel-right">
+
+                <!-- Swarm Runner Status -->
+                <div class="panel-section" id="section-swarm">
+                    <div class="section-title">Swarm Status</div>
+                    <div class="status-indicator" id="runner-status-block">
+                        <div class="status-dot unknown" id="runner-dot"></div>
+                        <span class="status-text unknown" id="runner-text">Checking...</span>
+                    </div>
+                    <div class="mission-grid">
+                        <div class="mission-stat">
+                            <div class="mission-stat-number pending" id="swarm-pending">-</div>
+                            <div class="mission-stat-label">Pending</div>
+                        </div>
+                        <div class="mission-stat">
+                            <div class="mission-stat-number running" id="swarm-running">-</div>
+                            <div class="mission-stat-label">Running</div>
+                        </div>
+                        <div class="mission-stat">
+                            <div class="mission-stat-number success" id="swarm-success">-</div>
+                            <div class="mission-stat-label">Success</div>
+                        </div>
+                        <div class="mission-stat">
+                            <div class="mission-stat-number failure" id="swarm-failure">-</div>
+                            <div class="mission-stat-label">Failure</div>
+                        </div>
+                    </div>
+                    <div class="last-tick" id="swarm-last-tick"></div>
+                </div>
+
+                <!-- Runtime Scoreboard -->
+                <div class="panel-section" id="section-scoreboard">
+                    <div class="section-title">Runtime Scoreboard</div>
+                    <div class="scoreboard-items" id="scoreboard-body">
+                        <div class="panel-error">Loading...</div>
+                    </div>
+                </div>
+
+                <!-- Recent Metrics -->
+                <div class="panel-section" id="section-metrics">
+                    <div class="section-title">Metrics Snapshot</div>
+                    <div class="metrics-mini" id="metrics-body">
+                        <div class="panel-error">Loading...</div>
+                    </div>
+                </div>
+
+            </div>
+
         </div>
 
-        <!-- Main console area -->
-        <div id="main-console">
-            <div id="nexusmon-console"></div>
+        <!-- === Bottom Bar: Quick Action Chips === -->
+        <div id="bottom-bar">
+            <span class="bottom-label">Quick</span>
+            <button class="action-chip" data-action="create_mission">
+                <span class="chip-icon">+</span> Create Mission
+            </button>
+            <button class="action-chip" data-action="view_audit">
+                <span class="chip-icon">&gt;</span> View Audit
+            </button>
+            <button class="action-chip accent-chip" data-action="system_status">
+                <span class="chip-icon">~</span> System Status
+            </button>
+            <button class="action-chip" data-action="view_metrics">
+                <span class="chip-icon">#</span> View Metrics
+            </button>
+            <button class="action-chip" data-action="swarm_status">
+                <span class="chip-icon">@</span> Swarm Status
+            </button>
+            <button class="action-chip accent-chip" data-action="recent_events">
+                <span class="chip-icon">!</span> Recent Events
+            </button>
         </div>
     </div>
 
+    <!-- Load NEXUSMON Console JS module (handles all chat logic) -->
     <script src="/web/nexusmon_console.js"></script>
+
     <script>
-        // Initialize NEXUSMON Console
-        const operatorId = localStorage.getItem('operatorId') || 'op-001';
-        localStorage.setItem('operatorId', operatorId);
+    (function () {
+        'use strict';
 
-        document.getElementById('op-id').textContent = operatorId;
+        // ============================================================
+        // Config
+        // ============================================================
+        const OPERATOR_ID = localStorage.getItem('operatorId') || 'op-001';
+        localStorage.setItem('operatorId', OPERATOR_ID);
 
-        NexusmonConsole.init(operatorId, {
-            apiBase: '/v1/nexusmon',
+        const API_NEXUSMON = '/v1/nexusmon';
+        const REFRESH_INTERVAL = 15000; // 15 seconds
+
+        // ============================================================
+        // DOM references (left panel)
+        // ============================================================
+        const $opId         = document.getElementById('left-op-id');
+        const $opForm       = document.getElementById('left-op-form');
+        const $opDrift      = document.getElementById('left-op-drift');
+
+        const $entropyVal   = document.getElementById('health-entropy-val');
+        const $entropyBar   = document.getElementById('health-entropy-bar');
+        const $driftVal     = document.getElementById('health-drift-val');
+        const $driftBar     = document.getElementById('health-drift-bar');
+        const $coherenceVal = document.getElementById('health-coherence-val');
+        const $coherenceBar = document.getElementById('health-coherence-bar');
+        const $anomalyBox   = document.getElementById('anomaly-container');
+
+        const $bootCount    = document.getElementById('entity-boot-count');
+        const $lastBoot     = document.getElementById('entity-last-boot');
+        const $serviceStatus= document.getElementById('entity-service-status');
+
+        // Entity phase 1 elements
+        const $entityName       = document.getElementById('entity-name');
+        const $entityFormSub    = document.getElementById('entity-form-subtitle');
+        const $entityMood       = document.getElementById('entity-mood');
+        const $entityXpVal      = document.getElementById('entity-xp-val');
+        const $entityXpBar      = document.getElementById('entity-xp-bar');
+        const $traitList        = document.getElementById('trait-list');
+
+        // DOM references (right panel)
+        const $runnerDot    = document.getElementById('runner-dot');
+        const $runnerText   = document.getElementById('runner-text');
+        const $swarmPending = document.getElementById('swarm-pending');
+        const $swarmRunning = document.getElementById('swarm-running');
+        const $swarmSuccess = document.getElementById('swarm-success');
+        const $swarmFailure = document.getElementById('swarm-failure');
+        const $swarmTick    = document.getElementById('swarm-last-tick');
+        const $scoreBody    = document.getElementById('scoreboard-body');
+        const $metricsBody  = document.getElementById('metrics-body');
+
+        // ============================================================
+        // Initialize NEXUSMON Console (center panel)
+        // ============================================================
+        $opId.textContent = OPERATOR_ID;
+
+        NexusmonConsole.init(OPERATOR_ID, {
+            apiBase: API_NEXUSMON,
             screen: 'Console',
             missionId: null
         });
 
-        // Handle sidebar navigation
-        document.querySelectorAll('[data-screen]').forEach(item => {
-            item.addEventListener('click', () => {
-                document.querySelectorAll('[data-screen]').forEach(i => i.classList.remove('active'));
-                item.classList.add('active');
-                console.log('Switched to screen:', item.dataset.screen);
-            });
-        });
+        // Wire real-time WebSocket — falls back to HTTP automatically
+        NexusmonConsole.connectWebSocket();
 
-        // Handle quick actions
-        function quickAction(action) {
-            const messages = {
-                'create_mission': 'Help me create a new mission.',
-                'view_recent': 'Show me recent events.',
-                'system_status': 'What is the system status right now?'
-            };
-            
-            if (messages[action]) {
-                // Insert message into input and send
-                const input = document.getElementById('chat-input');
-                input.value = messages[action];
-                input.focus();
-                NexusmonConsole.sendMessage();
+        // ============================================================
+        // Utility: safe fetch
+        // ============================================================
+        async function safeFetch(url) {
+            try {
+                const res = await fetch(url);
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                return await res.json();
+            } catch (e) {
+                return null;
             }
         }
 
-        // Listen for NEXUSMON actions
-        document.getElementById('nexusmon-console').addEventListener('nexusmon:action', (e) => {
-            console.log('NEXUSMON action:', e.detail);
-            const action = e.detail;
-            
-            switch (action.type) {
-                case 'CreateMission':
-                    console.log('Create mission:', action.payload);
-                    break;
-                case 'OpenMission':
-                    console.log('Open mission:', action.payload);
-                    break;
-                case 'ViewMetrics':
-                    document.querySelector('[data-screen="Metrics"]').click();
-                    break;
-                case 'ViewAudit':
-                    document.querySelector('[data-screen="Audit"]').click();
-                    break;
-                default:
-                    console.log('Unknown action');
+        function pct(value) {
+            return (value * 100).toFixed(1) + '%';
+        }
+
+        function barClass(value, invert) {
+            // invert: true means high is bad (entropy, drift); false means high is good (coherence)
+            var threshold = invert ? value : (1 - value);
+            if (threshold < 0.3) return 'good';
+            if (threshold < 0.6) return 'warn';
+            return 'bad';
+        }
+
+        function formatTime(isoStr) {
+            if (!isoStr) return '--';
+            try {
+                var d = new Date(isoStr);
+                if (isNaN(d.getTime())) return '--';
+                return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            } catch (e) {
+                return '--';
+            }
+        }
+
+        function formatTimeFull(isoStr) {
+            if (!isoStr) return '--';
+            try {
+                var d = new Date(isoStr);
+                if (isNaN(d.getTime())) return '--';
+                return d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            } catch (e) {
+                return '--';
+            }
+        }
+
+        // ============================================================
+        // Left Panel: Operator Info
+        // ============================================================
+        async function refreshOperatorInfo() {
+            var form = await safeFetch(API_NEXUSMON + '/operators/' + OPERATOR_ID + '/nexus-form');
+            if (form) {
+                $opForm.textContent = form.current_form || 'Operator';
+                var formLower = (form.current_form || '').toLowerCase();
+                $opForm.style.color = formLower === 'operator' ? '#79c0ff'
+                                    : formLower === 'cosmology' ? '#d29922'
+                                    : formLower === 'overseer' ? '#f85149'
+                                    : formLower === 'sovereign' ? '#a371f7'
+                                    : 'var(--text-primary)';
+
+                if (typeof form.drift === 'number') {
+                    $opDrift.textContent = pct(form.drift);
+                }
+            }
+        }
+
+        // ============================================================
+        // Left Panel: System Health
+        // ============================================================
+        async function refreshSystemHealth() {
+            var data = await safeFetch(API_NEXUSMON + '/system/health');
+            if (!data) return;
+
+            // Entropy
+            if (typeof data.entropy === 'number') {
+                $entropyVal.textContent = pct(data.entropy);
+                $entropyBar.style.width = (data.entropy * 100) + '%';
+                $entropyBar.className = 'health-bar-fill ' + barClass(data.entropy, true);
+            }
+
+            // Drift
+            if (typeof data.drift === 'number') {
+                $driftVal.textContent = pct(data.drift);
+                $driftBar.style.width = (data.drift * 100) + '%';
+                $driftBar.className = 'health-bar-fill ' + barClass(data.drift, true);
+            }
+
+            // Coherence
+            if (typeof data.coherence === 'number') {
+                $coherenceVal.textContent = pct(data.coherence);
+                $coherenceBar.style.width = (data.coherence * 100) + '%';
+                $coherenceBar.className = 'health-bar-fill ' + barClass(data.coherence, false);
+            }
+
+            // Anomalies
+            if (data.anomalies && Array.isArray(data.anomalies) && data.anomalies.length > 0) {
+                $anomalyBox.style.display = 'flex';
+                $anomalyBox.innerHTML = data.anomalies.map(function (a) {
+                    var text = typeof a === 'string' ? a : (a.message || a.type || JSON.stringify(a));
+                    return '<div class="anomaly-chip">' + escapeHtml(text) + '</div>';
+                }).join('');
+            } else {
+                $anomalyBox.style.display = 'block';
+                $anomalyBox.innerHTML = '<div class="no-anomalies">No anomalies detected</div>';
+            }
+        }
+
+        // ============================================================
+        // Left Panel: Entity State (health check + proxy)
+        // ============================================================
+        async function refreshEntityState() {
+            var health = await safeFetch(API_NEXUSMON + '/health');
+            if (health && health.ok) {
+                $serviceStatus.textContent = health.status || 'operational';
+                $serviceStatus.style.color = 'var(--success)';
+            } else {
+                $serviceStatus.textContent = 'unreachable';
+                $serviceStatus.style.color = 'var(--danger)';
+            }
+
+            // Entity boot count and last_boot from operator profile as proxy
+            // (entity.py state is internal; the /health endpoint confirms aliveness)
+            // We try to read operator profile for session info
+            var profile = await safeFetch(API_NEXUSMON + '/operators/' + OPERATOR_ID + '/profile');
+            if (profile) {
+                $bootCount.textContent = profile.session_count || profile.boot_count || '1';
+                $lastBoot.textContent = formatTimeFull(profile.last_seen || profile.created_at || null);
+            }
+        }
+
+        // ============================================================
+        // Left Panel: Live entity display (called from WS events + API poll)
+        // ============================================================
+        var FORM_COLORS = {
+            'Rookie':    '#79c0ff',
+            'Champion':  '#d29922',
+            'Ultimate':  '#f85149',
+            'Mega':      '#a371f7',
+            'Sovereign': '#ffffff'
+        };
+
+        var MOOD_COLORS = {
+            'calm':     { bg: 'rgba(0,170,255,0.08)',  border: 'rgba(0,170,255,0.25)', text: '#00AAFF' },
+            'focused':  { bg: 'rgba(34,197,94,0.08)',  border: 'rgba(34,197,94,0.25)', text: '#22C55E' },
+            'restless': { bg: 'rgba(245,158,11,0.08)', border: 'rgba(245,158,11,0.25)', text: '#F59E0B' },
+            'charged':  { bg: 'rgba(239,68,68,0.08)',  border: 'rgba(239,68,68,0.25)', text: '#EF4444' },
+            'dormant':  { bg: 'rgba(96,112,144,0.08)', border: 'rgba(96,112,144,0.25)', text: '#607090' }
+        };
+
+        function updateEntityDisplay(entity) {
+            if (!entity) return;
+
+            // Name + form subtitle
+            if ($entityName && entity.name) $entityName.textContent = entity.name;
+            if ($entityFormSub && entity.form) {
+                $entityFormSub.textContent = entity.form + ' Form';
+            }
+
+            // Form color on left-op-form
+            var $opForm = document.getElementById('left-op-form');
+            if ($opForm && entity.form) {
+                $opForm.textContent = entity.form;
+                $opForm.style.color = FORM_COLORS[entity.form] || 'var(--text-primary)';
+            }
+
+            // Mood chip
+            if ($entityMood && entity.mood) {
+                $entityMood.textContent = entity.mood;
+                var mc = MOOD_COLORS[entity.mood];
+                if (mc) {
+                    $entityMood.style.background = mc.bg;
+                    $entityMood.style.borderColor = mc.border;
+                    $entityMood.style.color = mc.text;
+                }
+            }
+
+            // XP bar
+            if ($entityXpVal && $entityXpBar) {
+                var xp = entity.xp || 0;
+                var xpNext = entity.xp_to_next;
+                var pctXp = entity.xp_pct != null ? entity.xp_pct : (xpNext ? Math.min(100, (xp / xpNext * 100)) : 100);
+                $entityXpVal.textContent = xpNext
+                    ? (Math.round(xp) + ' / ' + Math.round(xpNext))
+                    : (Math.round(xp) + ' XP');
+                $entityXpBar.style.width = pctXp + '%';
+            }
+
+            // Boot count
+            if ($bootCount && entity.boot_count != null) {
+                $bootCount.textContent = entity.boot_count;
+            }
+
+            // Traits mini bars
+            if ($traitList && entity.traits && typeof entity.traits === 'object') {
+                var traitKeys = Object.keys(entity.traits);
+                if (traitKeys.length > 0) {
+                    $traitList.innerHTML = traitKeys.map(function(k) {
+                        var v = entity.traits[k];
+                        var pct = Math.round(v * 100);
+                        var cls = pct >= 65 ? 'high' : pct >= 40 ? 'mid' : 'low';
+                        return '<div class="trait-row">' +
+                            '<span class="trait-name">' + escapeHtml(k) + '</span>' +
+                            '<div class="trait-track"><div class="trait-fill ' + cls + '" style="width:' + pct + '%"></div></div>' +
+                            '<span class="trait-val">' + pct + '</span>' +
+                            '</div>';
+                    }).join('');
+                }
+            }
+        }
+
+        // Initial entity state from API (runs before WS connects)
+        async function fetchEntityState() {
+            var data = await safeFetch(API_NEXUSMON + '/entity/state');
+            if (!data) return;
+            // Handle both response shapes:
+            //   new route:  {"ok": true, "entity": {...}}
+            //   old route:  {...entity fields directly at top level...}
+            var entity = (data.ok && data.entity) ? data.entity : data;
+            if (entity && entity.form) {
+                updateEntityDisplay(entity);
+            }
+        }
+
+        // ============================================================
+        // Right Panel: Swarm Status
+        // ============================================================
+        async function refreshSwarmStatus() {
+            var data = await safeFetch('/v1/swarm/status');
+            if (!data) {
+                setRunnerStatus('unknown', 'Unavailable');
+                return;
+            }
+
+            var runner = data.runner || 'down';
+            var isOnline = runner === 'running' || runner === 'idle' || runner === 'up';
+            setRunnerStatus(
+                isOnline ? 'online' : 'offline',
+                isOnline ? 'Runner Online' : 'Runner ' + capitalize(runner)
+            );
+
+            $swarmPending.textContent = data.pending_count != null ? data.pending_count : '-';
+            $swarmRunning.textContent = data.running_count != null ? data.running_count : '-';
+            $swarmSuccess.textContent = data.success_count != null ? data.success_count : '-';
+            $swarmFailure.textContent = data.failure_count != null ? data.failure_count : '-';
+
+            if (data.last_tick) {
+                $swarmTick.textContent = 'Last tick: ' + formatTime(data.last_tick);
+            } else {
+                $swarmTick.textContent = '';
+            }
+        }
+
+        function setRunnerStatus(state, label) {
+            $runnerDot.className = 'status-dot ' + state;
+            $runnerText.className = 'status-text ' + state;
+            $runnerText.textContent = label;
+        }
+
+        function capitalize(s) {
+            return s ? s.charAt(0).toUpperCase() + s.slice(1) : '';
+        }
+
+        // ============================================================
+        // Right Panel: Runtime Scoreboard
+        // ============================================================
+        async function refreshScoreboard() {
+            var data = await safeFetch('/v1/runtime/scoreboard');
+            if (!data || !data.ok) {
+                $scoreBody.innerHTML = '<div class="panel-error">No scoreboard data</div>';
+                return;
+            }
+
+            var keys = Object.keys(data).filter(function (k) { return k !== 'ok'; });
+            if (keys.length === 0) {
+                $scoreBody.innerHTML = '<div class="panel-error">Empty scoreboard</div>';
+                return;
+            }
+
+            $scoreBody.innerHTML = keys.map(function (k) {
+                var val = data[k];
+                var display = typeof val === 'object' ? JSON.stringify(val) : String(val);
+                return '<div class="scoreboard-item">' +
+                    '<span class="scoreboard-key" title="' + escapeAttr(k) + '">' + escapeHtml(formatKey(k)) + '</span>' +
+                    '<span class="scoreboard-val" title="' + escapeAttr(display) + '">' + escapeHtml(truncate(display, 24)) + '</span>' +
+                    '</div>';
+            }).join('');
+        }
+
+        function formatKey(key) {
+            return key.replace(/_/g, ' ').replace(/\b\w/g, function (c) { return c.toUpperCase(); });
+        }
+
+        function truncate(s, n) {
+            return s.length > n ? s.slice(0, n - 1) + '\u2026' : s;
+        }
+
+        // ============================================================
+        // Right Panel: Metrics Snapshot
+        // ============================================================
+        async function refreshMetrics() {
+            // Combine system health values with swarm counts for a snapshot
+            var health = await safeFetch(API_NEXUSMON + '/system/health');
+            var swarm = await safeFetch('/v1/swarm/status');
+
+            var rows = [];
+
+            if (health) {
+                if (typeof health.entropy === 'number') rows.push({ label: 'Entropy', value: pct(health.entropy) });
+                if (typeof health.drift === 'number')   rows.push({ label: 'Drift', value: pct(health.drift) });
+                if (typeof health.coherence === 'number') rows.push({ label: 'Coherence', value: pct(health.coherence) });
+            }
+
+            if (swarm) {
+                var total = (swarm.pending_count || 0) + (swarm.running_count || 0) +
+                            (swarm.success_count || 0) + (swarm.failure_count || 0);
+                rows.push({ label: 'Total Missions', value: String(total) });
+                if (swarm.running_count) rows.push({ label: 'Active', value: String(swarm.running_count) });
+            }
+
+            if (rows.length === 0) {
+                $metricsBody.innerHTML = '<div class="panel-error">No metrics available</div>';
+                return;
+            }
+
+            $metricsBody.innerHTML = rows.map(function (r) {
+                return '<div class="metric-row">' +
+                    '<span class="metric-label">' + escapeHtml(r.label) + '</span>' +
+                    '<span class="metric-value">' + escapeHtml(r.value) + '</span>' +
+                    '</div>';
+            }).join('');
+        }
+
+        // ============================================================
+        // Escaping safety
+        // ============================================================
+        function escapeHtml(s) {
+            var div = document.createElement('div');
+            div.appendChild(document.createTextNode(s));
+            return div.innerHTML;
+        }
+
+        function escapeAttr(s) {
+            return s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+
+        // ============================================================
+        // Bottom Bar: Quick Actions
+        // ============================================================
+        var ACTION_MESSAGES = {
+            'create_mission':  'Help me create a new mission.',
+            'view_audit':      'Show me the recent audit log.',
+            'system_status':   'What is the current system status?',
+            'view_metrics':    'Show me the current metrics and system health.',
+            'swarm_status':    'What is the swarm runner status right now?',
+            'recent_events':   'Show me recent events and activity.'
+        };
+
+        document.getElementById('bottom-bar').addEventListener('click', function (e) {
+            var chip = e.target.closest('.action-chip');
+            if (!chip) return;
+
+            var action = chip.getAttribute('data-action');
+            var msg = ACTION_MESSAGES[action];
+            if (!msg) return;
+
+            var input = document.getElementById('chat-input');
+            if (input) {
+                input.value = msg;
+                input.focus();
+                NexusmonConsole.sendMessage();
             }
         });
 
-        // Update operator form indicator from NEXUSMON updates
-        const originalInit = NexusmonConsole.init;
-        NexusmonConsole.loadForm = async function() {
-            try {
-                const res = await fetch(`/v1/nexusmon/operators/${operatorId}/nexus-form`);
-                const form = await res.json();
-                document.getElementById('op-form').textContent = form.current_form || 'Operator';
-            } catch (err) {
-                console.error('Error loading form:', err);
+        // ============================================================
+        // Listen for NEXUSMON Live entity pushes from WS
+        // ============================================================
+        document.getElementById('nexusmon-console').addEventListener('nexusmon:entity', function (e) {
+            updateEntityDisplay(e.detail);
+        });
+
+        document.getElementById('nexusmon-console').addEventListener('nexusmon:operator', function (e) {
+            var op = e.detail;
+            if (!op) return;
+            // Update drift display from live operator profile
+            var $opDrift = document.getElementById('left-op-drift');
+            if ($opDrift && op.drift != null) {
+                $opDrift.textContent = pct(op.drift);
             }
-        };
+        });
 
-        NexusmonConsole.loadForm();
+        // ============================================================
+        // Listen for NEXUSMON custom actions
+        // ============================================================
+        document.getElementById('nexusmon-console').addEventListener('nexusmon:action', function (e) {
+            var action = e.detail;
+            if (!action) return;
 
-        // Periodically update operator info
-        setInterval(() => {
-            NexusmonConsole.loadForm();
-        }, 30000);
+            switch (action.type) {
+                case 'CreateMission':
+                    console.log('Cockpit: Create mission', action.payload);
+                    break;
+                case 'OpenMission':
+                    console.log('Cockpit: Open mission', action.payload);
+                    break;
+                case 'ViewMetrics':
+                    // Trigger a refresh of the right panel metrics
+                    refreshMetrics();
+                    break;
+                case 'ViewAudit':
+                    console.log('Cockpit: View audit');
+                    break;
+                default:
+                    console.log('Cockpit: Unknown action', action);
+            }
+        });
+
+        // ============================================================
+        // Refresh cycle
+        // ============================================================
+        function refreshAllPanels() {
+            refreshOperatorInfo();
+            refreshSystemHealth();
+            refreshEntityState();
+            fetchEntityState();
+            refreshSwarmStatus();
+            refreshScoreboard();
+            refreshMetrics();
+        }
+
+        // Initial load
+        refreshAllPanels();
+
+        // Auto-refresh every 15 seconds
+        setInterval(refreshAllPanels, REFRESH_INTERVAL);
+
+    })();
     </script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 /**
  * NEXUSMON Console - Conversational Interface for SWARMZ
- * 
+ *
  * Web component for chat-based interaction with the SWARMZ system.
  * Integrates persona, evolution state, and system health into conversation.
  */
@@ -18,7 +18,9 @@ const NexusmonConsole = (() => {
     snapshot: null,
     currentScreen: 'None',
     currentMissionId: null,
-    apiBase: '/v1/nexusmon'
+    apiBase: '/v1/nexusmon',
+    ws: null,
+    wsConnected: false
   };
 
   // DOM references
@@ -69,9 +71,9 @@ const NexusmonConsole = (() => {
         </div>
 
         <div class="nexusmon-input">
-          <input 
-            type="text" 
-            id="chat-input" 
+          <input
+            type="text"
+            id="chat-input"
             placeholder="Tell NEXUSMON what's on your mind..."
             disabled
           />
@@ -259,6 +261,29 @@ const NexusmonConsole = (() => {
         border-bottom-left-radius: 2px;
       }
 
+      .message.system-event {
+        justify-content: center;
+      }
+
+      .message.system-event .message-bubble {
+        max-width: 90%;
+        background: rgba(0, 170, 255, 0.06);
+        border: 1px solid rgba(0, 170, 255, 0.25);
+        border-radius: 6px;
+        color: #00AAFF;
+        font-size: 12px;
+        font-style: italic;
+        text-align: center;
+        padding: 8px 14px;
+      }
+
+      .message.error .message-bubble {
+        background: rgba(239, 68, 68, 0.08);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        color: #EF4444;
+        font-size: 12px;
+      }
+
       .artifact-section {
         margin-top: 10px;
         padding-top: 8px;
@@ -418,10 +443,10 @@ const NexusmonConsole = (() => {
     try {
       const res = await fetch(`${state.apiBase}/operators/${state.operatorId}/nexus-form`);
       const form = await res.json();
-      
+
       const formValue = form.current_form || 'Operator';
       const formClass = formValue.toLowerCase();
-      
+
       elements.nexusFormBadge.textContent = `${formValue} Form`;
       elements.nexusFormBadge.className = `nexus-form-badge ${formClass}`;
     } catch (err) {
@@ -447,6 +472,20 @@ const NexusmonConsole = (() => {
 
     state.loading = true;
 
+    // ── WebSocket path ─────────────────────────────────────────────
+    if (state.wsConnected && state.ws && state.ws.readyState === WebSocket.OPEN) {
+      state.ws.send(JSON.stringify({
+        type: 'chat',
+        operator_id: state.operatorId,
+        message: message,
+        screen: state.currentScreen,
+        mission_id: state.currentMissionId
+      }));
+      // Loading state is reset by _finishLoading() called from the WS message handler
+      return;
+    }
+
+    // ── HTTP fallback ──────────────────────────────────────────────
     try {
       // Send to backend
       const res = await fetch(`${state.apiBase}/chat`, {
@@ -496,11 +535,7 @@ const NexusmonConsole = (() => {
       console.error('Error sending message:', err);
       addMessageToUI(`Error: ${err.message}`, 'error');
     } finally {
-      state.loading = false;
-      elements.input.disabled = false;
-      elements.sendBtn.disabled = false;
-      elements.loadingIndicator.style.display = 'none';
-      elements.input.focus();
+      _finishLoading();
     }
   }
 
@@ -709,6 +744,143 @@ const NexusmonConsole = (() => {
   }
 
   /**
+   * Re-enable input after a reply (shared by WS and HTTP paths)
+   */
+  function _finishLoading() {
+    state.loading = false;
+    elements.input.disabled = false;
+    elements.sendBtn.disabled = false;
+    elements.loadingIndicator.style.display = 'none';
+    elements.input.focus();
+  }
+
+  /**
+   * Handle incoming WebSocket message
+   */
+  function _handleWsMessage(msg) {
+    switch (msg.type) {
+      // Legacy connected frame
+      case 'connected':
+        console.log('[NEXUSMON WS]', msg.message);
+        break;
+
+      // New character-aware greeting on connect
+      case 'greeting':
+        if (msg.text) {
+          addMessageToUI(msg.text, 'assistant');
+        }
+        if (msg.entity) {
+          _dispatchEntityEvent(msg.entity);
+        }
+        break;
+
+      case 'thinking':
+        break;
+
+      case 'reply':
+        addMessageToUI(msg.reply, 'assistant', msg.mode);
+
+        // New entity payload (Phase 1+)
+        if (msg.entity) {
+          _dispatchEntityEvent(msg.entity);
+        }
+        // Operator profile update
+        if (msg.operator) {
+          _dispatchOperatorEvent(msg.operator);
+        }
+        // Legacy state_snapshot (HTTP path, old WS format)
+        if (msg.state_snapshot) {
+          updateStateSnapshot(msg.state_snapshot);
+        }
+        if (msg.suggested_actions && msg.suggested_actions.length > 0) {
+          showSuggestedActions(msg.suggested_actions);
+        }
+
+        state.messages.push({ role: 'assistant', content: msg.reply, mode: msg.mode });
+        _finishLoading();
+        break;
+
+      // Evolution event — Nexusmon grows
+      case 'evolution':
+        addMessageToUI(
+          msg.message || `NEXUSMON evolved: ${msg.from} -> ${msg.to}`,
+          'system-event'
+        );
+        if (msg.entity) {
+          _dispatchEntityEvent(msg.entity);
+        }
+        break;
+
+      case 'error':
+        addMessageToUI(`Error: ${msg.message}`, 'error');
+        _finishLoading();
+        break;
+
+      case 'pong':
+        break;
+
+      default:
+        console.warn('[NEXUSMON WS] Unknown message type:', msg.type);
+    }
+  }
+
+  /**
+   * Dispatch a custom event so the cockpit HTML script can update the left panel.
+   */
+  function _dispatchEntityEvent(entity) {
+    const el = document.getElementById('nexusmon-console');
+    if (el) {
+      el.dispatchEvent(new CustomEvent('nexusmon:entity', { detail: entity, bubbles: true }));
+    }
+  }
+
+  function _dispatchOperatorEvent(operator) {
+    const el = document.getElementById('nexusmon-console');
+    if (el) {
+      el.dispatchEvent(new CustomEvent('nexusmon:operator', { detail: operator, bubbles: true }));
+    }
+  }
+
+  /**
+   * Open a WebSocket connection. Falls back to HTTP automatically if WS fails.
+   */
+  function connectWebSocket(url) {
+    const wsUrl = url || `ws://${location.host}/ws/nexusmon`;
+    try {
+      const ws = new WebSocket(wsUrl);
+
+      ws.onopen = () => {
+        state.ws = ws;
+        state.wsConnected = true;
+        console.log('[NEXUSMON WS] Connected to', wsUrl);
+        ws.send(JSON.stringify({ type: 'ping' }));
+      };
+
+      ws.onmessage = (event) => {
+        try {
+          _handleWsMessage(JSON.parse(event.data));
+        } catch (e) {
+          console.error('[NEXUSMON WS] Parse error:', e);
+        }
+      };
+
+      ws.onclose = () => {
+        state.wsConnected = false;
+        state.ws = null;
+        console.log('[NEXUSMON WS] Disconnected — falling back to HTTP');
+      };
+
+      ws.onerror = () => {
+        state.wsConnected = false;
+        state.ws = null;
+        console.warn('[NEXUSMON WS] Connection failed — HTTP fallback active');
+      };
+    } catch (e) {
+      console.warn('[NEXUSMON WS] WebSocket not available:', e);
+    }
+  }
+
+  /**
    * Handle suggested action click
    */
   function handleAction(action) {
@@ -726,7 +898,8 @@ const NexusmonConsole = (() => {
     sendMessage: () => sendMessage(),
     addMessage: (text, role) => addMessageToUI(text, role),
     loadProfile: loadOperatorProfile,
-    loadForm: loadNexusForm
+    loadForm: loadNexusForm,
+    connectWebSocket
   };
 })();
 
