@@ -546,6 +546,11 @@ try:
         """Serve the MASTER SWARMZ interactive avatar + chat UI."""
         return _HoloFileResponse("web/avatar.html", media_type="text/html")
 
+    @app.get("/nexusmon")
+    async def nexusmon_page():
+        """Serve the NEXUSMON conversational console UI."""
+        return _HoloFileResponse("web/nexusmon_console.html", media_type="text/html")
+
 except Exception:
     pass
 
