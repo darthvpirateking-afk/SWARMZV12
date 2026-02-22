@@ -5,11 +5,20 @@
 
 Tables
 ------
-entity_state      -- singleton entity state row
-entity_traits     -- per-entity trait scores (7 traits)
-evolution_events  -- append-only evolution event log
-operator_sessions -- per-operator session tracking
-system_metrics    -- telemetry snapshots
+entity_state        -- singleton entity state row
+entity_traits       -- per-entity trait scores (7 traits)
+evolution_events    -- append-only evolution event log
+operator_sessions   -- per-operator session tracking
+system_metrics      -- telemetry snapshots
+conversation_history -- full exchange log per operator
+operator_profile    -- operator rank, metrics, and session history
+artifacts           -- artifact vault (all artifact objects)
+chronicle_entries   -- append-only narrative chronicle
+dream_log           -- dream state entries generated during absence
+missions            -- mission definitions and outcomes
+swarm_units         -- swarm unit registry
+factory_jobs        -- factory queue and completed jobs
+conflict_log        -- disagreements and their resolutions
 """
 
 import os
@@ -65,13 +74,13 @@ class NexusmonDB:
             self.conn.commit()
 
     def ensure_schema(self) -> None:
-        """Create all entity tables if they do not already exist.
+        """Create all tables if they do not already exist.
 
-        Automatically drops entity_state when detected as stale (missing
-        spec-required columns) so a fresh table is created in its place.
+        Automatically drops entity_state when detected as stale.
         """
         self._migrate_entity_state()
         self.conn.executescript(
+            # ── Core entity ────────────────────────────────────────────────
             "CREATE TABLE IF NOT EXISTS entity_state ("
             "id TEXT PRIMARY KEY, "
             "operator_id TEXT, "
@@ -114,6 +123,108 @@ class NexusmonDB:
             "entropy REAL, "
             "drift REAL, "
             "coherence REAL); "
+            # ── Conversation memory ────────────────────────────────────────
+            "CREATE TABLE IF NOT EXISTS conversation_history ("
+            "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+            "operator_id TEXT NOT NULL, "
+            "role TEXT NOT NULL, "
+            "content TEXT NOT NULL, "
+            "timestamp TEXT NOT NULL); "
+            # ── Operator profile ───────────────────────────────────────────
+            "CREATE TABLE IF NOT EXISTS operator_profile ("
+            "operator_id TEXT PRIMARY KEY, "
+            "name TEXT NOT NULL DEFAULT 'Regan Stewart Harris', "
+            "rank TEXT NOT NULL DEFAULT 'RECRUIT', "
+            "coherence REAL NOT NULL DEFAULT 0.8, "
+            "fatigue REAL NOT NULL DEFAULT 0.0, "
+            "drift REAL NOT NULL DEFAULT 0.0, "
+            "focus REAL NOT NULL DEFAULT 1.0, "
+            "total_sessions INT NOT NULL DEFAULT 0, "
+            "total_commands INT NOT NULL DEFAULT 0, "
+            "message_count INT NOT NULL DEFAULT 0, "
+            "mission_success_rate REAL NOT NULL DEFAULT 0.0, "
+            "last_updated TEXT); "
+            # ── Artifact vault ─────────────────────────────────────────────
+            "CREATE TABLE IF NOT EXISTS artifacts ("
+            "id TEXT PRIMARY KEY, "
+            "name TEXT NOT NULL, "
+            "type TEXT NOT NULL, "
+            "rarity TEXT NOT NULL DEFAULT 'COMMON', "
+            "version INT NOT NULL DEFAULT 1, "
+            "created_by TEXT NOT NULL DEFAULT 'NEXUSMON', "
+            "created_at TEXT NOT NULL, "
+            "tags TEXT NOT NULL DEFAULT '[]', "
+            "metadata TEXT NOT NULL DEFAULT '{}', "
+            "payload TEXT NOT NULL DEFAULT '{}', "
+            "equipped_to TEXT, "
+            "synergy_ids TEXT NOT NULL DEFAULT '[]'); "
+            # ── Chronicle ──────────────────────────────────────────────────
+            "CREATE TABLE IF NOT EXISTS chronicle_entries ("
+            "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+            "event_type TEXT NOT NULL, "
+            "title TEXT NOT NULL, "
+            "content TEXT NOT NULL, "
+            "occurred_at TEXT NOT NULL, "
+            "form TEXT NOT NULL DEFAULT 'ROOKIE', "
+            "significance REAL NOT NULL DEFAULT 0.5); "
+            # ── Dream log ──────────────────────────────────────────────────
+            "CREATE TABLE IF NOT EXISTS dream_log ("
+            "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+            "entered_at TEXT NOT NULL, "
+            "exited_at TEXT, "
+            "dream_type TEXT NOT NULL DEFAULT 'SIMULATION', "
+            "content TEXT NOT NULL, "
+            "significance REAL NOT NULL DEFAULT 0.5, "
+            "shared INT NOT NULL DEFAULT 0); "
+            # ── Missions ───────────────────────────────────────────────────
+            "CREATE TABLE IF NOT EXISTS missions ("
+            "id TEXT PRIMARY KEY, "
+            "name TEXT NOT NULL, "
+            "type TEXT NOT NULL, "
+            "difficulty INT NOT NULL DEFAULT 1, "
+            "status TEXT NOT NULL DEFAULT 'PENDING', "
+            "assigned_units TEXT NOT NULL DEFAULT '[]', "
+            "created_at TEXT NOT NULL, "
+            "started_at TEXT, "
+            "completed_at TEXT, "
+            "outcome TEXT, "
+            "loot TEXT NOT NULL DEFAULT '[]', "
+            "xp_reward REAL NOT NULL DEFAULT 10.0); "
+            # ── Swarm units ────────────────────────────────────────────────
+            "CREATE TABLE IF NOT EXISTS swarm_units ("
+            "id TEXT PRIMARY KEY, "
+            "name TEXT NOT NULL, "
+            "type TEXT NOT NULL, "
+            "level INT NOT NULL DEFAULT 1, "
+            "xp REAL NOT NULL DEFAULT 0.0, "
+            "evolution_tier INT NOT NULL DEFAULT 1, "
+            "status TEXT NOT NULL DEFAULT 'IDLE', "
+            "specialization TEXT, "
+            "abilities TEXT NOT NULL DEFAULT '[]', "
+            "missions_completed INT NOT NULL DEFAULT 0, "
+            "missions_failed INT NOT NULL DEFAULT 0, "
+            "created_at TEXT NOT NULL, "
+            "personal_lore TEXT NOT NULL DEFAULT ''); "
+            # ── Factory jobs ───────────────────────────────────────────────
+            "CREATE TABLE IF NOT EXISTS factory_jobs ("
+            "id TEXT PRIMARY KEY, "
+            "recipe_id TEXT NOT NULL, "
+            "recipe_name TEXT NOT NULL, "
+            "status TEXT NOT NULL DEFAULT 'QUEUED', "
+            "input_artifact_ids TEXT NOT NULL DEFAULT '[]', "
+            "output_artifact_id TEXT, "
+            "queued_at TEXT NOT NULL, "
+            "started_at TEXT, "
+            "completed_at TEXT); "
+            # ── Conflict log ───────────────────────────────────────────────
+            "CREATE TABLE IF NOT EXISTS conflict_log ("
+            "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+            "flag_type TEXT NOT NULL, "
+            "flag_message TEXT NOT NULL, "
+            "operator_choice TEXT, "
+            "outcome TEXT, "
+            "occurred_at TEXT NOT NULL, "
+            "resolved_at TEXT); "
         )
         self.conn.commit()
 

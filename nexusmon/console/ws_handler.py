@@ -25,6 +25,15 @@ from fastapi import WebSocket, WebSocketDisconnect
 
 logger = logging.getLogger("nexusmon.ws")
 
+# XP thresholds used to compute xp_to_next and xp_pct per form
+_XP_THRESHOLDS: dict = {
+    "ROOKIE": 100.0,
+    "CHAMPION": 500.0,
+    "ULTIMATE": 2000.0,
+    "MEGA": 10000.0,
+    "SOVEREIGN": float("inf"),
+}
+
 
 async def handle_ws_chat(websocket: WebSocket) -> None:
     """Accept and serve a NEXUSMON WebSocket connection."""
@@ -52,22 +61,63 @@ async def handle_ws_chat(websocket: WebSocket) -> None:
     # -- Opening greeting ------------------------------------------------
     try:
         entity_state = entity.get_state()
-        greeting_context = entity.get_greeting_context(operator_id)
+        entity_traits = entity.get_traits()
+        # Merge traits into state so intelligence prompt has them
+        entity_state["traits"] = entity_traits
 
-        # Run blocking call in thread pool so the event loop stays free
+        # Proactive boot scan — provides gap metadata and greeting_hint
+        _scan: dict = {"gap_category": "normal", "greeting_hint": "", "gap_hours": 0.0}
+        try:
+            from nexusmon.proactive import run_boot_scan
+
+            _scan = run_boot_scan(entity_state)
+        except Exception:
+            pass  # proactive module absent or failed — use defaults
+
+        operator_context = (
+            f"Boot scan: gap={_scan['gap_category']}, "
+            f"hint={_scan['greeting_hint']}, "
+            f"gap_hours={_scan['gap_hours']}"
+        )
+
+        # Run blocking AI call in thread pool so the event loop stays free
         greeting_text = await asyncio.get_event_loop().run_in_executor(
             None,
             lambda: intel.generate_greeting(
                 entity_state=entity_state,
-                operator_context=greeting_context,
+                operator_context=operator_context,
             ),
         )
+
+        # Build full entity payload for cockpit left-panel population
+        _boot_form_raw = entity_state.get("current_form", "ROOKIE")
+        _boot_xp = float(entity_state.get("evolution_xp") or 0)
+        _boot_xp_to_next = _XP_THRESHOLDS.get(_boot_form_raw, 100.0)
+        _boot_xp_pct = (
+            min(100.0, (_boot_xp / _boot_xp_to_next * 100.0))
+            if _boot_xp_to_next != float("inf")
+            else 100.0
+        )
+        greeting_entity = {
+            "name": "NEXUSMON",
+            "form": _boot_form_raw.capitalize(),
+            "mood": entity_state.get("mood", "CALM").lower(),
+            "xp": _boot_xp,
+            "xp_to_next": (
+                None if _boot_xp_to_next == float("inf") else _boot_xp_to_next
+            ),
+            "xp_pct": round(_boot_xp_pct, 1),
+            "boot_count": entity_state.get("boot_count", 0),
+            "interaction_count": entity_state.get("interaction_count", 0),
+            "traits": entity_traits,
+            "operator_name": entity_state.get("operator_name", "Regan Stewart Harris"),
+        }
 
         await websocket.send_json(
             {
                 "type": "greeting",
                 "text": greeting_text,
-                "entity": _entity_payload(entity_state),
+                "entity": greeting_entity,
             }
         )
 
@@ -76,7 +126,7 @@ async def handle_ws_chat(websocket: WebSocket) -> None:
         await websocket.send_json(
             {
                 "type": "greeting",
-                "text": "Systems online. Ready.",
+                "text": entity.get_greeting(),
                 "entity": _entity_payload(entity.get_state()),
             }
         )
@@ -190,11 +240,27 @@ def _handle_chat(
     new_form = xp_result.get("new_form", entity_state.get("form", "Rookie"))
 
     fresh_state = entity.get_state()
+    fresh_traits = entity.get_traits()
+
+    # Build entity payload with full spec fields (interaction_count, operator_name)
+    try:
+        entity_payload = {
+            "name": "NEXUSMON",
+            "form": fresh_state.get("current_form", "ROOKIE").capitalize(),
+            "mood": fresh_state.get("mood", "CALM").lower(),
+            "xp": float(fresh_state.get("evolution_xp") or 0),
+            "boot_count": fresh_state.get("boot_count", 0),
+            "interaction_count": fresh_state.get("interaction_count", 0),
+            "traits": fresh_traits,
+            "operator_name": fresh_state.get("operator_name", ""),
+        }
+    except Exception:
+        entity_payload = {}
 
     reply_frame = {
         "type": "reply",
         "reply": reply_text,
-        "entity": _entity_payload(fresh_state),
+        "entity": entity_payload,
         "operator": operator_profile.to_context_dict(),
         "xp_event": {
             "xp_awarded": xp_result.get("xp_awarded", 0),
