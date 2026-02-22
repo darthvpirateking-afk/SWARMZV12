@@ -7,6 +7,7 @@ with strict adherence to operator sovereignty invariants.
 
 from typing import List, Optional, Tuple
 import os
+import json
 
 from core.nexusmon_models import (
     ConversationContext,
@@ -21,6 +22,7 @@ from core.nexusmon_models import (
 from core.persona_engine import get_persona, get_system_prompt
 from core.memory_engine import get_memory_engine
 from core.model_router import call as model_call, is_offline, get_model_config
+from operator_interface.commands import nudge_operator
 
 
 class IntentClassifier:
@@ -321,7 +323,15 @@ Tasks:
 """
         prompt = system_prompt + "\n\n" + mode_guidance
 
-        reply = self._generate_ai_reply(
+        # Create a mission draft artifact
+        mission_draft = MissionDraft(
+            situation={"from_message": message[:200], "inferred": "from context"},
+            goal="Operator-requested modification plan",
+            constraints={"inferred": "from context"},
+            evidence={"intent": "help_plan"},
+        )
+
+        ai_reply = self._generate_ai_reply(
             message=message,
             mode="Plan",
             system_prompt=system_prompt,
@@ -329,12 +339,18 @@ Tasks:
             context=context,
         )
 
-        # Create a stub mission draft
-        mission_draft = MissionDraft(
-            situation={"inferred": "from conversation"},
-            goal="To be refined with operator",
-            constraints={},
-            evidence={},
+        apply_requested = self._is_apply_requested(message)
+        reply = self._build_artifact_reply(
+            mode="Plan",
+            ai_body=ai_reply,
+            artifact=mission_draft.model_dump(),
+            works="yes",
+            applied="yes" if apply_requested else "no",
+            what_else=[
+                "Review artifact details and constraints",
+                "Run targeted validation for affected component",
+                "Promote artifact into an executable mission",
+            ],
         )
 
         suggested_actions = [
@@ -419,8 +435,26 @@ Tasks:
             mode_guidance=mode_guidance,
             context=context,
         )
+        nudge_artifact = nudge_operator(
+            message=reply,
+            state_snapshot=self._build_state_snapshot(context).model_dump(mode="json"),
+            intent="nudge",
+        )
 
-        return reply, [], None
+        response = self._build_artifact_reply(
+            mode="Nudge",
+            ai_body=reply,
+            artifact=nudge_artifact,
+            works="yes",
+            applied="no",
+            what_else=[
+                "Review justification before acting",
+                "Confirm action aligns with current mission",
+                "Apply manually if approved",
+            ],
+        )
+
+        return response, [], None
 
     def _handle_mission_draft(
         self,
@@ -430,13 +464,36 @@ Tasks:
         context_summary: str,
     ) -> Tuple[str, List[SuggestedAction], Optional[MissionDraft]]:
         """Handle MISSION_DRAFT mode: formalize chat into mission."""
-        reply = "I've extracted a mission draft from our conversation. Review it below, then create the mission."
-
         mission_draft = MissionDraft(
             situation={"from_conversation": message[:200]},
             goal="Extract from conversation",
             constraints={"inferred": "from context"},
             evidence={},
+        )
+
+        apply_requested = self._is_apply_requested(message)
+        ai_reply = self._generate_ai_reply(
+            message=message,
+            mode="MissionDraft",
+            system_prompt=get_system_prompt(persona, context_summary),
+            mode_guidance=(
+                "Mode: MISSION_DRAFT\n"
+                "Objective: Produce a concrete artifact and execution framing.\n"
+                "Return concise, implementation-ready content."
+            ),
+            context=context,
+        )
+        reply = self._build_artifact_reply(
+            mode="MissionDraft",
+            ai_body=ai_reply,
+            artifact=mission_draft.model_dump(),
+            works="yes",
+            applied="yes" if apply_requested else "no",
+            what_else=[
+                "Confirm operator approval boundary",
+                "Execute prepared action in mission pipeline",
+                "Record outcome in audit trail",
+            ],
         )
 
         suggested_actions = [
@@ -509,6 +566,33 @@ Tasks:
         return (
             f"[{mode}] Model call failed ({err[:120]}). "
             "Please retry or check model/API-key configuration."
+        )
+
+    def _is_apply_requested(self, message: str) -> bool:
+        """Return True when operator explicitly asks to apply/execute."""
+        lowered = message.lower()
+        tokens = ("apply", "execute", "run it", "ship it", "do it now")
+        return any(token in lowered for token in tokens)
+
+    def _build_artifact_reply(
+        self,
+        mode: str,
+        ai_body: str,
+        artifact: dict,
+        works: str,
+        applied: str,
+        what_else: List[str],
+    ) -> str:
+        """Build a consistent, explicit artifact response contract."""
+        artifact_json = json.dumps(artifact, ensure_ascii=False)
+        next_steps = "\n".join(f"- {item}" for item in what_else)
+        return (
+            f"[{mode}]\n"
+            f"artifact:\n{artifact_json}\n\n"
+            f"works: {works}\n"
+            f"applied: {applied}\n"
+            f"what_else:\n{next_steps}\n\n"
+            f"analysis:\n{ai_body}"
         )
 
     def _build_state_snapshot(self, context: ConversationContext) -> StateSnapshot:

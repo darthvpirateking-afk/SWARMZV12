@@ -9,6 +9,7 @@ All operations are audited and append-only.
 """
 
 import json
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional, Dict, Any
 
@@ -27,6 +28,15 @@ from core.nexusmon_models import (
 from core.conversation_engine import get_conversation_engine
 from core.memory_engine import get_memory_engine
 from jsonl_utils import write_jsonl
+from core.interaction_logger import log_event
+from system.health_monitor import update_status
+from system.mission_controller import schedule_next_mission
+from evolution.consensus_engine import propose_upgrade
+from core.reasoning_engine import reasoning_engine
+from core.audit_trail import log_audit_event
+from system.self_monitoring import monitor
+from addons.external_extension_api import extension_api
+from core.intent_modeling import intent_modeler
 
 router = APIRouter(prefix="/v1/nexusmon", tags=["conversation"])
 
@@ -39,6 +49,7 @@ OPERATOR_PROFILES_FILE = DATA_DIR / "operator_profiles.jsonl"
 NEXUS_FORMS_FILE = DATA_DIR / "nexus_forms.jsonl"
 AUDIT_FILE = DATA_DIR / "audit.jsonl"
 MISSIONS_FILE = DATA_DIR / "missions.jsonl"
+_low_coherence_since: Optional[str] = None
 
 
 # ================================================================
@@ -123,7 +134,46 @@ def _get_system_health() -> SystemHealth:
 
     In production, this would compute from actual system metrics.
     """
-    return SystemHealth(entropy=0.3, drift=0.2, coherence=0.8)
+    global _low_coherence_since
+
+    health = SystemHealth(entropy=0.3, drift=0.2, coherence=0.8)
+    if health.coherence < 0.7 and _low_coherence_since is None:
+        _low_coherence_since = datetime.now(timezone.utc).isoformat()
+    if health.coherence >= 0.7:
+        _low_coherence_since = None
+
+    status = update_status(health.coherence, _low_coherence_since)
+    if status.freeze_autonomy:
+        log_event(
+            event_type="coherence_freeze",
+            role="system",
+            details={
+                "coherence": health.coherence,
+                "alert": status.alert,
+            },
+        )
+    return health
+
+
+def _get_mission_queue() -> list:
+    """Get pending mission queue for scheduling checks."""
+    queue = []
+    if MISSIONS_FILE.exists():
+        try:
+            with MISSIONS_FILE.open("r", encoding="utf-8") as f:
+                for line in f:
+                    line = line.strip()
+                    if not line:
+                        continue
+                    try:
+                        obj = json.loads(line)
+                        if obj.get("status") in {"PENDING", "QUEUED"}:
+                            queue.append(obj)
+                    except (json.JSONDecodeError, ValueError):
+                        pass
+        except OSError:
+            pass
+    return queue
 
 
 def _get_active_missions(operator_id: Optional[str] = None) -> list:
@@ -162,6 +212,17 @@ def _emit_audit_event(event: AuditEvent) -> None:
         event: AuditEvent to record
     """
     write_jsonl(AUDIT_FILE, event.model_dump(mode="json"))
+    try:
+        log_event(
+            event_type=event.event_type,
+            role="system",
+            details={
+                "operator_id": event.operator_id,
+                "details": event.details,
+            },
+        )
+    except Exception:
+        pass
 
 
 # ================================================================
@@ -198,6 +259,34 @@ async def chat(payload: ChatRequest, request: Request) -> ChatReply:
         # 3. Get system state
         health = _get_system_health()
         missions = _get_active_missions()
+        queue = _get_mission_queue()
+        schedule_decision = schedule_next_mission(queue, health.entropy, health.drift)
+        if not schedule_decision.get("scheduled", False):
+            _emit_audit_event(
+                AuditEvent(
+                    event_type="mission_schedule_blocked",
+                    operator_id=operator_id,
+                    details=schedule_decision,
+                )
+            )
+
+        # 3a. Run self-monitoring diagnostics
+        anomalies = monitor.run_diagnostics({
+            "drift": health.drift,
+            "entropy": health.entropy,
+            "coherence": health.coherence
+        })
+
+        # 3b. Parse intent with hierarchical modeling
+        intent = intent_modeler.parse_intent(payload.message)
+
+        # 3c. Log to persistent audit trail
+        log_audit_event("chat_initiated", {
+            "operator_id": operator_id,
+            "message": payload.message[:100],
+            "anomalies": anomalies,
+            "intent": intent
+        }, actor=operator_id)
 
         # 4. Build conversation context
         context = ConversationContext(
@@ -353,4 +442,52 @@ async def get_system_health():
         SystemHealth
     """
     health = _get_system_health()
-    return health.model_dump(mode="json")
+    anomalies = monitor.run_diagnostics({
+        "drift": health.drift,
+        "entropy": health.entropy,
+        "coherence": health.coherence
+    })
+    return {
+        **health.model_dump(mode="json"),
+        "anomalies": anomalies
+    }
+
+
+@router.post("/system/upgrade/propose")
+async def system_upgrade_propose(payload: Dict[str, Any]):
+    """Propose an upgrade with novelty-gated consensus checks."""
+    proposal = payload.get("proposal", {})
+    simulation_results = payload.get("simulation_results", {})
+    decision = propose_upgrade(proposal, simulation_results)
+    log_audit_event("upgrade_proposal", {
+        "proposal": proposal,
+        "decision": decision
+    })
+    return decision
+
+
+@router.post("/reasoning/switch_core")
+async def switch_reasoning_core(payload: Dict[str, Any]):
+    """Switch the active reasoning core."""
+    core_name = payload.get("core_name", "default")
+    reasoning_engine.switch_core(core_name)
+    return {"status": "ok", "active_core": reasoning_engine.active_core}
+
+
+@router.post("/extensions/register")
+async def register_extension(payload: Dict[str, Any]):
+    """Register an external extension."""
+    name = payload.get("name")
+    capabilities = payload.get("capabilities", [])
+    extension_api.register_extension(name, capabilities)
+    return {"status": "registered", "name": name}
+
+
+@router.post("/extensions/invoke")
+async def invoke_extension(payload: Dict[str, Any]):
+    """Invoke an external extension."""
+    name = payload.get("name")
+    action = payload.get("action")
+    ext_payload = payload.get("payload", {})
+    result = extension_api.invoke_extension(name, action, ext_payload)
+    return result
