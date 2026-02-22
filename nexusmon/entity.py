@@ -158,6 +158,19 @@ class NexusmonEntity:
         state = self.get_state()
         return state.get("greeting") or _DEFAULT_GREETING
 
+    def get_character_summary(self) -> str:
+        """One-line boot summary for run.py startup output."""
+        state = self.get_state()
+        form = state.get("current_form", "ROOKIE")
+        mood = state.get("mood", "CALM")
+        boots = state.get("boot_count", 0)
+        xp = state.get("evolution_xp", 0.0)
+        return (
+            f"Form={form} | Mood={mood} | "
+            f"Boots={boots} | XP={xp:.0f} | "
+            f"Operator=Regan Stewart Harris"
+        )
+
     def update_trait(self, trait, delta):
         traits = self.get_traits()
         if trait not in traits:
