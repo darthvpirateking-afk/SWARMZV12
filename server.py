@@ -668,6 +668,8 @@ _extra_routers = [
     ("swarmz_runtime.ui.cockpit", "router", "", "cockpit"),
     ("swarmz_runtime.arena.ui", "router", "", "arena-ui"),
     ("swarmz_app.api.hologram", "router", "", "hologram"),
+    # SWARMZ V3.0 feature routers
+    ("swarmz_runtime.api.operator_identity_routes", "router", "", "operator-identity"),
 ]
 import importlib as _il
 
@@ -746,3 +748,122 @@ async def command_center_state():
             else "FORGING"
         ),
     }
+
+
+# --- SWARMZ V3.0 — Throne Layer endpoints ---
+from swarmz_runtime.core.throne import get_throne
+
+
+class _DecreeRequest(BaseModel):
+    title: str
+    body: str
+    authority_level: str = "SOVEREIGN"
+
+
+@app.get("/v1/throne/state", tags=["throne"])
+def throne_state():
+    """Return the current Throne sovereign state."""
+    return get_throne().get_state()
+
+
+@app.get("/v1/throne/ledger", tags=["throne"])
+def throne_ledger():
+    """Return the full Throne decree ledger."""
+    return {"ledger": get_throne().get_ledger()}
+
+
+@app.post("/v1/throne/decree", tags=["throne"])
+def throne_decree(req: _DecreeRequest):
+    """Issue a new sovereign decree."""
+    decree = get_throne().issue_decree(req.title, req.body, req.authority_level)
+    return {"ok": True, "decree_id": decree.decree_id, "issued_at": decree.issued_at}
+
+
+# --- SWARMZ V3.0 — Realms endpoints ---
+from swarmz_runtime.core.realms import get_realm_registry
+
+
+class _RealmCreateRequest(BaseModel):
+    name: str
+    description: str
+
+
+@app.get("/v1/realms", tags=["realms"])
+def list_realms():
+    """List all operational realms."""
+    return {"realms": get_realm_registry().list_realms()}
+
+
+@app.post("/v1/realms", tags=["realms"])
+def create_realm(req: _RealmCreateRequest):
+    """Create a new operational realm."""
+    realm = get_realm_registry().create_realm(req.name, req.description)
+    return {"ok": True, "realm": realm}
+
+
+@app.get("/v1/realms/{realm_id}", tags=["realms"])
+def get_realm(realm_id: str):
+    """Get a specific realm by ID."""
+    realm = get_realm_registry().get_realm(realm_id)
+    if realm is None:
+        raise HTTPException(status_code=404, detail=f"Realm '{realm_id}' not found")
+    return realm
+
+
+# --- SWARMZ V3.0 — Swarm Tiers endpoints ---
+from swarmz_runtime.core.swarm_tiers import get_tier, list_tiers
+
+
+@app.get("/v1/swarm/tiers", tags=["swarm-tiers"])
+def swarm_tiers():
+    """List all swarm agent tiers."""
+    return {"tiers": list_tiers()}
+
+
+@app.get("/v1/swarm/tiers/{tier_id}", tags=["swarm-tiers"])
+def swarm_tier_detail(tier_id: str):
+    """Get a specific swarm tier by ID."""
+    tier = get_tier(tier_id)
+    if tier is None:
+        raise HTTPException(status_code=404, detail=f"Tier '{tier_id}' not found")
+    return tier
+
+
+# --- SWARMZ V3.0 — Mission Ranks endpoints ---
+from swarmz_runtime.core.mission_ranks import get_rank, list_ranks
+
+
+@app.get("/v1/missions/ranks", tags=["mission-ranks"])
+def mission_ranks():
+    """List all mission rank classifications."""
+    return {"ranks": list_ranks()}
+
+
+@app.get("/v1/missions/ranks/{rank_id}", tags=["mission-ranks"])
+def mission_rank_detail(rank_id: str):
+    """Get a specific mission rank by ID."""
+    rank = get_rank(rank_id)
+    if rank is None:
+        raise HTTPException(status_code=404, detail=f"Rank '{rank_id}' not found")
+    return rank
+
+
+# --- SWARMZ V3.0 — Avatar Matrix endpoints ---
+from swarmz_runtime.avatar.avatar_matrix import get_avatar_matrix
+
+
+class _AvatarStateRequest(BaseModel):
+    state: str
+    variant: str | None = None
+
+
+@app.get("/v1/avatar/matrix", tags=["avatar-matrix"])
+def avatar_matrix_state():
+    """Get the current Avatar Matrix state."""
+    return get_avatar_matrix().get_matrix_state()
+
+
+@app.post("/v1/avatar/matrix/state", tags=["avatar-matrix"])
+def avatar_matrix_set_state(req: _AvatarStateRequest):
+    """Set the avatar state, optionally switching variant."""
+    return get_avatar_matrix().set_state(req.state, req.variant)
