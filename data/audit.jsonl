@@ -1600,3 +1600,15 @@
 {"timestamp": "2026-02-21T15:08:38.631504+00:00", "event": "companion_message", "source": "rule_engine", "text_sha256": "8fc884a0cc60f49d", "reply_len": 142}
 {"timestamp": "2026-02-21T15:08:43.454690+00:00", "event": "companion_message", "source": "rule_engine", "text_sha256": "64e543598f5b142f", "reply_len": 165}
 {"timestamp": "2026-02-21T15:08:48.466862+00:00", "event": "companion_message", "source": "rule_engine", "text_sha256": "6e28f3dee70cde76", "reply_len": 431}
+{"timestamp": "2026-02-22T02:27:41.042757+00:00", "event_type": "schema_migration", "details": {"from": 0, "to": 1, "label": "v0_to_v1"}}
+{"timestamp": "2026-02-22T02:27:41.046200+00:00", "event_type": "schema_migration", "details": {"from": 1, "to": 2, "label": "v1_to_v2"}}
+{"timestamp": "2026-02-22T02:27:41.049696+00:00", "event_type": "schema_migration", "details": {"from": 2, "to": 3, "label": "v2_to_v3"}}
+{"timestamp": "2026-02-22T02:27:41.053397+00:00", "event_type": "schema_migration", "details": {"from": 3, "to": 4, "label": "v3_to_v4"}}
+{"timestamp": "2026-02-22T02:27:41.057031+00:00", "event_type": "schema_migration", "details": {"from": 4, "to": 5, "label": "v4_to_v5"}}
+{"timestamp": "2026-02-22T02:27:41.060934+00:00", "event_type": "schema_migration", "details": {"from": 5, "to": 6, "label": "v5_to_v6"}}
+{"timestamp": "2026-02-22T02:28:01.685901", "event_type": "mission_created", "mission_id": "aab49319", "details": {"goal": "E2E dispatch test", "category": "forge"}, "visibility": "visible"}
+{"ts": "2026-02-22T02:28:01.689743Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-022801-29cf3fcc"}
+{"ts": "2026-02-22T02:28:01.704450Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-022801-e6d87e62"}
+{"timestamp": "2026-02-22T02:28:39.870813", "event_type": "mission_created", "mission_id": "4e2c8220", "details": {"goal": "E2E dispatch test", "category": "forge"}, "visibility": "visible"}
+{"ts": "2026-02-22T02:28:39.874452Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-022839-c4c4f9d0"}
+{"ts": "2026-02-22T02:28:39.889736Z", "event": "sovereign_dispatch", "mission_id": "M-20260222-022839-453e0aca"}

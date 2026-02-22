@@ -82,3 +82,7 @@
 {"timestamp":"2026-02-21T14:13:04.545882+00:00","mission_id":"M-20260221-105258-a5e4e3f7","runtime_ms":0,"success_bool":false,"cost_estimate":0.0,"agent_work_time":0.0,"agent_wait_time":0.0}
 {"timestamp":"2026-02-21T14:48:12.962188+00:00","mission_id":"M-2991ca3bcccc","runtime_ms":0,"success_bool":false,"cost_estimate":0.0,"agent_work_time":0.0,"agent_wait_time":0.0}
 {"timestamp":"2026-02-21T14:48:26.082596+00:00","mission_id":"M-a6d243137cd3","runtime_ms":0,"success_bool":false,"cost_estimate":0.0,"agent_work_time":0.0,"agent_wait_time":0.0}
+{"timestamp":"2026-02-22T02:28:01.588633+00:00","mission_id":"test_ap","runtime_ms":50,"success_bool":true,"cost_estimate":0.0,"agent_work_time":0.0,"agent_wait_time":0.0}
+{"timestamp":"2026-02-22T02:28:01.725536+00:00","mission_id":"test_engine_pl","runtime_ms":100,"success_bool":true,"cost_estimate":0.01,"agent_work_time":0.0,"agent_wait_time":0.0}
+{"timestamp":"2026-02-22T02:28:39.785861+00:00","mission_id":"test_ap","runtime_ms":50,"success_bool":true,"cost_estimate":0.0,"agent_work_time":0.0,"agent_wait_time":0.0}
+{"timestamp":"2026-02-22T02:28:39.912258+00:00","mission_id":"test_engine_pl","runtime_ms":100,"success_bool":true,"cost_estimate":0.01,"agent_work_time":0.0,"agent_wait_time":0.0}

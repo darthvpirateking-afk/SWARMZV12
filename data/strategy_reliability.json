@@ -1,14 +1,14 @@
 {
   "baseline": {
-    "count": 58,
+    "count": 60,
     "accurate": 30,
     "overconfident": 0,
-    "squared_error": 28.0,
+    "squared_error": 30.0,
     "last_predicted": 0.0,
-    "last_actual": 0.0,
-    "last_surprise": 0.0,
-    "variance": 0.4827586206896552,
-    "prediction_accuracy": 0.5172413793103449,
+    "last_actual": 1.0,
+    "last_surprise": 1.0,
+    "variance": 0.5,
+    "prediction_accuracy": 0.5,
     "overconfidence_rate": 0.0
   }
 }
