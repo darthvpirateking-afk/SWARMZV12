@@ -6,7 +6,7 @@ with strict adherence to operator sovereignty invariants.
 """
 
 from typing import List, Optional, Tuple
-from collections import defaultdict
+import os
 
 from core.nexusmon_models import (
     ConversationContext,
@@ -20,25 +20,29 @@ from core.nexusmon_models import (
 )
 from core.persona_engine import get_persona, get_system_prompt
 from core.memory_engine import get_memory_engine
+from core.model_router import call as model_call, is_offline, get_model_config
 
 
 class IntentClassifier:
     """Classifies user intent from messages."""
 
-    # Intent patterns (simple keyword-based for now)
-    INTENT_PATTERNS = {
-        "stuck": ["stuck", "blocked", "can't", "struggling", "confused"],
-        "help_plan": ["help me plan", "plan", "how do i", "what should i", "design"],
-        "explain": ["why", "how does", "explain", "what is", "what does"],
-        "status": [
-            "what is happening",
-            "status",
-            "what are you doing",
-            "current state",
-        ],
-        "reflect": ["how am i", "patterns", "what do i", "am i"],
-        "mission": ["mission", "task", "goal", "create"],
+    VALID_INTENTS = {
+        "stuck",
+        "help_plan",
+        "explain",
+        "status",
+        "reflect",
+        "mission",
+        "general",
     }
+
+    @staticmethod
+    def _has_model_key() -> bool:
+        cfg = get_model_config()
+        provider = cfg.get("provider", "anthropic")
+        provider_cfg = cfg.get(provider, {})
+        key_env = provider_cfg.get("apiKeyEnv", "")
+        return bool(os.environ.get(key_env)) if key_env else False
 
     @staticmethod
     def classify(message: str) -> str:
@@ -50,19 +54,25 @@ class IntentClassifier:
         Returns:
             Intent string (e.g., "stuck", "help_plan", etc.)
         """
-        msg_lower = message.lower()
-        intents_found = defaultdict(int)
-
-        for intent, keywords in IntentClassifier.INTENT_PATTERNS.items():
-            for keyword in keywords:
-                if keyword in msg_lower:
-                    intents_found[intent] += 1
-
-        if not intents_found:
+        if is_offline() or not IntentClassifier._has_model_key():
             return "general"
 
-        # Return intent with highest score
-        return max(intents_found, key=intents_found.get)
+        system = (
+            "You classify operator intent for NEXUSMON. "
+            "Return exactly one token from: "
+            "stuck, help_plan, explain, status, reflect, mission, general. "
+            "No punctuation, no explanation."
+        )
+        result = model_call(
+            [{"role": "user", "content": message}],
+            system=system,
+            max_tokens=8,
+        )
+        if not result.get("ok"):
+            return "general"
+
+        intent = (result.get("text") or "").strip().lower()
+        return intent if intent in IntentClassifier.VALID_INTENTS else "general"
 
 
 class ModeSelector:
@@ -266,13 +276,18 @@ Tone: Curious, non-judgmental, pattern-seeking.
 Tasks:
 1. Acknowledge what you hear
 2. Name a pattern or friction you've observed
-3. Ask clarifying questions
+3. If context is incomplete, state your assumptions briefly and continue
 4. Never prescribe; only reflect
 """
         prompt = system_prompt + "\n\n" + mode_guidance
 
-        # For now, generate a reflection reply (in production, call LLM)
-        reply = self._generate_stub_reply(message, "Reflect", context)
+        reply = self._generate_ai_reply(
+            message=message,
+            mode="Reflect",
+            system_prompt=system_prompt,
+            mode_guidance=mode_guidance,
+            context=context,
+        )
 
         suggested_actions = []
         if context.health.entropy > 0.6:
@@ -299,14 +314,20 @@ Objective: Co-structure a mission with the operator.
 Tone: Collaborative, structural, concrete.
 
 Tasks:
-1. Ask about the goal
-2. Identify constraints
-3. Suggest structure
-4. Build mission_draft payload
+1. Infer goal and constraints from available context
+2. If context is incomplete, state assumptions in one line and proceed
+3. Suggest a concrete structure with prioritized steps
+4. Build mission_draft payload without asking follow-up questions
 """
         prompt = system_prompt + "\n\n" + mode_guidance
 
-        reply = self._generate_stub_reply(message, "Plan", context)
+        reply = self._generate_ai_reply(
+            message=message,
+            mode="Plan",
+            system_prompt=system_prompt,
+            mode_guidance=mode_guidance,
+            context=context,
+        )
 
         # Create a stub mission draft
         mission_draft = MissionDraft(
@@ -347,7 +368,13 @@ Tasks:
 """
         prompt = system_prompt + "\n\n" + mode_guidance
 
-        reply = self._generate_stub_reply(message, "Explain", context)
+        reply = self._generate_ai_reply(
+            message=message,
+            mode="Explain",
+            system_prompt=system_prompt,
+            mode_guidance=mode_guidance,
+            context=context,
+        )
 
         suggested_actions = [
             SuggestedAction(
@@ -385,7 +412,13 @@ Tasks:
 """
         prompt = system_prompt + "\n\n" + mode_guidance
 
-        reply = self._generate_stub_reply(message, "Nudge", context)
+        reply = self._generate_ai_reply(
+            message=message,
+            mode="Nudge",
+            system_prompt=system_prompt,
+            mode_guidance=mode_guidance,
+            context=context,
+        )
 
         return reply, [], None
 
@@ -448,14 +481,35 @@ Tasks:
 
         return reply, suggested_actions, None
 
-    def _generate_stub_reply(
-        self, message: str, mode: str, context: ConversationContext
+    def _generate_ai_reply(
+        self,
+        message: str,
+        mode: str,
+        system_prompt: str,
+        mode_guidance: str,
+        context: ConversationContext,
     ) -> str:
-        """Generate a stub reply for demonstration.
+        """Generate a reply via model_router with minimal deterministic fallback."""
+        if is_offline() or not IntentClassifier._has_model_key():
+            return (
+                f"[{mode}] Offline/no-key fallback: I understand your request and can help, "
+                "but live model responses are unavailable right now."
+            )
 
-        In production, this would call the LLM with the system prompt.
-        """
-        return f'[{mode}] I hear you saying: "{message[:50]}..." Let me respond in this way...'
+        full_system = system_prompt + "\n\n" + mode_guidance
+        result = model_call(
+            [{"role": "user", "content": message}],
+            system=full_system,
+            max_tokens=450,
+        )
+        if result.get("ok") and result.get("text"):
+            return result["text"].strip()
+
+        err = (result.get("error") or "unknown").strip()
+        return (
+            f"[{mode}] Model call failed ({err[:120]}). "
+            "Please retry or check model/API-key configuration."
+        )
 
     def _build_state_snapshot(self, context: ConversationContext) -> StateSnapshot:
         """Build state snapshot for response."""
