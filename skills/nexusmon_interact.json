@@ -1,0 +1,18 @@
+{
+  "name": "nexusmon_interact",
+  "version": "1.0.0",
+  "description": "Interact with the Nexusmon avatar - absorb data, execute directives, and receive results.",
+  "category": "interface",
+  "inputs": [
+    { "name": "message", "type": "string", "required": true, "description": "Input message or directive for Nexusmon" },
+    { "name": "context", "type": "object", "required": false, "description": "Session context and state" },
+    { "name": "data_sources", "type": "array", "required": false, "description": "External data sources for Nexusmon to absorb" }
+  ],
+  "outputs": [
+    { "name": "response", "type": "string", "description": "Nexusmon's response" },
+    { "name": "actions_taken", "type": "array", "description": "Actions executed by Nexusmon" },
+    { "name": "state", "type": "object", "description": "Updated Nexusmon state after interaction" }
+  ],
+  "author": "SWARMZ",
+  "tags": ["nexusmon", "avatar", "interface", "ai"]
+}
