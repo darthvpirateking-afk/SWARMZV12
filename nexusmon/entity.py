@@ -231,12 +231,29 @@ class NexusmonEntity:
 
         Returns a dict: {xp_awarded, evolved, from_form, new_form, new_xp}
         """
-        from nexusmon.evolution import can_evolve, get_next_form
-
         state = self.get_state()
         current_form = state.get("current_form", "ROOKIE")
         current_xp = float(state.get("evolution_xp", 0.0))
-        new_xp = current_xp + amount
+        mood = state.get("mood", "CALM")
+
+        new_state = {
+            "xp": current_xp,
+            "evolution_xp": current_xp,
+            "form": current_form,
+            "current_form": current_form,
+        }
+
+        try:
+            from backend.entity.xp_engine import award_xp as _award_engine_xp
+
+            base = max(1.0, float(amount))
+            event_key = "mission_complete" if base >= 5.0 else "playbook_idempotency_hit"
+            new_state = _award_engine_xp(event_key=event_key, entity=new_state, mood=mood)
+            new_xp = float(new_state.get("evolution_xp", current_xp + amount))
+            new_form = str(new_state.get("current_form", current_form))
+        except Exception:
+            new_xp = current_xp + amount
+            new_form = current_form
 
         self._db.conn.execute(
             "UPDATE entity_state SET evolution_xp = ? WHERE id = ?",
@@ -245,30 +262,25 @@ class NexusmonEntity:
         self._db.conn.commit()
 
         evolved = False
-        new_form = current_form
+        if new_form != current_form:
+            self._db.conn.execute(
+                "UPDATE entity_state SET current_form = ?, mood = 'CONTEMPLATIVE' WHERE id = ?",
+                (new_form, ENTITY_ID),
+            )
+            self._db.conn.execute(
+                "INSERT INTO evolution_events "
+                "(entity_id, from_form, to_form, occurred_at, trigger) "
+                "VALUES (?, ?, ?, ?, ?)",
+                (ENTITY_ID, current_form, new_form, self._now(), "xp_threshold"),
+            )
+            self._db.conn.commit()
+            evolved = True
+            try:
+                from nexusmon.chronicle import get_chronicle
 
-        if can_evolve(current_form, new_xp):
-            next_form = get_next_form(current_form)
-            if next_form:
-                self._db.conn.execute(
-                    "UPDATE entity_state SET current_form = ?, mood = 'CONTEMPLATIVE' WHERE id = ?",
-                    (next_form, ENTITY_ID),
-                )
-                self._db.conn.execute(
-                    "INSERT INTO evolution_events "
-                    "(entity_id, from_form, to_form, occurred_at, trigger) "
-                    "VALUES (?, ?, ?, ?, ?)",
-                    (ENTITY_ID, current_form, next_form, self._now(), "xp_threshold"),
-                )
-                self._db.conn.commit()
-                evolved = True
-                new_form = next_form
-                try:
-                    from nexusmon.chronicle import get_chronicle
-
-                    get_chronicle().on_evolution(current_form, next_form)
-                except Exception:
-                    pass
+                get_chronicle().on_evolution(current_form, new_form)
+            except Exception:
+                pass
 
         return {
             "xp_awarded": amount,

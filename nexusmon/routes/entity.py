@@ -39,10 +39,42 @@ def get_entity_state():
     return {"ok": True, "entity": state}
 
 
+@router.get("")
+def get_entity():
+    """Canonical capability-gating payload for cockpit/frontend hooks."""
+    entity = _entity()
+    state = entity.get_state()
+    traits = entity.get_traits()
+
+    form = str(state.get("current_form", "ROOKIE"))
+    mood = str(state.get("mood", "CALM")).lower()
+    xp = float(state.get("evolution_xp", 0.0))
+
+    try:
+        from nexusmon.evolution import FORM_XP_THRESHOLDS
+
+        threshold = FORM_XP_THRESHOLDS.get(form)
+        xp_pct = 100.0 if threshold is None else round(min(100.0, (xp / threshold) * 100.0), 1)
+    except Exception:
+        xp_pct = 0.0
+
+    payload = {
+        "name": "NEXUSMON",
+        "form": form,
+        "mood": mood,
+        "xp": xp,
+        "xp_pct": xp_pct,
+        "boot_count": state.get("boot_count", 0),
+        "interaction_count": state.get("interaction_count", 0),
+        "operator_name": state.get("operator_name", ""),
+        "traits": traits,
+    }
+    return {"ok": True, "entity": payload}
+
+
 @router.get("/traits")
 def get_traits():
-    state = _entity().get_state()
-    return {"ok": True, "traits": state.get("traits", {})}
+    return {"ok": True, "traits": _entity().get_traits()}
 
 
 @router.get("/xp")
@@ -81,12 +113,13 @@ class MoodPayload(BaseModel):
 
 @router.post("/mood")
 def set_mood(payload: MoodPayload):
-    from nexusmon.entity import MOODS
+    from nexusmon.entity import VALID_MOODS
 
-    if payload.mood not in MOODS:
-        return {"ok": False, "error": f"Invalid mood. Valid: {MOODS}"}
-    _entity().set_mood(payload.mood)
-    return {"ok": True, "mood": payload.mood}
+    normalized = str(payload.mood).upper()
+    if normalized not in VALID_MOODS:
+        return {"ok": False, "error": f"Invalid mood. Valid: {sorted(VALID_MOODS)}"}
+    _entity().set_mood(normalized)
+    return {"ok": True, "mood": normalized}
 
 
 # ── Operator profile ──────────────────────────────────────────────────

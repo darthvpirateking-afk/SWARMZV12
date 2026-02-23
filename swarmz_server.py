@@ -102,6 +102,21 @@ except Exception as e:
     _build_milestones_router_available = False
     print(f"Warning: build milestones router not available: {e}")
 
+try:
+    from backend.intel.vuln_db_client import search_vulnerabilities
+except Exception:
+    search_vulnerabilities = None
+
+try:
+    from backend.intel.firecrawl_pipeline import run_firecrawl_pipeline
+except Exception:
+    run_firecrawl_pipeline = None
+
+try:
+    from backend.missions.phase_pipeline import run_phase_pipeline
+except Exception:
+    run_phase_pipeline = None
+
 
 def get_lan_ip() -> str:
     """Best-effort LAN IP discovery (fallback to loopback)."""
@@ -155,6 +170,39 @@ class MissionCreateRequest(BaseModel):
 class LoginRequest(BaseModel):
     username: str
     password: str
+
+
+class FirecrawlRequest(BaseModel):
+    mission_id: str = Field(..., description="Mission identifier used for output correlation")
+    url: str = Field(..., description="Primary target URL for recon and content analysis")
+    content: str = Field(
+        "",
+        description="Optional downloaded page/content text to feed secret scanning",
+    )
+    js_detected: bool = Field(
+        False,
+        description="Set true when target appears JS-heavy and browser recon should run",
+    )
+    curiosity: int = Field(50, ge=0, le=100, description="Trait gate for recon depth")
+    creativity: int = Field(50, ge=0, le=100, description="Trait gate for route/auth analysis")
+    patience: int = Field(50, ge=0, le=100, description="Trait gate for page depth and timeouts")
+    aggression: int = Field(30, ge=0, le=100, description="Trait gate for attack-surface extraction")
+
+
+class PhaseRunRequest(BaseModel):
+    mission_id: str = Field(..., description="Mission identifier for phase execution")
+    autonomy: int = Field(50, ge=0, le=100, description="Trait gate for autonomous setup actions")
+    protectiveness: int = Field(
+        50,
+        ge=0,
+        le=100,
+        description="Trait gate for VPN/debug safeguards and safety enforcement",
+    )
+    patience: int = Field(50, ge=0, le=100, description="Trait gate for debug trace depth and waits")
+    fail: bool = Field(
+        False,
+        description="Test switch to simulate mission failure and verify guaranteed cleanup",
+    )
 
 
 # Initialize FastAPI app
@@ -694,6 +742,133 @@ async def list_tasks():
         return {"success": True, "tasks": capabilities, "count": len(capabilities)}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/v1/intel/cve")
+async def intel_cve(packages: str = "", minimum_severity: str = "medium"):
+    if search_vulnerabilities is None:
+        return {"ok": False, "error": "vuln_db_client unavailable"}
+
+    package_list = [item.strip() for item in packages.split(",") if item.strip()]
+    findings = search_vulnerabilities(package_list, minimum_severity=minimum_severity)
+    return {
+        "ok": True,
+        "packages": package_list,
+        "minimum_severity": minimum_severity,
+        "count": len(findings),
+        "findings": findings,
+    }
+
+
+@app.post(
+    "/v1/intel/firecrawl",
+    tags=["Intel"],
+    summary="Run firecrawl intelligence pipeline",
+    description=(
+        "Runs the V5 firecrawl adapter pipeline for URL/content analysis, including "
+        "secret scanning and optional browser recon when `js_detected` is true."
+    ),
+    responses={
+        200: {
+            "description": "Pipeline execution result",
+            "content": {
+                "application/json": {
+                    "example": {
+                        "ok": True,
+                        "result": {
+                            "mission_id": "m-http-1",
+                            "secret_findings": [],
+                            "archive": {"stored": True},
+                        },
+                    }
+                }
+            },
+        }
+    },
+)
+async def intel_firecrawl(payload: FirecrawlRequest):
+    if run_firecrawl_pipeline is None:
+        return {"ok": False, "error": "firecrawl_pipeline unavailable"}
+
+    result = run_firecrawl_pipeline(
+        mission_id=payload.mission_id,
+        url=payload.url,
+        content=payload.content,
+        js_detected=payload.js_detected,
+        curiosity=payload.curiosity,
+        creativity=payload.creativity,
+        patience=payload.patience,
+        aggression=payload.aggression,
+    )
+    return {"ok": True, "result": result}
+
+
+@app.get(
+    "/v1/intel/firecrawl/health",
+    tags=["Intel"],
+    summary="Check firecrawl adapter availability",
+    description="Returns availability status for the firecrawl pipeline adapter wiring.",
+)
+async def intel_firecrawl_health():
+    return {
+        "ok": True,
+        "available": run_firecrawl_pipeline is not None,
+        "endpoint": "/v1/intel/firecrawl",
+    }
+
+
+@app.post(
+    "/v1/missions/phase/run",
+    tags=["Missions"],
+    summary="Run mission phase pipeline",
+    description=(
+        "Runs the V5 phase pipeline adapter and returns execution state, including "
+        "cleanup outcomes such as VPN teardown on failure paths."
+    ),
+    responses={
+        200: {
+            "description": "Phase run result",
+            "content": {
+                "application/json": {
+                    "example": {
+                        "ok": True,
+                        "result": {
+                            "mission_id": "m-http-2",
+                            "status": "FAILED",
+                            "vpn_destroyed": True,
+                        },
+                    }
+                }
+            },
+        }
+    },
+)
+async def mission_phase_run(payload: PhaseRunRequest):
+    if run_phase_pipeline is None:
+        return {"ok": False, "error": "phase_pipeline unavailable"}
+
+    result = run_phase_pipeline(
+        mission_id=payload.mission_id,
+        autonomy=payload.autonomy,
+        protectiveness=payload.protectiveness,
+        patience=payload.patience,
+        fail=payload.fail,
+    )
+    return {"ok": True, "result": result}
+
+
+@app.get(
+    "/v1/missions/phase/health",
+    tags=["Missions"],
+    summary="Check mission phase adapter availability",
+    description="Returns availability status for mission phase adapter wiring.",
+)
+async def mission_phase_health():
+    return {
+        "ok": True,
+        "available": run_phase_pipeline is not None,
+        "endpoint": "/v1/missions/phase/run",
+    }
 
 
 @app.post("/v1/execute", response_model=TaskExecuteResponse)
