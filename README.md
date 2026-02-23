@@ -85,6 +85,20 @@ All under your control.
 
 ## Quick Start
 
+## Ship Now Status (2026-02-23)
+
+- **Go** for normal development release (core API/UI/mission-path regression coverage is green).
+- Latest full suite: **303 passed, 3 skipped**.
+- Browser parity smoke (`/` + `/console`): **2 passed**.
+- Full release readiness and deferred live-infra items: [SWARMZ_RELEASE_READINESS.md](SWARMZ_RELEASE_READINESS.md).
+
+Quick verification commands:
+
+```powershell
+python -m pytest tests/ -v --tb=short
+python -m pytest tests/test_dashboard_browser_smoke.py -v --tb=short
+```
+
 ### Fastest Windows Start (Canonical)
 
 ```powershell

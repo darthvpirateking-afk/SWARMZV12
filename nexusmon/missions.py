@@ -208,8 +208,7 @@ class MissionEngine:
         conn = self.db.conn
 
         # Primary CREATE — only runs when the table does not yet exist.
-        conn.execute(
-            """
+        conn.execute("""
             CREATE TABLE IF NOT EXISTS missions (
                 id TEXT PRIMARY KEY,
                 title TEXT NOT NULL,
@@ -226,8 +225,7 @@ class MissionEngine:
                 xp_reward REAL DEFAULT 10.0,
                 notes TEXT DEFAULT ''
             )
-            """
-        )
+            """)
 
         # Retroactively add columns missing from the legacy schema.
         cols = _table_cols(conn, "missions")
@@ -405,6 +403,33 @@ class MissionEngine:
         xp_reward = mission.get("xp_reward", 10.0) or 10.0
         if unit_id:
             get_swarm_engine().complete_mission(unit_id, success, xp_gained=xp_reward)
+
+        # Wire loot → artifact vault
+        mission_type = mission.get("mission_type", "RESEARCH")
+        difficulty = mission.get("difficulty", 1)
+        try:
+            from nexusmon.artifacts import get_vault
+            from nexusmon.entity import get_entity
+
+            vault = get_vault()
+            artifact_ids = []
+            for loot_item in loot:
+                artifact = vault.create(
+                    name=loot_item.get("name", "Mission Drop"),
+                    artifact_type=loot_item.get("type", "MISSION_RESULT"),
+                    rarity=loot_item.get("rarity", "COMMON"),
+                    created_by="mission",
+                    tags=["mission-loot", mission_type.lower()],
+                    metadata={"mission_id": mission_id, "difficulty": difficulty},
+                )
+                artifact_ids.append(artifact["id"])
+
+            # Award evolution XP to entity
+            entity = get_entity()
+            entity.add_evolution_xp(xp_reward)
+            entity.increment_interaction()
+        except Exception:
+            artifact_ids = []
 
         return self._fetch(mission_id)
 

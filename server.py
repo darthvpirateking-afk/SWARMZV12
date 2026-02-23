@@ -876,12 +876,14 @@ def avatar_matrix_set_state(req: _AvatarStateRequest):
 
 # ── NEXUSMON WebSocket — real-time cockpit channel ──────────────────────────
 from fastapi import WebSocket as _WS
-import json as _json
 
 # XP thresholds for cockpit progress bar
 _XP_THRESHOLDS = {
-    "ROOKIE": 100.0, "CHAMPION": 500.0,
-    "ULTIMATE": 2000.0, "MEGA": 10000.0, "SOVEREIGN": float("inf"),
+    "ROOKIE": 100.0,
+    "CHAMPION": 500.0,
+    "ULTIMATE": 2000.0,
+    "MEGA": 10000.0,
+    "SOVEREIGN": float("inf"),
 }
 
 
@@ -907,7 +909,9 @@ def _entity_payload(entity) -> dict:
 
     xp = float(state.get("evolution_xp") or 0.0)
     xp_to_next = _XP_THRESHOLDS.get(form_raw, 100.0)
-    xp_pct = min(100.0, (xp / xp_to_next * 100.0)) if xp_to_next != float("inf") else 100.0
+    xp_pct = (
+        min(100.0, (xp / xp_to_next * 100.0)) if xp_to_next != float("inf") else 100.0
+    )
 
     return {
         "name": "NEXUSMON",
@@ -932,4 +936,5 @@ async def nexusmon_ws(websocket: _WS):
     chat loop: greeting → message loop → XP → evolution → disconnect.
     """
     from nexusmon.console.ws_handler import handle_ws_chat
+
     await handle_ws_chat(websocket)

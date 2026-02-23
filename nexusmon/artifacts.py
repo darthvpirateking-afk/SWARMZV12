@@ -45,8 +45,7 @@ def _ensure_tables() -> None:
     # The memory layer already creates 'artifacts' with column 'type'.
     # This CREATE TABLE IF NOT EXISTS is a no-op when that table already exists,
     # but will create a correct table in a fresh DB using the same 'type' column name.
-    conn.execute(
-        """CREATE TABLE IF NOT EXISTS artifacts (
+    conn.execute("""CREATE TABLE IF NOT EXISTS artifacts (
             id TEXT PRIMARY KEY,
             name TEXT NOT NULL,
             type TEXT NOT NULL,
@@ -60,8 +59,7 @@ def _ensure_tables() -> None:
             equipped_to TEXT,
             synergy_ids TEXT DEFAULT '[]',
             entropy_score REAL DEFAULT 0.0
-        )"""
-    )
+        )""")
     # Safely add entropy_score for databases created before this module existed.
     try:
         conn.execute("ALTER TABLE artifacts ADD COLUMN entropy_score REAL DEFAULT 0.0")

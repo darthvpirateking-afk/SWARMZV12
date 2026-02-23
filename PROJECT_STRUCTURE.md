@@ -4,6 +4,12 @@ This repository contains both the **Python-based SWARMZ** system and the new **T
 
 ## Repository Overview
 
+### Release Docs Index
+
+- `README.md` - Main project documentation with current "Ship Now Status"
+- `SWARMZ_RELEASE_READINESS.md` - Current go/no-go release readiness summary
+- `SWARMZ_LIVE_READINESS_TODO.md` - Deferred optional live-infra checklist and resume steps
+
 ### Python Implementation (Original)
 Located in root directory:
 - `swarmz.py` - Core system

@@ -120,13 +120,16 @@ const styles: Record<string, CSSProperties> = {
   actions: {
     display: "flex",
     gap: "8px",
+    flexWrap: "wrap",
+    flexShrink: 0,
   },
   button: {
     border: "1px solid #3d6e9e",
     background: "#24527a",
     color: "#f3f8ff",
     borderRadius: "8px",
-    padding: "6px 10px",
+    padding: "10px 14px",
+    minHeight: "44px",
     cursor: "pointer",
     font: "inherit",
   },

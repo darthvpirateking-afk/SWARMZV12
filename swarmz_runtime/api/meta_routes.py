@@ -5,13 +5,16 @@ from models.lattice import LatticeStatusRequest
 from models.sovereign import SovereignDecisionRequest
 from fastapi import APIRouter, HTTPException, FastAPI
 from typing import Optional
+from pydantic import BaseModel
+from typing import Any, Callable, Dict, List, Optional
+from swarmz_runtime.core.engine import SwarmzEngine
 from swarmz_runtime.session.session_router import router as session_router
 
 app = FastAPI()
 
 router = APIRouter()
 
-get_engine: Optional[callable] = None
+get_engine: Optional[Callable[[], SwarmzEngine]] = None
 
 app.include_router(session_router, prefix="/api")
 
