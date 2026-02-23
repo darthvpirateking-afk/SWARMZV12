@@ -562,6 +562,108 @@
         }
 
         @keyframes do-spin { to { transform: rotate(360deg); } }
+
+        /* ============================================================
+           Right panel — Unit List
+           ============================================================ */
+        .unit-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.025);
+            font-size: 11px;
+        }
+
+        .unit-row:last-child { border-bottom: none; }
+
+        .unit-status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .unit-name {
+            flex: 1;
+            color: var(--text-primary);
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .unit-meta {
+            color: var(--text-secondary);
+            font-size: 10px;
+            white-space: nowrap;
+        }
+
+        /* ============================================================
+           Right panel — Factory status badge
+           ============================================================ */
+        .factory-badge {
+            display: inline-block;
+            padding: 2px 9px;
+            border-radius: 10px;
+            font-size: 9px;
+            font-weight: 900;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .factory-badge.idle     { color:#00FF88; border:1px solid rgba(0,255,136,0.3); background:rgba(0,255,136,0.06); }
+        .factory-badge.running  { color:#00AAFF; border:1px solid rgba(0,170,255,0.3); background:rgba(0,170,255,0.06); }
+        .factory-badge.queued   { color:#FFAA00; border:1px solid rgba(255,170,0,0.3); background:rgba(255,170,0,0.06); }
+
+        /* ============================================================
+           Right panel — Missions mini card
+           ============================================================ */
+        .mission-status-pill {
+            display: inline-block;
+            padding: 1px 6px;
+            border-radius: 8px;
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+        }
+
+        /* ============================================================
+           Right panel — Chronicle
+           ============================================================ */
+        .chron-entry {
+            padding: 6px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.025);
+        }
+
+        .chron-entry:last-child { border-bottom: none; }
+
+        .chron-title {
+            font-size: 11px;
+            color: var(--text-primary);
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 4px;
+        }
+
+        .sig-track {
+            width: 100%;
+            height: 3px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .sig-fill {
+            height: 100%;
+            border-radius: 2px;
+            background: linear-gradient(90deg, #7B2FFF, #00AAFF);
+            transition: width 0.7s ease;
+        }
     </style>
 </head>
 <body>
@@ -652,22 +754,16 @@
 
                 <div class="m-grid">
                     <div class="m-stat">
-                        <div class="m-num pending" id="sw-pending">-</div>
-                        <div class="m-lbl">Pending</div>
+                        <div class="m-num running" id="sw-pending">-</div>
+                        <div class="m-lbl">Units</div>
                     </div>
                     <div class="m-stat">
-                        <div class="m-num running" id="sw-running">-</div>
-                        <div class="m-lbl">Running</div>
-                    </div>
-                    <div class="m-stat">
-                        <div class="m-num success" id="sw-success">-</div>
-                        <div class="m-lbl">Success</div>
-                    </div>
-                    <div class="m-stat">
-                        <div class="m-num failure" id="sw-failure">-</div>
-                        <div class="m-lbl">Failure</div>
+                        <div class="m-num success" id="sw-running">-</div>
+                        <div class="m-lbl">Idle</div>
                     </div>
                 </div>
+
+                <div id="sw-unit-list" style="margin-top:8px;"></div>
 
                 <div class="last-tick" id="sw-tick"></div>
             </div>
@@ -680,10 +776,24 @@
                 </div>
             </div>
 
-            <!-- Active Missions (last 3 from scoreboard) -->
+            <!-- Active Missions -->
             <div class="ps" id="section-missions">
-                <div class="ps-title">Recent Missions</div>
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+                    <div class="ps-title" style="margin-bottom:0;">Active Missions</div>
+                    <button id="btn-new-mission" style="background:rgba(0,170,255,0.07);border:1px solid rgba(0,170,255,0.25);border-radius:10px;color:#00AAFF;font-size:9px;font-weight:800;letter-spacing:1px;padding:2px 8px;cursor:pointer;text-transform:uppercase;" title="New Mission">+ Mission</button>
+                </div>
                 <div id="missions-body">
+                    <div class="panel-note">Loading...</div>
+                </div>
+            </div>
+
+            <!-- Chronicle mini-panel -->
+            <div class="ps" id="section-chronicle">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+                    <div class="ps-title" style="margin-bottom:0;">Chronicle</div>
+                    <button id="btn-chronicle-all" style="background:none;border:none;color:var(--text-secondary);font-size:10px;cursor:pointer;padding:0;text-decoration:underline;" title="View All">View All</button>
+                </div>
+                <div id="chronicle-body">
                     <div class="panel-note">Loading...</div>
                 </div>
             </div>
@@ -762,6 +872,14 @@
 
     var MOOD_BORDER_ALPHA = 0.3;
 
+    var STATUS_COLORS = {
+        'IDLE':       '#00FF88',
+        'ON_MISSION': '#00AAFF',
+        'RECOVERING': '#FFAA00',
+        'RETIRED':    '#445566',
+        'EVOLVING':   '#7B2FFF'
+    };
+
     /* Chip presets — spec §5 */
     var CHIP_PRESETS = {
         'Research':   'Run a research mission on: ',
@@ -799,15 +917,15 @@
     var $traitList        = document.getElementById('trait-list');
 
     /* DOM References — Right Panel */
-    var $runnerDot  = document.getElementById('runner-dot');
-    var $runnerTxt  = document.getElementById('runner-txt');
-    var $swPending  = document.getElementById('sw-pending');
-    var $swRunning  = document.getElementById('sw-running');
-    var $swSuccess  = document.getElementById('sw-success');
-    var $swFailure  = document.getElementById('sw-failure');
-    var $swTick     = document.getElementById('sw-tick');
-    var $factBody   = document.getElementById('factory-body');
-    var $missBody   = document.getElementById('missions-body');
+    var $runnerDot    = document.getElementById('runner-dot');
+    var $runnerTxt    = document.getElementById('runner-txt');
+    var $swUnits      = document.getElementById('sw-pending');   // repurposed: total units
+    var $swIdle       = document.getElementById('sw-running');   // repurposed: idle units
+    var $swUnitList   = document.getElementById('sw-unit-list');
+    var $swTick       = document.getElementById('sw-tick');
+    var $factBody     = document.getElementById('factory-body');
+    var $missBody     = document.getElementById('missions-body');
+    var $chronBody    = document.getElementById('chronicle-body');
 
     /* ================================================================
        INIT — NEXUSMON Console (spec §2)
@@ -971,31 +1089,59 @@
 
     /* ================================================================
        RIGHT PANEL — Swarm Status
-       Source: GET /v1/swarm/status  (spec §4)
+       Source: GET /v1/nexusmon/swarm/units
     ================================================================ */
     async function refreshSwarm() {
-        var data = await safeFetch('/v1/swarm/status');
-        if (!data) {
-            setRunner('offline', 'Swarm offline');
-            $swPending.textContent = '-';
-            $swRunning.textContent = '-';
-            $swSuccess.textContent = '-';
-            $swFailure.textContent = '-';
-            $swTick.textContent    = '';
+        var data;
+        try {
+            var res = await fetch('/v1/nexusmon/swarm/units');
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            data = await res.json();
+        } catch (e) {
+            setRunner('offline', 'Swarm unavailable');
+            $swUnits.textContent    = '-';
+            $swIdle.textContent     = '-';
+            $swUnitList.innerHTML   = '<div class="panel-note">Data unavailable</div>';
+            $swTick.textContent     = '';
             return;
         }
 
-        var runner   = data.runner || 'down';
-        var isOnline = (runner === 'running' || runner === 'idle' || runner === 'up');
-        setRunner(isOnline ? 'online' : 'offline',
-                  isOnline ? 'Runner Online' : 'Runner ' + capitalize(runner));
+        /* Accept envelope shape { ok, units: [...] } or flat array */
+        var units = Array.isArray(data) ? data
+                  : (data.units && Array.isArray(data.units)) ? data.units
+                  : [];
 
-        $swPending.textContent = data.pending_count  != null ? data.pending_count  : '-';
-        $swRunning.textContent = data.running_count  != null ? data.running_count  : '-';
-        $swSuccess.textContent = data.success_count  != null ? data.success_count  : '-';
-        $swFailure.textContent = data.failure_count  != null ? data.failure_count  : '-';
+        var totalCount = units.length;
+        var idleCount  = units.filter(function (u) {
+            return (u.status || '').toUpperCase() === 'IDLE';
+        }).length;
 
-        $swTick.textContent = data.last_tick ? 'Last tick: ' + fmtTime(data.last_tick) : '';
+        var hasUnits = totalCount > 0;
+        setRunner(hasUnits ? 'online' : 'unknown',
+                  hasUnits ? 'Swarm Online' : 'No units found');
+
+        $swUnits.textContent = totalCount;
+        $swIdle.textContent  = idleCount;
+
+        if (units.length === 0) {
+            $swUnitList.innerHTML = '<div class="panel-note">No units deployed</div>';
+        } else {
+            /* Show all units (scroll if many) */
+            $swUnitList.innerHTML = units.map(function (u) {
+                var statusKey  = (u.status || 'IDLE').toUpperCase();
+                var dotColor   = STATUS_COLORS[statusKey] || '#445566';
+                var levelStr   = u.level != null ? 'Lv' + u.level : '';
+                var typeStr    = u.type  ? escHtml(u.type) : '';
+                var meta       = [typeStr, levelStr].filter(Boolean).join(' · ');
+                return '<div class="unit-row">' +
+                    '<div class="unit-status-dot" style="background:' + dotColor + ';box-shadow:0 0 5px ' + dotColor + '88;"></div>' +
+                    '<span class="unit-name">' + escHtml(u.name || u.id || 'Unit') + '</span>' +
+                    '<span class="unit-meta">' + meta + '</span>' +
+                    '</div>';
+            }).join('');
+        }
+
+        $swTick.textContent = 'Updated ' + fmtTime(new Date().toISOString());
     }
 
     function setRunner(state, label) {
@@ -1005,69 +1151,140 @@
     }
 
     /* ================================================================
-       RIGHT PANEL — Factory / Entity State
-       Source: GET /v1/nexusmon/entity/state  (spec §4)
+       RIGHT PANEL — Factory Status
+       Source: GET /v1/nexusmon/factory/status
     ================================================================ */
     async function refreshFactory() {
-        var data = await safeFetch('/v1/nexusmon/entity/state');
-
-        if (!data) {
-            $factBody.innerHTML = '<div class="panel-note">Entity state unavailable</div>';
+        var data;
+        try {
+            var res = await fetch('/v1/nexusmon/factory/status');
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            data = await res.json();
+        } catch (e) {
+            $factBody.innerHTML = '<div class="panel-note">Factory data unavailable</div>';
             return;
         }
 
-        /* Accept both shapes: { ok, entity } or flat */
-        var ent = (data.ok && data.entity) ? data.entity : data;
+        /* Accept envelope { ok, factory } or flat */
+        var f = (data.ok && data.factory) ? data.factory : data;
+
+        var statusRaw   = (f.status || f.state || 'IDLE').toUpperCase();
+        var badgeCls    = statusRaw === 'RUNNING' ? 'running'
+                        : statusRaw === 'QUEUED'  ? 'queued'
+                        : 'idle';
+
+        var queuedCount  = f.queued_count  != null ? f.queued_count  : (f.queue_length != null ? f.queue_length : '--');
+        var totalProduced= f.total_produced != null ? f.total_produced : (f.produced_count != null ? f.produced_count : '--');
 
         var rows = [];
+        if (queuedCount  !== '--') rows.push({ lbl: 'Queued',   val: queuedCount });
+        if (totalProduced !== '--') rows.push({ lbl: 'Produced', val: totalProduced });
+        if (f.active_job) rows.push({ lbl: 'Active Job', val: truncate(String(f.active_job), 22) });
 
-        if (ent.form)              rows.push({ lbl: 'Form',         val: capitalize(ent.form) });
-        if (ent.xp != null)        rows.push({ lbl: 'XP',           val: Math.round(ent.xp) });
-        if (ent.xp_pct != null)    rows.push({ lbl: 'XP Progress',  val: Math.round(ent.xp_pct) + '%' });
-        if (ent.boot_count != null) rows.push({ lbl: 'Boot Count',  val: ent.boot_count });
-        if (ent.mood)              rows.push({ lbl: 'Mood',         val: capitalize(ent.mood) });
-
-        if (rows.length === 0) {
-            $factBody.innerHTML = '<div class="panel-note">No entity data</div>';
-            return;
-        }
-
-        $factBody.innerHTML = rows.map(function (r) {
-            return '<div class="fact-row">' +
-                '<span class="fact-lbl">' + escHtml(r.lbl) + '</span>' +
-                '<span class="fact-val">' + escHtml(r.val) + '</span>' +
-                '</div>';
-        }).join('');
+        $factBody.innerHTML =
+            '<span class="factory-badge ' + badgeCls + '">' + escHtml(statusRaw) + '</span>' +
+            (rows.length ? rows.map(function (r) {
+                return '<div class="fact-row">' +
+                    '<span class="fact-lbl">' + escHtml(r.lbl) + '</span>' +
+                    '<span class="fact-val">' + escHtml(String(r.val)) + '</span>' +
+                    '</div>';
+            }).join('') : '<div class="panel-note">No factory details</div>');
     }
 
     /* ================================================================
-       RIGHT PANEL — Recent Missions (last 3)
-       Source: GET /v1/runtime/scoreboard  (spec §4)
+       RIGHT PANEL — Active Missions
+       Source: GET /v1/nexusmon/missions?status=active
     ================================================================ */
     async function refreshMissions() {
-        var data = await safeFetch('/v1/runtime/scoreboard');
-
-        if (!data) {
-            $missBody.innerHTML = '<div class="panel-note">Scoreboard offline</div>';
+        var data;
+        try {
+            var res = await fetch('/v1/nexusmon/missions?status=active');
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            data = await res.json();
+        } catch (e) {
+            $missBody.innerHTML = '<div class="panel-note">Missions data unavailable</div>';
             return;
         }
 
-        /* Filter out the 'ok' envelope key and take last 3 */
-        var keys = Object.keys(data).filter(function (k) { return k !== 'ok'; });
-        if (keys.length === 0) {
-            $missBody.innerHTML = '<div class="panel-note">No missions recorded</div>';
+        /* Accept shapes: { missions: [...] } / { items: [...] } / array */
+        var missions = Array.isArray(data) ? data
+                     : (data.missions && Array.isArray(data.missions)) ? data.missions
+                     : (data.items    && Array.isArray(data.items))    ? data.items
+                     : [];
+
+        var count = data.total != null ? data.total
+                  : data.count != null ? data.count
+                  : missions.length;
+
+        var recent = missions.slice(0, 3);
+
+        if (missions.length === 0) {
+            $missBody.innerHTML =
+                '<div class="panel-note">No active missions</div>';
             return;
         }
 
-        /* Show three most recent (last 3 by insertion order) */
-        var recent = keys.slice(-3).reverse();
+        /* Active count badge + mission cards */
+        var countHtml = '<div style="font-size:11px;color:var(--text-secondary);margin-bottom:8px;">' +
+            '<span style="color:#00AAFF;font-weight:800;font-size:15px;">' + escHtml(String(count)) + '</span>' +
+            '&nbsp;active</div>';
 
-        $missBody.innerHTML = recent.map(function (k) {
-            var val = data[k];
-            var display = typeof val === 'object' ? JSON.stringify(val) : String(val);
+        var cardsHtml = recent.map(function (m) {
+            var title     = m.title || m.name || m.id || 'Untitled';
+            var mStatus   = (m.status || 'ACTIVE').toUpperCase();
+            var pillColor = mStatus === 'COMPLETE' || mStatus === 'COMPLETED' ? '#00FF88'
+                          : mStatus === 'FAILED'                              ? '#FF2200'
+                          : mStatus === 'PAUSED'                              ? '#FFAA00'
+                          :                                                     '#00AAFF';
             return '<div class="mission-card">' +
-                '<div class="mission-key">' + escHtml(fmtKey(k)) + '</div>' +
-                '<div class="mission-val">' + escHtml(truncate(display, 28)) + '</div>' +
+                '<div style="display:flex;align-items:center;justify-content:space-between;gap:4px;">' +
+                '<div class="mission-val">' + escHtml(truncate(title, 24)) + '</div>' +
+                '<span class="mission-status-pill" style="color:' + pillColor + ';border:1px solid ' + pillColor + '44;background:' + pillColor + '11;">' + escHtml(mStatus) + '</span>' +
+                '</div>' +
+                (m.description ? '<div class="mission-key" style="margin-top:2px;">' + escHtml(truncate(m.description, 36)) + '</div>' : '') +
+                '</div>';
+        }).join('');
+
+        $missBody.innerHTML = countHtml + cardsHtml;
+    }
+
+    /* ================================================================
+       RIGHT PANEL — Chronicle mini-panel
+       Source: GET /v1/nexusmon/chronicle?limit=3
+    ================================================================ */
+    async function refreshChronicle() {
+        var data;
+        try {
+            var res = await fetch('/v1/nexusmon/chronicle?limit=3');
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            data = await res.json();
+        } catch (e) {
+            $chronBody.innerHTML = '<div class="panel-note">Chronicle unavailable</div>';
+            return;
+        }
+
+        /* Accept shapes: { entries: [...] } / { items: [...] } / array */
+        var entries = Array.isArray(data) ? data
+                    : (data.entries && Array.isArray(data.entries)) ? data.entries
+                    : (data.items   && Array.isArray(data.items))   ? data.items
+                    : [];
+
+        if (entries.length === 0) {
+            $chronBody.innerHTML = '<div class="panel-note">No chronicle entries yet</div>';
+            return;
+        }
+
+        $chronBody.innerHTML = entries.slice(0, 3).map(function (e) {
+            var title = e.title || e.name || e.summary || 'Entry';
+            /* significance is 0-1 or 0-100 — normalise to 0-100 */
+            var sig = e.significance != null ? e.significance : (e.importance != null ? e.importance : null);
+            var sigPct = sig != null ? (sig <= 1 ? Math.round(sig * 100) : Math.min(100, Math.round(sig))) : null;
+
+            return '<div class="chron-entry">' +
+                '<div class="chron-title">' + escHtml(truncate(title, 32)) + '</div>' +
+                (sigPct != null
+                    ? '<div class="sig-track"><div class="sig-fill" style="width:' + sigPct + '%"></div></div>'
+                    : '') +
                 '</div>';
         }).join('');
     }
@@ -1077,12 +1294,72 @@
     }
 
     /* ================================================================
-       RIGHT PANEL — Combined refresh
+       RIGHT PANEL — Combined refresh  (all 4 panels in parallel)
     ================================================================ */
     function refreshRight() {
         refreshSwarm();
         refreshFactory();
         refreshMissions();
+        refreshChronicle();
+    }
+
+    /* ================================================================
+       RIGHT PANEL BUTTONS
+    ================================================================ */
+    /* "New Mission" button — pre-fills chat with research mission prompt */
+    var $btnNewMission = document.getElementById('btn-new-mission');
+    if ($btnNewMission) {
+        $btnNewMission.addEventListener('click', function () {
+            var input = document.getElementById('chat-input');
+            if (input) {
+                var text = 'Create a research mission: ';
+                input.value = text;
+                input.focus();
+                input.setSelectionRange(text.length, text.length);
+            }
+        });
+    }
+
+    /* "View All" chronicle link — sends prompt to chat */
+    var $btnChronicleAll = document.getElementById('btn-chronicle-all');
+    if ($btnChronicleAll) {
+        $btnChronicleAll.addEventListener('click', function () {
+            var input = document.getElementById('chat-input');
+            if (input) {
+                var text = 'NEXUSMON, show me my Chronicle.';
+                input.value = text;
+                input.focus();
+                /* Optionally auto-submit if the console exposes a send method */
+                if (typeof NexusmonConsole !== 'undefined' && typeof NexusmonConsole.send === 'function') {
+                    NexusmonConsole.send(text);
+                    input.value = '';
+                } else {
+                    input.setSelectionRange(text.length, text.length);
+                }
+            }
+        });
+    }
+
+    /* ================================================================
+       LEFT PANEL — Eager entity state fetch
+       Populates the left panel before the WebSocket greeting arrives.
+       Source: GET /v1/nexusmon/entity/state
+    ================================================================ */
+    async function fetchEntityState() {
+        var data;
+        try {
+            var res = await fetch('/v1/nexusmon/entity/state');
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            data = await res.json();
+        } catch (e) {
+            return;  /* Silent — WS greeting will provide data later */
+        }
+
+        if (!data) return;
+
+        /* Accept envelope { ok, entity } or flat */
+        var ent = (data.ok && data.entity) ? data.entity : data;
+        applyEntityData(ent);
     }
 
     /* ================================================================
@@ -1145,7 +1422,10 @@
     /* ================================================================
        BOOTSTRAP
     ================================================================ */
-    /* First load immediately */
+    /* Eagerly populate left panel from REST before WS greeting arrives */
+    fetchEntityState();
+
+    /* First load of right panel immediately */
     refreshRight();
 
     /* Then every 30 s (spec §4) */

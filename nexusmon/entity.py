@@ -165,12 +165,89 @@ class NexusmonEntity:
         )
         self._db.conn.commit()
 
-    def add_evolution_xp(self, amount):
+    def add_evolution_xp(self, amount: float) -> dict:
+        """Add XP and check for evolution threshold.
+
+        Returns {"evolved": bool, "from_form": str, "to_form": str, "xp": float}
+        """
+        state = self.get_state()
+        current_xp = float(state.get("evolution_xp") or 0.0) + amount
+
         self._db.conn.execute(
-            "UPDATE entity_state SET evolution_xp = evolution_xp + ? WHERE id = ?",
-            (amount, ENTITY_ID),
+            "UPDATE entity_state SET evolution_xp=? WHERE id=?",
+            (current_xp, ENTITY_ID),
         )
         self._db.conn.commit()
+
+        return self.check_and_evolve()
+
+    def check_and_evolve(self) -> dict:
+        """Check if evolution threshold is met and fire evolution if so.
+
+        Returns {"evolved": bool, "from_form": str, "to_form": str, "xp": float}
+        """
+        from nexusmon.evolution import can_evolve, get_next_form
+
+        state = self.get_state()
+        current_form = state.get("current_form", "ROOKIE")
+        current_xp = float(state.get("evolution_xp") or 0.0)
+
+        result = {
+            "evolved": False,
+            "from_form": current_form,
+            "to_form": current_form,
+            "xp": current_xp,
+        }
+
+        if not can_evolve(current_form, current_xp):
+            return result
+
+        next_form = get_next_form(current_form)
+        if not next_form:
+            return result
+
+        # Evolve
+        self._db.conn.execute(
+            "UPDATE entity_state SET current_form=?, evolution_xp=0.0, mood='CONTEMPLATIVE' WHERE id=?",
+            (next_form, ENTITY_ID),
+        )
+        # Log evolution event
+        now = self._now()
+        self._db.conn.execute(
+            "INSERT INTO evolution_events (entity_id, from_form, to_form, occurred_at, trigger) VALUES (?,?,?,?,?)",
+            (ENTITY_ID, current_form, next_form, now, "xp_threshold"),
+        )
+        self._db.conn.commit()
+
+        # Write chronicle entry
+        try:
+            from nexusmon.chronicle import get_chronicle, EVOLUTION
+
+            get_chronicle().add_entry(
+                event_type=EVOLUTION,
+                title=f"{next_form}: What I Became",
+                content=f"NEXUSMON evolved from {current_form} to {next_form}. The change was real.",
+                significance=0.95,
+                form=next_form,
+                mood="CONTEMPLATIVE",
+            )
+        except Exception:
+            pass
+
+        # Create witnessed artifact
+        try:
+            from nexusmon.artifacts import get_vault
+
+            get_vault().create_witnessed(
+                event_name=f"Evolution to {next_form}",
+                description=f"NEXUSMON evolved from {current_form} to {next_form}.",
+                form=next_form,
+            )
+        except Exception:
+            pass
+
+        result.update({"evolved": True, "to_form": next_form})
+        return result
 
     def record_operator_session(self, operator_id, nexus_form, drift):
         now = self._now()
