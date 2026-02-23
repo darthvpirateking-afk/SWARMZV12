@@ -250,9 +250,7 @@ def _rule_engine(text: str, mem: Dict[str, Any]) -> str:
         else (
             "developing"
             if total < 10
-            else "confident"
-            if total < 25
-            else "highly experienced"
+            else "confident" if total < 25 else "highly experienced"
         )
     )
     success_rate = (success / total * 100) if total > 0 else 0
@@ -698,9 +696,7 @@ def _rule_engine(text: str, mem: Dict[str, Any]) -> str:
         status_mood = (
             "excellent"
             if success_rate > 80
-            else "strong"
-            if success_rate > 60
-            else "developing"
+            else "strong" if success_rate > 60 else "developing"
         )
         return (
             f"MISSION STATUS ({total} total, {rate} success rate — {status_mood} performance):\n"

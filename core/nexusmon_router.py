@@ -631,10 +631,14 @@ async def complete_mission(mission_id: str, payload: Dict[str, Any]):
 
 
 @router.get("/artifacts")
-async def list_artifacts(artifact_type: str = None, rarity: str = None, limit: int = 50):
+async def list_artifacts(
+    artifact_type: str = None, rarity: str = None, limit: int = 50
+):
     from nexusmon.artifacts import get_vault
 
-    items = get_vault().list_all(artifact_type=artifact_type, rarity=rarity, limit=limit)
+    items = get_vault().list_all(
+        artifact_type=artifact_type, rarity=rarity, limit=limit
+    )
     return {"artifacts": items, "total": get_vault().get_vault_size()}
 
 

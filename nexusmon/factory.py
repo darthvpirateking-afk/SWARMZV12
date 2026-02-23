@@ -63,8 +63,7 @@ def _ensure_tables() -> None:
     but we do ensure factory_recipes exists so recipes can be stored.
     """
     conn = get_db().conn
-    conn.execute(
-        """CREATE TABLE IF NOT EXISTS factory_recipes (
+    conn.execute("""CREATE TABLE IF NOT EXISTS factory_recipes (
             id TEXT PRIMARY KEY,
             name TEXT NOT NULL,
             input_types TEXT NOT NULL,
@@ -76,8 +75,7 @@ def _ensure_tables() -> None:
             time_seconds INTEGER DEFAULT 60,
             unlock_condition TEXT DEFAULT 'default',
             synergy_bonus TEXT
-        )"""
-    )
+        )""")
     conn.commit()
 
 

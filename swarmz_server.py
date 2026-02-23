@@ -188,6 +188,7 @@ if _nexusmon_available:
 # Include NEXUSMON entity state routes (/v1/nexusmon/entity/*)
 try:
     from nexusmon.routes.entity import router as _nexus_entity_router
+
     app.include_router(_nexus_entity_router)
 except Exception as _e:
     pass  # Non-fatal if entity routes fail to load
@@ -1130,6 +1131,7 @@ async def companion_message(request: Request):
 async def nexusmon_websocket(websocket: WebSocket):
     """Real-time WebSocket chat endpoint for NEXUSMON console."""
     from nexusmon.console.ws_handler import handle_ws_chat
+
     await handle_ws_chat(websocket)
 
 

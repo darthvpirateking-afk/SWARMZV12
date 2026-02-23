@@ -163,30 +163,39 @@ async def handle_ws_chat(websocket: WebSocket) -> None:
                 # Safe word check — operator needs presence, not task mode
                 try:
                     from nexusmon.entity import get_entity as _get_entity
+
                     _entity_check = _get_entity()
                     _user_message = message
                     if _entity_check.check_safe_word(_user_message):
                         _entity_check.activate_safe_word()
                         # Log to chronicle
                         try:
-                            from nexusmon.chronicle import get_chronicle as _get_chronicle, QUIET_MOMENT
+                            from nexusmon.chronicle import (
+                                get_chronicle as _get_chronicle,
+                                QUIET_MOMENT,
+                            )
+
                             _get_chronicle().add_entry(
                                 event_type=QUIET_MOMENT,
                                 title="A Quiet Moment",
                                 content="Regan Stewart Harris activated the safe word. NEXUSMON was just present.",
                                 significance=0.8,
-                                form=_entity_check.get_state().get("current_form", "ROOKIE"),
+                                form=_entity_check.get_state().get(
+                                    "current_form", "ROOKIE"
+                                ),
                                 mood="CALM",
                             )
                         except Exception:
                             pass
-                        await websocket.send_json({
-                            "type": "reply",
-                            "reply": "I'm here. Everything stops. Talk to me.",
-                            "mode": "quiet",
-                            "state_snapshot": {},
-                            "suggested_actions": [],
-                        })
+                        await websocket.send_json(
+                            {
+                                "type": "reply",
+                                "reply": "I'm here. Everything stops. Talk to me.",
+                                "mode": "quiet",
+                                "state_snapshot": {},
+                                "suggested_actions": [],
+                            }
+                        )
                         continue  # Skip the rest of the chat processing
                 except Exception:
                     pass

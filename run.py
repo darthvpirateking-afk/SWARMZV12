@@ -5,6 +5,7 @@
 
 One command.  Everything starts here.
 """
+
 # SWARMZ Source Available License
 # Commercial use, hosting, and resale prohibited.
 # See LICENSE file for details.
@@ -101,6 +102,7 @@ def main():
     # Run proactive boot scan
     try:
         from nexusmon.proactive import get_proactive_engine
+
         _entity_state = entity.get_state()
         _entity_state["traits"] = entity.get_traits()
         _scan = get_proactive_engine().run_boot_scan(_entity_state)
@@ -110,9 +112,12 @@ def main():
 
         # Show pending dream shares
         from nexusmon.dream import get_dream_engine
+
         _pending = get_dream_engine().get_pending_share()
         if _pending:
-            print(f"  [DREAMS] {len(_pending)} memory fragment(s) waiting to share with Regan Stewart Harris")
+            print(
+                f"  [DREAMS] {len(_pending)} memory fragment(s) waiting to share with Regan Stewart Harris"
+            )
             for d in _pending[:2]:
                 print(f"    \u21b3 {d['content'][:80]}...")
     except Exception as e:
@@ -142,7 +147,9 @@ def main():
                 pass
 
     try:
-        threading.Thread(target=_daily_loop, daemon=True, name="daily-scheduler").start()
+        threading.Thread(
+            target=_daily_loop, daemon=True, name="daily-scheduler"
+        ).start()
         print("[DAILY SCHEDULER] Background scheduler started.")
     except Exception as exc:
         print(f"[DAILY SCHEDULER] WARNING: {exc}")
