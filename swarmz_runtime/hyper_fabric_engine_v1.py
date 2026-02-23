@@ -2,6 +2,7 @@
 # This module enables fabrics to become multi-dimensional manifolds.
 # Missions and swarm operations can operate across manifold curvature.
 
+
 class HyperFabricEngineV1:
     def __init__(self):
         # Initialize fabric manifolds
@@ -12,7 +13,7 @@ class HyperFabricEngineV1:
         self.manifolds[name] = {
             "dimensions": dimensions,
             "curvature": None,
-            "topology": "default"
+            "topology": "default",
         }
 
     def set_curvature(self, name, curvature):
@@ -24,9 +25,10 @@ class HyperFabricEngineV1:
         """Merge two manifolds into a new topology."""
         if name1 in self.manifolds and name2 in self.manifolds:
             self.manifolds[new_name] = {
-                "dimensions": self.manifolds[name1]["dimensions"] + self.manifolds[name2]["dimensions"],
+                "dimensions": self.manifolds[name1]["dimensions"]
+                + self.manifolds[name2]["dimensions"],
                 "curvature": "merged",
-                "topology": "merged"
+                "topology": "merged",
             }
             del self.manifolds[name1]
             del self.manifolds[name2]
@@ -34,6 +36,7 @@ class HyperFabricEngineV1:
     def list_manifolds(self):
         """List all fabric manifolds."""
         return self.manifolds
+
 
 # Example usage
 if __name__ == "__main__":

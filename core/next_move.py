@@ -6,6 +6,7 @@ Next Move Engine
 Predicts the operator's next likely action.
 """
 
+
 def predict_next_action(context: dict) -> dict:
     """
     Predict the next likely action based on the given context.
@@ -17,6 +18,7 @@ def predict_next_action(context: dict) -> dict:
     except Exception as e:
         print(f"[fail-open] Prediction error: {e}")
         return {}
+
 
 def summarize_recent_activity() -> dict:
     """

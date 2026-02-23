@@ -1,6 +1,7 @@
 import json
 import os
 
+
 class SessionStore:
     def __init__(self, storage_path="session_logs.json"):
         self.storage_path = storage_path

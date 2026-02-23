@@ -10,7 +10,14 @@ from typing import Any, Dict, List
 class PhaseEngine:
     """Detect temporal phase transitions and suggest preemptive actions."""
 
-    def __init__(self, data_dir: str, world_model=None, divergence=None, entropy=None, trajectory=None):
+    def __init__(
+        self,
+        data_dir: str,
+        world_model=None,
+        divergence=None,
+        entropy=None,
+        trajectory=None,
+    ):
         self.data_dir = Path(data_dir)
         self.data_dir.mkdir(parents=True, exist_ok=True)
         self.history_file = self.data_dir / "phase_history.jsonl"
@@ -104,7 +111,9 @@ class PhaseEngine:
         rows = rows[-50:]
         return round(sum(r.get("runtime_ms", 0.0) for r in rows) / max(len(rows), 1), 3)
 
-    def _cluster_id(self, success_rate: float, divergence_score: float, entropy_level: float) -> str:
+    def _cluster_id(
+        self, success_rate: float, divergence_score: float, entropy_level: float
+    ) -> str:
         if success_rate < 0.3 and divergence_score > 0.2:
             return "risk_drift"
         if success_rate < 0.3:
@@ -129,16 +138,28 @@ class PhaseEngine:
 
     def _load_sequences(self) -> Dict[str, List[List[str]]]:
         entries = self._tail_jsonl(self.history_file, 120)
-        labels: Dict[str, List[List[str]]] = {"failure_clusters": [], "abandoned": [], "slowdowns": [], "recoveries": [], "bursts": []}
+        labels: Dict[str, List[List[str]]] = {
+            "failure_clusters": [],
+            "abandoned": [],
+            "slowdowns": [],
+            "recoveries": [],
+            "bursts": [],
+        }
         outcomes = {
             "failure_clusters": lambda e: e.get("success_rate_recent", 0.0) < 0.25,
             "abandoned": lambda e: e.get("divergence_score", 0.0) > 0.5,
             "slowdowns": lambda e: e.get("work_intensity", 0.0) > 8000,
-            "recoveries": lambda e: e.get("success_rate_recent", 0.0) > 0.6 and e.get("entropy_level", 0.0) < 0.4,
-            "bursts": lambda e: e.get("success_rate_recent", 0.0) > 0.7 and e.get("entropy_level", 0.0) > 0.4,
+            "recoveries": lambda e: (
+                e.get("success_rate_recent", 0.0) > 0.6
+                and e.get("entropy_level", 0.0) < 0.4
+            ),
+            "bursts": lambda e: (
+                e.get("success_rate_recent", 0.0) > 0.7
+                and e.get("entropy_level", 0.0) > 0.4
+            ),
         }
         for i in range(len(entries)):
-            window = entries[max(0, i - self._sequence_window + 1): i + 1]
+            window = entries[max(0, i - self._sequence_window + 1) : i + 1]
             labels_for_window = []
             for name, fn in outcomes.items():
                 if any(fn(e) for e in window):
@@ -161,7 +182,10 @@ class PhaseEngine:
                     "preventive_action": self._preventive_action(label),
                     "confidence": conf,
                 }
-                fname = self.preemptive_dir / f"plan_{int(datetime.now(timezone.utc).timestamp())}.json"
+                fname = (
+                    self.preemptive_dir
+                    / f"plan_{int(datetime.now(timezone.utc).timestamp())}.json"
+                )
                 fname.write_text(json.dumps(plan, indent=2))
 
     def _preventive_action(self, label: str) -> str:
@@ -174,7 +198,10 @@ class PhaseEngine:
 
     def _maybe_amplify(self, current: Dict[str, Any]) -> None:
         # Positive phase amplification record
-        if current.get("context_cluster_id") in {"steady", "stabilizing"} and current.get("success_rate_recent", 0.0) > 0.6:
+        if (
+            current.get("context_cluster_id") in {"steady", "stabilizing"}
+            and current.get("success_rate_recent", 0.0) > 0.6
+        ):
             intervention = {
                 "timestamp": current.get("timestamp"),
                 "action": "reduce friction and batch high-value tasks",
@@ -234,7 +261,7 @@ class PhaseEngine:
     # ---------- IO helpers ----------
     def _append_jsonl(self, file_path: Path, row: Dict[str, Any]) -> None:
         with open(file_path, "a", encoding="utf-8") as f:
-            f.write(json.dumps(row, separators=(',', ':')) + "\n")
+            f.write(json.dumps(row, separators=(",", ":")) + "\n")
 
     def _tail_jsonl(self, file_path: Path, limit: int) -> List[Dict[str, Any]]:
         if not file_path.exists():
@@ -248,4 +275,3 @@ class PhaseEngine:
                     except Exception:
                         continue
         return rows[-limit:]
-

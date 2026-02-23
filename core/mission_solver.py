@@ -24,13 +24,16 @@ from core.companion import load_memory, _build_context_block, _audit_model_call
 # lazy write_jsonl
 try:
     import sys
+
     sys.path.insert(0, str(ROOT))
     from jsonl_utils import write_jsonl
 except ImportError:
+
     def write_jsonl(path, obj):
         path.parent.mkdir(parents=True, exist_ok=True)
         with open(path, "a", encoding="utf-8") as f:
             f.write(json.dumps(obj, separators=(",", ":")) + "\n")
+
 
 AUDIT_FILE = ROOT / "data" / "audit.jsonl"
 
@@ -39,7 +42,9 @@ def _load_solver_prompt() -> str:
     p = PROMPT_DIR / "mission_solver.txt"
     if p.exists():
         return p.read_text(encoding="utf-8")
-    return "You are the SWARMZ mission solver. Produce PLAN, PREPARED_ACTIONS, EVIDENCE."
+    return (
+        "You are the SWARMZ mission solver. Produce PLAN, PREPARED_ACTIONS, EVIDENCE."
+    )
 
 
 def solve(mission: Dict[str, Any]) -> Dict[str, Any]:
@@ -71,10 +76,16 @@ def solve(mission: Dict[str, Any]) -> Dict[str, Any]:
     if is_offline():
         plan = _offline_stub(intent, spec)
         _write_plan(action_dir, plan, "offline_stub")
-        return {"ok": True, "plan": plan, "prepared_actions_dir": str(action_dir), "source": "offline_stub"}
+        return {
+            "ok": True,
+            "plan": plan,
+            "prepared_actions_dir": str(action_dir),
+            "source": "offline_stub",
+        }
 
     # â”€â”€ Check API key â”€â”€
     from core.model_router import get_model_config, _get_api_key
+
     cfg = get_model_config()
     prov = cfg.get("provider", "anthropic")
     prov_cfg = cfg.get(prov, {})
@@ -83,7 +94,12 @@ def solve(mission: Dict[str, Any]) -> Dict[str, Any]:
     if not has_key:
         plan = _offline_stub(intent, spec)
         _write_plan(action_dir, plan, "rule_stub")
-        return {"ok": True, "plan": plan, "prepared_actions_dir": str(action_dir), "source": "rule_stub"}
+        return {
+            "ok": True,
+            "plan": plan,
+            "prepared_actions_dir": str(action_dir),
+            "source": "rule_stub",
+        }
 
     # â”€â”€ AI call â”€â”€
     system = _load_solver_prompt()
@@ -116,7 +132,10 @@ def solve(mission: Dict[str, Any]) -> Dict[str, Any]:
         }
     else:
         # AI failed â€” fall back to stub
-        plan = _offline_stub(intent, spec) + f"\n[AI error: {result.get('error', '?')[:100]}]"
+        plan = (
+            _offline_stub(intent, spec)
+            + f"\n[AI error: {result.get('error', '?')[:100]}]"
+        )
         _write_plan(action_dir, plan, "rule_stub_fallback")
         return {
             "ok": True,
@@ -148,5 +167,6 @@ def _write_plan(action_dir: Path, plan_text: str, source: str) -> None:
         "source": source,
         "generated_at": datetime.now(timezone.utc).isoformat(),
     }
-    (action_dir / "metadata.json").write_text(json.dumps(meta, indent=2), encoding="utf-8")
-
+    (action_dir / "metadata.json").write_text(
+        json.dumps(meta, indent=2), encoding="utf-8"
+    )

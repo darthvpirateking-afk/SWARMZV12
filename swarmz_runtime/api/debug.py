@@ -7,7 +7,6 @@ Provides storage health checks and diagnostic info accessible at
 
 from __future__ import annotations
 
-import os
 from pathlib import Path
 from typing import Any, Callable, Dict
 
@@ -42,6 +41,7 @@ def storage_check() -> Dict[str, Any]:
             return {"exists": False, "size_bytes": 0}
         try:
             import json
+
             with open(path) as fh:
                 json.load(fh)
             return {

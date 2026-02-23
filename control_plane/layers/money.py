@@ -16,4 +16,3 @@ class MoneyLayer(BaseLayer):
     def collect(self) -> list[dict]:
         current = self._state.get_value("money.budget_remaining", 1000)
         return [self._make_record("money.budget_remaining", current, units="USD")]
-

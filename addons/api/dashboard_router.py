@@ -178,7 +178,7 @@ def dashboard():
     return _DASHBOARD_HTML
 
 
-@router.get("/pwa/manifest.json")
+@router.get("/pwa/manifest.json", operation_id="dashboard_pwa_manifest_get")
 def pwa_manifest():
     return JSONResponse(_MANIFEST)
 
@@ -186,5 +186,5 @@ def pwa_manifest():
 @router.get("/pwa/sw.js")
 def pwa_sw():
     from starlette.responses import Response
-    return Response(content=_SW_JS, media_type="application/javascript")
 
+    return Response(content=_SW_JS, media_type="application/javascript")

@@ -4,7 +4,15 @@ class AvatarOmega:
         self.state = "neutral"
 
     def set_state(self, state: str):
-        if state in ["neutral", "kind", "focused", "protector", "overclock", "operator-link", "shadow-alert"]:
+        if state in [
+            "neutral",
+            "kind",
+            "focused",
+            "protector",
+            "overclock",
+            "operator-link",
+            "shadow-alert",
+        ]:
             self.state = state
         else:
             raise ValueError("Invalid state")
@@ -20,6 +28,7 @@ class AvatarOmega:
 
     def glow_in_operator_link(self):
         return "Glowing in operator-link mode"
+
 
 class AvatarInfinity(AvatarOmega):
     def __init__(self, operator_rank: str, link_strength: int = 100):
@@ -52,6 +61,7 @@ class AvatarInfinity(AvatarOmega):
         self.state = phase_to_state.get(mission_phase, "neutral")
         return f"State transitioned to {self.state} for phase {mission_phase}"
 
+
 class AvatarOmegaPlus(AvatarOmega):
     def __init__(self, operator_rank: str, cosmology: str):
         super().__init__(operator_rank)
@@ -71,4 +81,6 @@ class AvatarOmegaPlus(AvatarOmega):
 
     def orchestrate_formations(self, formation_type: str):
         """Orchestrate emergent formations visually."""
-        return f"Orchestrating {formation_type} formation in cosmology: {self.cosmology}"
+        return (
+            f"Orchestrating {formation_type} formation in cosmology: {self.cosmology}"
+        )

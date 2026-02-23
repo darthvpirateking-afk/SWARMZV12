@@ -8,6 +8,7 @@ Tool to validate events in events.jsonl against the canonical schema.
 import json
 from core.activity_schema import validate_event
 
+
 def validate_events(file_path):
     with open(file_path, "r") as f:
         for line_number, line in enumerate(f, start=1):
@@ -18,6 +19,7 @@ def validate_events(file_path):
                     print(f"Line {line_number}: {message}")
             except json.JSONDecodeError:
                 print(f"Line {line_number}: Invalid JSON")
+
 
 if __name__ == "__main__":
     import argparse

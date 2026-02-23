@@ -9,13 +9,11 @@ revert, followup, survival scoring, audit trail, worker.
 """
 
 import json
-import os
 import shutil
 import time
 from pathlib import Path
 
 import pytest
-
 
 # â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
@@ -64,8 +62,10 @@ def teardown_module():
 # 1. DATA MODEL â€” new_trial, load, get, update
 # â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
+
 def test_new_trial_creates_valid_record():
     from core.trials import new_trial
+
     t = new_trial(
         created_by="test",
         context="test-ctx",
@@ -101,6 +101,7 @@ def test_trial_persisted_to_file():
 
 def test_load_all_trials():
     from core.trials import load_all_trials
+
     trials = load_all_trials()
     assert isinstance(trials, list)
     assert len(trials) >= 1
@@ -109,6 +110,7 @@ def test_load_all_trials():
 
 def test_get_trial_by_id():
     from core.trials import load_all_trials, get_trial
+
     all_t = load_all_trials()
     first_id = all_t[0]["id"]
     found = get_trial(first_id)
@@ -118,12 +120,14 @@ def test_get_trial_by_id():
 
 def test_get_trial_missing():
     from core.trials import get_trial
+
     result = get_trial("nonexistent-id-123")
     assert result is None
 
 
 def test_update_trial_appends():
     from core.trials import load_all_trials, update_trial, get_trial
+
     first = load_all_trials()[0]
     tid = first["id"]
     before_lines = len(TRIALS_FILE.read_text(encoding="utf-8").strip().split("\n"))
@@ -144,8 +148,10 @@ def test_update_trial_appends():
 # 2. TRIAL CREATION GATE
 # â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
+
 def test_require_trial_creates():
     from core.trials import require_trial
+
     t = require_trial(
         action="change theme",
         context="global",
@@ -160,6 +166,7 @@ def test_require_trial_creates():
 
 def test_require_trial_exemption_admin():
     from core.trials import require_trial
+
     result = require_trial(
         action="hotfix",
         context="emergency",
@@ -173,6 +180,7 @@ def test_require_trial_exemption_admin():
 
 def test_require_trial_exemption_non_admin_raises():
     from core.trials import require_trial, TrialGateError
+
     try:
         require_trial(
             action="sneak change",
@@ -191,8 +199,10 @@ def test_require_trial_exemption_non_admin_raises():
 # 3. METRICS INTERFACE
 # â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
+
 def test_list_available_metrics():
     from core.trials import list_available_metrics
+
     metrics = list_available_metrics()
     assert isinstance(metrics, list)
     assert "conversion_rate" in metrics
@@ -203,6 +213,7 @@ def test_list_available_metrics():
 
 def test_resolve_metric_builtin():
     from core.trials import resolve_metric
+
     val, evidence = resolve_metric("conversion_rate", "global")
     # Value can be 0.0 if no missions exist â€” that's fine
     assert isinstance(val, (int, float)) or val is None
@@ -211,6 +222,7 @@ def test_resolve_metric_builtin():
 
 def test_resolve_metric_unknown():
     from core.trials import resolve_metric
+
     val, evidence = resolve_metric("fake_metric_xyz", "global")
     # Should return None or some error indicator
     assert val is None or isinstance(val, (int, float))
@@ -218,6 +230,7 @@ def test_resolve_metric_unknown():
 
 def test_register_custom_metric():
     from core.trials import register_metric, resolve_metric
+
     register_metric("test_custom", lambda ctx: (42.0, {"custom": True}))
     val, evidence = resolve_metric("test_custom", "any")
     assert val == 42.0
@@ -228,8 +241,10 @@ def test_register_custom_metric():
 # 4. INBOX QUERIES
 # â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
+
 def test_inbox_pending():
     from core.trials import inbox_pending
+
     pending = inbox_pending()
     assert isinstance(pending, list)
     for t in pending:
@@ -239,6 +254,7 @@ def test_inbox_pending():
 
 def test_inbox_needs_review_empty_initially():
     from core.trials import inbox_needs_review
+
     needs = inbox_needs_review()
     assert isinstance(needs, list)
     # All trials so far are pending (survived=None), not failed
@@ -246,12 +262,14 @@ def test_inbox_needs_review_empty_initially():
 
 def test_inbox_completed_empty_initially():
     from core.trials import inbox_completed
+
     done = inbox_completed()
     assert isinstance(done, list)
 
 
 def test_inbox_counts():
     from core.trials import inbox_counts
+
     counts = inbox_counts()
     assert isinstance(counts, dict)
     assert "pending" in counts
@@ -266,8 +284,10 @@ def test_inbox_counts():
 # 5. REVERT, NOTE, FOLLOWUP
 # â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
+
 def test_add_note():
     from core.trials import load_all_trials, add_note, get_trial
+
     first = load_all_trials()[0]
     tid = first["id"]
     result = add_note(tid, "this is a test note")
@@ -277,7 +297,8 @@ def test_add_note():
 
 
 def test_create_followup():
-    from core.trials import load_all_trials, create_followup, get_trial
+    from core.trials import load_all_trials, create_followup
+
     first = load_all_trials()[0]
     tid = first["id"]
     followup = create_followup(tid, created_by="test_followup")
@@ -288,7 +309,8 @@ def test_create_followup():
 
 
 def test_revert_trial():
-    from core.trials import new_trial, update_trial, revert_trial, get_trial
+    from core.trials import new_trial, update_trial, revert_trial
+
     # Create trial and mark it as survived
     t = new_trial(
         created_by="test_revert",
@@ -298,7 +320,11 @@ def test_revert_trial():
         check_after_sec=10,
     )
     tid = t["id"]
-    update_trial(tid, {"survived": False, "checked_at": "2025-01-01T00:00:00Z"}, reason="evaluation")
+    update_trial(
+        tid,
+        {"survived": False, "checked_at": "2025-01-01T00:00:00Z"},
+        reason="evaluation",
+    )
 
     result = revert_trial(tid, created_by="test_revert")
     assert result is not None
@@ -311,6 +337,7 @@ def test_revert_trial():
 
 def test_revert_nonexistent():
     from core.trials import revert_trial
+
     result = revert_trial("nonexistent-id")
     assert result is None
 
@@ -318,6 +345,7 @@ def test_revert_nonexistent():
 # â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 # 6. SURVIVAL SCORING
 # â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
 
 def test_compute_survival_scores():
     from core.trials import new_trial, update_trial, compute_survival_scores
@@ -332,11 +360,15 @@ def test_compute_survival_scores():
             check_after_sec=10,
             tags=["scoring"],
         )
-        update_trial(t["id"], {
-            "survived": True,
-            "checked_at": "2025-01-01T00:00:00Z",
-            "metric_after": 0.5,
-        }, reason="evaluation")
+        update_trial(
+            t["id"],
+            {
+                "survived": True,
+                "checked_at": "2025-01-01T00:00:00Z",
+                "metric_after": 0.5,
+            },
+            reason="evaluation",
+        )
 
     t_fail = new_trial(
         created_by="test_score",
@@ -346,11 +378,15 @@ def test_compute_survival_scores():
         check_after_sec=10,
         tags=["scoring"],
     )
-    update_trial(t_fail["id"], {
-        "survived": False,
-        "checked_at": "2025-01-01T00:00:00Z",
-        "metric_after": 0.1,
-    }, reason="evaluation")
+    update_trial(
+        t_fail["id"],
+        {
+            "survived": False,
+            "checked_at": "2025-01-01T00:00:00Z",
+            "metric_after": 0.1,
+        },
+        reason="evaluation",
+    )
 
     scores = compute_survival_scores()
     assert isinstance(scores, dict)
@@ -366,6 +402,7 @@ def test_compute_survival_scores():
 
 def test_survival_scores_persisted():
     from core.trials import compute_survival_scores
+
     compute_survival_scores()
     assert SCORES_FILE.exists(), "survival_scores.json should be persisted"
     data = json.loads(SCORES_FILE.read_text(encoding="utf-8"))
@@ -374,6 +411,7 @@ def test_survival_scores_persisted():
 
 def test_get_survival_leaderboard():
     from core.trials import get_survival_leaderboard
+
     board = get_survival_leaderboard(limit=10)
     assert isinstance(board, list)
     # Should be sorted descending
@@ -383,6 +421,7 @@ def test_get_survival_leaderboard():
 
 def test_rank_suggestions():
     from core.trials import rank_suggestions
+
     suggestions = [
         {"action": "feature: x", "tags": ["scoring"]},
         {"action": "feature: y", "tags": ["untagged"]},
@@ -400,6 +439,7 @@ def test_rank_suggestions():
 # 7. AUDIT TRAIL
 # â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
+
 def test_audit_trail_written():
     assert AUDIT_FILE.exists(), "audit.jsonl should exist"
     lines = AUDIT_FILE.read_text(encoding="utf-8").strip().split("\n")
@@ -412,6 +452,7 @@ def test_audit_trail_written():
 
 def test_get_audit_trail():
     from core.trials import get_audit_trail
+
     events = get_audit_trail()
     assert isinstance(events, list)
     assert len(events) >= 1
@@ -419,6 +460,7 @@ def test_get_audit_trail():
 
 def test_get_audit_trail_by_trial_id():
     from core.trials import load_all_trials, get_audit_trail
+
     all_t = load_all_trials()
     if not all_t:
         return
@@ -432,6 +474,7 @@ def test_get_audit_trail_by_trial_id():
 # â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 # 8. WORKER (unit-level)
 # â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
 
 def test_worker_evaluate_trial():
     """Test that evaluate_trial correctly marks a trial."""
@@ -455,6 +498,7 @@ def test_worker_evaluate_trial():
 
 def test_worker_status():
     from core.trials_worker import worker_status
+
     status = worker_status()
     assert isinstance(status, dict)
     assert "running" in status
@@ -462,6 +506,7 @@ def test_worker_status():
 
 def test_worker_start_stop():
     from core.trials_worker import start_worker, stop_worker, worker_status
+
     start_worker()
     status = worker_status()
     assert status["running"] is True
@@ -478,14 +523,18 @@ def test_worker_start_stop():
 
 def test_auto_baseline_locked_at_lv0(monkeypatch: pytest.MonkeyPatch):
     """LV0 should not auto-capture baselines (power locked)."""
-    import core.hologram as holo
     from core import trials as trials_mod
 
-    # Force hologram level 0 regardless of existing trials.
-    monkeypatch.setattr(holo, "compute_level", lambda: {"level": 0}, raising=False)
+    # Simulate fewer than 5 verified trials so LV1 is not reached.
+    monkeypatch.setattr(trials_mod, "load_all_trials", lambda: [], raising=False)
 
     # Stub metric resolver so if it is called we notice via metric_before.
-    monkeypatch.setattr(trials_mod, "resolve_metric", lambda name, ctx: (42.0, {"stub": True}), raising=False)
+    monkeypatch.setattr(
+        trials_mod,
+        "resolve_metric",
+        lambda name, ctx: (42.0, {"stub": True}),
+        raising=False,
+    )
 
     t = trials_mod.new_trial(
         created_by="test_lv0",
@@ -495,17 +544,25 @@ def test_auto_baseline_locked_at_lv0(monkeypatch: pytest.MonkeyPatch):
         check_after_sec=60,
     )
 
-    # With LV0, auto-baseline capture should be disabled.
+    # With LV0 (0 verified trials < 5), auto-baseline capture should be disabled.
     assert t["metric_before"] is None
 
 
 def test_auto_baseline_unlocked_at_lv1(monkeypatch: pytest.MonkeyPatch):
     """LV1+ should auto-capture baselines via resolver."""
-    import core.hologram as holo
     from core import trials as trials_mod
 
-    monkeypatch.setattr(holo, "compute_level", lambda: {"level": 1}, raising=False)
-    monkeypatch.setattr(trials_mod, "resolve_metric", lambda name, ctx: (99.9, {"stub": True}), raising=False)
+    # Simulate 5 verified trials (checked_at set) to reach LV1.
+    verified_trials = [{"checked_at": "2024-01-01T00:00:00Z"} for _ in range(5)]
+    monkeypatch.setattr(
+        trials_mod, "load_all_trials", lambda: verified_trials, raising=False
+    )
+    monkeypatch.setattr(
+        trials_mod,
+        "resolve_metric",
+        lambda name, ctx: (99.9, {"stub": True}),
+        raising=False,
+    )
 
     t = trials_mod.new_trial(
         created_by="test_lv1",
@@ -569,6 +626,7 @@ def test_auto_check_scheduler_runs_at_lv2(monkeypatch: pytest.MonkeyPatch):
 # 9. APPEND-ONLY INVARIANT
 # â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
+
 def test_append_only_no_rewrite():
     """Verify that the file only grows â€” lines are never deleted."""
     from core.trials import new_trial
@@ -603,4 +661,3 @@ def test_audit_only_grows():
 
     count_after = len(AUDIT_FILE.read_text(encoding="utf-8").strip().split("\n"))
     assert count_after >= count_before, "audit file must only grow"
-

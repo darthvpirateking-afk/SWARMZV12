@@ -24,7 +24,7 @@ def verify_kernel(strict: bool = True, request: Request = None):
         if strict and not kernel_status.get("integrity_passed", False):
             raise HTTPException(
                 status_code=500,
-                detail=f"Kernel integrity validation failed: {kernel_status.get('issues', [])}"
+                detail=f"Kernel integrity validation failed: {kernel_status.get('issues', [])}",
             )
 
         return {
@@ -33,10 +33,12 @@ def verify_kernel(strict: bool = True, request: Request = None):
             "issues": kernel_status.get("issues", []),
             "checks_performed": kernel_status.get("checks", []),
             "strict_mode": strict,
-            "timestamp": kernel_status.get("timestamp")
+            "timestamp": kernel_status.get("timestamp"),
         }
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Kernel validation error: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Kernel validation error: {str(e)}"
+        )
 
 
 @router.get("/v1/verify/status")
@@ -70,4 +72,3 @@ def patchpack_apply(pack_id: str, request: Request):
 def patchpack_rollback(pack_id: str, request: Request):
     _require_operator(request)
     return patchpacks.rollback_patchpack(pack_id)
-

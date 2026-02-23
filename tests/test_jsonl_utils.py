@@ -1,7 +1,7 @@
-import os
 import tempfile
 from pathlib import Path
 from swarmz_runtime.storage.jsonl_utils import read_jsonl, write_jsonl
+
 
 def test_read_jsonl_returns_tuple_missing_file():
     with tempfile.TemporaryDirectory() as tmp:
@@ -10,6 +10,7 @@ def test_read_jsonl_returns_tuple_missing_file():
         assert isinstance(result, list)
         assert result == []
 
+
 def test_read_jsonl_returns_tuple_empty_file():
     with tempfile.TemporaryDirectory() as tmp:
         empty = Path(tmp) / "empty.jsonl"
@@ -17,6 +18,7 @@ def test_read_jsonl_returns_tuple_empty_file():
         result = read_jsonl(empty)
         assert isinstance(result, list)
         assert result == []
+
 
 def test_read_jsonl_returns_tuple_normal_file():
     with tempfile.TemporaryDirectory() as tmp:

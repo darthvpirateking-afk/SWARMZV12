@@ -2,11 +2,11 @@
 # Commercial use, hosting, and resale prohibited.
 # See LICENSE file for details.
 import unittest
-from swarmz_runtime.orchestrator.orchestrator import Crew, Agent, Task, crew_from_config
+from swarmz_runtime.orchestrator.orchestrator import Crew, Agent, Task
 from unittest.mock import patch
 
-class TestMasterAI(unittest.TestCase):
 
+class TestMasterAI(unittest.TestCase):
     def setUp(self):
         self.agents = [
             Agent(name="Agent1", role="Explorer", goal="Explore new territories."),
@@ -14,8 +14,18 @@ class TestMasterAI(unittest.TestCase):
         ]
 
         self.tasks = [
-            Task(name="Task1", description="Explore the forest.", expected_output="Map of the forest.", agent_name="Agent1"),
-            Task(name="Task2", description="Analyze the soil samples.", expected_output="Soil composition report.", agent_name="Agent2"),
+            Task(
+                name="Task1",
+                description="Explore the forest.",
+                expected_output="Map of the forest.",
+                agent_name="Agent1",
+            ),
+            Task(
+                name="Task2",
+                description="Analyze the soil samples.",
+                expected_output="Soil composition report.",
+                agent_name="Agent2",
+            ),
         ]
 
         self.crew = Crew(agents=self.agents, tasks=self.tasks)
@@ -40,6 +50,7 @@ class TestMasterAI(unittest.TestCase):
         self.assertEqual(len(result.outputs), 1)
         self.assertIn("result", result.outputs[0])
         self.assertNotIn("error", result.outputs[0])
+
 
 if __name__ == "__main__":
     unittest.main()

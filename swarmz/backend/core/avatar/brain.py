@@ -1,6 +1,7 @@
 # brain.py
 # Parses operator commands.
 
+
 class AvatarBrain:
     def parse_command(self, command):
         """

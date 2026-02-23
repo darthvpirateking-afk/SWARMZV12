@@ -111,10 +111,15 @@ def run_cycle(bus, store, logger, adapter, regime, layers):
 
 def main():
     parser = argparse.ArgumentParser(description="Layer-Weaver control plane")
-    parser.add_argument("--loop", action="store_true",
-                        help="Run continuously instead of one-shot")
-    parser.add_argument("--interval", type=float, default=5.0,
-                        help="Seconds between cycles in loop mode")
+    parser.add_argument(
+        "--loop", action="store_true", help="Run continuously instead of one-shot"
+    )
+    parser.add_argument(
+        "--interval",
+        type=float,
+        default=5.0,
+        help="Seconds between cycles in loop mode",
+    )
     args = parser.parse_args()
 
     bus, store, logger, adapter, regime, layers = _build_components()
@@ -133,4 +138,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

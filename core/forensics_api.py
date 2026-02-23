@@ -63,12 +63,20 @@ def register_forensics_api(app: FastAPI) -> None:
             tl = build_timeline(mission_id)
             if not tl:
                 raise HTTPException(status_code=404, detail="No events for mission_id")
-            _audit("forensics_timeline_viewed", {"mission_id": mission_id, "count": len(tl)})
+            _audit(
+                "forensics_timeline_viewed",
+                {"mission_id": mission_id, "count": len(tl)},
+            )
             return {"ok": True, "mission_id": mission_id, "timeline": tl}
         except HTTPException:
             raise
         except Exception as exc:
-            return {"ok": False, "error": str(exc)[:300], "mission_id": mission_id, "timeline": []}
+            return {
+                "ok": False,
+                "error": str(exc)[:300],
+                "mission_id": mission_id,
+                "timeline": [],
+            }
 
     @app.get("/v1/forensics/casefile")
     async def forensics_casefile(mission_id: str = Query(...)) -> Dict[str, Any]:
@@ -94,4 +102,3 @@ def register_forensics_api(app: FastAPI) -> None:
             return result
         except Exception as exc:
             return {"ok": False, "error": str(exc)[:300]}
-

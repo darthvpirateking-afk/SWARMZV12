@@ -60,7 +60,9 @@ def _http_json(
         raw_body = json.dumps(body).encode("utf-8")
         final_headers.setdefault("Content-Type", "application/json")
 
-    req = urllib.request.Request(url=url, method=method.upper(), data=raw_body, headers=final_headers)
+    req = urllib.request.Request(
+        url=url, method=method.upper(), data=raw_body, headers=final_headers
+    )
     try:
         with urllib.request.urlopen(req, timeout=timeout) as resp:
             status = resp.getcode()
@@ -122,11 +124,29 @@ def _shutdown_process(proc: subprocess.Popen[Any], grace_s: float = 8.0) -> None
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="SWARMZ release smoke: health + dispatch")
-    parser.add_argument("--host", default="127.0.0.1", help="Bind host for run_server.py if launch is needed")
-    parser.add_argument("--port", type=int, default=None, help="Bind port (default: from config/runtime.json or 8012)")
-    parser.add_argument("--startup-timeout", type=float, default=45.0, help="Seconds to wait for /v1/health")
-    parser.add_argument("--request-timeout", type=float, default=8.0, help="HTTP timeout")
+    parser = argparse.ArgumentParser(
+        description="SWARMZ release smoke: health + dispatch"
+    )
+    parser.add_argument(
+        "--host",
+        default="127.0.0.1",
+        help="Bind host for run_server.py if launch is needed",
+    )
+    parser.add_argument(
+        "--port",
+        type=int,
+        default=None,
+        help="Bind port (default: from config/runtime.json or 8012)",
+    )
+    parser.add_argument(
+        "--startup-timeout",
+        type=float,
+        default=45.0,
+        help="Seconds to wait for /v1/health",
+    )
+    parser.add_argument(
+        "--request-timeout", type=float, default=8.0, help="HTTP timeout"
+    )
     parser.add_argument("--server-log", default=None, help="Optional server log path")
     args = parser.parse_args()
 
@@ -142,14 +162,25 @@ def main() -> int:
     if _wait_for_health(base_url, timeout_s=2.0, req_timeout_s=args.request_timeout):
         print(f"Using existing server at {base_url}")
     else:
-        log_path = Path(args.server_log) if args.server_log else (root / "data" / "release_smoke_server.log")
+        log_path = (
+            Path(args.server_log)
+            if args.server_log
+            else (root / "data" / "release_smoke_server.log")
+        )
         log_path.parent.mkdir(parents=True, exist_ok=True)
 
         env = os.environ.copy()
         env.setdefault("SWARMZ_OPERATOR_PIN", pin)
         env.setdefault("OPERATOR_KEY", pin)
 
-        cmd = [sys.executable, "run_server.py", "--host", args.host, "--port", str(port)]
+        cmd = [
+            sys.executable,
+            "run_server.py",
+            "--host",
+            args.host,
+            "--port",
+            str(port),
+        ]
         creationflags = subprocess.CREATE_NEW_PROCESS_GROUP if os.name == "nt" else 0
 
         print(f"Starting server: {' '.join(cmd)}")
@@ -165,7 +196,9 @@ def main() -> int:
         )
         started_here = True
 
-        if not _wait_for_health(base_url, timeout_s=args.startup_timeout, req_timeout_s=args.request_timeout):
+        if not _wait_for_health(
+            base_url, timeout_s=args.startup_timeout, req_timeout_s=args.request_timeout
+        ):
             print(f"FAIL: /v1/health not ready at {base_url}")
             _shutdown_process(proc)
             return 11
@@ -189,13 +222,19 @@ def main() -> int:
             timeout=args.request_timeout,
         )
         if code == 200 and isinstance(data, dict):
-            created = data.get("created") if isinstance(data.get("created"), dict) else {}
+            created = (
+                data.get("created") if isinstance(data.get("created"), dict) else {}
+            )
             run = data.get("run") if isinstance(data.get("run"), dict) else {}
             mission_id = created.get("mission_id") or run.get("mission_id") or "unknown"
             dispatch_ok = True
         elif code == 404:
             # Fallback dispatch endpoint used by server.py wrapper.
-            fallback_payload = {"intent": "release smoke check", "scope": "release", "limits": {}}
+            fallback_payload = {
+                "intent": "release smoke check",
+                "scope": "release",
+                "limits": {},
+            }
             f_code, f_data, f_raw = _http_json(
                 "POST",
                 f"{base_url}/v1/sovereign/dispatch",

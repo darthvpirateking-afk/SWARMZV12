@@ -75,8 +75,9 @@ def _risk(action: dict) -> float:
     return neg / len(effects)
 
 
-def score_action(action: dict, state: dict[str, Any],
-                 lambdas: dict[str, float] | None = None) -> float:
+def score_action(
+    action: dict, state: dict[str, Any], lambdas: dict[str, float] | None = None
+) -> float:
     """Return a deterministic score for *action* given current *state*."""
     lam = lambdas or LAMBDAS
     b = _benefit(action)
@@ -93,12 +94,17 @@ def score_action(action: dict, state: dict[str, Any],
             confs.append(0.5)
     unc = 1.0 - (sum(confs) / len(confs)) if confs else 0.5
 
-    return b - (lam["risk"] * r + lam["coupling"] * cd
-                + lam["irr"] * irr + lam["uncertainty"] * unc)
+    return b - (
+        lam["risk"] * r
+        + lam["coupling"] * cd
+        + lam["irr"] * irr
+        + lam["uncertainty"] * unc
+    )
 
 
-def select_best(actions: list[dict], state: dict[str, Any],
-                lambdas: dict[str, float] | None = None) -> dict | None:
+def select_best(
+    actions: list[dict], state: dict[str, Any], lambdas: dict[str, float] | None = None
+) -> dict | None:
     """Pick the best action. Returns ``None`` (NO_ACTION) when best score <= 0."""
     scored = []
     for a in actions:
@@ -111,4 +117,3 @@ def select_best(actions: list[dict], state: dict[str, Any],
     if not scored or scored[0][0] <= 0:
         return None
     return scored[0][2]
-

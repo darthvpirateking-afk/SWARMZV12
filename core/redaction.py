@@ -5,7 +5,6 @@
 Implements the Redaction + Privacy Guard layer to ensure sensitive data is protected.
 """
 
-import json
 import re
 
 REDACTION_RULES = {
@@ -13,6 +12,7 @@ REDACTION_RULES = {
     "emails": r"[\w.-]+@[\w.-]+",
     "phones": r"\+?\d{10,15}",
 }
+
 
 def redact_event(event):
     """Redact sensitive information from an event."""

@@ -56,7 +56,11 @@ class DatabaseService:
         bad_rows_file = self._data_dir / "bad_rows.jsonl"
         quarantined_rows = 0
         if bad_rows_file.exists():
-            quarantined_rows = sum(1 for line in bad_rows_file.read_text(encoding="utf-8").splitlines() if line.strip())
+            quarantined_rows = sum(
+                1
+                for line in bad_rows_file.read_text(encoding="utf-8").splitlines()
+                if line.strip()
+            )
 
         return DatabaseStatsResponse(
             ok=True,

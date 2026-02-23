@@ -35,7 +35,9 @@ class PolicyEngine:
         spend = float(metrics.get("spend", 0.0))
         approved = bool(metrics.get("approved", False))
         if spend > 50.0 and not approved:
-            return RuleResult(False, "require_approval", "spend threshold exceeded without approval")
+            return RuleResult(
+                False, "require_approval", "spend threshold exceeded without approval"
+            )
 
         refund_rate = float(metrics.get("refund_rate", 0.0))
         if refund_rate > 5.0:
@@ -61,7 +63,9 @@ class LangGraphRuntime:
     def agents(self) -> List[str]:
         return list(self._agents)
 
-    def run(self, goal: str, context: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    def run(
+        self, goal: str, context: Optional[Dict[str, Any]] = None
+    ) -> Dict[str, Any]:
         payload = {
             "timestamp": datetime.now(timezone.utc).isoformat(),
             "goal": goal,
@@ -100,7 +104,9 @@ class OperationalRuntime:
     def langgraph(self) -> LangGraphRuntime:
         return self._langgraph
 
-    def create_blueprint(self, name: str, spec: Dict[str, Any], owner: str = "operator") -> Dict[str, Any]:
+    def create_blueprint(
+        self, name: str, spec: Dict[str, Any], owner: str = "operator"
+    ) -> Dict[str, Any]:
         blueprint = {
             "blueprint_id": f"bp-{secrets.token_hex(4)}",
             "name": name,
@@ -118,7 +124,10 @@ class OperationalRuntime:
         if not blueprint:
             return {"error": "blueprint_not_found"}
 
-        has_artifact = bool(blueprint.get("spec", {}).get("artifact") or blueprint.get("spec", {}).get("artifact_uri"))
+        has_artifact = bool(
+            blueprint.get("spec", {}).get("artifact")
+            or blueprint.get("spec", {}).get("artifact_uri")
+        )
         status = "approved" if has_artifact else "needs_review"
         result = {
             "blueprint_id": blueprint_id,
@@ -130,7 +139,9 @@ class OperationalRuntime:
             },
             "validated_at": datetime.now(timezone.utc).isoformat(),
         }
-        self._append_jsonl(self._blueprints_file, {**blueprint, "status": status, "validation": result})
+        self._append_jsonl(
+            self._blueprints_file, {**blueprint, "status": status, "validation": result}
+        )
         return result
 
     def create_offer(
@@ -143,7 +154,11 @@ class OperationalRuntime:
         approved: bool = False,
         refund_rate: float = 0.0,
     ) -> Dict[str, Any]:
-        margin = ((price_cents - cost_cents) / price_cents * 100.0) if price_cents > 0 else 0.0
+        margin = (
+            ((price_cents - cost_cents) / price_cents * 100.0)
+            if price_cents > 0
+            else 0.0
+        )
         decision = self._policy.evaluate_publish(
             {
                 "margin": margin,
@@ -178,7 +193,9 @@ class OperationalRuntime:
     def list_catalog(self) -> List[Dict[str, Any]]:
         return self._read_jsonl(self._offers_file)
 
-    def checkout(self, sku: str, quantity: int, payment_provider: str = "manual") -> Dict[str, Any]:
+    def checkout(
+        self, sku: str, quantity: int, payment_provider: str = "manual"
+    ) -> Dict[str, Any]:
         offer = self._find_last(self._offers_file, "sku", sku)
         if not offer:
             return {"error": "sku_not_found"}
@@ -201,7 +218,10 @@ class OperationalRuntime:
         if not order:
             return {"error": "order_not_found"}
 
-        if order.get("status") in {"paid", "fulfilled"} and event == "payment_succeeded":
+        if (
+            order.get("status") in {"paid", "fulfilled"}
+            and event == "payment_succeeded"
+        ):
             return {"ok": True, "idempotent": True, "order": order}
 
         if event != "payment_succeeded":
@@ -235,7 +255,9 @@ class OperationalRuntime:
         order["status"] = "fulfilled"
         order["fulfillment_mode"] = mode
         order["fulfilled_at"] = datetime.now(timezone.utc).isoformat()
-        order["tracking"] = f"trk-{secrets.token_hex(4)}" if mode == "physical" else "digital-delivery"
+        order["tracking"] = (
+            f"trk-{secrets.token_hex(4)}" if mode == "physical" else "digital-delivery"
+        )
         self._append_jsonl(self._orders_file, order)
 
         self._append_jsonl(

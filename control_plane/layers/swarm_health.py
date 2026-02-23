@@ -15,6 +15,8 @@ class SwarmHealthLayer(BaseLayer):
 
     def collect(self) -> list[dict]:
         current = self._state.get_value("swarm_health.node_availability", 100)
-        return [self._make_record("swarm_health.node_availability", current,
-                                  units="percent")]
-
+        return [
+            self._make_record(
+                "swarm_health.node_availability", current, units="percent"
+            )
+        ]

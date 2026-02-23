@@ -30,6 +30,7 @@ class TestAutoLoopManager(unittest.TestCase):
     def tearDown(self):
         self.loop.stop()
         import shutil
+
         shutil.rmtree(self.tmpdir, ignore_errors=True)
 
     def test_single_step_returns_mission_id(self):
@@ -58,7 +59,13 @@ class TestAutoLoopManager(unittest.TestCase):
     def test_get_state(self):
         """get_state returns expected keys."""
         state = self.loop.get_state()
-        for key in ("running", "tick_count", "last_tick_ts", "tick_interval", "max_ticks_per_minute"):
+        for key in (
+            "running",
+            "tick_count",
+            "last_tick_ts",
+            "tick_interval",
+            "max_ticks_per_minute",
+        ):
             self.assertIn(key, state)
 
     def test_start_stop(self):
@@ -114,7 +121,9 @@ class TestAutoLoopManager(unittest.TestCase):
     def test_rate_limit(self):
         """Rate limiter caps ticks per minute."""
         # Fill up the rate limit
-        self.loop._recent_tick_times = [time.monotonic()] * self.loop.MAX_TICKS_PER_MINUTE
+        self.loop._recent_tick_times = [
+            time.monotonic()
+        ] * self.loop.MAX_TICKS_PER_MINUTE
         self.assertFalse(self.loop._rate_limit_ok())
 
 
@@ -131,6 +140,7 @@ class TestEcosystemEndpoints(unittest.TestCase):
         cls.tmpdir = tempfile.mkdtemp()
         # Patch engine to use temp data dir
         from swarmz_runtime.api import server
+
         original_get_engine = server.get_engine
 
         def _temp_engine():
@@ -138,6 +148,7 @@ class TestEcosystemEndpoints(unittest.TestCase):
             return engine
 
         from swarmz_runtime.api.server import app
+
         cls.client = TestClient(app)
 
     def test_health(self):
@@ -225,7 +236,9 @@ def run_tests():
     print(f"Failures: {len(result.failures)}")
     print(f"Errors: {len(result.errors)}")
     if result.testsRun > 0:
-        print(f"Success rate: {((result.testsRun - len(result.failures) - len(result.errors)) / result.testsRun * 100):.1f}%")
+        print(
+            f"Success rate: {((result.testsRun - len(result.failures) - len(result.errors)) / result.testsRun * 100):.1f}%"
+        )
     print("=" * 60)
 
     return 0 if result.wasSuccessful() else 1
@@ -233,4 +246,3 @@ def run_tests():
 
 if __name__ == "__main__":
     sys.exit(run_tests())
-

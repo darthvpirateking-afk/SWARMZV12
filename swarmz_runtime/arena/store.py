@@ -65,7 +65,8 @@ class ArenaStore:
 
     def get_candidates_for_run(self, run_id: str) -> List[Dict[str, Any]]:
         return [
-            c for c in self._records(read_jsonl(self.candidates_file))
+            c
+            for c in self._records(read_jsonl(self.candidates_file))
             if c.get("run_id") == run_id
         ]
 

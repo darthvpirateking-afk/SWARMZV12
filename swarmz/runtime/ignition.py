@@ -1,4 +1,4 @@
-from typing import Callable, Dict, List, Optional
+from typing import Callable, List, Optional
 from dataclasses import dataclass, field
 import logging
 import time
@@ -6,28 +6,29 @@ import time
 logger = logging.getLogger("swarmz.ignition")
 logger.setLevel(logging.INFO)
 
+
 @dataclass
 class IgnitionEvent:
     """A single lifecycle event fired during system startup."""
+
     name: str
     timestamp: float
     metadata: dict = field(default_factory=dict)
 
+
 @dataclass
 class RuntimeIgnitionState:
     """Tracks ignition progress for auditability and operator visibility."""
+
     started: bool = False
     completed: bool = False
     events: List[IgnitionEvent] = field(default_factory=list)
 
     def record(self, name: str, metadata: Optional[dict] = None):
-        evt = IgnitionEvent(
-            name=name,
-            timestamp=time.time(),
-            metadata=metadata or {}
-        )
+        evt = IgnitionEvent(name=name, timestamp=time.time(), metadata=metadata or {})
         self.events.append(evt)
         logger.info(f"[IGNITION] {name} :: {evt.metadata}")
+
 
 class RuntimeIgnition:
     """
@@ -59,20 +60,25 @@ class RuntimeIgnition:
 
         return self.state
 
+
 # ---------------------------------------------------------------------------
 # DEFAULT SYSTEM STEPS
 # These are minimal, operator-grade startup steps.
 # The agent can expand this list as SWARMZ grows.
 # ---------------------------------------------------------------------------
 
+
 def step_load_kernels(state: RuntimeIgnitionState):
     state.record("load_kernels", {"status": "ok"})
+
 
 def step_load_patchpacks(state: RuntimeIgnitionState):
     state.record("load_patchpacks", {"status": "ok"})
 
+
 def step_load_missions(state: RuntimeIgnitionState):
     state.record("load_missions", {"status": "ok"})
+
 
 def build_default_ignition() -> RuntimeIgnition:
     """Factory for a fully wired ignition sequence."""

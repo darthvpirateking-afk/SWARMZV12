@@ -10,12 +10,14 @@ import json
 
 EVENT_SCHEMA_VERSION = "1.0"
 
+
 def compute_event_id(event):
     """Compute a unique event ID based on the canonical JSON representation."""
     event_copy = event.copy()
     event_copy.pop("event_id", None)
     canonical_json = json.dumps(event_copy, sort_keys=True)
     return hashlib.sha256(canonical_json.encode()).hexdigest()
+
 
 def validate_event(event):
     """Validate an event against the canonical schema."""

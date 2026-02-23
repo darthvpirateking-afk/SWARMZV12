@@ -20,7 +20,13 @@ class RelevanceEngine:
         self.warm_dir = self.mem_dir / "warm"
         self.cold_dir = self.mem_dir / "cold"
         self.archive_dir = self.mem_dir / "archive"
-        for d in [self.mem_dir, self.hot_dir, self.warm_dir, self.cold_dir, self.archive_dir]:
+        for d in [
+            self.mem_dir,
+            self.hot_dir,
+            self.warm_dir,
+            self.cold_dir,
+            self.archive_dir,
+        ]:
             d.mkdir(parents=True, exist_ok=True)
         # Make hot.jsonl deterministic and parallel-safe:
         (self.hot_dir / "hot.jsonl").touch(exist_ok=True)
@@ -66,15 +72,24 @@ class RelevanceEngine:
         return {"hot": hot, "lessons": lessons}
 
     # ---------- Scoring & tiering ----------
-    def _compute_usefulness(self, inputs_hash: str, strategy: str, score: float, success: bool) -> float:
+    def _compute_usefulness(
+        self, inputs_hash: str, strategy: str, score: float, success: bool
+    ) -> float:
         impact = max(score, 0.0)
         accuracy = 0.0
         regret = 0.0
         if self.counterfactual:
             cf_tail = self._tail_jsonl(self.data_dir / "counterfactual_log.jsonl", 50)
-            matching = [e for e in cf_tail if e.get("inputs_hash") == inputs_hash and e.get("selected_strategy") == strategy]
+            matching = [
+                e
+                for e in cf_tail
+                if e.get("inputs_hash") == inputs_hash
+                and e.get("selected_strategy") == strategy
+            ]
             if matching:
-                deltas = [abs(e.get("predicted_vs_actual_delta", 0.0)) for e in matching]
+                deltas = [
+                    abs(e.get("predicted_vs_actual_delta", 0.0)) for e in matching
+                ]
                 accuracy = max(0.0, 1.0 - (sum(deltas) / max(len(deltas), 1)))
                 regret = max(e.get("regret_score", 0.0) for e in matching)
         freq = self._recurrence(inputs_hash, strategy)
@@ -84,7 +99,12 @@ class RelevanceEngine:
 
     def _recurrence(self, inputs_hash: str, strategy: str) -> float:
         hist = self.evolution.history_tail(limit=200)
-        hits = sum(1 for h in hist if h.get("inputs_hash") == inputs_hash and h.get("strategy_used") == strategy)
+        hits = sum(
+            1
+            for h in hist
+            if h.get("inputs_hash") == inputs_hash
+            and h.get("strategy_used") == strategy
+        )
         return min(1.0, hits / 20.0)
 
     def _tier_for(self, usefulness: float) -> str:
@@ -108,17 +128,20 @@ class RelevanceEngine:
             self._append_gzip_jsonl(compressed_path, record)
             self._emit_lesson(record, compressed=True)
         else:
-            self._append_jsonl(self.archive_dir / "archive.jsonl", {"hash": record.get("inputs_hash"), "ts": record.get("timestamp")})
+            self._append_jsonl(
+                self.archive_dir / "archive.jsonl",
+                {"hash": record.get("inputs_hash"), "ts": record.get("timestamp")},
+            )
 
     def _append_jsonl(self, path: Path, row: Dict[str, Any]) -> None:
         path.parent.mkdir(parents=True, exist_ok=True)
         with open(path, "a", encoding="utf-8") as f:
-            f.write(json.dumps(row, separators=(',', ':')) + "\n")
+            f.write(json.dumps(row, separators=(",", ":")) + "\n")
 
     def _append_gzip_jsonl(self, path: Path, row: Dict[str, Any]) -> None:
         path.parent.mkdir(parents=True, exist_ok=True)
         with gzip.open(path, "at", encoding="utf-8") as f:
-            f.write(json.dumps(row, separators=(',', ':')) + "\n")
+            f.write(json.dumps(row, separators=(",", ":")) + "\n")
 
     def _tail_jsonl(self, path: Path, limit: int) -> List[Dict[str, Any]]:
         if not path.exists():
@@ -167,7 +190,8 @@ class RelevanceEngine:
             "situation_pattern": rec.get("inputs_hash"),
             "effective_action": rec.get("strategy"),
             "ineffective_action": None if rec.get("success") else rec.get("strategy"),
-            "confidence_weight": max(0.1, rec.get("usefulness", 0.1)) * (0.5 if compressed else 1.0),
+            "confidence_weight": max(0.1, rec.get("usefulness", 0.1))
+            * (0.5 if compressed else 1.0),
         }
         self._append_jsonl(self.lessons_file, lesson)
 
@@ -216,4 +240,3 @@ class RelevanceEngine:
         noise = len(hist) - signals
         total = max(len(hist), 1)
         return (round(signals / total, 3), round(noise / total, 3))
-

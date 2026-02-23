@@ -59,14 +59,23 @@ class OperatorEcosystem:
         return rows
 
     @staticmethod
-    def _find_last(rows: List[Dict[str, Any]], key: str, value: Any) -> Optional[Dict[str, Any]]:
+    def _find_last(
+        rows: List[Dict[str, Any]], key: str, value: Any
+    ) -> Optional[Dict[str, Any]]:
         for row in reversed(rows):
             if row.get(key) == value:
                 return row
         return None
 
     # ---------- Operator OS ----------
-    def add_event(self, event_type: str, domain: str, risk: str = "low", money_impact_cents: int = 0, details: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    def add_event(
+        self,
+        event_type: str,
+        domain: str,
+        risk: str = "low",
+        money_impact_cents: int = 0,
+        details: Optional[Dict[str, Any]] = None,
+    ) -> Dict[str, Any]:
         row = {
             "event_id": f"evt-{secrets.token_hex(4)}",
             "event_type": event_type,
@@ -79,17 +88,37 @@ class OperatorEcosystem:
         self._append_jsonl(self._events, row)
         return row
 
-    def list_timeline(self, agent: Optional[str] = None, domain: Optional[str] = None, risk: Optional[str] = None) -> List[Dict[str, Any]]:
+    def list_timeline(
+        self,
+        agent: Optional[str] = None,
+        domain: Optional[str] = None,
+        risk: Optional[str] = None,
+    ) -> List[Dict[str, Any]]:
         rows = self._read_jsonl(self._events)
         if agent:
-            rows = [r for r in rows if str(r.get("details", {}).get("agent", "")).lower() == agent.lower()]
+            rows = [
+                r
+                for r in rows
+                if str(r.get("details", {}).get("agent", "")).lower() == agent.lower()
+            ]
         if domain:
-            rows = [r for r in rows if str(r.get("domain", "")).lower() == domain.lower()]
+            rows = [
+                r for r in rows if str(r.get("domain", "")).lower() == domain.lower()
+            ]
         if risk:
             rows = [r for r in rows if str(r.get("risk", "")).lower() == risk.lower()]
         return rows
 
-    def upsert_mission(self, mission_id: str, mission_type: str, status: str, risk_level: str, budget_cents: int, policy_profile: str, agents: List[str]) -> Dict[str, Any]:
+    def upsert_mission(
+        self,
+        mission_id: str,
+        mission_type: str,
+        status: str,
+        risk_level: str,
+        budget_cents: int,
+        policy_profile: str,
+        agents: List[str],
+    ) -> Dict[str, Any]:
         row = {
             "mission_id": mission_id,
             "mission_type": mission_type,
@@ -114,7 +143,11 @@ class OperatorEcosystem:
         return out
 
     def set_money_risk_snapshot(self, payload: Dict[str, Any]) -> Dict[str, Any]:
-        row = {"snapshot_id": f"mr-{secrets.token_hex(4)}", "created_at": self._now(), **payload}
+        row = {
+            "snapshot_id": f"mr-{secrets.token_hex(4)}",
+            "created_at": self._now(),
+            **payload,
+        }
         self._append_jsonl(self._risk, row)
         return row
 
@@ -144,7 +177,9 @@ class OperatorEcosystem:
     def list_operator_profiles(self) -> List[Dict[str, Any]]:
         return self._read_jsonl(self._profiles)
 
-    def add_preference(self, operator_id: str, key: str, value_json: Dict[str, Any]) -> Dict[str, Any]:
+    def add_preference(
+        self, operator_id: str, key: str, value_json: Dict[str, Any]
+    ) -> Dict[str, Any]:
         row = {
             "id": f"pref-{secrets.token_hex(4)}",
             "operator_id": operator_id,
@@ -155,7 +190,14 @@ class OperatorEcosystem:
         self._append_jsonl(self._preferences, row)
         return row
 
-    def add_policy(self, operator_id: str, rule_text: str, rule_code: str, scope: str, status: str = "active") -> Dict[str, Any]:
+    def add_policy(
+        self,
+        operator_id: str,
+        rule_text: str,
+        rule_code: str,
+        scope: str,
+        status: str = "active",
+    ) -> Dict[str, Any]:
         row = {
             "id": f"pol-{secrets.token_hex(4)}",
             "operator_id": operator_id,
@@ -168,7 +210,13 @@ class OperatorEcosystem:
         self._append_jsonl(self._policies, row)
         return row
 
-    def add_goal(self, operator_id: str, time_horizon: str, goal_text: str, metrics_json: Dict[str, Any]) -> Dict[str, Any]:
+    def add_goal(
+        self,
+        operator_id: str,
+        time_horizon: str,
+        goal_text: str,
+        metrics_json: Dict[str, Any],
+    ) -> Dict[str, Any]:
         row = {
             "id": f"goal-{secrets.token_hex(4)}",
             "operator_id": operator_id,
@@ -180,13 +228,19 @@ class OperatorEcosystem:
         self._append_jsonl(self._goals, row)
         return row
 
-    def evaluate_policy_decision(self, operator_id: str, action: str, context: Dict[str, Any]) -> Dict[str, Any]:
+    def evaluate_policy_decision(
+        self, operator_id: str, action: str, context: Dict[str, Any]
+    ) -> Dict[str, Any]:
         profiles = self._read_jsonl(self._profiles)
         profile = self._find_last(profiles, "id", operator_id)
         if not profile:
             return {"error": "operator_not_found"}
 
-        policies = [p for p in self._read_jsonl(self._policies) if p.get("operator_id") == operator_id and p.get("status") == "active"]
+        policies = [
+            p
+            for p in self._read_jsonl(self._policies)
+            if p.get("operator_id") == operator_id and p.get("status") == "active"
+        ]
         fired: List[str] = []
         allowed = True
 
@@ -199,7 +253,11 @@ class OperatorEcosystem:
             if "margin < 20" in txt and margin < 20.0:
                 fired.append(p["id"])
                 allowed = False
-            if "spend > 100" in txt and spend > 100.0 and not context.get("approved", False):
+            if (
+                "spend > 100" in txt
+                and spend > 100.0
+                and not context.get("approved", False)
+            ):
                 fired.append(p["id"])
                 allowed = False
             if "refund_rate > 5" in txt and refund_rate > 5.0:
@@ -225,7 +283,9 @@ class OperatorEcosystem:
         return decision
 
     # ---------- Artifact Vault ----------
-    def add_blueprint(self, blueprint_id: str, name: str, version: int, manifest: Dict[str, Any]) -> Dict[str, Any]:
+    def add_blueprint(
+        self, blueprint_id: str, name: str, version: int, manifest: Dict[str, Any]
+    ) -> Dict[str, Any]:
         row = {
             "blueprint_id": blueprint_id,
             "name": name,
@@ -236,7 +296,14 @@ class OperatorEcosystem:
         self._append_jsonl(self._blueprints, row)
         return row
 
-    def add_offer(self, offer_id: str, blueprint_id: str, sku: str, channel: str, margin_percent: float) -> Dict[str, Any]:
+    def add_offer(
+        self,
+        offer_id: str,
+        blueprint_id: str,
+        sku: str,
+        channel: str,
+        margin_percent: float,
+    ) -> Dict[str, Any]:
         row = {
             "offer_id": offer_id,
             "blueprint_id": blueprint_id,
@@ -248,12 +315,26 @@ class OperatorEcosystem:
         self._append_jsonl(self._offers, row)
         return row
 
-    def add_listing(self, listing_id: str, offer_id: str, status: str) -> Dict[str, Any]:
-        row = {"listing_id": listing_id, "offer_id": offer_id, "status": status, "created_at": self._now()}
+    def add_listing(
+        self, listing_id: str, offer_id: str, status: str
+    ) -> Dict[str, Any]:
+        row = {
+            "listing_id": listing_id,
+            "offer_id": offer_id,
+            "status": status,
+            "created_at": self._now(),
+        }
         self._append_jsonl(self._listings, row)
         return row
 
-    def add_order(self, order_id: str, offer_id: str, total_cents: int, refund_rate: float, supplier: str) -> Dict[str, Any]:
+    def add_order(
+        self,
+        order_id: str,
+        offer_id: str,
+        total_cents: int,
+        refund_rate: float,
+        supplier: str,
+    ) -> Dict[str, Any]:
         row = {
             "order_id": order_id,
             "offer_id": offer_id,
@@ -290,7 +371,17 @@ class OperatorEcosystem:
         self._append_jsonl(self._experiments, row)
         return row
 
-    def add_outcome(self, subject_type: str, subject_id: str, conversion: float, margin: float, refund_rate: float, sla_adherence: float, channel: str, supplier: str) -> Dict[str, Any]:
+    def add_outcome(
+        self,
+        subject_type: str,
+        subject_id: str,
+        conversion: float,
+        margin: float,
+        refund_rate: float,
+        sla_adherence: float,
+        channel: str,
+        supplier: str,
+    ) -> Dict[str, Any]:
         row = {
             "id": f"out-{secrets.token_hex(4)}",
             "subject_type": subject_type,
@@ -306,7 +397,14 @@ class OperatorEcosystem:
         self._append_jsonl(self._outcomes, row)
         return row
 
-    def add_reflection(self, agent: str, scope: str, input_summary: str, output_summary: str, changes_json: Dict[str, Any]) -> Dict[str, Any]:
+    def add_reflection(
+        self,
+        agent: str,
+        scope: str,
+        input_summary: str,
+        output_summary: str,
+        changes_json: Dict[str, Any],
+    ) -> Dict[str, Any]:
         row = {
             "id": f"ref-{secrets.token_hex(4)}",
             "agent": agent,
@@ -319,7 +417,9 @@ class OperatorEcosystem:
         self._append_jsonl(self._reflections, row)
         return row
 
-    def add_embedding(self, source_type: str, source_id: str, text: str, embedding: List[float]) -> Dict[str, Any]:
+    def add_embedding(
+        self, source_type: str, source_id: str, text: str, embedding: List[float]
+    ) -> Dict[str, Any]:
         row = {
             "id": f"emb-{secrets.token_hex(4)}",
             "source_type": source_type,
@@ -332,11 +432,25 @@ class OperatorEcosystem:
         return row
 
     def get_lineage(self, blueprint_id: str) -> Dict[str, Any]:
-        blueprints = [b for b in self._read_jsonl(self._blueprints) if b.get("blueprint_id") == blueprint_id]
-        offers = [o for o in self._read_jsonl(self._offers) if o.get("blueprint_id") == blueprint_id]
+        blueprints = [
+            b
+            for b in self._read_jsonl(self._blueprints)
+            if b.get("blueprint_id") == blueprint_id
+        ]
+        offers = [
+            o
+            for o in self._read_jsonl(self._offers)
+            if o.get("blueprint_id") == blueprint_id
+        ]
         offer_ids = {o.get("offer_id") for o in offers}
-        listings = [l for l in self._read_jsonl(self._listings) if l.get("offer_id") in offer_ids]
-        orders = [o for o in self._read_jsonl(self._orders) if o.get("offer_id") in offer_ids]
+        listings = [
+            l
+            for l in self._read_jsonl(self._listings)
+            if l.get("offer_id") in offer_ids
+        ]
+        orders = [
+            o for o in self._read_jsonl(self._orders) if o.get("offer_id") in offer_ids
+        ]
         gross_cents = sum(int(o.get("total_cents", 0)) for o in orders)
 
         return {
@@ -348,20 +462,42 @@ class OperatorEcosystem:
             "gross_cents": gross_cents,
         }
 
-    def list_experiments(self, subject_type: Optional[str] = None, subject_id: Optional[str] = None) -> List[Dict[str, Any]]:
+    def list_experiments(
+        self, subject_type: Optional[str] = None, subject_id: Optional[str] = None
+    ) -> List[Dict[str, Any]]:
         rows = self._read_jsonl(self._experiments)
         if subject_type:
-            rows = [r for r in rows if str(r.get("subject_type", "")).lower() == subject_type.lower()]
+            rows = [
+                r
+                for r in rows
+                if str(r.get("subject_type", "")).lower() == subject_type.lower()
+            ]
         if subject_id:
-            rows = [r for r in rows if str(r.get("subject_id", "")).lower() == subject_id.lower()]
+            rows = [
+                r
+                for r in rows
+                if str(r.get("subject_id", "")).lower() == subject_id.lower()
+            ]
         return rows
 
     def top_winners(self, limit: int = 5) -> List[Dict[str, Any]]:
         rows = self._read_jsonl(self._outcomes)
-        rows.sort(key=lambda r: (float(r.get("margin", 0.0)), float(r.get("conversion", 0.0))), reverse=True)
+        rows.sort(
+            key=lambda r: (
+                float(r.get("margin", 0.0)),
+                float(r.get("conversion", 0.0)),
+            ),
+            reverse=True,
+        )
         return rows[: max(1, limit)]
 
     def top_failures(self, limit: int = 5) -> List[Dict[str, Any]]:
         rows = self._read_jsonl(self._outcomes)
-        rows.sort(key=lambda r: (float(r.get("refund_rate", 0.0)), -float(r.get("sla_adherence", 0.0))), reverse=True)
+        rows.sort(
+            key=lambda r: (
+                float(r.get("refund_rate", 0.0)),
+                -float(r.get("sla_adherence", 0.0)),
+            ),
+            reverse=True,
+        )
         return rows[: max(1, limit)]

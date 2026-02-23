@@ -15,7 +15,7 @@ DEFAULT_FUTURE_STATE = {
         "stability": 0.7,
         "growth": 0.6,
         "optionality": 0.5,
-        "recovery_capacity": 0.7
+        "recovery_capacity": 0.7,
     },
     "drift_tolerance": 0.1,
     "last_updated": None,
@@ -23,7 +23,15 @@ DEFAULT_FUTURE_STATE = {
 
 
 class TrajectoryEngine:
-    def __init__(self, data_dir: str, evolution, perf_ledger, world_model=None, divergence=None, entropy=None):
+    def __init__(
+        self,
+        data_dir: str,
+        evolution,
+        perf_ledger,
+        world_model=None,
+        divergence=None,
+        entropy=None,
+    ):
         self.data_dir = Path(data_dir)
         self.data_dir.mkdir(parents=True, exist_ok=True)
         self.future_state_file = self.data_dir / "future_state.json"
@@ -51,11 +59,15 @@ class TrajectoryEngine:
             try:
                 with open(self.future_state_file, "r", encoding="utf-8") as f:
                     data = json.load(f)
-                    DEFAULT_FUTURE_STATE.update({k: v for k, v in data.items() if k in DEFAULT_FUTURE_STATE})
+                    DEFAULT_FUTURE_STATE.update(
+                        {k: v for k, v in data.items() if k in DEFAULT_FUTURE_STATE}
+                    )
             except Exception:
                 pass
         if DEFAULT_FUTURE_STATE["last_updated"] is None:
-            DEFAULT_FUTURE_STATE["last_updated"] = datetime.now(timezone.utc).isoformat() + "Z"
+            DEFAULT_FUTURE_STATE["last_updated"] = (
+                datetime.now(timezone.utc).isoformat() + "Z"
+            )
         with open(self.future_state_file, "w", encoding="utf-8") as f:
             json.dump(DEFAULT_FUTURE_STATE, f, indent=2)
         return DEFAULT_FUTURE_STATE
@@ -84,7 +96,9 @@ class TrajectoryEngine:
             f.write(json.dumps(event, separators=(",", ":")) + "\n")
 
     # ---------- Metric computation ----------
-    def _compute_axis_estimates(self, current_state: Dict[str, Any]) -> Dict[str, float]:
+    def _compute_axis_estimates(
+        self, current_state: Dict[str, Any]
+    ) -> Dict[str, float]:
         failure_rate = current_state.get("failure_rate", 0.0)
         throughput = current_state.get("throughput", 0.0)
         latency = current_state.get("latency", 0.0)
@@ -105,7 +119,9 @@ class TrajectoryEngine:
         weights = self.future_state.get("priority_axes", {})
         dist = 0.0
         for axis, target in weights.items():
-            dist += abs(axes.get(axis, 0.0) - float(target)) * max(0.1, float(weights.get(axis, 0.1)))
+            dist += abs(axes.get(axis, 0.0) - float(target)) * max(
+                0.1, float(weights.get(axis, 0.1))
+            )
         return dist
 
     def _recent_trend(self, scores: List[float]) -> float:
@@ -123,8 +139,16 @@ class TrajectoryEngine:
             start_ts = perf_entries[0].get("timestamp")
             end_ts = perf_entries[-1].get("timestamp")
             try:
-                start_dt = datetime.fromisoformat(start_ts.replace("Z", "+00:00")) if start_ts else datetime.now(timezone.utc)
-                end_dt = datetime.fromisoformat(end_ts.replace("Z", "+00:00")) if end_ts else datetime.now(timezone.utc)
+                start_dt = (
+                    datetime.fromisoformat(start_ts.replace("Z", "+00:00"))
+                    if start_ts
+                    else datetime.now(timezone.utc)
+                )
+                end_dt = (
+                    datetime.fromisoformat(end_ts.replace("Z", "+00:00"))
+                    if end_ts
+                    else datetime.now(timezone.utc)
+                )
                 elapsed_hours = max((end_dt - start_dt).total_seconds() / 3600.0, 0.001)
             except Exception:
                 elapsed_hours = 1.0
@@ -135,8 +159,12 @@ class TrajectoryEngine:
         failures = len(perf_entries) - successes
         failure_rate = failures / max(len(perf_entries), 1)
         throughput = len(perf_entries) / elapsed_hours
-        latency = sum(e.get("runtime_ms", 0.0) for e in perf_entries) / max(len(perf_entries), 1)
-        resource_usage = sum(e.get("cost_estimate", 0.0) for e in perf_entries) / max(len(perf_entries), 1)
+        latency = sum(e.get("runtime_ms", 0.0) for e in perf_entries) / max(
+            len(perf_entries), 1
+        )
+        resource_usage = sum(e.get("cost_estimate", 0.0) for e in perf_entries) / max(
+            len(perf_entries), 1
+        )
 
         scores = [h.get("score", 0.0) for h in hist]
         trend = self._recent_trend(scores)
@@ -148,7 +176,9 @@ class TrajectoryEngine:
             by_strat.setdefault(st, []).append(h.get("score", 0.0))
         strat_scores = [sum(v) / max(len(v), 1) for v in by_strat.values()] or [0.0]
         mean = sum(strat_scores) / len(strat_scores)
-        variance = sum((s - mean) ** 2 for s in strat_scores) / max(len(strat_scores), 1)
+        variance = sum((s - mean) ** 2 for s in strat_scores) / max(
+            len(strat_scores), 1
+        )
         variance = min(1.0, variance)
 
         return {
@@ -200,7 +230,9 @@ class TrajectoryEngine:
         bias += ent.get("exploration_bias_delta", 0.0)
         return bias
 
-    def after_outcome(self, success: bool, score: float, runtime_ms: float, strategy: str) -> None:
+    def after_outcome(
+        self, success: bool, score: float, runtime_ms: float, strategy: str
+    ) -> None:
         current_state = self._compute_current_state()
         self._write_current_state(current_state)
 
@@ -243,7 +275,9 @@ class TrajectoryEngine:
     def _maybe_reflect(self) -> None:
         now = datetime.now(timezone.utc)
         if self.reflection_file.exists():
-            mtime = datetime.fromtimestamp(os.path.getmtime(self.reflection_file), tz=timezone.utc)
+            mtime = datetime.fromtimestamp(
+                os.path.getmtime(self.reflection_file), tz=timezone.utc
+            )
             if (now - mtime) < timedelta(hours=24):
                 return
 
@@ -267,7 +301,9 @@ class TrajectoryEngine:
     def _maybe_daily_brief(self) -> None:
         now = datetime.now(timezone.utc)
         if self.daily_brief_file.exists():
-            mtime = datetime.fromtimestamp(os.path.getmtime(self.daily_brief_file), tz=timezone.utc)
+            mtime = datetime.fromtimestamp(
+                os.path.getmtime(self.daily_brief_file), tz=timezone.utc
+            )
             if (now - mtime) < timedelta(hours=24):
                 return
 
@@ -290,7 +326,11 @@ class TrajectoryEngine:
                             value_entries.append(json.loads(line))
                         except Exception:
                             continue
-        high_value = sorted(value_entries[-20:], key=lambda x: x.get("future_option_value", 0.0), reverse=True)[:5]
+        high_value = sorted(
+            value_entries[-20:],
+            key=lambda x: x.get("future_option_value", 0.0),
+            reverse=True,
+        )[:5]
         wasted = [v for v in value_entries[-20:] if v.get("direct_money_change", 0) < 0]
 
         lines = []
@@ -301,10 +341,14 @@ class TrajectoryEngine:
         lines.append(f"  Entropy mode: {entropy_state.get('mode')}")
         lines.append("High value actions:")
         for v in high_value:
-            lines.append(f"  {v.get('project','?')} +{v.get('future_option_value',0)}")
+            lines.append(
+                f"  {v.get('project', '?')} +{v.get('future_option_value', 0)}"
+            )
         lines.append("Wasted effort patterns:")
         for v in wasted[-3:]:
-            lines.append(f"  {v.get('project','?')} delta {v.get('direct_money_change',0)}")
+            lines.append(
+                f"  {v.get('project', '?')} delta {v.get('direct_money_change', 0)}"
+            )
         lines.append("Recommended focus shift:")
         if entropy_state.get("mode") == "CONSOLIDATE":
             lines.append("  Consolidate and finish pending commitments.")
@@ -315,4 +359,3 @@ class TrajectoryEngine:
 
         with open(self.daily_brief_file, "w", encoding="utf-8") as f:
             f.write("\n".join(lines))
-

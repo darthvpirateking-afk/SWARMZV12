@@ -33,6 +33,7 @@ TICK_INTERVAL = 1  # seconds
 
 # â”€â”€ atomic-ish JSONL helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
+
 def _rewrite_missions(missions):
     """Rewrite entire missions.jsonl from list (read-all, update, write-temp, replace)."""
     tmp = MISSIONS_FILE.with_suffix(".tmp")
@@ -57,6 +58,7 @@ def _write_heartbeat(status="up"):
 
 # â”€â”€ Stub workers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
+
 def _worker_smoke(mission: Dict[str, Any]) -> Dict[str, Any]:
     return {"ok": True, "type": "smoke"}
 
@@ -68,6 +70,7 @@ def _worker_test_mission(mission: Dict[str, Any]) -> Dict[str, Any]:
 def _worker_galileo_run(mission: Dict[str, Any]) -> Dict[str, Any]:
     try:
         from galileo.runner import run as galileo_run
+
         return galileo_run(mission)
     except Exception:
         return {"ok": True, "note": "galileo stub (import unavailable)"}
@@ -81,6 +84,7 @@ def _worker_ai_solve(mission: Dict[str, Any]) -> Dict[str, Any]:
     """Route mission through the AI mission solver (safe, prepare-only)."""
     try:
         from core.mission_solver import solve
+
         result = solve(mission)
         return {
             "ok": result.get("ok", False),
@@ -93,8 +97,12 @@ def _worker_ai_solve(mission: Dict[str, Any]) -> Dict[str, Any]:
             "latencyMs": result.get("latencyMs"),
         }
     except Exception as exc:
-        return {"ok": True, "type": "ai_solve", "source": "error_fallback",
-                "note": f"Solver unavailable: {str(exc)[:120]}"}
+        return {
+            "ok": True,
+            "type": "ai_solve",
+            "source": "error_fallback",
+            "note": f"Solver unavailable: {str(exc)[:120]}",
+        }
 
 
 # Categories that should go through AI solver when available
@@ -110,6 +118,7 @@ WORKERS = {
 
 # â”€â”€ Core tick logic â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
+
 def _process_one():
     """Find first PENDING mission, run it, write results."""
     missions, _, _ = read_jsonl(MISSIONS_FILE)
@@ -123,10 +132,12 @@ def _process_one():
             # QUARANTINE active â€” skip execution
             pending = [m for m in missions if m.get("status") == "PENDING"]
             if pending:
-                _audit("quarantine_blocked",
-                       pending_count=len(pending),
-                       total=total,
-                       success_rate=round(success_rate, 3))
+                _audit(
+                    "quarantine_blocked",
+                    pending_count=len(pending),
+                    total=total,
+                    success_rate=round(success_rate, 3),
+                )
             return
 
     target = None
@@ -146,6 +157,7 @@ def _process_one():
     pre_ctx = {}
     try:
         from core.context_pack import before_mission
+
         pre_ctx = before_mission(target)
     except Exception:
         pass
@@ -198,8 +210,11 @@ def _process_one():
         # â”€â”€ Afterâ€‘mission: update ALL engines â”€â”€
         try:
             from core.context_pack import after_mission
+
             after_mission(
-                target, result, duration_ms,
+                target,
+                result,
+                duration_ms,
                 strategy=strategy,
                 inputs_hash=inputs_hash,
                 candidates=candidates,
@@ -232,6 +247,7 @@ def _process_one():
 
 # â”€â”€ Main loop â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
+
 def run_loop():
     """Infinite runner loop. Call from daemon thread or __main__."""
     DATA_DIR.mkdir(parents=True, exist_ok=True)
@@ -253,6 +269,6 @@ if __name__ == "__main__":
 
 # Minimal scaffold for swarm_runner.py
 
+
 def run_swarm():
     pass
-

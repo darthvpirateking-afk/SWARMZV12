@@ -76,4 +76,3 @@ def delete(store: str, key: str) -> Dict[str, Any]:
 
 def dump_store(store: str) -> Dict[str, Any]:
     return _load_store(store)
-

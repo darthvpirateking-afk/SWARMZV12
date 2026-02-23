@@ -2,6 +2,7 @@
 # This module enables multiple fabrics to coexist in superposed states.
 # Missions and swarm operations can operate across these superpositions.
 
+
 class OmniFabricEngineV5:
     def __init__(self):
         # Initialize superposed fabric states
@@ -26,6 +27,7 @@ class OmniFabricEngineV5:
         for fabric in self.superposed_fabrics:
             results[fabric] = operation(fabric)
         return results
+
 
 # Example usage
 if __name__ == "__main__":

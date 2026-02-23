@@ -16,7 +16,6 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
-
 # â”€â”€ Storage paths â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 _DATA_DIR = Path(__file__).resolve().parent.parent / "data" / "trials"
@@ -32,6 +31,7 @@ _LOCK = threading.Lock()
 # â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 # 1. DATA MODEL
 # â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
 
 def _now_iso() -> str:
     return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
@@ -55,8 +55,9 @@ def new_trial(
     """Create a new Trial dict with all required fields."""
     now = _now_iso()
     ts = _now_ts()
-    check_at = datetime.fromtimestamp(ts + check_after_sec, tz=timezone.utc
-                                       ).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+    check_at = datetime.fromtimestamp(ts + check_after_sec, tz=timezone.utc).strftime(
+        "%Y-%m-%dT%H:%M:%S.%fZ"
+    )
 
     # Capture baseline metric at creation time â€” gated by Hologram level.
     # LV1 ROOKIE power: auto-baseline capture. Below LV1, we intentionally
@@ -64,20 +65,13 @@ def new_trial(
     # against their first measurement.
     baseline = None
     baseline_evidence = None
-    allow_auto_baseline = True
+    # LV1 ROOKIE unlocks at >=5 verified trials (checked_at is set).
+    # Compute directly to avoid a circular import with core.hologram.
     try:
-        # Lazy import to avoid hard dependency during bootstrap.
-        from core.hologram import compute_level  # type: ignore
-
-        try:
-            level_state = compute_level()
-            allow_auto_baseline = level_state.get("level", 0) >= 1
-        except Exception:
-            # If hologram state is unavailable, default to current behaviour
-            # to avoid surprising users in legacy environments.
-            allow_auto_baseline = True
+        all_trials = load_all_trials()
+        verified_count = sum(1 for t in all_trials if t.get("checked_at") is not None)
+        allow_auto_baseline = verified_count >= 5
     except Exception:
-        # Hologram module not present â€” default to legacy behaviour.
         allow_auto_baseline = True
 
     if allow_auto_baseline:
@@ -110,26 +104,35 @@ def new_trial(
         trial["evidence"]["baseline"] = baseline_evidence
 
     _append_trial(trial)
-    _audit_event("trial_created", trial["id"], {
-        "action": action,
-        "context": context,
-        "metric_name": metric_name,
-        "check_after_sec": check_after_sec,
-        "metric_before": baseline,
-    })
+    _audit_event(
+        "trial_created",
+        trial["id"],
+        {
+            "action": action,
+            "context": context,
+            "metric_name": metric_name,
+            "check_after_sec": check_after_sec,
+            "metric_before": baseline,
+        },
+    )
 
     # Audit explicit use of the LV1 auto-baseline power when it is unlocked.
     if allow_auto_baseline and baseline is not None:
-        _audit_event("auto_baseline_captured", trial["id"], {
-            "metric_name": metric_name,
-            "context": context,
-            "metric_before": baseline,
-        })
+        _audit_event(
+            "auto_baseline_captured",
+            trial["id"],
+            {
+                "metric_name": metric_name,
+                "context": context,
+                "metric_before": baseline,
+            },
+        )
 
     return trial
 
 
 # â”€â”€ Append-only persistence â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
 
 def _append_jsonl(path: Path, obj: Dict[str, Any]) -> None:
     """Append a single JSON object as a line. Thread-safe."""
@@ -146,7 +149,9 @@ def _append_trial(trial: Dict[str, Any]) -> None:
     _append_jsonl(_TRIALS_FILE, trial)
 
 
-def _audit_event(event_type: str, trial_id: str, payload: Optional[Dict] = None) -> None:
+def _audit_event(
+    event_type: str, trial_id: str, payload: Optional[Dict] = None
+) -> None:
     event = {
         "event_id": str(uuid.uuid4()),
         "ts": _now_iso(),
@@ -158,6 +163,7 @@ def _audit_event(event_type: str, trial_id: str, payload: Optional[Dict] = None)
 
 
 # â”€â”€ Read helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
 
 def _read_jsonl(path: Path) -> List[Dict[str, Any]]:
     """Read all valid JSON lines from a file. Fail-open returns []."""
@@ -198,7 +204,9 @@ def get_trial(trial_id: str) -> Optional[Dict[str, Any]]:
     return None
 
 
-def update_trial(trial_id: str, updates: Dict[str, Any], reason: str = "update") -> Optional[Dict[str, Any]]:
+def update_trial(
+    trial_id: str, updates: Dict[str, Any], reason: str = "update"
+) -> Optional[Dict[str, Any]]:
     """
     'Update' a trial by appending a new version (append-only).
     The latest version for a given id wins when reading.
@@ -216,8 +224,10 @@ def update_trial(trial_id: str, updates: Dict[str, Any], reason: str = "update")
 # 2. TRIAL CREATION GATE
 # â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
+
 class TrialGateError(Exception):
     """Raised when a meaningful change is attempted without a Trial."""
+
     pass
 
 
@@ -244,12 +254,16 @@ def require_trial(
                 "Only admin can mark a change as non-trial. "
                 "Provide admin=True or create a Trial."
             )
-        _audit_event("non_trial_exemption", "NONE", {
-            "action": action,
-            "context": context,
-            "reason": non_trial_reason,
-            "created_by": created_by,
-        })
+        _audit_event(
+            "non_trial_exemption",
+            "NONE",
+            {
+                "action": action,
+                "context": context,
+                "reason": non_trial_reason,
+                "created_by": created_by,
+            },
+        )
         return None
 
     return new_trial(
@@ -275,7 +289,9 @@ def register_metric(name: str, resolver_fn):
     _METRIC_RESOLVERS[name] = resolver_fn
 
 
-def resolve_metric(metric_name: str, context: str) -> Tuple[Optional[float], Optional[Dict]]:
+def resolve_metric(
+    metric_name: str, context: str
+) -> Tuple[Optional[float], Optional[Dict]]:
     """
     Resolve a metric value for a given context.
     Returns (value, evidence_dict).
@@ -294,7 +310,9 @@ def resolve_metric(metric_name: str, context: str) -> Tuple[Optional[float], Opt
     return _builtin_resolve(metric_name, context)
 
 
-def _builtin_resolve(metric_name: str, context: str) -> Tuple[Optional[float], Optional[Dict]]:
+def _builtin_resolve(
+    metric_name: str, context: str
+) -> Tuple[Optional[float], Optional[Dict]]:
     """Built-in metric stubs. Pull real values from existing SWARMZ data."""
     data_dir = Path(__file__).resolve().parent.parent / "data"
 
@@ -419,15 +437,24 @@ def _resolve_cost_per_day(data_dir: Path, context: str) -> Tuple[float, Dict]:
         avg_calls = sum(days.values()) / len(days)
         # Rough estimate: $0.002 per call
         cost = round(avg_calls * 0.002, 4)
-        return (cost, {"avg_calls_per_day": round(avg_calls, 1), "days_counted": len(days)})
+        return (
+            cost,
+            {"avg_calls_per_day": round(avg_calls, 1), "days_counted": len(days)},
+        )
     except Exception:
         return (0.0, {"error": "could not compute cost_per_day"})
 
 
 def list_available_metrics() -> List[str]:
     """Return list of all known metric names."""
-    builtin = ["conversion_rate", "activation_rate", "retention_d1",
-               "errors_per_1k", "latency_p95", "cost_per_day"]
+    builtin = [
+        "conversion_rate",
+        "activation_rate",
+        "retention_d1",
+        "errors_per_1k",
+        "latency_p95",
+        "cost_per_day",
+    ]
     custom = [k for k in _METRIC_RESOLVERS if k not in builtin]
     return builtin + custom
 
@@ -435,6 +462,7 @@ def list_available_metrics() -> List[str]:
 # â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 # 4. INBOX QUERIES
 # â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
 
 def inbox_pending() -> List[Dict[str, Any]]:
     """Trials where survived is None, sorted by check_at ascending."""
@@ -463,7 +491,9 @@ def inbox_completed() -> List[Dict[str, Any]]:
 def inbox_counts() -> Dict[str, int]:
     """Quick counts for all three tabs."""
     trials = load_all_trials()
-    pending = sum(1 for t in trials if t.get("survived") is None and not t.get("reverted"))
+    pending = sum(
+        1 for t in trials if t.get("survived") is None and not t.get("reverted")
+    )
     needs_review = sum(1 for t in trials if t.get("survived") is False)
     completed = sum(1 for t in trials if t.get("survived") is True)
     reverted = sum(1 for t in trials if t.get("reverted"))
@@ -480,7 +510,10 @@ def inbox_counts() -> Dict[str, int]:
 # 5. REVERT
 # â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
-def revert_trial(trial_id: str, created_by: str = "operator") -> Optional[Dict[str, Any]]:
+
+def revert_trial(
+    trial_id: str, created_by: str = "operator"
+) -> Optional[Dict[str, Any]]:
     """
     Mark trial as reverted. Creates a new 'revert' trial automatically.
     """
@@ -516,7 +549,9 @@ def add_note(trial_id: str, note: str) -> Optional[Dict[str, Any]]:
     return update_trial(trial_id, {"notes": new_notes}, reason="note_added")
 
 
-def create_followup(trial_id: str, created_by: str = "operator", **overrides) -> Optional[Dict[str, Any]]:
+def create_followup(
+    trial_id: str, created_by: str = "operator", **overrides
+) -> Optional[Dict[str, Any]]:
     """Create a follow-up trial pre-filled from an existing trial."""
     trial = get_trial(trial_id)
     if not trial:
@@ -525,8 +560,12 @@ def create_followup(trial_id: str, created_by: str = "operator", **overrides) ->
         created_by=created_by,
         context=overrides.get("context", trial.get("context", "")),
         action=overrides.get("action", f"Follow-up: {trial.get('action', '')}"),
-        metric_name=overrides.get("metric_name", trial.get("metric_name", "conversion_rate")),
-        check_after_sec=overrides.get("check_after_sec", trial.get("check_after_sec", 300)),
+        metric_name=overrides.get(
+            "metric_name", trial.get("metric_name", "conversion_rate")
+        ),
+        check_after_sec=overrides.get(
+            "check_after_sec", trial.get("check_after_sec", 300)
+        ),
         expected_delta=overrides.get("expected_delta", trial.get("expected_delta")),
         tags=overrides.get("tags", ["followup"] + trial.get("tags", [])),
         notes=overrides.get("notes", f"Follow-up from trial {trial_id}"),
@@ -536,6 +575,7 @@ def create_followup(trial_id: str, created_by: str = "operator", **overrides) ->
 # â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 # 6. SURVIVAL SCORING & RANKING
 # â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
 
 def compute_survival_scores() -> Dict[str, Dict[str, Any]]:
     """
@@ -549,7 +589,9 @@ def compute_survival_scores() -> Dict[str, Dict[str, Any]]:
         if t.get("survived") is None:
             continue  # skip unchecked
         # Build bucket key from action first word + first tag
-        action_template = (t.get("action", "").split(":")[0].strip() or "unknown").lower()
+        action_template = (
+            t.get("action", "").split(":")[0].strip() or "unknown"
+        ).lower()
         tags = t.get("tags", [])
         tag = tags[0] if tags else "untagged"
         key = f"{action_template}|{tag}"
@@ -594,7 +636,9 @@ def rank_suggestions(suggestions: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     scores = compute_survival_scores()
 
     def _score_for(suggestion: Dict) -> float:
-        action = (suggestion.get("action", "").split(":")[0].strip() or "unknown").lower()
+        action = (
+            suggestion.get("action", "").split(":")[0].strip() or "unknown"
+        ).lower()
         tags = suggestion.get("tags", [])
         tag = tags[0] if tags else "untagged"
         key = f"{action}|{tag}"
@@ -632,10 +676,12 @@ def get_survival_leaderboard(limit: int = 20) -> List[Dict[str, Any]]:
 # 7. AUDIT TRAIL
 # â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
-def get_audit_trail(trial_id: Optional[str] = None, tail: int = 50) -> List[Dict[str, Any]]:
+
+def get_audit_trail(
+    trial_id: Optional[str] = None, tail: int = 50
+) -> List[Dict[str, Any]]:
     """Read audit events. Optionally filter by trial_id."""
     all_events = _read_jsonl(_AUDIT_FILE)
     if trial_id:
         all_events = [e for e in all_events if e.get("trial_id") == trial_id]
     return all_events[-tail:]
-

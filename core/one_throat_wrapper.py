@@ -8,6 +8,7 @@ Implements the One Throat Wrapper layer to centralize action handling.
 from core.enforcement_mode import handle_violation
 from core.reality_classifier import handle_action
 
+
 def one_throat_handler(action_name, action_func, *args, **kwargs):
     """
     Centralized handler for all actions.

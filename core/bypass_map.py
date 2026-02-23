@@ -10,10 +10,10 @@ from typing import Any, Dict, Iterable, List
 
 
 def build_bypass_map(events: Iterable[Dict[str, Any]]) -> List[Dict[str, Any]]:
-	results: List[Dict[str, Any]] = []
-	for event in events:
-		if not isinstance(event, dict):
-			continue
-		if event.get("event") == "bypass":
-			results.append(event)
-	return results
+    results: List[Dict[str, Any]] = []
+    for event in events:
+        if not isinstance(event, dict):
+            continue
+        if event.get("event") == "bypass":
+            results.append(event)
+    return results

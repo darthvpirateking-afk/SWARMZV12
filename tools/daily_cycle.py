@@ -7,8 +7,7 @@ Safe, additive, and non-destructive.
 """
 
 import subprocess
-import sys
-import time
+
 
 def run(cmd):
     print(f"\n>>> {cmd}")
@@ -16,6 +15,7 @@ def run(cmd):
         subprocess.run(cmd, shell=True, check=False)
     except Exception as e:
         print(f"[fail-open] {e}")
+
 
 def main():
     print("SWARMZ DAILY CYCLE START\n")
@@ -40,6 +40,7 @@ def main():
     print("  python tools/build_macro.py --sequence <top_id>")
 
     print("\nSWARMZ DAILY CYCLE COMPLETE.")
+
 
 if __name__ == "__main__":
     main()

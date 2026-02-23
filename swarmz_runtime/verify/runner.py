@@ -157,7 +157,11 @@ def verify_kernel_integrity(strict: bool = True) -> Dict[str, Any]:
             issues.append(f"Performance ledger corruption: {str(e)}")
 
     # Strict mode: Fail on any issues
-    integrity_passed = len(issues) == 0 if strict else len([i for i in issues if "corruption" in i or "compromised" in i]) == 0
+    integrity_passed = (
+        len(issues) == 0
+        if strict
+        else len([i for i in issues if "corruption" in i or "compromised" in i]) == 0
+    )
 
     result = {
         "integrity_passed": integrity_passed,
@@ -165,15 +169,17 @@ def verify_kernel_integrity(strict: bool = True) -> Dict[str, Any]:
         "checks": checks,
         "strict_mode": strict,
         "timestamp": started,
-        "validation_duration": time.time() - started
+        "validation_duration": time.time() - started,
     }
 
     # Log kernel validation
-    provenance.append_audit("kernel_validation", {
-        "integrity_passed": integrity_passed,
-        "issues_count": len(issues),
-        "strict_mode": strict
-    })
+    provenance.append_audit(
+        "kernel_validation",
+        {
+            "integrity_passed": integrity_passed,
+            "issues_count": len(issues),
+            "strict_mode": strict,
+        },
+    )
 
     return result
-

@@ -24,6 +24,7 @@ os.environ["SWARMZ_INFRA_ORCHESTRATOR_ENABLED"] = "1"
 try:
     from fastapi.testclient import TestClient
     from swarmz_runtime.api.server import app as runtime_app
+
     FASTAPI_AVAILABLE = True
 except Exception:
     FASTAPI_AVAILABLE = False
@@ -74,4 +75,3 @@ def test_runtime_infra():
 
 if __name__ == "__main__":  # pragma: no cover
     unittest.main()
-

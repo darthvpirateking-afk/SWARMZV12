@@ -43,6 +43,7 @@ def set_engine_provider(fn: Callable[[], SwarmzEngine]) -> None:
 
 # â”€â”€ request / response models â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
+
 class EcosystemRunRequest(BaseModel):
     operator_goal: str = "make money"
     constraints: Dict[str, Any] = {}
@@ -54,6 +55,7 @@ class AutoStartRequest(BaseModel):
 
 
 # â”€â”€ endpoints â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
 
 @router.post("/run")
 def ecosystem_run(req: EcosystemRunRequest):
@@ -105,7 +107,8 @@ def get_pack(mission_id: str):
         raise HTTPException(status_code=404, detail="Mission not found")
 
     audit_entries = [
-        e for e in engine.db.load_audit_log(limit=500)
+        e
+        for e in engine.db.load_audit_log(limit=500)
         if e.get("mission_id") == mission_id
     ]
     return {"mission": mission, "audit": audit_entries}
@@ -116,4 +119,3 @@ def ecosystem_status():
     """Show loop state, tick_count, last_tick_ts."""
     loop = _get_loop()
     return loop.get_state()
-

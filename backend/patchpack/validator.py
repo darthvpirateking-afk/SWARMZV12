@@ -1,5 +1,6 @@
 # Validator module for SWARMZ patchpack
 
+
 class Validator:
     def __init__(self):
         self.valid_patches = []

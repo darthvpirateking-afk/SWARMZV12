@@ -24,6 +24,7 @@ class IntegrationMap:
             "flows": self.flows,
         }
 
+
 # Example usage
 integration_map = IntegrationMap()
 integration_map.define_flow("cockpit_core", "operator_avatar")

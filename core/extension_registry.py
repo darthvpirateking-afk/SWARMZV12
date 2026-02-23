@@ -4,6 +4,7 @@
 # SWARMZ Extension Registry
 # Purpose: Allow future add-only modules to register themselves safely.
 
+
 class ExtensionRegistry:
     def __init__(self):
         self.extensions = {}

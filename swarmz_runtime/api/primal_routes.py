@@ -7,7 +7,6 @@ from fastapi import APIRouter, Query
 from swarmz_runtime.core.fusion_registry import FusionRegistry
 from swarmz_runtime.core.operator_ecosystem import OperatorEcosystem
 
-
 router = APIRouter()
 _ROOT_DIR = Path(__file__).resolve().parent.parent.parent
 _DOCTRINE_PATH = _ROOT_DIR / "config" / "doctrine_primal_block.json"
@@ -160,7 +159,9 @@ def _mission_trace_rows(mission_id: Optional[str], limit: int) -> List[Dict[str,
     rows.sort(
         key=lambda item: (
             str(item.get("result", {}).get("updated_at") or ""),
-            str(item.get("steps", [])[-1].get("created_at") if item.get("steps") else ""),
+            str(
+                item.get("steps", [])[-1].get("created_at") if item.get("steps") else ""
+            ),
             str(item.get("mission_id") or ""),
         )
     )

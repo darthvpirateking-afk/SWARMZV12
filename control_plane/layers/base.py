@@ -38,9 +38,14 @@ class BaseLayer(abc.ABC):
     def collect(self) -> list[dict]:
         """Return fresh STATE records for each variable."""
 
-    def _make_record(self, variable: str, value, units: str = "abstract",
-                     confidence: float = 1.0,
-                     directionality: str = "stable") -> dict:
+    def _make_record(
+        self,
+        variable: str,
+        value,
+        units: str = "abstract",
+        confidence: float = 1.0,
+        directionality: str = "stable",
+    ) -> dict:
         return {
             "layer": self.name,
             "variable": variable,
@@ -51,4 +56,3 @@ class BaseLayer(abc.ABC):
             "directionality": directionality,
             "source": f"layer:{self.name}",
         }
-

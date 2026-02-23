@@ -31,7 +31,9 @@ _LOCALHOST_ADDRS = {
 }
 
 
-def _client_ip(request: Request) -> Optional[ipaddress.IPv4Address | ipaddress.IPv6Address]:
+def _client_ip(
+    request: Request,
+) -> Optional[ipaddress.IPv4Address | ipaddress.IPv6Address]:
     host = request.client.host if request.client else "127.0.0.1"
     try:
         return ipaddress.ip_address(host)
@@ -58,7 +60,9 @@ def _append_audit(event: str, details: dict) -> None:
 
 
 class LANAuthMiddleware(BaseHTTPMiddleware):
-    async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
+    async def dispatch(
+        self, request: Request, call_next: RequestResponseEndpoint
+    ) -> Response:
         cfg = get_config()
         if not cfg.get("lan_auth_enabled", True):
             return await call_next(request)
@@ -75,17 +79,20 @@ class LANAuthMiddleware(BaseHTTPMiddleware):
             return await call_next(request)
 
         # Non-localhost write â†’ require key
-        provided = (
-            request.headers.get("X-Operator-Key")
-            or request.query_params.get("operator_key")
+        provided = request.headers.get("X-Operator-Key") or request.query_params.get(
+            "operator_key"
         )
         if provided != pin:
-            _append_audit("lan_auth_denied", {
-                "ip": str(_client_ip(request)),
-                "path": request.url.path,
-                "method": request.method,
-            })
-            raise HTTPException(status_code=403, detail="Operator key required for LAN writes")
+            _append_audit(
+                "lan_auth_denied",
+                {
+                    "ip": str(_client_ip(request)),
+                    "path": request.url.path,
+                    "method": request.method,
+                },
+            )
+            raise HTTPException(
+                status_code=403, detail="Operator key required for LAN writes"
+            )
 
         return await call_next(request)
-

@@ -6,7 +6,6 @@ from pydantic import BaseModel, Field
 
 from swarmz_runtime.core.fusion_registry import FusionRegistry
 
-
 router = APIRouter()
 _registry = FusionRegistry(Path(__file__).resolve().parent.parent.parent)
 

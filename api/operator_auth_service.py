@@ -41,7 +41,9 @@ class OperatorAuthService:
         )
 
     def _expected_key(self) -> str:
-        env_key = (os.getenv("OPERATOR_KEY") or os.getenv("SWARMZ_OPERATOR_PIN") or "").strip()
+        env_key = (
+            os.getenv("OPERATOR_KEY") or os.getenv("SWARMZ_OPERATOR_PIN") or ""
+        ).strip()
         if env_key:
             return env_key
 

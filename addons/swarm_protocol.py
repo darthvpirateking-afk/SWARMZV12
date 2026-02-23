@@ -20,12 +20,29 @@ class SwarmPacket:
     """Structured communication packet between internal agents."""
 
     __slots__ = (
-        "packet_id", "source", "target", "packet_type",
-        "intent", "context", "constraints", "plan",
-        "artifact", "verification", "result", "timestamp",
+        "packet_id",
+        "source",
+        "target",
+        "packet_type",
+        "intent",
+        "context",
+        "constraints",
+        "plan",
+        "artifact",
+        "verification",
+        "result",
+        "timestamp",
     )
 
-    VALID_TYPES = {"intent", "context", "constraints", "plan", "artifact", "verification", "result"}
+    VALID_TYPES = {
+        "intent",
+        "context",
+        "constraints",
+        "plan",
+        "artifact",
+        "verification",
+        "result",
+    }
 
     def __init__(
         self,
@@ -102,14 +119,10 @@ class PacketBus:
         return packet.packet_id
 
     def receive(self, target: str, since: int = 0) -> List[Dict[str, Any]]:
-        return [
-            p for p in self._log[since:]
-            if p["target"] == target
-        ]
+        return [p for p in self._log[since:] if p["target"] == target]
 
     def history(self, limit: int = 100) -> List[Dict[str, Any]]:
         return self._log[-limit:]
 
     def dump_json(self) -> str:
         return json.dumps(self._log, indent=2)
-

@@ -6,6 +6,7 @@
 
 import json
 
+
 class SessionTimer:
     def __init__(self):
         self.timers = {"active": 0, "idle": 0, "focused": 0, "loop": 0}

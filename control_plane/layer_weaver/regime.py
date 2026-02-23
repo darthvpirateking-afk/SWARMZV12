@@ -13,7 +13,7 @@ to prevent oscillation.
 from __future__ import annotations
 
 import time
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Dict, List
 
 from .expression_eval import safe_eval
 
@@ -22,11 +22,12 @@ class RegimeManager:
     """Manages regime-based objectives with hysteresis."""
 
     def __init__(self):
-        self._active: Dict[str, float] = {}      # obj_id → activated_at (monotonic)
-        self._cooldowns: Dict[str, float] = {}    # obj_id → cooldown_until (monotonic)
+        self._active: Dict[str, float] = {}  # obj_id → activated_at (monotonic)
+        self._cooldowns: Dict[str, float] = {}  # obj_id → cooldown_until (monotonic)
 
-    def evaluate(self, objectives: List[dict],
-                 state_values: Dict[str, Any]) -> List[dict]:
+    def evaluate(
+        self, objectives: List[dict], state_values: Dict[str, Any]
+    ) -> List[dict]:
         """Return list of currently active objectives (respecting hysteresis).
 
         *objectives* come from the objectives config.

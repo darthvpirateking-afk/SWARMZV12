@@ -4,6 +4,7 @@
 # SWARMZ Knowledge Graph
 # Purpose: Represent relationships between macros, sequences, files, tasks, predictions, bypasses, and operator actions.
 
+
 class KnowledgeGraph:
     def __init__(self):
         self.nodes = {}
@@ -23,7 +24,11 @@ class KnowledgeGraph:
 
     def query_graph(self, criteria):
         # Example: Return nodes matching criteria
-        return [node for node in self.nodes.values() if all(criteria.get(k) == v for k, v in node.items())]
+        return [
+            node
+            for node in self.nodes.values()
+            if all(criteria.get(k) == v for k, v in node.items())
+        ]
 
     def export_graph(self):
         try:

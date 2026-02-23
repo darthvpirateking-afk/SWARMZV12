@@ -43,7 +43,7 @@ def _load_master() -> Dict[str, Any]:
         "epochs_completed": 0,
         "total_missions_witnessed": 0,
         "last_insight": None,
-        "policy": "prepare_only",
+        "policy": "active",
     }
     atomic_write_json(MASTER_FILE, default)
     return default
@@ -59,7 +59,9 @@ def ensure_master() -> Dict[str, Any]:
     return _load_master()
 
 
-def record_mission_observed(mission_id: str, intent: str, status: str, summary: str = "") -> None:
+def record_mission_observed(
+    mission_id: str, intent: str, status: str, summary: str = ""
+) -> None:
     """Increment the master mission counter and delegate to companion memory."""
     master = _load_master()
     master["total_missions_witnessed"] = master.get("total_missions_witnessed", 0) + 1
@@ -70,6 +72,7 @@ def record_mission_observed(mission_id: str, intent: str, status: str, summary: 
     # Delegate to companion.py for detailed memory
     try:
         from core.companion import record_mission_outcome
+
         record_mission_outcome(mission_id, intent, status, summary)
     except Exception:
         pass
@@ -118,7 +121,7 @@ def get_composite_context() -> Dict[str, Any]:
     return {
         "master_identity": master.get("identity"),
         "personality_anchor": master.get("personality_anchor"),
-        "policy": master.get("policy", "prepare_only"),
+        "policy": master.get("policy", "active"),
         "epochs_completed": master.get("epochs_completed", 0),
         "total_missions_witnessed": master.get("total_missions_witnessed", 0),
         "last_insight": master.get("last_insight"),
@@ -148,4 +151,3 @@ def self_assessment() -> str:
         lines.append(f"Last insight: {ctx['last_insight']}")
     lines.append(f"Policy: {ctx['policy']}")
     return "\n".join(lines)
-

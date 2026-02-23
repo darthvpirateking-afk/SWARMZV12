@@ -128,4 +128,3 @@ def count_pending() -> Dict[str, int]:
         pending = list_pending(cat)
         counts[cat] = len(pending)
     return counts
-

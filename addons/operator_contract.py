@@ -18,7 +18,12 @@ from addons.config_ext import get_config
 _DEFAULT_CONTRACT = {
     "version": 1,
     "sealed": False,
-    "allowed_actions": ["create_mission", "run_mission", "list_missions", "export_backup"],
+    "allowed_actions": [
+        "create_mission",
+        "run_mission",
+        "list_missions",
+        "export_backup",
+    ],
     "forbidden_domains": [],
     "approval_rules": {
         "require_approval_above_cost": 100.0,
@@ -92,6 +97,8 @@ def validate_action(action: str) -> Dict[str, Any]:
         return {"allowed": False, "reason": f"Action '{action}' not in allowed list"}
     for domain in forbidden:
         if domain in action:
-            return {"allowed": False, "reason": f"Action touches forbidden domain '{domain}'"}
+            return {
+                "allowed": False,
+                "reason": f"Action touches forbidden domain '{domain}'",
+            }
     return {"allowed": True}
-
