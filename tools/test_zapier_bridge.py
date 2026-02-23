@@ -56,14 +56,20 @@ def main():
     # --- Test 1: inbound ---
     print("[1] POST inbound ... ", end="")
     try:
-        r = post_json(f"{base}{inbound_path}", {
-            "source": "zapier",
-            "type": "trigger.test.smoke",
-            "payload": {"test": True},
-            "dedupe_key": "smoke-test-zapier-bridge",
-        }, secret)
+        r = post_json(
+            f"{base}{inbound_path}",
+            {
+                "source": "zapier",
+                "type": "trigger.test.smoke",
+                "payload": {"test": True},
+                "dedupe_key": "smoke-test-zapier-bridge",
+            },
+            secret,
+        )
         if r.get("ok"):
-            print(f"PASS (event_id={r.get('event_id','?')}, mission_id={r.get('mission_id','?')})")
+            print(
+                f"PASS (event_id={r.get('event_id', '?')}, mission_id={r.get('mission_id', '?')})"
+            )
             passed += 1
         else:
             print(f"FAIL: {r}")
@@ -75,14 +81,18 @@ def main():
     # --- Test 2: emit ---
     print("[2] POST emit ... ", end="")
     try:
-        r = post_json(f"{base}{emit_path}", {
-            "type": "swarmz.test",
-            "payload": {"test": True},
-        }, secret)
+        r = post_json(
+            f"{base}{emit_path}",
+            {
+                "type": "swarmz.test",
+                "payload": {"test": True},
+            },
+            secret,
+        )
         hook_url = zcfg.get("zapier_catch_hook_url", "")
         if hook_url:
             if r.get("delivered"):
-                print(f"PASS (delivered to hook)")
+                print("PASS (delivered to hook)")
                 passed += 1
             else:
                 print(f"WARN: delivery failed: {r.get('error')}")
@@ -102,12 +112,16 @@ def main():
     # --- Test 3: dedupe ---
     print("[3] POST inbound (dedupe) ... ", end="")
     try:
-        r = post_json(f"{base}{inbound_path}", {
-            "source": "zapier",
-            "type": "trigger.test.dedupe",
-            "payload": {"test": True},
-            "dedupe_key": "smoke-test-zapier-bridge",
-        }, secret)
+        r = post_json(
+            f"{base}{inbound_path}",
+            {
+                "source": "zapier",
+                "type": "trigger.test.dedupe",
+                "payload": {"test": True},
+                "dedupe_key": "smoke-test-zapier-bridge",
+            },
+            secret,
+        )
         if r.get("dedupe") == "skipped":
             print("PASS (dedupe correctly skipped)")
             passed += 1
@@ -118,7 +132,7 @@ def main():
         print(f"FAIL: {e}")
         failed += 1
 
-    print(f"\n{'='*40}")
+    print(f"\n{'=' * 40}")
     print(f"RESULT: {passed} passed, {failed} failed")
     sys.exit(1 if failed > 0 else 0)
 
@@ -129,4 +143,3 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"FATAL: {e}")
         sys.exit(1)
-

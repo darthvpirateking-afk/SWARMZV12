@@ -29,6 +29,7 @@ class CandidateStatus(str, Enum):
 
 class ArenaCandidate(BaseModel):
     """A single candidate entry in an arena run."""
+
     id: str
     run_id: str
     worker_index: int
@@ -45,6 +46,7 @@ class ArenaCandidate(BaseModel):
 
 class ArenaRun(BaseModel):
     """A single arena run with N candidates."""
+
     id: str
     prompt: str
     num_candidates: int = Field(ge=1, le=8)
@@ -60,6 +62,7 @@ class ArenaRun(BaseModel):
 
 class ArenaConfig(BaseModel):
     """Configuration for arena runs."""
+
     max_candidates: int = Field(default=8, ge=1, le=8)
     default_num_candidates: int = Field(default=3, ge=1, le=8)
     scoring_strategy: str = "length_quality"

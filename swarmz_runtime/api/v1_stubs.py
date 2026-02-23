@@ -2,9 +2,7 @@ from fastapi import APIRouter, Query, Request
 from typing import Optional
 from datetime import datetime, timezone
 
-v1_stubs_router = APIRouter(
-    tags=["v1"]
-)
+v1_stubs_router = APIRouter(tags=["v1"])
 
 
 @v1_stubs_router.get("/prepared/pending")
@@ -14,11 +12,7 @@ async def get_prepared_pending(tag: Optional[str] = Query(default=None)):
     if tag:
         items = [p for p in items if p.get("tag") == tag]
     counts = {"total": len(items)}
-    return {
-        "ok": True,
-        "items": items,
-        "counts": counts
-    }
+    return {"ok": True, "items": items, "counts": counts}
 
 
 @v1_stubs_router.get("/ai/status")

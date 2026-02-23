@@ -6,6 +6,7 @@ from swarmz_app.core.hologram_presence import get_hologram_payload
 
 router = APIRouter(prefix="/v1/companion", tags=["Companion Hologram"])
 
+
 @router.get("/hologram", response_model=dict)
 def hologram():
     """

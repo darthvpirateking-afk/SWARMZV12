@@ -10,11 +10,15 @@ from api.companion_core_models import (
 class CompanionCoreService:
     def get_status(self) -> CompanionCoreStatusResponse:
         memory = self._load_memory()
-        outcomes = memory.get("mission_outcomes", []) if isinstance(memory, dict) else []
+        outcomes = (
+            memory.get("mission_outcomes", []) if isinstance(memory, dict) else []
+        )
         return CompanionCoreStatusResponse(
             ok=True,
             source="core.companion",
-            memory_version=int(memory.get("version", 0)) if isinstance(memory, dict) else 0,
+            memory_version=(
+                int(memory.get("version", 0)) if isinstance(memory, dict) else 0
+            ),
             outcomes_count=len(outcomes) if isinstance(outcomes, list) else 0,
             summary=str(memory.get("summary", "")) if isinstance(memory, dict) else "",
             generated_at=datetime.now(timezone.utc),
@@ -57,4 +61,8 @@ class CompanionCoreService:
                 return memory
         except Exception:
             pass
-        return {"summary": "No companion memory available.", "version": 0, "mission_outcomes": []}
+        return {
+            "summary": "No companion memory available.",
+            "version": 0,
+            "mission_outcomes": [],
+        }

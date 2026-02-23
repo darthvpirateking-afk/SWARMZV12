@@ -9,6 +9,7 @@ Usage:
     python tools/runtime_check.py --json
     python tools/runtime_check.py --data-dir data
 """
+
 import argparse
 import json
 import sys
@@ -27,7 +28,11 @@ def run_short_mission(data_dir: Path) -> dict:
     goal = "runtime_check_sanity"
     created = engine.create_mission(goal, "test", {})
     mission_id = created.get("mission_id")
-    ran = engine.run_mission(mission_id, operator_key=engine.operator_key) if mission_id else {"error": "no mission"}
+    ran = (
+        engine.run_mission(mission_id, operator_key=engine.operator_key)
+        if mission_id
+        else {"error": "no mission"}
+    )
     return {"created": created, "ran": ran}
 
 
@@ -57,7 +62,9 @@ def detect_busy_loops() -> bool:
     return False
 
 
-def build_status(result: dict, metrics_line: str, telemetry_line: str, busy: bool) -> tuple[str, list[str]]:
+def build_status(
+    result: dict, metrics_line: str, telemetry_line: str, busy: bool
+) -> tuple[str, list[str]]:
     issues = []
     if "error" in result.get("ran", {}):
         issues.append("mission_run_failed")
@@ -90,9 +97,15 @@ def print_human_output(payload: dict):
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Run a lightweight SWARMZ runtime self-check.")
-    parser.add_argument("--data-dir", default=str(DEFAULT_DATA_DIR), help="Path to the data directory.")
-    parser.add_argument("--json", action="store_true", help="Emit machine-readable JSON output.")
+    parser = argparse.ArgumentParser(
+        description="Run a lightweight SWARMZ runtime self-check."
+    )
+    parser.add_argument(
+        "--data-dir", default=str(DEFAULT_DATA_DIR), help="Path to the data directory."
+    )
+    parser.add_argument(
+        "--json", action="store_true", help="Emit machine-readable JSON output."
+    )
     args = parser.parse_args(argv)
 
     data_dir = Path(args.data_dir).resolve()
@@ -105,7 +118,10 @@ def main(argv: list[str] | None = None) -> int:
         result = run_short_mission(data_dir)
     except Exception as exc:
         error = str(exc)
-        result = {"created": {"error": "create_mission_failed"}, "ran": {"error": "run_mission_failed"}}
+        result = {
+            "created": {"error": "create_mission_failed"},
+            "ran": {"error": "run_mission_failed"},
+        }
 
     duration_ms = (time.perf_counter() - start) * 1000.0
     metrics_line = read_last_line(data_dir / "runtime_metrics.jsonl")
@@ -115,10 +131,16 @@ def main(argv: list[str] | None = None) -> int:
     status, issues = build_status(result, metrics_line, telemetry_line, busy)
     next_steps = []
     if error:
-        next_steps.append("Verify dependencies are installed: pip install -r requirements.txt")
-        next_steps.append("Start the server once to seed runtime data: python run_swarmz.py")
+        next_steps.append(
+            "Verify dependencies are installed: pip install -r requirements.txt"
+        )
+        next_steps.append(
+            "Start the server once to seed runtime data: python run_swarmz.py"
+        )
     if "missing_runtime_metrics" in issues:
-        next_steps.append("Enable telemetry and run a mission to produce runtime metrics.")
+        next_steps.append(
+            "Enable telemetry and run a mission to produce runtime metrics."
+        )
     if "missing_telemetry" in issues:
         next_steps.append("Check telemetry.jsonl path and ensure telemetry is enabled.")
     if "mission_run_failed" in issues:
@@ -147,4 +169,3 @@ def main(argv: list[str] | None = None) -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-

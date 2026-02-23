@@ -14,7 +14,13 @@ from pathlib import Path
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
 
-from companion import SwarmzCompanion, TaskContext, WorkerSwarm, CommitEngine, CommitState
+from companion import (
+    SwarmzCompanion,
+    TaskContext,
+    WorkerSwarm,
+    CommitEngine,
+    CommitState,
+)
 from swarmz import SwarmzCore
 
 
@@ -39,9 +45,14 @@ class TestCompanionCoreIntegration(unittest.TestCase):
 
     def test_operator_mode_execution(self):
         """Operator mode executes tasks."""
-        response = self.companion.interact("Run echo task", {"message": "Integration test"})
+        response = self.companion.interact(
+            "Run echo task", {"message": "Integration test"}
+        )
         self.assertTrue(
-            any(tag in response for tag in ["[ACTION_READY]", "[NEEDS_CONFIRM]", "[BLOCKED]"])
+            any(
+                tag in response
+                for tag in ["[ACTION_READY]", "[NEEDS_CONFIRM]", "[BLOCKED]"]
+            )
         )
 
     def test_metrics_tracking(self):
@@ -55,10 +66,9 @@ class TestCompanionCoreIntegration(unittest.TestCase):
 
     def test_memory_persistence(self):
         """Memory can be updated and retrieved."""
-        self.companion.mode_manager.update_memory({
-            "preferences": {"test_pref": "value"},
-            "caps": {"test_cap": 100}
-        })
+        self.companion.mode_manager.update_memory(
+            {"preferences": {"test_pref": "value"}, "caps": {"test_cap": 100}}
+        )
         memory = self.companion.mode_manager.get_memory()
         self.assertEqual(memory.preferences.get("test_pref"), "value")
         self.assertEqual(memory.caps.get("test_cap"), 100)
@@ -70,8 +80,7 @@ class TestCompanionCoreIntegration(unittest.TestCase):
         results = swarm.execute_workflow(task_context)
         self.assertEqual(len(results), 3)
         self.assertEqual(
-            [r.worker_type.value for r in results],
-            ["scout", "builder", "verify"]
+            [r.worker_type.value for r in results], ["scout", "builder", "verify"]
         )
 
     def test_commit_engine(self):
@@ -79,7 +88,10 @@ class TestCompanionCoreIntegration(unittest.TestCase):
         task_context = TaskContext(task_id="test", intent="integration test")
         engine = CommitEngine()
         state = engine.evaluate(task_context)
-        self.assertIn(state, [CommitState.ACTION_READY, CommitState.NEEDS_CONFIRM, CommitState.BLOCKED])
+        self.assertIn(
+            state,
+            [CommitState.ACTION_READY, CommitState.NEEDS_CONFIRM, CommitState.BLOCKED],
+        )
 
     def test_intelligence_layer(self):
         """Intelligence layer records execution logs."""
@@ -95,4 +107,3 @@ def test_integration():
 
 if __name__ == "__main__":
     unittest.main()
-

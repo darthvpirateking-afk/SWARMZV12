@@ -4,6 +4,7 @@
 # SWARMZ Weekly Coach
 # Purpose: Generate actionable weekly suggestions.
 
+
 class WeeklyCoach:
     def generate_weekly_coaching(self):
         try:

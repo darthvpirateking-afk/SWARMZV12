@@ -6,6 +6,7 @@
 
 import json
 
+
 class TaskClassifier:
     def classify_event(self, event):
         try:

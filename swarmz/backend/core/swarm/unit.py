@@ -1,6 +1,7 @@
 # unit.py
 # Represents individual units.
 
+
 class Unit:
     def __init__(self, unit_id):
         self.id = unit_id

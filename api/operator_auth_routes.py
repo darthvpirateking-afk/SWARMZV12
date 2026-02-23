@@ -17,5 +17,7 @@ async def operator_auth_status() -> OperatorAuthStatusResponse:
 
 
 @router.post("/verify", response_model=OperatorAuthVerifyResponse)
-async def operator_auth_verify(payload: OperatorAuthVerifyRequest) -> OperatorAuthVerifyResponse:
+async def operator_auth_verify(
+    payload: OperatorAuthVerifyRequest,
+) -> OperatorAuthVerifyResponse:
     return _service.verify(payload.operator_key)

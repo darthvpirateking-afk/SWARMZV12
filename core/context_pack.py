@@ -54,6 +54,7 @@ def load() -> Dict[str, Any]:
     # 1. operator_anchor
     try:
         from core.operator_anchor import load_or_create_anchor, verify_fingerprint
+
         anchor = load_or_create_anchor("data")
         read_only = not verify_fingerprint(anchor)
         engines["anchor"] = anchor
@@ -65,6 +66,7 @@ def load() -> Dict[str, Any]:
     # 2. perf_ledger
     try:
         from core.perf_ledger import PerfLedger
+
         engines["perf_ledger"] = PerfLedger("data")
     except Exception:
         engines["perf_ledger"] = None
@@ -72,6 +74,7 @@ def load() -> Dict[str, Any]:
     # 3. evolution_memory
     try:
         from core.evolution_memory import EvolutionMemory
+
         engines["evolution"] = EvolutionMemory(
             "data",
             anchor=engines.get("anchor"),
@@ -83,6 +86,7 @@ def load() -> Dict[str, Any]:
     # 4. world_model
     try:
         from core.world_model import WorldModel
+
         engines["world_model"] = WorldModel("data")
     except Exception:
         engines["world_model"] = None
@@ -90,6 +94,7 @@ def load() -> Dict[str, Any]:
     # 5. divergence_engine
     try:
         from core.divergence_engine import DivergenceEngine
+
         engines["divergence"] = DivergenceEngine("data")
     except Exception:
         engines["divergence"] = None
@@ -97,6 +102,7 @@ def load() -> Dict[str, Any]:
     # 6. entropy_monitor
     try:
         from core.entropy_monitor import EntropyMonitor
+
         engines["entropy"] = EntropyMonitor("data")
     except Exception:
         engines["entropy"] = None
@@ -104,6 +110,7 @@ def load() -> Dict[str, Any]:
     # 7. trajectory_engine
     try:
         from core.trajectory_engine import TrajectoryEngine
+
         engines["trajectory"] = TrajectoryEngine(
             "data",
             engines.get("evolution"),
@@ -118,6 +125,7 @@ def load() -> Dict[str, Any]:
     # 8. counterfactual_engine
     try:
         from core.counterfactual_engine import CounterfactualEngine
+
         engines["counterfactual"] = CounterfactualEngine(
             "data",
             engines.get("evolution"),
@@ -130,6 +138,7 @@ def load() -> Dict[str, Any]:
     # 9. relevance_engine
     try:
         from core.relevance_engine import RelevanceEngine
+
         engines["relevance"] = RelevanceEngine(
             "data",
             engines.get("evolution"),
@@ -141,6 +150,7 @@ def load() -> Dict[str, Any]:
     # 10. phase_engine
     try:
         from core.phase_engine import PhaseEngine
+
         engines["phase"] = PhaseEngine(
             "data",
             world_model=engines.get("world_model"),
@@ -154,6 +164,7 @@ def load() -> Dict[str, Any]:
     # 11. companion_master
     try:
         from core.companion_master import ensure_master
+
         engines["companion_master"] = ensure_master()
     except Exception:
         engines["companion_master"] = None
@@ -169,6 +180,7 @@ def _hash(s: str) -> str:
 
 # â”€â”€ Beforeâ€‘mission hook â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
+
 def before_mission(mission: Dict[str, Any]) -> Dict[str, Any]:
     """Gather context and select strategy before mission execution.
 
@@ -180,7 +192,9 @@ def before_mission(mission: Dict[str, Any]) -> Dict[str, Any]:
 
     mission_id = mission.get("mission_id", "unknown")
     intent = mission.get("intent", mission.get("goal", "unknown"))
-    inputs_hash = _hash(json.dumps({"id": mission_id, "intent": intent}, sort_keys=True))
+    inputs_hash = _hash(
+        json.dumps({"id": mission_id, "intent": intent}, sort_keys=True)
+    )
     ctx["inputs_hash"] = inputs_hash
     ctx["mission_id"] = mission_id
 
@@ -205,7 +219,9 @@ def before_mission(mission: Dict[str, Any]) -> Dict[str, Any]:
             bias_fn = None
             if traj:
                 bias_fn = traj.strategy_bias
-            strategy = evo.select_strategy(inputs_hash, default_strategy="baseline", bias_fn=bias_fn)
+            strategy = evo.select_strategy(
+                inputs_hash, default_strategy="baseline", bias_fn=bias_fn
+            )
     except Exception:
         pass
     ctx["strategy"] = strategy
@@ -247,6 +263,7 @@ def before_mission(mission: Dict[str, Any]) -> Dict[str, Any]:
     # AI audit
     try:
         from core.ai_audit import log_decision
+
         log_decision(
             decision_type="strategy_selection",
             mission_id=mission_id,
@@ -263,6 +280,7 @@ def before_mission(mission: Dict[str, Any]) -> Dict[str, Any]:
 
 
 # â”€â”€ Afterâ€‘mission hook â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
 
 def after_mission(
     mission: Dict[str, Any],
@@ -314,7 +332,9 @@ def after_mission(
                 score=score,
             )
             prev_avg = evo.strategy_average(strategy)
-            evo.record_outcome(strategy, score, success, mission_id, inputs_hash, prev_avg, runtime_ms)
+            evo.record_outcome(
+                strategy, score, success, mission_id, inputs_hash, prev_avg, runtime_ms
+            )
     except Exception:
         pass
 
@@ -342,7 +362,9 @@ def after_mission(
             try:
                 cs = DATA_DIR / "current_state.json"
                 if cs.exists():
-                    trend = json.loads(cs.read_text(encoding="utf-8")).get("recent_trend_vector", 0.0)
+                    trend = json.loads(cs.read_text(encoding="utf-8")).get(
+                        "recent_trend_vector", 0.0
+                    )
             except Exception:
                 pass
             cf.evaluate(
@@ -361,24 +383,30 @@ def after_mission(
     try:
         rel = eng.get("relevance")
         if rel:
-            rel.after_outcome(mission_id, inputs_hash, strategy, score, success, runtime_ms)
+            rel.after_outcome(
+                mission_id, inputs_hash, strategy, score, success, runtime_ms
+            )
     except Exception:
         pass
 
     # 7. companion_master
     try:
         from core.companion_master import record_mission_observed
+
         summary = result.get("plan_preview", result.get("note", ""))
         if isinstance(summary, str):
             summary = summary[:200]
         else:
             summary = str(summary)[:200]
-        record_mission_observed(mission_id, intent, "SUCCESS" if success else "FAILURE", summary)
+        record_mission_observed(
+            mission_id, intent, "SUCCESS" if success else "FAILURE", summary
+        )
     except Exception:
         pass
 
 
 # â”€â”€ Daily scheduler tick â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
 
 def daily_tick() -> Dict[str, Any]:
     """Run daily maintenance tasks.  Call once per day (or at startup if stale).
@@ -419,6 +447,7 @@ def daily_tick() -> Dict[str, Any]:
     # companion_master selfâ€‘assessment
     try:
         from core.companion_master import self_assessment
+
         assessment = self_assessment()
         ran.append("companion_selftest")
     except Exception:
@@ -428,6 +457,7 @@ def daily_tick() -> Dict[str, Any]:
 
 
 # â”€â”€ Scoreboard â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
 
 def get_scoreboard() -> Dict[str, Any]:
     """Readâ€‘only status for /v1/runtime/scoreboard.
@@ -486,9 +516,9 @@ def get_scoreboard() -> Dict[str, Any]:
     # pending prepared actions
     try:
         from core.safe_execution import count_pending
+
         board["pending_actions"] = count_pending()
     except Exception:
         pass
 
     return board
-

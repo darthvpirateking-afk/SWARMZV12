@@ -35,11 +35,16 @@ def test_federation_organism_lifecycle(client, monkeypatch, tmp_path):
     assert evolved.status_code == 200
     assert evolved.json()["organism"]["partner"]["tier"] >= 1
 
-    paused = client.post(f"/v1/federation/organisms/{organism_id}/pause", json={"reason": "risk_spike"})
+    paused = client.post(
+        f"/v1/federation/organisms/{organism_id}/pause", json={"reason": "risk_spike"}
+    )
     assert paused.status_code == 200
     assert paused.json()["organism"]["status"] == "paused"
 
-    retired = client.post(f"/v1/federation/organisms/{organism_id}/retire", json={"reason": "operator_request"})
+    retired = client.post(
+        f"/v1/federation/organisms/{organism_id}/retire",
+        json={"reason": "operator_request"},
+    )
     assert retired.status_code == 200
     assert retired.json()["organism"]["status"] == "retired"
 
@@ -204,7 +209,9 @@ def test_charter_operating_matrix_eval(client):
     )
     assert fail.status_code == 200
     assert fail.json()["decision"]["allowed"] is False
-    assert "irreversible_action_requires_operator" in fail.json()["decision"]["violations"]
+    assert (
+        "irreversible_action_requires_operator" in fail.json()["decision"]["violations"]
+    )
 
     ok = client.post(
         "/v1/charter/evaluate/operating-matrix",

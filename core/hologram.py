@@ -28,20 +28,16 @@ import math
 import threading
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 
 from core.trials import (
     load_all_trials,
-    resolve_metric,
     compute_survival_scores,
     get_audit_trail,
     new_trial,
     _audit_event,
     _now_iso,
-    _read_jsonl,
-    _DATA_DIR as _TRIALS_DATA_DIR,
 )
-
 
 # â”€â”€ Storage â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
@@ -59,12 +55,12 @@ _LOCK = threading.Lock()
 # â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 LEVELS = [
-    {"level": 0, "name": "EGG",      "xp_min": 0,   "label": "LV0 Â· EGG"},
-    {"level": 1, "name": "ROOKIE",    "xp_min": 5,   "label": "LV1 Â· ROOKIE"},
-    {"level": 2, "name": "CHAMPION",  "xp_min": 20,  "label": "LV2 Â· CHAMPION"},
-    {"level": 3, "name": "ULTIMATE",  "xp_min": 60,  "label": "LV3 Â· ULTIMATE"},
-    {"level": 4, "name": "MEGA",      "xp_min": 150, "label": "LV4 Â· MEGA"},
-    {"level": 5, "name": "BURST",     "xp_min": 150, "label": "LV5 Â· BURST MODE"},
+    {"level": 0, "name": "EGG", "xp_min": 0, "label": "LV0 Â· EGG"},
+    {"level": 1, "name": "ROOKIE", "xp_min": 5, "label": "LV1 Â· ROOKIE"},
+    {"level": 2, "name": "CHAMPION", "xp_min": 20, "label": "LV2 Â· CHAMPION"},
+    {"level": 3, "name": "ULTIMATE", "xp_min": 60, "label": "LV3 Â· ULTIMATE"},
+    {"level": 4, "name": "MEGA", "xp_min": 150, "label": "LV4 Â· MEGA"},
+    {"level": 5, "name": "BURST", "xp_min": 150, "label": "LV5 Â· BURST MODE"},
 ]
 
 
@@ -216,6 +212,7 @@ def compute_level(trials: Optional[List[Dict]] = None) -> Dict[str, Any]:
 # 2. POWER CURRENCIES
 # â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
+
 def compute_power_currencies(verified: Optional[List[Dict]] = None) -> Dict[str, float]:
     """
     STABILITY     % survived in last 30 days
@@ -277,8 +274,11 @@ def compute_power_currencies(verified: Optional[List[Dict]] = None) -> Dict[str,
     # A trial has rollback if: reverted=True, or has "revert" tag, or followup exists
     if verified:
         with_rollback = sum(
-            1 for t in verified
-            if t.get("reverted") or "revert" in t.get("tags", []) or "followup" in t.get("tags", [])
+            1
+            for t in verified
+            if t.get("reverted")
+            or "revert" in t.get("tags", [])
+            or "followup" in t.get("tags", [])
         )
         reversibility = round(with_rollback / len(verified), 4)
     else:
@@ -295,31 +295,37 @@ def compute_power_currencies(verified: Optional[List[Dict]] = None) -> Dict[str,
 # 3. POWERS PER LEVEL
 # â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
+
 def _powers_for_level(level: int) -> List[Dict[str, Any]]:
     """Return list of unlocked powers at given level (cumulative)."""
     all_powers = [
         {
-            "level": 1, "id": "auto_baseline",
+            "level": 1,
+            "id": "auto_baseline",
             "name": "Auto-baseline capture",
             "description": "Baseline metric is captured at trial creation time. Enforced.",
         },
         {
-            "level": 2, "id": "auto_check_scheduler",
+            "level": 2,
+            "id": "auto_check_scheduler",
             "name": "Auto-check scheduler + Inbox triage",
             "description": "Due trials auto-check. Failed trials go to Needs Review.",
         },
         {
-            "level": 3, "id": "survival_ranking",
+            "level": 3,
+            "id": "survival_ranking",
             "name": "Survival score ranking",
             "description": "Suggestions sorted by survival_rate (Laplace smoothed). Low-confidence flagged.",
         },
         {
-            "level": 4, "id": "drift_alarms",
+            "level": 4,
+            "id": "drift_alarms",
             "name": "Drift alarms",
             "description": "Detect metric drift bands. Proposes follow-up trials (never auto-exec).",
         },
         {
-            "level": 5, "id": "parallel_batch",
+            "level": 5,
+            "id": "parallel_batch",
             "name": "Parallel batch trials",
             "description": "Run 3-10 small trials concurrently with budget + kill-switch + rollback.",
         },
@@ -330,6 +336,7 @@ def _powers_for_level(level: int) -> List[Dict[str, Any]]:
 # â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 # 4. VISUAL EFFECTS DATA (cosmetic but honest)
 # â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
 
 def compute_effects(trial: Optional[Dict] = None, level: int = 0) -> Dict[str, Any]:
     """
@@ -374,12 +381,14 @@ def compute_effects(trial: Optional[Dict] = None, level: int = 0) -> Dict[str, A
 # 5. TRIAL DETAIL FOR HOLOGRAM (level-gated content)
 # â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
+
 def hologram_trial_detail(trial_id: str) -> Dict[str, Any]:
     """
     Return trial detail with level-gated content.
     Higher levels unlock richer content.
     """
     from core.trials import get_trial
+
     trial = get_trial(trial_id)
     if not trial:
         return {"ok": False, "error": "trial not found"}
@@ -445,9 +454,13 @@ def _build_delta_graph(trial: Dict) -> Dict[str, Any]:
 
     points = []
     if before is not None:
-        points.append({"label": "Baseline", "value": before, "ts": trial.get("created_at")})
+        points.append(
+            {"label": "Baseline", "value": before, "ts": trial.get("created_at")}
+        )
     if expected is not None:
-        points.append({"label": "Expected", "value": expected, "ts": trial.get("check_at")})
+        points.append(
+            {"label": "Expected", "value": expected, "ts": trial.get("check_at")}
+        )
     if after is not None:
         points.append({"label": "After", "value": after, "ts": trial.get("checked_at")})
 
@@ -476,10 +489,14 @@ def _why_failed_hint(trial: Dict) -> str:
     if expected_delta is not None:
         shortfall = (before + expected_delta) - after
         if shortfall > 0:
-            hints.append(f"Metric fell short by {round(shortfall, 4)} (needed +{expected_delta}, got {round(delta, 4)})")
+            hints.append(
+                f"Metric fell short by {round(shortfall, 4)} (needed +{expected_delta}, got {round(delta, 4)})"
+            )
     else:
         if after < before:
-            hints.append(f"Metric worsened: {before} â†’ {after} (Î”={round(delta, 4)})")
+            hints.append(
+                f"Metric worsened: {before} â†’ {after} (Î”={round(delta, 4)})"
+            )
 
     # Check if baseline was captured late
     eval_ev = evidence.get("evaluation", {})
@@ -507,16 +524,18 @@ def _build_trajectory(context: str) -> Dict[str, Any]:
 
     for i, t in enumerate(ctx_trials):
         node_id = f"n{i}"
-        nodes.append({
-            "id": node_id,
-            "label": t.get("action", "?")[:30],
-            "trial_id": t.get("id"),
-            "metric_before": t.get("metric_before"),
-            "metric_after": t.get("metric_after"),
-            "survived": t.get("survived"),
-        })
+        nodes.append(
+            {
+                "id": node_id,
+                "label": t.get("action", "?")[:30],
+                "trial_id": t.get("id"),
+                "metric_before": t.get("metric_before"),
+                "metric_after": t.get("metric_after"),
+                "survived": t.get("survived"),
+            }
+        )
         if i > 0:
-            prev_id = f"n{i-1}"
+            prev_id = f"n{i - 1}"
             survived = t.get("survived")
             # Compute edge survival score
             tmpl = (t.get("action", "").split(":")[0].strip() or "unknown").lower()
@@ -527,14 +546,16 @@ def _build_trajectory(context: str) -> Dict[str, Any]:
             score_data = scores.get(key, {})
             edge_score = score_data.get("survival_rate", 0.5)
 
-            edges.append({
-                "from": prev_id,
-                "to": node_id,
-                "action": t.get("action", ""),
-                "survived": survived,
-                "survival_score": edge_score,
-                "style": "steady" if survived else "flicker",
-            })
+            edges.append(
+                {
+                    "from": prev_id,
+                    "to": node_id,
+                    "action": t.get("action", ""),
+                    "survived": survived,
+                    "survival_score": edge_score,
+                    "style": "steady" if survived else "flicker",
+                }
+            )
 
     return {"nodes": nodes, "edges": edges, "context": context}
 
@@ -543,15 +564,23 @@ def _build_trajectory(context: str) -> Dict[str, Any]:
 # 6. DRIFT DETECTION (for LV4 MEGA)
 # â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
-def detect_drift(metric_name: str, context: str, window_days: int = 7) -> Dict[str, Any]:
+
+def detect_drift(
+    metric_name: str, context: str, window_days: int = 7
+) -> Dict[str, Any]:
     """
     Detect metric drift by comparing recent vs older trial outcomes.
     Returns drift event if band exceeded.
     """
     trials = load_all_trials()
     verified = _verified_trials(trials)
-    relevant = [t for t in verified if t.get("metric_name") == metric_name
-                and t.get("context", "") == context and t.get("metric_after") is not None]
+    relevant = [
+        t
+        for t in verified
+        if t.get("metric_name") == metric_name
+        and t.get("context", "") == context
+        and t.get("metric_after") is not None
+    ]
 
     if len(relevant) < 4:
         return {"drift": False, "reason": "insufficient data", "n": len(relevant)}
@@ -582,7 +611,9 @@ def detect_drift(metric_name: str, context: str, window_days: int = 7) -> Dict[s
 
     # Std dev of older
     if len(older_vals) >= 2:
-        variance = sum((v - older_mean) ** 2 for v in older_vals) / (len(older_vals) - 1)
+        variance = sum((v - older_mean) ** 2 for v in older_vals) / (
+            len(older_vals) - 1
+        )
         older_std = math.sqrt(variance) if variance > 0 else 0.001
     else:
         older_std = 0.001
@@ -609,14 +640,18 @@ def detect_drift(metric_name: str, context: str, window_days: int = 7) -> Dict[s
         # Also emit an audit event so drift alarms are visible in the
         # main trials audit trail (LV4 MEGA power usage).
         try:
-            _audit_event("drift_detected", "NONE", {
-                "metric_name": metric_name,
-                "context": context,
-                "drift_magnitude": result["drift_magnitude"],
-                "older_mean": result["older_mean"],
-                "recent_mean": result["recent_mean"],
-                "older_std": result["older_std"],
-            })
+            _audit_event(
+                "drift_detected",
+                "NONE",
+                {
+                    "metric_name": metric_name,
+                    "context": context,
+                    "drift_magnitude": result["drift_magnitude"],
+                    "older_mean": result["older_mean"],
+                    "recent_mean": result["recent_mean"],
+                    "older_std": result["older_std"],
+                },
+            )
         except Exception:
             # Never let audit failures break detection.
             pass
@@ -652,12 +687,17 @@ def _build_stability_field(trial: Dict) -> Dict[str, Any]:
 
     trials = load_all_trials()
     verified = _verified_trials(trials)
-    relevant = [t for t in verified
-                if t.get("metric_name") == metric_name
-                and t.get("context", "") == context
-                and t.get("metric_after") is not None]
+    relevant = [
+        t
+        for t in verified
+        if t.get("metric_name") == metric_name
+        and t.get("context", "") == context
+        and t.get("metric_after") is not None
+    ]
 
-    values = [float(t["metric_after"]) for t in relevant if t.get("metric_after") is not None]
+    values = [
+        float(t["metric_after"]) for t in relevant if t.get("metric_after") is not None
+    ]
 
     if not values:
         return {"metric_name": metric_name, "context": context, "band": None}
@@ -698,6 +738,7 @@ def _build_stability_field(trial: Dict) -> Dict[str, Any]:
 # 7. MEGA POWER: DRIFT ALARM SUGGESTIONS
 # â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
+
 def suggest_drift_correction(metric_name: str, context: str) -> Optional[Dict]:
     """
     Propose a micro-correction as a follow-up trial.
@@ -723,12 +764,16 @@ def suggest_drift_correction(metric_name: str, context: str) -> Optional[Dict]:
         "drift_data": drift,
     }
 
-    _audit_event("drift_correction_suggested", "NONE", {
-        "metric_name": metric_name,
-        "context": context,
-        "drift_magnitude": drift["drift_magnitude"],
-        "suggestion": suggestion["action"],
-    })
+    _audit_event(
+        "drift_correction_suggested",
+        "NONE",
+        {
+            "metric_name": metric_name,
+            "context": context,
+            "drift_magnitude": drift["drift_magnitude"],
+            "suggestion": suggestion["action"],
+        },
+    )
 
     return suggestion
 
@@ -736,6 +781,7 @@ def suggest_drift_correction(metric_name: str, context: str) -> Optional[Dict]:
 # â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 # 8. BURST MODE (LV5)
 # â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
 
 def _load_state() -> Dict[str, Any]:
     """Load hologram state from file."""
@@ -769,17 +815,24 @@ def toggle_burst_mode(enabled: bool) -> Dict[str, Any]:
 
     currencies = level_data["currencies"]
     if enabled and currencies["reversibility"] <= 0:
-        return {"ok": False, "error": "Burst Mode requires rollback capability (reversibility > 0)"}
+        return {
+            "ok": False,
+            "error": "Burst Mode requires rollback capability (reversibility > 0)",
+        }
 
     state["burst_enabled"] = enabled
     state["burst_toggled_at"] = _now_iso()
     _save_state(state)
 
-    _audit_event("burst_mode_toggled", "NONE", {
-        "enabled": enabled,
-        "level": level_data["level"],
-        "reversibility": currencies["reversibility"],
-    })
+    _audit_event(
+        "burst_mode_toggled",
+        "NONE",
+        {
+            "enabled": enabled,
+            "level": level_data["level"],
+            "reversibility": currencies["reversibility"],
+        },
+    )
 
     return {"ok": True, "burst_enabled": enabled}
 
@@ -813,12 +866,12 @@ def create_burst_batch(
         trial = new_trial(
             created_by=created_by,
             context=spec.get("context", "burst"),
-            action=spec.get("action", f"Burst trial {i+1}"),
+            action=spec.get("action", f"Burst trial {i + 1}"),
             metric_name=spec.get("metric_name", "conversion_rate"),
             check_after_sec=check_sec,
             expected_delta=spec.get("expected_delta"),
             tags=["burst", f"batch:{batch_id}"] + spec.get("tags", []),
-            notes=f"Burst batch {batch_id}, trial {i+1}/{len(trials_specs)}",
+            notes=f"Burst batch {batch_id}, trial {i + 1}/{len(trials_specs)}",
         )
         created_trials.append(trial)
 
@@ -837,15 +890,21 @@ def create_burst_batch(
     with _LOCK:
         try:
             with _BURST_FILE.open("a", encoding="utf-8") as f:
-                f.write(json.dumps(batch_record, separators=(",", ":"), default=str) + "\n")
+                f.write(
+                    json.dumps(batch_record, separators=(",", ":"), default=str) + "\n"
+                )
         except Exception:
             pass
 
-    _audit_event("burst_batch_created", batch_id, {
-        "trial_count": len(created_trials),
-        "budget_sec": budget_sec,
-        "trial_ids": [t["id"] for t in created_trials],
-    })
+    _audit_event(
+        "burst_batch_created",
+        batch_id,
+        {
+            "trial_count": len(created_trials),
+            "budget_sec": budget_sec,
+            "trial_ids": [t["id"] for t in created_trials],
+        },
+    )
 
     return {
         "ok": True,
@@ -894,10 +953,14 @@ def kill_burst_batch(batch_id: str) -> Dict[str, Any]:
         if result:
             reverted_ids.append(tid)
 
-    _audit_event("burst_batch_killed", batch_id, {
-        "reverted_count": len(reverted_ids),
-        "trial_ids": reverted_ids,
-    })
+    _audit_event(
+        "burst_batch_killed",
+        batch_id,
+        {
+            "reverted_count": len(reverted_ids),
+            "trial_ids": reverted_ids,
+        },
+    )
 
     return {
         "ok": True,
@@ -929,6 +992,7 @@ def list_burst_batches(limit: int = 20) -> List[Dict]:
 # 9. FOLLOW-UP SUGGESTION (for LV3 ULTIMATE)
 # â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
+
 def suggest_best_followups(context: str, limit: int = 5) -> List[Dict]:
     """
     Suggest best follow-up trial templates based on survival scores.
@@ -951,26 +1015,31 @@ def suggest_best_followups(context: str, limit: int = 5) -> List[Dict]:
 
     suggestions = []
     for s in relevant[:limit]:
-        suggestions.append({
-            "action": f"{s['action_template']}: follow-up",
-            "context": context,
-            "metric_name": "conversion_rate",
-            "check_after_sec": 300,
-            "survival_rate": s["survival_rate"],
-            "survived_count": s["survived_count"],
-            "failed_count": s["failed_count"],
-            "low_confidence": s["survival_rate"] < 0.4,
-        })
+        suggestions.append(
+            {
+                "action": f"{s['action_template']}: follow-up",
+                "context": context,
+                "metric_name": "conversion_rate",
+                "check_after_sec": 300,
+                "survival_rate": s["survival_rate"],
+                "survived_count": s["survived_count"],
+                "failed_count": s["failed_count"],
+                "low_confidence": s["survival_rate"] < 0.4,
+            }
+        )
 
     # Audit LV3 ULTIMATE power usage: survival-ranking driven suggestions.
     try:
-        _audit_event("followup_suggestions_generated", "NONE", {
-            "context": context,
-            "limit": limit,
-            "count": len(suggestions),
-        })
+        _audit_event(
+            "followup_suggestions_generated",
+            "NONE",
+            {
+                "context": context,
+                "limit": limit,
+                "count": len(suggestions),
+            },
+        )
     except Exception:
         pass
 
     return suggestions
-

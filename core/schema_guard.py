@@ -10,7 +10,6 @@ Returns (valid: bool, errors: list[str]).
 
 from typing import Any, Dict, List, Optional, Tuple
 
-
 # â”€â”€ Simple schema definition â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 # A schema is a dict of   field_name â†’ expected_type | None
 #   None means "any type, just check presence"
@@ -26,9 +25,11 @@ _TYPE_MAP = {
 }
 
 
-def validate(obj: Dict[str, Any],
-             required: Dict[str, Optional[str]],
-             optional: Optional[Dict[str, Optional[str]]] = None) -> Tuple[bool, List[str]]:
+def validate(
+    obj: Dict[str, Any],
+    required: Dict[str, Optional[str]],
+    optional: Optional[Dict[str, Optional[str]]] = None,
+) -> Tuple[bool, List[str]]:
     """Validate *obj* against a requiredâ€‘fields schema.
 
     Parameters
@@ -52,14 +53,18 @@ def validate(obj: Dict[str, Any],
         if expected_type is not None:
             pytype = _TYPE_MAP.get(expected_type)
             if pytype and not isinstance(obj[key], pytype):
-                errors.append(f"field '{key}' expected {expected_type}, got {type(obj[key]).__name__}")
+                errors.append(
+                    f"field '{key}' expected {expected_type}, got {type(obj[key]).__name__}"
+                )
 
     if optional:
         for key, expected_type in optional.items():
             if key in obj and expected_type is not None:
                 pytype = _TYPE_MAP.get(expected_type)
                 if pytype and not isinstance(obj[key], pytype):
-                    errors.append(f"optional field '{key}' expected {expected_type}, got {type(obj[key]).__name__}")
+                    errors.append(
+                        f"optional field '{key}' expected {expected_type}, got {type(obj[key]).__name__}"
+                    )
 
     return (len(errors) == 0, errors)
 
@@ -96,4 +101,3 @@ PHASE_HISTORY_SCHEMA = {
     "timestamp": "str",
     "context_cluster_id": "str",
 }
-

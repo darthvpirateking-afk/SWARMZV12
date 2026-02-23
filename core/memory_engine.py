@@ -8,7 +8,6 @@ All storage is append-only JSONL for audit and safety.
 
 import json
 import uuid
-from datetime import datetime
 from pathlib import Path
 from typing import List, Dict, Any, Optional
 
@@ -20,7 +19,7 @@ class MemoryEngine:
 
     def __init__(self, data_dir: Path = Path("data")):
         """Initialize memory engine.
-        
+
         Args:
             data_dir: Directory for storing JSONL files
         """
@@ -40,17 +39,17 @@ class MemoryEngine:
         message: str,
         reply: str,
         mode: str,
-        tags: Optional[List[str]] = None
+        tags: Optional[List[str]] = None,
     ) -> ConversationTurn:
         """Store a single conversation turn.
-        
+
         Args:
             operator_id: Operator ID
             message: User message
             reply: NEXUSMON reply
             mode: Response mode (Reflect, Plan, etc.)
             tags: Optional tags for categorization
-            
+
         Returns:
             The stored ConversationTurn
         """
@@ -60,7 +59,7 @@ class MemoryEngine:
             message=message,
             reply=reply,
             mode=mode,
-            tags=tags or []
+            tags=tags or [],
         )
 
         # Append to JSONL
@@ -70,16 +69,14 @@ class MemoryEngine:
         return turn
 
     def get_recent_turns(
-        self,
-        operator_id: str,
-        limit: int = 20
+        self, operator_id: str, limit: int = 20
     ) -> List[ConversationTurn]:
         """Get recent conversation turns for an operator.
-        
+
         Args:
             operator_id: Operator ID
             limit: Maximum number of turns to return
-            
+
         Returns:
             List of recent ConversationTurn objects
         """
@@ -105,15 +102,12 @@ class MemoryEngine:
         # Return last N turns
         return turns[-limit:] if len(turns) > limit else turns
 
-    def summarize_turns(
-        self,
-        turns: List[ConversationTurn]
-    ) -> str:
+    def summarize_turns(self, turns: List[ConversationTurn]) -> str:
         """Create a brief summary of conversation turns.
-        
+
         Args:
             turns: List of conversation turns
-            
+
         Returns:
             Text summary of patterns and themes
         """
@@ -141,7 +135,9 @@ class MemoryEngine:
         summary_parts = []
 
         if mode_counts:
-            modes_str = ", ".join(f"{mode.value}({count})" for mode, count in sorted(mode_counts.items()))
+            modes_str = ", ".join(
+                f"{mode.value}({count})" for mode, count in sorted(mode_counts.items())
+            )
             summary_parts.append(f"Recent modes: {modes_str}")
 
         if questions:
@@ -154,10 +150,10 @@ class MemoryEngine:
 
     def get_operator_memory(self, operator_id: str) -> Optional[OperatorMemory]:
         """Load the current operator memory if it exists.
-        
+
         Args:
             operator_id: Operator ID
-            
+
         Returns:
             OperatorMemory if exists, else None
         """
@@ -189,19 +185,19 @@ class MemoryEngine:
         operator_id: str,
         summary: str,
         tags: Optional[List[str]] = None,
-        patterns: Optional[Dict[str, Any]] = None
+        patterns: Optional[Dict[str, Any]] = None,
     ) -> OperatorMemory:
         """Update long-term operator memory.
-        
+
         This is called periodically to compress recent turns into
         patterns that inform future responses.
-        
+
         Args:
             operator_id: Operator ID
             summary: Text summary of learned patterns
             tags: Optional tags
             patterns: Optional dict of learned patterns
-            
+
         Returns:
             The stored OperatorMemory
         """
@@ -209,7 +205,7 @@ class MemoryEngine:
             operator_id=operator_id,
             summary=summary,
             tags=tags or [],
-            patterns=patterns or {}
+            patterns=patterns or {},
         )
 
         # Append to JSONL
@@ -220,10 +216,10 @@ class MemoryEngine:
 
     def extract_patterns(self, turns: List[ConversationTurn]) -> Dict[str, Any]:
         """Extract operational patterns from conversation turns.
-        
+
         Args:
             turns: List of conversation turns
-            
+
         Returns:
             Dictionary of extracted patterns
         """
@@ -234,7 +230,7 @@ class MemoryEngine:
             "favorite_modes": {},
             "avoidance_patterns": [],
             "question_themes": [],
-            "response_preferences": []
+            "response_preferences": [],
         }
 
         # Count mode preferences
@@ -259,10 +255,10 @@ class MemoryEngine:
 
     def get_memory_summary_for_context(self, operator_id: str) -> str:
         """Get a brief memory summary suitable for inclusion in conversation context.
-        
+
         Args:
             operator_id: Operator ID
-            
+
         Returns:
             Text suitable for inclusion in LLM context
         """

@@ -2,8 +2,8 @@ import unittest
 from unittest.mock import patch, MagicMock
 from kernel_runtime.orchestrator import SwarmzOrchestrator
 
-class TestSwarmzOrchestrator(unittest.TestCase):
 
+class TestSwarmzOrchestrator(unittest.TestCase):
     def setUp(self):
         self.orchestrator = SwarmzOrchestrator()
 
@@ -16,9 +16,18 @@ class TestSwarmzOrchestrator(unittest.TestCase):
     @patch("kernel_runtime.orchestrator.SwarmzOrchestrator.start_avatar")
     @patch("kernel_runtime.orchestrator.SwarmzOrchestrator.start_api")
     @patch("kernel_runtime.orchestrator.SwarmzOrchestrator.launch_cockpit")
-    def test_activate(self, mock_launch_cockpit, mock_start_api, mock_start_avatar, mock_start_swarm_engine,
-                      mock_start_mission_engine, mock_start_session, mock_start_patchpack, mock_start_governor,
-                      mock_load_mesh):
+    def test_activate(
+        self,
+        mock_launch_cockpit,
+        mock_start_api,
+        mock_start_avatar,
+        mock_start_swarm_engine,
+        mock_start_mission_engine,
+        mock_start_session,
+        mock_start_patchpack,
+        mock_start_governor,
+        mock_load_mesh,
+    ):
         # Mock return values
         mock_load_mesh.return_value = MagicMock()
         mock_start_governor.return_value = MagicMock()
@@ -48,6 +57,7 @@ class TestSwarmzOrchestrator(unittest.TestCase):
         config = self.orchestrator.load_config()
         self.assertIsInstance(config, dict)
         self.assertEqual(config, {})
+
 
 if __name__ == "__main__":
     unittest.main()

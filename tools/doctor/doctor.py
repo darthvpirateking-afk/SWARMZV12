@@ -14,7 +14,6 @@ Prints:
 """
 
 import json
-import os
 import socket
 import subprocess
 import sys
@@ -30,10 +29,11 @@ LOG_FILES = [
     DATA_DIR / "audit.jsonl",
 ]
 
+
 def section(title):
-    print(f"\n{'='*50}")
+    print(f"\n{'=' * 50}")
     print(f"  {title}")
-    print(f"{'='*50}")
+    print(f"{'=' * 50}")
 
 
 def load_config():
@@ -47,8 +47,7 @@ def check_port(port):
     """Check if a port is listening."""
     try:
         result = subprocess.run(
-            ["netstat", "-ano"],
-            capture_output=True, text=True, timeout=10
+            ["netstat", "-ano"], capture_output=True, text=True, timeout=10
         )
         for line in result.stdout.splitlines():
             if f":{port} " in line and "LISTENING" in line:
@@ -112,7 +111,9 @@ def main():
         print(f"  Offline Mode: {offline}")
         zapier = cfg.get("integrations", {}).get("zapier", {})
         if zapier:
-            print(f"  Zapier:       enabled={zapier.get('enabled')}, hook={'SET' if zapier.get('zapier_catch_hook_url') else 'NOT SET'}")
+            print(
+                f"  Zapier:       enabled={zapier.get('enabled')}, hook={'SET' if zapier.get('zapier_catch_hook_url') else 'NOT SET'}"
+            )
 
     # â”€â”€ Port Status â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     section("PORT STATUS")
@@ -161,13 +162,19 @@ def main():
     section("RECOMMENDATIONS")
     recommendations = []
     if not listening:
-        recommendations.append("Server not running. Start with: SWARMZ_UP.cmd or SWARMZ_UP.ps1")
+        recommendations.append(
+            "Server not running. Start with: SWARMZ_UP.cmd or SWARMZ_UP.ps1"
+        )
     if isinstance(cfg, dict) and cfg.get("bind") == "127.0.0.1":
-        recommendations.append("bind is 127.0.0.1 â€” phone access requires 0.0.0.0 in config/runtime.json")
+        recommendations.append(
+            "bind is 127.0.0.1 â€” phone access requires 0.0.0.0 in config/runtime.json"
+        )
     if isinstance(cfg, dict):
         secret = cfg.get("integrations", {}).get("zapier", {}).get("shared_secret", "")
         if secret == "change-me-to-a-real-secret":
-            recommendations.append("Change the Zapier shared_secret in config/runtime.json")
+            recommendations.append(
+                "Change the Zapier shared_secret in config/runtime.json"
+            )
     if not recommendations:
         recommendations.append("System looks healthy. No action needed.")
     for r in recommendations:
@@ -182,4 +189,3 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"Doctor error: {e}")
         sys.exit(1)
-

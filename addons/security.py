@@ -34,7 +34,6 @@ from starlette.responses import Response
 
 from addons.config_ext import get_config
 
-
 # ---------------------------------------------------------------------------
 # Security audit log helpers
 # ---------------------------------------------------------------------------
@@ -115,7 +114,9 @@ class IDSMiddleware(BaseHTTPMiddleware):
         # ip -> deque of error timestamps
         self._error_windows: Dict[str, Deque[float]] = defaultdict(deque)
 
-    async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
+    async def dispatch(
+        self, request: Request, call_next: RequestResponseEndpoint
+    ) -> Response:
         client_ip = self._client_ip(request)
         path = request.url.path
         method = request.method.upper()
@@ -221,7 +222,9 @@ def _jwt_algorithm() -> str:
     return os.environ.get("JWT_ALGO", "HS256")
 
 
-def create_access_token(subject: str, roles: Optional[List[str]] = None, expires_minutes: int = 60) -> str:
+def create_access_token(
+    subject: str, roles: Optional[List[str]] = None, expires_minutes: int = 60
+) -> str:
     """Create a signed JWT access token with role claims.
 
     If no JWT secret is configured, this will raise so callers can surface
@@ -230,7 +233,9 @@ def create_access_token(subject: str, roles: Optional[List[str]] = None, expires
 
     secret = _jwt_secret()
     if not secret:
-        raise RuntimeError("JWT secret not configured; set SWARMZ_JWT_SECRET or JWT_SECRET")
+        raise RuntimeError(
+            "JWT secret not configured; set SWARMZ_JWT_SECRET or JWT_SECRET"
+        )
 
     now = datetime.now(timezone.utc)
     payload: Dict[str, Any] = {
@@ -294,7 +299,9 @@ class RoleChecker:
     def __init__(self, required_roles: Optional[List[str]] = None):
         self.required_roles = required_roles or []
 
-    def __call__(self, user: Optional[TokenData] = Depends(get_current_user)) -> TokenData:
+    def __call__(
+        self, user: Optional[TokenData] = Depends(get_current_user)
+    ) -> TokenData:
         # If JWT secret is not configured, allow through with a dummy user.
         if not _jwt_secret():
             return TokenData(sub="anonymous", roles=[])
@@ -310,7 +317,7 @@ class RoleChecker:
 
 
 # ---------------------------------------------------------------------------
-    # Honeypot utilities and status helpers
+# Honeypot utilities and status helpers
 # ---------------------------------------------------------------------------
 
 
@@ -359,4 +366,3 @@ def security_status_snapshot(limit_events: int = 50) -> Dict[str, Any]:
     }
     events = read_security_events(limit=limit_events)
     return {"config": status, "recent_events": events}
-

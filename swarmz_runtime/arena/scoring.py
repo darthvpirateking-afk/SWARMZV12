@@ -9,8 +9,9 @@ from __future__ import annotations
 from typing import Any, Dict
 
 
-def score_candidate(response: str, prompt: str,
-                    strategy: str = "length_quality") -> float:
+def score_candidate(
+    response: str, prompt: str, strategy: str = "length_quality"
+) -> float:
     """Score a candidate response deterministically.
 
     Strategies:
@@ -62,9 +63,7 @@ def rank_candidates(candidates: list[Dict[str, Any]]) -> list[Dict[str, Any]]:
     """
     sorted_cands = sorted(
         candidates,
-        key=lambda c: (-c.get("score", 0.0),
-                       c.get("worker_index", 0),
-                       c.get("id", "")),
+        key=lambda c: (-c.get("score", 0.0), c.get("worker_index", 0), c.get("id", "")),
     )
     for i, c in enumerate(sorted_cands, start=1):
         c["rank"] = i

@@ -5,6 +5,7 @@
 Ensures doctor runs to completion and returns one of the allowed codes (0,2,3)
 when server may or may not be running.
 """
+
 import subprocess
 import sys
 from pathlib import Path
@@ -15,7 +16,13 @@ DOCTOR = ROOT / "tools" / "doctor.py"
 
 def main():
     try:
-        proc = subprocess.run([sys.executable, str(DOCTOR)], capture_output=True, text=True, timeout=180, cwd=ROOT)
+        proc = subprocess.run(
+            [sys.executable, str(DOCTOR)],
+            capture_output=True,
+            text=True,
+            timeout=180,
+            cwd=ROOT,
+        )
     except Exception as exc:
         print(f"doctor invocation failed: {exc}")
         sys.exit(1)
@@ -29,4 +36,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

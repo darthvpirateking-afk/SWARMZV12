@@ -48,7 +48,11 @@ class CounterfactualEngine:
 
     def get_trend_vector(self) -> float:
         try:
-            if self.world_model and getattr(self.world_model, "state_file", None) and self.world_model.state_file.exists():
+            if (
+                self.world_model
+                and getattr(self.world_model, "state_file", None)
+                and self.world_model.state_file.exists()
+            ):
                 state = json.loads(self.world_model.state_file.read_text())
                 return float(state.get("trend_vector", 0.0))
         except Exception:
@@ -118,7 +122,9 @@ class CounterfactualEngine:
         }
         self._append_jsonl(self.cf_log_file, log_entry)
 
-        self.evolution.update_reliability(selected_strategy, selected_pred, actual_score, surprise_score)
+        self.evolution.update_reliability(
+            selected_strategy, selected_pred, actual_score, surprise_score
+        )
         if regret_score > 0.0:
             self.evolution.bump_exploration_bias(min(0.05, regret_score * 0.1))
         if surprise_score < 0.1:
@@ -152,8 +158,13 @@ class CounterfactualEngine:
         return first - second  # positive means improving (lower error)
 
     def _most_misleading(self, entries: List[Dict[str, Any]]) -> List[str]:
-        sorted_entries = sorted(entries[-50:], key=lambda e: e.get("surprise_score", 0.0), reverse=True)
-        return [f"{e.get('mission_id')}:{e.get('selected_strategy')} surprise={round(e.get('surprise_score', 0.0),3)}" for e in sorted_entries[:3]]
+        sorted_entries = sorted(
+            entries[-50:], key=lambda e: e.get("surprise_score", 0.0), reverse=True
+        )
+        return [
+            f"{e.get('mission_id')}:{e.get('selected_strategy')} surprise={round(e.get('surprise_score', 0.0), 3)}"
+            for e in sorted_entries[:3]
+        ]
 
     def _most_reliable(self) -> List[str]:
         reliab = getattr(self.evolution, "_reliability", {})
@@ -166,7 +177,9 @@ class CounterfactualEngine:
         ranked.sort(reverse=True)
         lines = []
         for item in ranked[:3]:
-            lines.append(f"{item[1]} accuracy={round(item[2],3)} overconfidence={round(item[3],3)}")
+            lines.append(
+                f"{item[1]} accuracy={round(item[2], 3)} overconfidence={round(item[3], 3)}"
+            )
         return lines
 
     def _maybe_emit_report(self) -> None:
@@ -181,10 +194,14 @@ class CounterfactualEngine:
         reliable = self._most_reliable()
 
         lines = []
-        lines.append(f"Decision Quality Report @ {datetime.now(timezone.utc).isoformat()}")
+        lines.append(
+            f"Decision Quality Report @ {datetime.now(timezone.utc).isoformat()}"
+        )
         lines.append(f"Missions evaluated: {len(entries)}")
         lines.append(f"Average regret: {round(avg_regret, 4)}")
-        lines.append(f"Prediction accuracy trend (positive improves): {round(accuracy_trend, 4)}")
+        lines.append(
+            f"Prediction accuracy trend (positive improves): {round(accuracy_trend, 4)}"
+        )
         lines.append("Most misleading patterns:")
         for row in misleading or ["None"]:
             lines.append(f"  {row}")
@@ -194,4 +211,3 @@ class CounterfactualEngine:
 
         with open(self.report_file, "w", encoding="utf-8") as f:
             f.write("\n".join(lines))
-

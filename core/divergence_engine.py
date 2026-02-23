@@ -48,7 +48,9 @@ class DivergenceEngine:
                     ts = row.get("timestamp")
                     if ts:
                         try:
-                            t = datetime.fromisoformat(ts.replace("Z", "+00:00")).timestamp()
+                            t = datetime.fromisoformat(
+                                ts.replace("Z", "+00:00")
+                            ).timestamp()
                         except Exception:
                             continue
                         if t >= cutoff:
@@ -65,13 +67,25 @@ class DivergenceEngine:
         self.state["divergence_score"] = divergence
 
         if divergence > prev:
-            self.state["branching_factor"] = max(0.5, self.state.get("branching_factor", 1.0) * 0.8)
-            self.state["planning_horizon"] = max(0.5, self.state.get("planning_horizon", 1.0) * 0.9)
-            self.state["commitment_weight"] = min(3.0, self.state.get("commitment_weight", 1.0) * 1.2)
+            self.state["branching_factor"] = max(
+                0.5, self.state.get("branching_factor", 1.0) * 0.8
+            )
+            self.state["planning_horizon"] = max(
+                0.5, self.state.get("planning_horizon", 1.0) * 0.9
+            )
+            self.state["commitment_weight"] = min(
+                3.0, self.state.get("commitment_weight", 1.0) * 1.2
+            )
         else:
-            self.state["branching_factor"] = min(2.0, self.state.get("branching_factor", 1.0) * 1.05)
-            self.state["planning_horizon"] = min(2.0, self.state.get("planning_horizon", 1.0) * 1.05)
-            self.state["commitment_weight"] = max(1.0, self.state.get("commitment_weight", 1.0) * 0.98)
+            self.state["branching_factor"] = min(
+                2.0, self.state.get("branching_factor", 1.0) * 1.05
+            )
+            self.state["planning_horizon"] = min(
+                2.0, self.state.get("planning_horizon", 1.0) * 1.05
+            )
+            self.state["commitment_weight"] = max(
+                1.0, self.state.get("commitment_weight", 1.0) * 0.98
+            )
 
         event = {
             "timestamp": datetime.now(timezone.utc).isoformat(),
@@ -90,4 +104,3 @@ class DivergenceEngine:
             "planning_horizon": self.state.get("planning_horizon", 1.0),
             "commitment_weight": self.state.get("commitment_weight", 1.0),
         }
-

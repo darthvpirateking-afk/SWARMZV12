@@ -44,7 +44,9 @@ def _append_run(task: str, result: Dict[str, Any]):
     }
     with RUNS_FILE.open("a", encoding="utf-8") as f:
         f.write(json.dumps(row, separators=(",", ":")) + "\n")
-    provenance.append_audit("scheduler_run", {"task": task, "ok": result.get("ok", True)})
+    provenance.append_audit(
+        "scheduler_run", {"task": task, "ok": result.get("ok", True)}
+    )
 
 
 def tick(now: float | None = None):
@@ -79,4 +81,3 @@ def resume():
     st["paused"] = False
     _save_state(st)
     provenance.append_audit("scheduler_resumed", {})
-

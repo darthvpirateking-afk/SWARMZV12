@@ -1,4 +1,3 @@
-
 # MIT License
 # Copyright (c) 2026 SWARMZ
 #
@@ -24,9 +23,8 @@
 Implements the Normalization layer to standardize event data.
 """
 
-
-import json
 import hashlib
+
 
 def normalize_event(event):
     """Normalize an event to ensure consistency."""
@@ -43,18 +41,21 @@ def normalize_event(event):
     # Normalize error messages using a stable hash
     if "error_message" in event:
         event["error_message"] = stable_hash(event["error_message"])
+
+
 def stable_hash(value: str) -> str:
     """Return a stable SHA256 hash for a string value."""
     return hashlib.sha256(value.encode("utf-8")).hexdigest()
 
     return event
 
+
 def normalize_file_path(file_path):
     """Convert file paths to repo-relative paths where possible."""
     # Placeholder for actual normalization logic
     return file_path
 
+
 def normalize_command(command):
     """Tokenize command strings into arrays."""
     return command.split()
-

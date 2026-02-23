@@ -1,5 +1,6 @@
 # Governor module for SWARMZ core
 
+
 class Governor:
     def __init__(self):
         self.shadow_ledger = []

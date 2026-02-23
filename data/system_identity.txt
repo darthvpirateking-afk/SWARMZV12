@@ -1,6 +1,0 @@
-birth_timestamp: 2026-02-19T09:02:49.004563Z
-machine_fingerprint: adcf45b0c1a319b477643cfe3e1ff419
-platform: Windows 10
-python: 3.13.11
-swarmz_version: 1.0.0
-operator_public_key: (pending anchor)

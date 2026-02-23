@@ -28,21 +28,37 @@ from pydantic import BaseModel
 
 from fastapi import Request, Depends
 
+
 def get_orchestrator(request: Request):
-  return getattr(request.app.state, "orchestrator", None)
+    return getattr(request.app.state, "orchestrator", None)
+
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter()
+_FALLBACK_CORE = None
+
+
+def _get_fallback_core():
+    global _FALLBACK_CORE
+    if _FALLBACK_CORE is not None:
+        return _FALLBACK_CORE
+    try:
+        from swarmz import SwarmzCore
+
+        _FALLBACK_CORE = SwarmzCore()
+    except Exception:
+        _FALLBACK_CORE = None
+    return _FALLBACK_CORE
 
 
 # ---------------------------------------------------------------------------
 # Dependency-based SwarmzCore access via orchestrator
 # ---------------------------------------------------------------------------
 def _get_core(orchestrator=Depends(get_orchestrator)):
-  if orchestrator and hasattr(orchestrator, "core"):
-    return orchestrator.core
-  return None
+    if orchestrator and hasattr(orchestrator, "core"):
+        return orchestrator.core
+    return None
 
 
 # ---------------------------------------------------------------------------
@@ -53,47 +69,43 @@ class ExecuteRequest(BaseModel):
     params: Dict[str, Any] = {}
 
 
-
 @router.get("/ui/api/capabilities")
 def api_capabilities(core=Depends(_get_core)):
-  if not core:
-    return JSONResponse({"capabilities": []})
-  return JSONResponse({"capabilities": core.list_capabilities()})
-
+    if not core:
+        return JSONResponse({"capabilities": []})
+    return JSONResponse({"capabilities": core.list_capabilities()})
 
 
 @router.post("/ui/api/execute")
 def api_execute(req: ExecuteRequest, core=Depends(_get_core)):
-  if not core:
-    return JSONResponse({"ok": False, "error": "Core unavailable"}, status_code=500)
-  try:
-    result = core.execute(req.task, **req.params)
-    return JSONResponse({"ok": True, "result": result})
-  except Exception as exc:
-    return JSONResponse(
-      {"ok": False, "error": str(exc)},
-      status_code=400,
-    )
-
+    if not core:
+        return JSONResponse({"ok": False, "error": "Core unavailable"}, status_code=500)
+    try:
+        result = core.execute(req.task, **req.params)
+        return JSONResponse({"ok": True, "result": result})
+    except Exception as exc:
+        return JSONResponse(
+            {"ok": False, "error": str(exc)},
+            status_code=400,
+        )
 
 
 @router.get("/ui/api/audit")
 def api_audit(core=Depends(_get_core)):
-  if not core:
-    return JSONResponse({"audit": []})
-  return JSONResponse({"audit": core.get_audit_log()})
-
+    if not core:
+        return JSONResponse({"audit": []})
+    return JSONResponse({"audit": core.get_audit_log()})
 
 
 @router.get("/ui/api/info")
 def api_info(core=Depends(_get_core)):
-  if not core:
-    return JSONResponse({"info": {}})
-  try:
-    info = core.execute("system_info")
-  except Exception:
-    info = {}
-  return JSONResponse({"info": info})
+    if not core:
+        return JSONResponse({"info": {}})
+    try:
+        info = core.execute("system_info")
+    except Exception:
+        info = {}
+    return JSONResponse({"info": info})
 
 
 # ---------------------------------------------------------------------------
@@ -245,7 +257,7 @@ document.getElementById('exec-btn').onclick=async()=>{
     showResult(d);
     loadAudit();
   }catch(e){showResult({ok:false,error:String(e)});}
-  btn.disabled=false;btn.removeAttribute('aria-busy');btn.textContent='\u25B6 Execute';
+  btn.disabled=false;btn.removeAttribute('aria-busy');btn.textContent='\u25b6 Execute';
 };
 
 document.getElementById('clear-btn').onclick=()=>{
@@ -271,7 +283,7 @@ async function loadAudit(){
     const body=document.getElementById('audit-body');
     const entries=d.audit||[];
     if(entries.length===0){body.innerHTML='<tr><td colspan="3" style="color:#8b949e">No entries yet</td></tr>';return;}
-    body.innerHTML=entries.map((e,i)=>`<tr><td>${i+1}</td><td>${e.action} <span class="tag">${Object.keys(e.context||{}).join(', ')}</span></td><td>${e.approved?'\u2705':'\u274C'}</td></tr>`).join('');
+    body.innerHTML=entries.map((e,i)=>`<tr><td>${i+1}</td><td>${e.action} <span class="tag">${Object.keys(e.context||{}).join(', ')}</span></td><td>${e.approved?'\u2705':'\u274c'}</td></tr>`).join('');
   }catch(e){console.error(e);}
 }
 document.getElementById('refresh-audit').onclick=loadAudit;
@@ -288,4 +300,3 @@ loadInfo();loadCaps();loadAudit();
 def ui_page():
     """Serve the interactive operator console."""
     return _UI_HTML
-

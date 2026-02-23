@@ -1,9 +1,0 @@
-Daily Brief @ 2026-02-19T09:02:48.639153+00:00Z
-State changes:
-  State of life trend: 0.0
-  Divergence score: 8
-  Entropy mode: EXPAND
-High value actions:
-Wasted effort patterns:
-Recommended focus shift:
-  Reduce branching and execute prepared actions.

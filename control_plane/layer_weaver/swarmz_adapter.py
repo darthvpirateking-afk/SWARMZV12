@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import uuid
 from datetime import datetime, timezone
-from typing import Any, Callable, Dict, List, Optional
+from typing import Dict, Optional
 
 from .event_debouncer import EventDebouncer
 
@@ -55,19 +55,27 @@ class InProcessSwarmzBus(SwarmzAdapter):
             current = self._state.get_latest_value(var, 0)
             new_val = current + delta
             parts = var.split(".", 1)
-            layer = action.get("target_layer", parts[0] if len(parts) > 1 else "unknown")
-            self._state.append({
-                "layer": layer,
-                "variable": var,
-                "value": new_val,
-                "units": eff.get("units", "abstract"),
-                "time": now,
-                "confidence": eff.get("confidence", 0.8),
-                "directionality": "neutral",
-                "source": f"adapter:{action.get('id', 'unknown')}",
-            })
+            layer = action.get(
+                "target_layer", parts[0] if len(parts) > 1 else "unknown"
+            )
+            self._state.append(
+                {
+                    "layer": layer,
+                    "variable": var,
+                    "value": new_val,
+                    "units": eff.get("units", "abstract"),
+                    "time": now,
+                    "confidence": eff.get("confidence", 0.8),
+                    "directionality": "neutral",
+                    "source": f"adapter:{action.get('id', 'unknown')}",
+                }
+            )
 
-        result = {"task_id": task_id, "status": "completed", "action_id": action.get("id")}
+        result = {
+            "task_id": task_id,
+            "status": "completed",
+            "action_id": action.get("id"),
+        }
         self._tasks[task_id] = result
         self._bus.publish_immediate("ACTION_EXECUTED", result)
         return task_id

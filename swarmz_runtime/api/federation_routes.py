@@ -7,7 +7,6 @@ from pydantic import BaseModel, Field
 from swarmz_runtime.core.federation_manager import FederationManager
 from swarmz_runtime.core.operator_ecosystem import OperatorEcosystem
 
-
 router = APIRouter()
 _manager = FederationManager(Path(__file__).resolve().parent.parent.parent)
 _ecosystem = OperatorEcosystem(Path(__file__).resolve().parent.parent.parent)
@@ -31,7 +30,10 @@ class EvolveRequest(BaseModel):
 
 @router.post("/federation/organisms")
 def create_organism(payload: CreateOrganismRequest):
-    return {"ok": True, **_manager.create_organism(payload.name, payload.owner_id, payload.config_json)}
+    return {
+        "ok": True,
+        **_manager.create_organism(payload.name, payload.owner_id, payload.config_json),
+    }
 
 
 @router.get("/federation/organisms/{organism_id}")

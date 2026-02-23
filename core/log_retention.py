@@ -1,4 +1,3 @@
-
 # MIT License
 # Copyright (c) 2026 SWARMZ
 #
@@ -33,6 +32,7 @@ RETENTION_CONFIG = {
     "keep_days": 30,
 }
 
+
 def rotate_logs(log_file):
     """Rotate the log file if it exceeds the maximum size. Returns True if rotated."""
     if not os.path.isfile(log_file):
@@ -40,7 +40,10 @@ def rotate_logs(log_file):
     if os.path.getsize(log_file) > RETENTION_CONFIG["max_file_size"]:
         timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
         compressed_file = f"{log_file}-{timestamp}.gz"
-        with open(log_file, "rb") as original, gzip.open(compressed_file, "wb") as compressed:
+        with (
+            open(log_file, "rb") as original,
+            gzip.open(compressed_file, "wb") as compressed,
+        ):
             while True:
                 chunk = original.read(1024 * 1024)
                 if not chunk:
@@ -49,6 +52,7 @@ def rotate_logs(log_file):
         os.remove(log_file)
         return True
     return False
+
 
 def prune_logs(log_dir):
     """Prune logs older than the retention period."""
