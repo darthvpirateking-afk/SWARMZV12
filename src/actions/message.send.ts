@@ -3,13 +3,13 @@
  * Part of Action Layer
  */
 
-import { Action } from '../types';
+import { Action } from "../types";
 
 export interface MessageSendParams {
   destination: string;
   message: string;
   channel?: string;
-  priority?: 'low' | 'normal' | 'high' | 'urgent';
+  priority?: "low" | "normal" | "high" | "urgent";
   metadata?: Record<string, any>;
 }
 
@@ -25,10 +25,12 @@ export class MessageSendAction implements Action {
    * Preview the message send
    */
   async preview(): Promise<string> {
-    return `Will send message to: ${this.params.destination}\n` +
-           `Channel: ${this.params.channel || 'default'}\n` +
-           `Priority: ${this.params.priority || 'normal'}\n` +
-           `Message: ${this.params.message.substring(0, 200)}${this.params.message.length > 200 ? '...' : ''}`;
+    return (
+      `Will send message to: ${this.params.destination}\n` +
+      `Channel: ${this.params.channel || "default"}\n` +
+      `Priority: ${this.params.priority || "normal"}\n` +
+      `Message: ${this.params.message.substring(0, 200)}${this.params.message.length > 200 ? "..." : ""}`
+    );
   }
 
   /**
@@ -40,17 +42,17 @@ export class MessageSendAction implements Action {
     // 2. Format message appropriately
     // 3. Send message
     // 4. Get confirmation/message ID
-    
+
     this.messageId = `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    
+
     return {
-      action: 'message_send',
+      action: "message_send",
       destination: this.params.destination,
       message_id: this.messageId,
       channel: this.params.channel,
       priority: this.params.priority,
       sent_at: Date.now(),
-      status: 'delivered'
+      status: "delivered",
     };
   }
 
@@ -63,10 +65,10 @@ export class MessageSendAction implements Action {
     // 1. Send a follow-up "ignore previous message"
     // 2. Delete message if platform supports it
     // 3. Edit message to mark as cancelled
-    
+
     if (this.messageId) {
       console.log(`Warning: Message ${this.messageId} cannot be unsent`);
-      console.log('Consider sending a correction message');
+      console.log("Consider sending a correction message");
     }
   }
 }
