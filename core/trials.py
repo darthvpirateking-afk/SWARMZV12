@@ -198,10 +198,12 @@ def load_all_trials() -> List[Dict[str, Any]]:
 
 def get_trial(trial_id: str) -> Optional[Dict[str, Any]]:
     """Get a single trial by id."""
-    for t in reversed(load_all_trials()):
-        if t.get("id") == trial_id:
-            return t
-    return None
+    rows = _read_jsonl(_TRIALS_FILE)
+    result = None
+    for r in rows:
+        if r.get("id") == trial_id:
+            result = r  # keep last version (append-only log, last entry wins)
+    return result
 
 
 def update_trial(
@@ -491,12 +493,21 @@ def inbox_completed() -> List[Dict[str, Any]]:
 def inbox_counts() -> Dict[str, int]:
     """Quick counts for all three tabs."""
     trials = load_all_trials()
-    pending = sum(
-        1 for t in trials if t.get("survived") is None and not t.get("reverted")
-    )
-    needs_review = sum(1 for t in trials if t.get("survived") is False)
-    completed = sum(1 for t in trials if t.get("survived") is True)
-    reverted = sum(1 for t in trials if t.get("reverted"))
+    pending = 0
+    needs_review = 0
+    completed = 0
+    reverted = 0
+    for t in trials:
+        survived = t.get("survived")
+        is_reverted = bool(t.get("reverted"))
+        if survived is None and not is_reverted:
+            pending += 1
+        if survived is False:
+            needs_review += 1
+        if survived is True:
+            completed += 1
+        if is_reverted:
+            reverted += 1
     return {
         "pending": pending,
         "needs_review": needs_review,

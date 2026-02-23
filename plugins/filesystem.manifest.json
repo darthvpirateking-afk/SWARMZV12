@@ -1,0 +1,10 @@
+{
+  "name": "filesystem",
+  "version": "1.0.0",
+  "description": "File system manipulation capabilities including read, write, and directory operations.",
+  "entry_point": "filesystem.py",
+  "capabilities": ["list_directory", "read_file", "write_file", "create_directory", "file_info"],
+  "category": "storage",
+  "author": "SWARMZ",
+  "license": "SWARMZ-SAL"
+}
