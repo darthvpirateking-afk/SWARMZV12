@@ -3,7 +3,11 @@ from __future__ import annotations
 from backend.agent.mission_planner import build_setup_context
 from backend.entity.trait_drift_detector import TraitBehaviorSample, detect_drift
 from backend.intel.api_attack_engine import APIEndpoint, fuzz_endpoint
-from backend.intel.browser_recon import BrowserReconResult, extract_attack_surface, get_browser_recon_config
+from backend.intel.browser_recon import (
+    BrowserReconResult,
+    extract_attack_surface,
+    get_browser_recon_config,
+)
 from backend.intel.network_flow_analyzer import (
     NetworkFlow,
     analyze_flow,
@@ -14,7 +18,10 @@ from backend.intel.secret_scanner import scan_file
 from backend.intelligence.feature_store import Feature, get_feature, set_feature
 from backend.observability.mission_debugger import MissionDebugger, TraceEvent
 from backend.runner.vm_provisioner import get_vm_config, provision_vm
-from backend.runner.vpn_provisioner import guaranteed_destroy_vpn_node, provision_vpn_node
+from backend.runner.vpn_provisioner import (
+    guaranteed_destroy_vpn_node,
+    provision_vpn_node,
+)
 
 
 def test_browser_recon_is_always_headless() -> None:
@@ -65,7 +72,9 @@ def test_secret_scanner_redacts_value_preview() -> None:
 
 
 def test_vm_provisioner_enforces_network_isolation() -> None:
-    vm = provision_vm("windows_server_2019", creativity=70, patience=80, protectiveness=80)
+    vm = provision_vm(
+        "windows_server_2019", creativity=70, patience=80, protectiveness=80
+    )
     cfg = get_vm_config(creativity=70, patience=80, protectiveness=80)
     assert vm["network_mode"] == "isolated"
     assert vm["network_isolation_required"] is True
@@ -73,14 +82,18 @@ def test_vm_provisioner_enforces_network_isolation() -> None:
 
 
 def test_api_fuzz_generates_results() -> None:
-    endpoint = APIEndpoint(path="/users", method="GET", parameters=[], auth="none", schema={})
+    endpoint = APIEndpoint(
+        path="/users", method="GET", parameters=[], auth="none", schema={}
+    )
     results = fuzz_endpoint(endpoint, strategy="idor", aggression=70)
     assert results
 
 
 def test_feature_store_set_and_get() -> None:
     store: dict[str, dict[str, Feature]] = {}
-    feat = Feature(name="cves_known", value=["CVE-2021-44228"], target_id="target-1", ttl_hours=24)
+    feat = Feature(
+        name="cves_known", value=["CVE-2021-44228"], target_id="target-1", ttl_hours=24
+    )
     set_feature("target-1", feat, store)
     loaded = get_feature("target-1", "cves_known", store)
     assert loaded is not None

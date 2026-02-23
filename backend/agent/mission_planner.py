@@ -6,20 +6,25 @@ from backend.memory.why_layer import WhyEntry, log_why, suggest_next_step
 from backend.observability.mission_debugger import get_debugger_config
 from backend.runner.vpn_provisioner import get_vpn_config
 
-
 _FEATURE_STORE: dict[str, dict[str, Feature]] = {}
 
 
-def get_autonomy_mode(autonomy: int, aggression: int, mood: str | None = "calm") -> dict:
+def get_autonomy_mode(
+    autonomy: int, aggression: int, mood: str | None = "calm"
+) -> dict:
     mode = {
         "step_confirmation_required": autonomy < 40,
         "auto_escalate_privileges": aggression > 70,
         "max_auto_steps": int((autonomy / 100) * 20),
         "abort_on_anomaly": autonomy < 30,
     }
-    mode["max_auto_steps"] = int(max(0, apply_numeric_modifier(mode["max_auto_steps"], "max_auto_steps", mood)))
+    mode["max_auto_steps"] = int(
+        max(0, apply_numeric_modifier(mode["max_auto_steps"], "max_auto_steps", mood))
+    )
     mode["auto_escalate_privileges"] = bool(
-        apply_override(mode["auto_escalate_privileges"], "auto_escalate_privileges", mood)
+        apply_override(
+            mode["auto_escalate_privileges"], "auto_escalate_privileges", mood
+        )
     )
     mode["abort_on_anomaly"] = bool(
         apply_override(mode["abort_on_anomaly"], "abort_on_anomaly", mood)
@@ -79,6 +84,8 @@ def build_setup_context(
         "target_id": target_id,
         "prefetched_features": list(cached.keys()),
         "vpn": get_vpn_config(protectiveness=protectiveness, autonomy=autonomy),
-        "debugger": get_debugger_config(patience=patience, protectiveness=protectiveness),
+        "debugger": get_debugger_config(
+            patience=patience, protectiveness=protectiveness
+        ),
         "feature_prefetch_enabled": patience >= 50 and curiosity >= 35,
     }

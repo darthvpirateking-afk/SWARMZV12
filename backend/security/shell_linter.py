@@ -32,14 +32,32 @@ def lint_shell_command(command: str) -> list[dict[str, Any]]:
 
     for code, token in HIGH_RISK_TOKENS.items():
         if token in cmd:
-            findings.append(ShellLintFinding(code=code, severity="error", message=f"High-risk token detected: {token}"))
+            findings.append(
+                ShellLintFinding(
+                    code=code,
+                    severity="error",
+                    message=f"High-risk token detected: {token}",
+                )
+            )
 
     for code, token in WARN_TOKENS.items():
         if token in cmd:
-            findings.append(ShellLintFinding(code=code, severity="warning", message=f"Risky token detected: {token}"))
+            findings.append(
+                ShellLintFinding(
+                    code=code,
+                    severity="warning",
+                    message=f"Risky token detected: {token}",
+                )
+            )
 
     if " && " in cmd:
-        findings.append(ShellLintFinding(code="SL201", severity="warning", message="Command chaining can hide failing segments."))
+        findings.append(
+            ShellLintFinding(
+                code="SL201",
+                severity="warning",
+                message="Command chaining can hide failing segments.",
+            )
+        )
 
     return [asdict(item) for item in findings]
 

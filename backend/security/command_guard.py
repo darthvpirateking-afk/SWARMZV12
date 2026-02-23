@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from backend.entity.mood_modifiers import apply_numeric_modifier
 
-
 ALWAYS_BLOCK = [
     "rm -rf /",
     "dd if=",

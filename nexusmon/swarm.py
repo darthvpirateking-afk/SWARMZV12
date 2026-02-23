@@ -87,8 +87,7 @@ class SwarmEngine:
         conn = self.db.conn
 
         # Primary CREATE — only runs when the table does not yet exist.
-        conn.execute(
-            """
+        conn.execute("""
             CREATE TABLE IF NOT EXISTS swarm_units (
                 id TEXT PRIMARY KEY,
                 name TEXT NOT NULL,
@@ -105,8 +104,7 @@ class SwarmEngine:
                 personal_lore TEXT DEFAULT '',
                 created_at TEXT NOT NULL
             )
-            """
-        )
+            """)
 
         # Retroactively add columns that exist in the spec but may be missing
         # from an older schema created by NexusmonDB.ensure_schema().

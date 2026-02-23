@@ -194,30 +194,22 @@ Be honest, helpful, and utterly clear about your nature and limits."""
         warmth_word = (
             "cold and clinical"
             if style.warmth < 0.4
-            else "warm and collaborative"
-            if style.warmth > 0.8
-            else "balanced"
+            else "warm and collaborative" if style.warmth > 0.8 else "balanced"
         )
         directness_word = (
             "subtle and suggestive"
             if style.directness < 0.5
-            else "blunt and direct"
-            if style.directness > 0.85
-            else "clear"
+            else "blunt and direct" if style.directness > 0.85 else "clear"
         )
         abstraction_word = (
             "concrete and example-driven"
             if style.abstraction < 0.3
-            else "abstract and principle-based"
-            if style.abstraction > 0.7
-            else "mixed"
+            else "abstract and principle-based" if style.abstraction > 0.7 else "mixed"
         )
         metaphor_word = (
             "literal and technical"
             if style.metaphor < 0.3
-            else "rich with imagery"
-            if style.metaphor > 0.7
-            else "occasional metaphors"
+            else "rich with imagery" if style.metaphor > 0.7 else "occasional metaphors"
         )
 
         return f"""- Warmth: {style.warmth:.1f} ({warmth_word})

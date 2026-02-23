@@ -2,14 +2,17 @@ from __future__ import annotations
 
 from typing import Any
 
-from backend.observability.mission_debugger import MissionDebugger, TraceEvent, get_debugger_config
+from backend.observability.mission_debugger import (
+    MissionDebugger,
+    TraceEvent,
+    get_debugger_config,
+)
 from backend.runner.vpn_provisioner import (
     VPNNode,
     guaranteed_destroy_vpn_node,
     get_vpn_config,
     provision_vpn_node,
 )
-
 
 PHASES = ["SETUP", "RECON", "EXECUTE", "REPORT", "CLEANUP"]
 
@@ -23,7 +26,9 @@ def run_phase_pipeline(
 ) -> dict[str, Any]:
     vpn_node: VPNNode | None = None
     debugger_cfg = get_debugger_config(patience=patience, protectiveness=protectiveness)
-    debugger = MissionDebugger(mission_id=mission_id, patience=patience, protectiveness=protectiveness)
+    debugger = MissionDebugger(
+        mission_id=mission_id, patience=patience, protectiveness=protectiveness
+    )
 
     status = "SUCCESS"
     visited: list[str] = []
@@ -33,12 +38,20 @@ def run_phase_pipeline(
         if vpn_cfg.get("auto_provision_before_ops"):
             provider = vpn_cfg.get("preferred_providers", ["linode"])[0]
             region = vpn_cfg.get("preferred_regions", ["auto"])[0]
-            vpn_node = provision_vpn_node(provider, region, protectiveness=protectiveness, mission_id=mission_id)
+            vpn_node = provision_vpn_node(
+                provider, region, protectiveness=protectiveness, mission_id=mission_id
+            )
 
         for phase in PHASES[:-1]:
             visited.append(phase)
             if debugger.active:
-                debugger.record(TraceEvent(event_type="call", function=f"phase_{phase.lower()}", module="phase_pipeline"))
+                debugger.record(
+                    TraceEvent(
+                        event_type="call",
+                        function=f"phase_{phase.lower()}",
+                        module="phase_pipeline",
+                    )
+                )
             if fail and phase == "EXECUTE":
                 raise RuntimeError("Simulated mission failure")
 

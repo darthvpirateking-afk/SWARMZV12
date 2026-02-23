@@ -42,7 +42,9 @@ def shannon_entropy(s: str) -> float:
     return -sum(p * math.log2(p) for p in freq.values())
 
 
-def scan_file(path: str, content: str, curiosity: int, aggression: int) -> list[SecretFinding]:
+def scan_file(
+    path: str, content: str, curiosity: int, aggression: int
+) -> list[SecretFinding]:
     findings: list[SecretFinding] = []
 
     for secret_type, pattern in SECRET_PATTERNS.items():
@@ -75,7 +77,9 @@ def scan_file(path: str, content: str, curiosity: int, aggression: int) -> list[
     return findings
 
 
-def scan_file_dict(path: str, content: str, curiosity: int, aggression: int) -> list[dict[str, Any]]:
+def scan_file_dict(
+    path: str, content: str, curiosity: int, aggression: int
+) -> list[dict[str, Any]]:
     return [asdict(item) for item in scan_file(path, content, curiosity, aggression)]
 
 

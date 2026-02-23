@@ -67,7 +67,9 @@ def query_known_vulns(package_name: str) -> list[VulnerabilityRecord]:
     return list(KNOWN_VULNS.get(normalize_package_name(package_name), []))
 
 
-def search_vulnerabilities(packages: list[str], minimum_severity: str = "low") -> list[dict[str, Any]]:
+def search_vulnerabilities(
+    packages: list[str], minimum_severity: str = "low"
+) -> list[dict[str, Any]]:
     threshold = SEVERITY_ORDER.get((minimum_severity or "low").lower(), 1)
     findings: list[VulnerabilityRecord] = []
 

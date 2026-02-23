@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from backend.entity.mood_modifiers import apply_numeric_modifier
 
-
 SEARCH_PROVIDERS = [
     "duckduckgo",
     "tavily",
@@ -13,7 +12,9 @@ SEARCH_PROVIDERS = [
 ]
 
 
-def get_active_providers(curiosity: int, patience: int, mood: str | None = "calm") -> list[str]:
+def get_active_providers(
+    curiosity: int, patience: int, mood: str | None = "calm"
+) -> list[str]:
     count = max(1, int((curiosity / 100) * len(SEARCH_PROVIDERS)))
     include_slow = patience >= 50
     providers = SEARCH_PROVIDERS[:count]

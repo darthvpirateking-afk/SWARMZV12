@@ -173,8 +173,12 @@ class LoginRequest(BaseModel):
 
 
 class FirecrawlRequest(BaseModel):
-    mission_id: str = Field(..., description="Mission identifier used for output correlation")
-    url: str = Field(..., description="Primary target URL for recon and content analysis")
+    mission_id: str = Field(
+        ..., description="Mission identifier used for output correlation"
+    )
+    url: str = Field(
+        ..., description="Primary target URL for recon and content analysis"
+    )
     content: str = Field(
         "",
         description="Optional downloaded page/content text to feed secret scanning",
@@ -184,21 +188,31 @@ class FirecrawlRequest(BaseModel):
         description="Set true when target appears JS-heavy and browser recon should run",
     )
     curiosity: int = Field(50, ge=0, le=100, description="Trait gate for recon depth")
-    creativity: int = Field(50, ge=0, le=100, description="Trait gate for route/auth analysis")
-    patience: int = Field(50, ge=0, le=100, description="Trait gate for page depth and timeouts")
-    aggression: int = Field(30, ge=0, le=100, description="Trait gate for attack-surface extraction")
+    creativity: int = Field(
+        50, ge=0, le=100, description="Trait gate for route/auth analysis"
+    )
+    patience: int = Field(
+        50, ge=0, le=100, description="Trait gate for page depth and timeouts"
+    )
+    aggression: int = Field(
+        30, ge=0, le=100, description="Trait gate for attack-surface extraction"
+    )
 
 
 class PhaseRunRequest(BaseModel):
     mission_id: str = Field(..., description="Mission identifier for phase execution")
-    autonomy: int = Field(50, ge=0, le=100, description="Trait gate for autonomous setup actions")
+    autonomy: int = Field(
+        50, ge=0, le=100, description="Trait gate for autonomous setup actions"
+    )
     protectiveness: int = Field(
         50,
         ge=0,
         le=100,
         description="Trait gate for VPN/debug safeguards and safety enforcement",
     )
-    patience: int = Field(50, ge=0, le=100, description="Trait gate for debug trace depth and waits")
+    patience: int = Field(
+        50, ge=0, le=100, description="Trait gate for debug trace depth and waits"
+    )
     fail: bool = Field(
         False,
         description="Test switch to simulate mission failure and verify guaranteed cleanup",
@@ -236,6 +250,7 @@ if _nexusmon_available:
 # Include NEXUSMON entity state routes (/v1/nexusmon/entity/*)
 try:
     from nexusmon.routes.entity import router as _nexus_entity_router
+
     app.include_router(_nexus_entity_router)
 except Exception as _e:
     pass  # Non-fatal if entity routes fail to load
@@ -1305,6 +1320,7 @@ async def companion_message(request: Request):
 async def nexusmon_websocket(websocket: WebSocket):
     """Real-time WebSocket chat endpoint for NEXUSMON console."""
     from nexusmon.console.ws_handler import handle_ws_chat
+
     await handle_ws_chat(websocket)
 
 

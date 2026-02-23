@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-
 PROVIDER_CAPABILITIES = {
     "anthropic": {"reasoning": 95, "code": 85, "speed": 70},
     "openai": {"reasoning": 90, "code": 90, "speed": 80},

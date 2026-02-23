@@ -17,7 +17,9 @@ class BrowserReconResult:
     screenshots: list[str] = field(default_factory=list)
 
 
-def get_browser_recon_config(curiosity: int, creativity: int, patience: int) -> dict[str, Any]:
+def get_browser_recon_config(
+    curiosity: int, creativity: int, patience: int
+) -> dict[str, Any]:
     return {
         "enabled": curiosity >= 45,
         "browser": "chromium",
@@ -34,9 +36,13 @@ def get_browser_recon_config(curiosity: int, creativity: int, patience: int) -> 
     }
 
 
-def extract_attack_surface(result: BrowserReconResult, aggression: int) -> dict[str, Any]:
+def extract_attack_surface(
+    result: BrowserReconResult, aggression: int
+) -> dict[str, Any]:
     surface = {
-        "endpoints": [str(call.get("url", "")) for call in result.network_calls if call.get("url")],
+        "endpoints": [
+            str(call.get("url", "")) for call in result.network_calls if call.get("url")
+        ],
         "ws_targets": list(result.ws_endpoints),
         "forms": list(result.forms),
         "auth_bypass_candidates": [],
@@ -50,6 +56,8 @@ def extract_attack_surface(result: BrowserReconResult, aggression: int) -> dict[
     return surface
 
 
-def should_run_browser_recon(js_detected: bool, curiosity: int, creativity: int, patience: int) -> bool:
+def should_run_browser_recon(
+    js_detected: bool, curiosity: int, creativity: int, patience: int
+) -> bool:
     cfg = get_browser_recon_config(curiosity, creativity, patience)
     return bool(js_detected and cfg["enabled"] and cfg["headless"])

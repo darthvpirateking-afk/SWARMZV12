@@ -7,7 +7,6 @@ from __future__ import annotations
 
 from typing import Any
 
-
 MOOD_MODIFIERS: dict[str, dict[str, Any]] = {
     "focused": {
         "max_auto_steps": +5,
@@ -108,7 +107,9 @@ def get_mood_modifiers(mood: str | None) -> dict[str, Any]:
     return MOOD_MODIFIERS.get(normalize_mood(mood), {})
 
 
-def apply_numeric_modifier(base: int | float, key: str, mood: str | None) -> int | float:
+def apply_numeric_modifier(
+    base: int | float, key: str, mood: str | None
+) -> int | float:
     mod = get_mood_modifiers(mood).get(key)
     if isinstance(mod, (int, float)):
         return base + mod

@@ -42,7 +42,9 @@ def _generate_id() -> str:
     return uuid.uuid4().hex[:10]
 
 
-def provision_vm(profile_name: str, creativity: int, patience: int, protectiveness: int) -> dict[str, Any]:
+def provision_vm(
+    profile_name: str, creativity: int, patience: int, protectiveness: int
+) -> dict[str, Any]:
     profile = VM_PROFILES.get(profile_name)
     if not profile:
         raise ValueError(f"No VM profile: {profile_name}")
@@ -61,7 +63,9 @@ def provision_vm(profile_name: str, creativity: int, patience: int, protectivene
     }
 
 
-def get_vm_config(creativity: int, patience: int, protectiveness: int) -> dict[str, Any]:
+def get_vm_config(
+    creativity: int, patience: int, protectiveness: int
+) -> dict[str, Any]:
     return {
         "enabled": patience >= 60,
         "preferred_for_windows": True,

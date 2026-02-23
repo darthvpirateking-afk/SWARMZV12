@@ -41,10 +41,18 @@ CHEAT_DB = [
 ]
 
 
-def get_relevant_cheats(context: dict[str, Any], curiosity: int, patience: int) -> list[CheatEntry]:
-    active_tags = context.get("services", []) + [context.get("phase", "")] + context.get("open_ports_labels", [])
+def get_relevant_cheats(
+    context: dict[str, Any], curiosity: int, patience: int
+) -> list[CheatEntry]:
+    active_tags = (
+        context.get("services", [])
+        + [context.get("phase", "")]
+        + context.get("open_ports_labels", [])
+    )
 
-    relevant = [entry for entry in CHEAT_DB if any(tag in active_tags for tag in entry.tags)]
+    relevant = [
+        entry for entry in CHEAT_DB if any(tag in active_tags for tag in entry.tags)
+    ]
 
     if curiosity >= 65:
         relevant = CHEAT_DB + [item for item in relevant if item not in CHEAT_DB]
@@ -66,7 +74,9 @@ def get_cheatsheet_config(curiosity: int, patience: int) -> dict[str, Any]:
     }
 
 
-def load_operator_cheatsheet(path: str = "data/cheatsheets/custom.json") -> list[CheatEntry]:
+def load_operator_cheatsheet(
+    path: str = "data/cheatsheets/custom.json",
+) -> list[CheatEntry]:
     source = Path(path)
     if not source.exists():
         return []

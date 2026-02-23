@@ -2,12 +2,13 @@ from __future__ import annotations
 
 from backend.entity.mood_modifiers import apply_override
 
-
 DESTRUCTIVE_ACTIONS = ["delete_data", "exfiltrate", "pivot_network", "drop_persistence"]
 HIGH_RISK_ACTIONS = ["exploit_cve", "brute_force", "scan_internal"]
 
 
-def check_operator_override(loyalty: int, action: dict, operator_approved: bool, mood: str | None = "calm") -> bool:
+def check_operator_override(
+    loyalty: int, action: dict, operator_approved: bool, mood: str | None = "calm"
+) -> bool:
     action_type = str(action.get("type", ""))
 
     if action_type in DESTRUCTIVE_ACTIONS:

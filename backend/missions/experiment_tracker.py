@@ -13,7 +13,9 @@ class ExperimentRun:
     variant: str
     metrics: dict[str, Any] = field(default_factory=dict)
     notes: str = ""
-    timestamp: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+    timestamp: str = field(
+        default_factory=lambda: datetime.now(timezone.utc).isoformat()
+    )
 
 
 class ExperimentTracker:

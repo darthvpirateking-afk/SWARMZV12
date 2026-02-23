@@ -54,7 +54,11 @@ def get_entity():
         from nexusmon.evolution import FORM_XP_THRESHOLDS
 
         threshold = FORM_XP_THRESHOLDS.get(form)
-        xp_pct = 100.0 if threshold is None else round(min(100.0, (xp / threshold) * 100.0), 1)
+        xp_pct = (
+            100.0
+            if threshold is None
+            else round(min(100.0, (xp / threshold) * 100.0), 1)
+        )
     except Exception:
         xp_pct = 0.0
 

@@ -18,6 +18,11 @@ def get_memory_config(curiosity: int, patience: int, mood: str | None = "calm") 
         apply_override(config["cross_mission_recall"], "cross_mission_recall", mood)
     )
     config["max_recalled_entries"] = int(
-        max(0, apply_numeric_modifier(config["max_recalled_entries"], "experience_buffer_size", mood))
+        max(
+            0,
+            apply_numeric_modifier(
+                config["max_recalled_entries"], "experience_buffer_size", mood
+            ),
+        )
     )
     return config

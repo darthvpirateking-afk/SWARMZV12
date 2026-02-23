@@ -19,6 +19,5 @@ def test_openapi_operation_ids_for_dashboard_and_runtime_routes():
 
     runtime_scoreboard_get = paths.get("/v1/runtime/scoreboard", {}).get("get", {})
     assert (
-        runtime_scoreboard_get.get("operationId")
-        == "runtime_endpoints_scoreboard_get"
+        runtime_scoreboard_get.get("operationId") == "runtime_endpoints_scoreboard_get"
     )

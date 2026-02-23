@@ -208,8 +208,7 @@ class MissionEngine:
         conn = self.db.conn
 
         # Primary CREATE — only runs when the table does not yet exist.
-        conn.execute(
-            """
+        conn.execute("""
             CREATE TABLE IF NOT EXISTS missions (
                 id TEXT PRIMARY KEY,
                 title TEXT NOT NULL,
@@ -226,8 +225,7 @@ class MissionEngine:
                 xp_reward REAL DEFAULT 10.0,
                 notes TEXT DEFAULT ''
             )
-            """
-        )
+            """)
 
         # Retroactively add columns missing from the legacy schema.
         cols = _table_cols(conn, "missions")

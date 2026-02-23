@@ -19,10 +19,17 @@ def provision_environment(
     normalized = (backend or "docker").strip().lower()
 
     if normalized in {"qemu", "libvirt", "vm"}:
-        vm = provision_vm(profile_name, creativity=creativity, patience=patience, protectiveness=protectiveness)
+        vm = provision_vm(
+            profile_name,
+            creativity=creativity,
+            patience=patience,
+            protectiveness=protectiveness,
+        )
         return {
             "backend": "vm",
-            "config": get_vm_config(creativity=creativity, patience=patience, protectiveness=protectiveness),
+            "config": get_vm_config(
+                creativity=creativity, patience=patience, protectiveness=protectiveness
+            ),
             "environment": vm,
         }
 

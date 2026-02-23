@@ -1,11 +1,17 @@
 from __future__ import annotations
 
 from backend.intel.browser_recon import BrowserReconResult, extract_attack_surface
-from backend.entity.mood_modifiers import apply_numeric_modifier, apply_override, get_mood_modifiers
+from backend.entity.mood_modifiers import (
+    apply_numeric_modifier,
+    apply_override,
+    get_mood_modifiers,
+)
 from backend.intel.vuln_db_client import search_vulnerabilities
 
 
-def get_cve_report_section(packages: list[str], minimum_severity: str = "medium") -> dict:
+def get_cve_report_section(
+    packages: list[str], minimum_severity: str = "medium"
+) -> dict:
     findings = search_vulnerabilities(packages, minimum_severity=minimum_severity)
     return {
         "section": "cve_intelligence",
@@ -59,6 +65,9 @@ def get_report_sections(
                 active.append(section)
 
     mods = get_mood_modifiers(mood)
-    if mods.get("context_engine_depth") == "deep" and "historical_comparison" not in active:
+    if (
+        mods.get("context_engine_depth") == "deep"
+        and "historical_comparison" not in active
+    ):
         active.append("historical_comparison")
     return active

@@ -14,7 +14,9 @@ class ArchiveEntry:
     mission_id: str
     artifact_type: str
     payload: dict[str, Any] = field(default_factory=dict)
-    timestamp: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+    timestamp: str = field(
+        default_factory=lambda: datetime.now(timezone.utc).isoformat()
+    )
 
 
 ARCHIVE_PATH = Path("data/intel_archive.jsonl")
@@ -26,7 +28,9 @@ def archive_intel(entry: ArchiveEntry) -> None:
         handle.write(json.dumps(asdict(entry), ensure_ascii=False) + "\n")
 
 
-def list_archived_intel(mission_id: str | None = None, limit: int = 100) -> list[dict[str, Any]]:
+def list_archived_intel(
+    mission_id: str | None = None, limit: int = 100
+) -> list[dict[str, Any]]:
     if not ARCHIVE_PATH.exists():
         return []
 
@@ -38,7 +42,7 @@ def list_archived_intel(mission_id: str | None = None, limit: int = 100) -> list
         if mission_id and item.get("mission_id") != mission_id:
             continue
         rows.append(item)
-    return rows[-max(1, limit):]
+    return rows[-max(1, limit) :]
 
 
 def get_archive_config(patience: int, protectiveness: int) -> dict[str, Any]:
@@ -57,7 +61,11 @@ def archive_and_scan(
     curiosity: int,
     aggression: int,
 ) -> dict[str, Any]:
-    archive_intel(ArchiveEntry(mission_id=mission_id, artifact_type=artifact_type, payload=payload))
+    archive_intel(
+        ArchiveEntry(
+            mission_id=mission_id, artifact_type=artifact_type, payload=payload
+        )
+    )
     serialized = json.dumps(payload, ensure_ascii=False)
     findings = scan_file_dict(
         path=f"archive://{mission_id}/{artifact_type}",

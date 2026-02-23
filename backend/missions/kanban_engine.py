@@ -23,6 +23,11 @@ def get_kanban_config(patience: int, autonomy: int, mood: str | None = "calm") -
         "persist_completed_tasks": patience >= 40,
     }
     config["max_parallel_tasks"] = int(
-        max(0, apply_numeric_modifier(config["max_parallel_tasks"], "kanban_parallel_tasks", mood))
+        max(
+            0,
+            apply_numeric_modifier(
+                config["max_parallel_tasks"], "kanban_parallel_tasks", mood
+            ),
+        )
     )
     return config

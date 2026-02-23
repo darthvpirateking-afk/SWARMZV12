@@ -247,8 +247,12 @@ class NexusmonEntity:
             from backend.entity.xp_engine import award_xp as _award_engine_xp
 
             base = max(1.0, float(amount))
-            event_key = "mission_complete" if base >= 5.0 else "playbook_idempotency_hit"
-            new_state = _award_engine_xp(event_key=event_key, entity=new_state, mood=mood)
+            event_key = (
+                "mission_complete" if base >= 5.0 else "playbook_idempotency_hit"
+            )
+            new_state = _award_engine_xp(
+                event_key=event_key, entity=new_state, mood=mood
+            )
             new_xp = float(new_state.get("evolution_xp", current_xp + amount))
             new_form = str(new_state.get("current_form", current_form))
         except Exception:

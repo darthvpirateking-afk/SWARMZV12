@@ -3,7 +3,6 @@ from typing import Any, Dict
 
 from jsonl_utils import write_jsonl
 
-
 AUDIT_PATH = "data/audit.jsonl"
 
 

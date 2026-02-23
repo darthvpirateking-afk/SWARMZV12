@@ -12,7 +12,9 @@ class ResourceBudget:
     max_parallel_tasks: int
 
 
-def get_resource_budget(patience: int, protectiveness: int, mood: str | None = "calm") -> dict[str, Any]:
+def get_resource_budget(
+    patience: int, protectiveness: int, mood: str | None = "calm"
+) -> dict[str, Any]:
     base = ResourceBudget(
         cpu_seconds=600 + int((patience / 100) * 2400),
         memory_mb=1024 + int((patience / 100) * 4096),

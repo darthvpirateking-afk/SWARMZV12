@@ -1,6 +1,11 @@
 import React from "react";
 
-export type MissionTaskStatus = "queued" | "running" | "blocked" | "done" | "failed";
+export type MissionTaskStatus =
+  | "queued"
+  | "running"
+  | "blocked"
+  | "done"
+  | "failed";
 
 export interface MissionTask {
   id: string;
@@ -22,7 +27,13 @@ const COLUMNS: { key: MissionTaskStatus; label: string }[] = [
 
 export function MissionKanban({ tasks }: MissionKanbanProps) {
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(5, minmax(0, 1fr))", gap: 8 }}>
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(5, minmax(0, 1fr))",
+        gap: 8,
+      }}
+    >
       {COLUMNS.map((column) => {
         const bucket = tasks.filter((task) => task.status === column.key);
         return (
@@ -36,7 +47,9 @@ export function MissionKanban({ tasks }: MissionKanbanProps) {
               background: "rgba(255,255,255,0.02)",
             }}
           >
-            <div style={{ fontSize: 12, fontWeight: 700, marginBottom: 6 }}>{column.label}</div>
+            <div style={{ fontSize: 12, fontWeight: 700, marginBottom: 6 }}>
+              {column.label}
+            </div>
             <div style={{ display: "grid", gap: 6 }}>
               {bucket.map((task) => (
                 <div

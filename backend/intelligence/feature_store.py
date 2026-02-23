@@ -32,14 +32,18 @@ FEATURE_CATALOG: dict[str, dict[str, Any]] = {
 }
 
 
-def get_feature(target_id: str, feature_name: str, feature_store: dict[str, dict[str, Feature]]) -> Feature | None:
+def get_feature(
+    target_id: str, feature_name: str, feature_store: dict[str, dict[str, Feature]]
+) -> Feature | None:
     feat = feature_store.get(target_id, {}).get(feature_name)
     if feat and feat.is_fresh:
         return feat
     return None
 
 
-def set_feature(target_id: str, feature: Feature, feature_store: dict[str, dict[str, Feature]]) -> None:
+def set_feature(
+    target_id: str, feature: Feature, feature_store: dict[str, dict[str, Feature]]
+) -> None:
     feature_store.setdefault(target_id, {})[feature.name] = feature
 
 
@@ -54,6 +58,8 @@ def get_feature_store_config(patience: int, curiosity: int) -> dict[str, Any]:
     }
 
 
-def prefetch_features(target_id: str, feature_store: dict[str, dict[str, Feature]]) -> dict[str, Feature]:
+def prefetch_features(
+    target_id: str, feature_store: dict[str, dict[str, Feature]]
+) -> dict[str, Feature]:
     cached = feature_store.get(target_id, {})
     return {name: feat for name, feat in cached.items() if feat.is_fresh}

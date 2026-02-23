@@ -42,7 +42,9 @@ const initialState: NexusmonState = {
   error: null,
 };
 
-function normalizeTraits(input: Record<string, unknown> | undefined): NexusmonTraits {
+function normalizeTraits(
+  input: Record<string, unknown> | undefined,
+): NexusmonTraits {
   const raw = input ?? {};
 
   const toPercent = (value: unknown): number => {
@@ -77,11 +79,16 @@ export function useNexusmon() {
       try {
         payload = await apiGet<Record<string, unknown>>("/v1/nexusmon/entity");
       } catch {
-        payload = await apiGet<Record<string, unknown>>("/v1/nexusmon/entity/state");
+        payload = await apiGet<Record<string, unknown>>(
+          "/v1/nexusmon/entity/state",
+        );
       }
 
-      const entityShape = (payload.entity as Record<string, unknown> | undefined) ?? payload;
-      const traits = normalizeTraits(entityShape.traits as Record<string, unknown> | undefined);
+      const entityShape =
+        (payload.entity as Record<string, unknown> | undefined) ?? payload;
+      const traits = normalizeTraits(
+        entityShape.traits as Record<string, unknown> | undefined,
+      );
 
       const entity: NexusmonEntity = {
         name: String(entityShape.name ?? "NEXUSMON"),
@@ -95,7 +102,9 @@ export function useNexusmon() {
       setState({ entity, loading: false, error: null });
     } catch (error) {
       const message =
-        error instanceof Error ? error.message : "Failed to load NEXUSMON entity";
+        error instanceof Error
+          ? error.message
+          : "Failed to load NEXUSMON entity";
       setState((prev) => ({ ...prev, loading: false, error: message }));
     }
   }, []);

@@ -13,7 +13,9 @@ class WhyEntry:
     decision: str
     rationale: str
     context: dict[str, Any] = field(default_factory=dict)
-    timestamp: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+    timestamp: str = field(
+        default_factory=lambda: datetime.now(timezone.utc).isoformat()
+    )
 
 
 WHY_LOG_PATH = Path("data/why_layer.jsonl")
@@ -25,7 +27,9 @@ def log_why(entry: WhyEntry) -> None:
         handle.write(json.dumps(asdict(entry), ensure_ascii=False) + "\n")
 
 
-def get_why_history(mission_id: str | None = None, limit: int = 50) -> list[dict[str, Any]]:
+def get_why_history(
+    mission_id: str | None = None, limit: int = 50
+) -> list[dict[str, Any]]:
     if not WHY_LOG_PATH.exists():
         return []
 
@@ -38,10 +42,12 @@ def get_why_history(mission_id: str | None = None, limit: int = 50) -> list[dict
             continue
         rows.append(item)
 
-    return rows[-max(1, limit):]
+    return rows[-max(1, limit) :]
 
 
-def suggest_next_step(current_phase: str, findings_count: int, protectiveness: int) -> str:
+def suggest_next_step(
+    current_phase: str, findings_count: int, protectiveness: int
+) -> str:
     if protectiveness >= 70 and findings_count > 0:
         return "Pause for operator review before active exploitation."
     if current_phase.upper() in {"SETUP", "RECON"} and findings_count == 0:

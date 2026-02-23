@@ -42,17 +42,27 @@ def _generate_advanced_payloads(strategy: str) -> list[Any]:
 
 
 def _detect_anomaly(status_code: int, response_text: str) -> bool:
-    return status_code >= 500 or "traceback" in response_text.lower() or "exception" in response_text.lower()
+    return (
+        status_code >= 500
+        or "traceback" in response_text.lower()
+        or "exception" in response_text.lower()
+    )
 
 
 def _send_request(endpoint: APIEndpoint, payload: Any) -> tuple[int, str]:
     payload_text = str(payload)
-    if ".." in payload_text or "<script>" in payload_text or "UNION" in payload_text.upper():
+    if (
+        ".." in payload_text
+        or "<script>" in payload_text
+        or "UNION" in payload_text.upper()
+    ):
         return 500, "Potential server error on fuzz payload"
     return 200, f"Stubbed response for {endpoint.method} {endpoint.path}"
 
 
-def fuzz_endpoint(endpoint: APIEndpoint, strategy: str, aggression: int) -> list[APIFuzzResult]:
+def fuzz_endpoint(
+    endpoint: APIEndpoint, strategy: str, aggression: int
+) -> list[APIFuzzResult]:
     results: list[APIFuzzResult] = []
     payloads = list(FUZZ_STRATEGIES.get(strategy, []))
     if aggression >= 70:
@@ -74,7 +84,9 @@ def fuzz_endpoint(endpoint: APIEndpoint, strategy: str, aggression: int) -> list
     return results
 
 
-def get_api_engine_config(aggression: int, creativity: int, curiosity: int) -> dict[str, Any]:
+def get_api_engine_config(
+    aggression: int, creativity: int, curiosity: int
+) -> dict[str, Any]:
     return {
         "enabled": aggression >= 25,
         "auto_discover_spec": curiosity >= 50,
@@ -82,7 +94,11 @@ def get_api_engine_config(aggression: int, creativity: int, curiosity: int) -> d
         "fuzz_strategies": (
             ["idor"]
             if aggression < 40
-            else ["idor", "injection", "auth_bypass"] if aggression < 65 else list(FUZZ_STRATEGIES.keys())
+            else (
+                ["idor", "injection", "auth_bypass"]
+                if aggression < 65
+                else list(FUZZ_STRATEGIES.keys())
+            )
         ),
         "auto_chain_auth": creativity >= 60,
         "generate_collection": True,
@@ -90,7 +106,9 @@ def get_api_engine_config(aggression: int, creativity: int, curiosity: int) -> d
     }
 
 
-def write_hoppscotch_collection(mission_id: str, endpoint: APIEndpoint, results: list[APIFuzzResult]) -> str:
+def write_hoppscotch_collection(
+    mission_id: str, endpoint: APIEndpoint, results: list[APIFuzzResult]
+) -> str:
     out = Path("data/api_collections")
     out.mkdir(parents=True, exist_ok=True)
     path = out / f"{mission_id}.json"

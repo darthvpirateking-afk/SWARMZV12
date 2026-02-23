@@ -42,7 +42,9 @@ def _terminate_cloud_instance(node: VPNNode) -> bool:
     return True
 
 
-def provision_vpn_node(provider: str, region: str, protectiveness: int, mission_id: str) -> VPNNode:
+def provision_vpn_node(
+    provider: str, region: str, protectiveness: int, mission_id: str
+) -> VPNNode:
     node = _deploy_algo_node(provider, region, mission_id)
     if protectiveness >= 60:
         _verify_no_dns_leak(node)

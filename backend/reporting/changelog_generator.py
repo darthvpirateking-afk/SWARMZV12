@@ -4,7 +4,9 @@ from datetime import datetime, timezone
 from typing import Any
 
 
-def generate_mission_changelog(mission_id: str, events: list[dict[str, Any]]) -> dict[str, Any]:
+def generate_mission_changelog(
+    mission_id: str, events: list[dict[str, Any]]
+) -> dict[str, Any]:
     ordered = sorted(events, key=lambda item: item.get("timestamp", ""))
     changes: list[str] = []
 
@@ -24,9 +26,15 @@ def generate_mission_changelog(mission_id: str, events: list[dict[str, Any]]) ->
     }
 
 
-def generate_release_notes(mission_id: str, findings: list[dict[str, Any]]) -> dict[str, Any]:
-    critical = [item for item in findings if str(item.get("severity", "")).lower() == "critical"]
-    high = [item for item in findings if str(item.get("severity", "")).lower() == "high"]
+def generate_release_notes(
+    mission_id: str, findings: list[dict[str, Any]]
+) -> dict[str, Any]:
+    critical = [
+        item for item in findings if str(item.get("severity", "")).lower() == "critical"
+    ]
+    high = [
+        item for item in findings if str(item.get("severity", "")).lower() == "high"
+    ]
 
     highlights = []
     if critical:

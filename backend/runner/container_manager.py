@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 from backend.entity.mood_modifiers import apply_override
-from backend.intel.network_flow_analyzer import get_flow_analyzer_config, should_store_pcap
-
+from backend.intel.network_flow_analyzer import (
+    get_flow_analyzer_config,
+    should_store_pcap,
+)
 
 MISSION_IMAGE_MAP = {
     "web": "pentagi/web:latest",
@@ -38,13 +40,19 @@ def get_container_image(
     return selected or "pentagi/general:latest"
 
 
-def get_mission_capture_plan(mission_id: str, curiosity: int, protectiveness: int) -> dict:
+def get_mission_capture_plan(
+    mission_id: str, curiosity: int, protectiveness: int
+) -> dict:
     cfg = get_flow_analyzer_config(curiosity=curiosity, protectiveness=protectiveness)
     pcap_enabled = should_store_pcap(protectiveness)
     return {
         "mission_id": mission_id,
-        "capture_enabled": bool(cfg.get("enabled") and cfg.get("capture_during_mission")),
+        "capture_enabled": bool(
+            cfg.get("enabled") and cfg.get("capture_during_mission")
+        ),
         "pcap_storage": bool(cfg.get("pcap_storage") and pcap_enabled),
-        "pcap_path": cfg.get("pcap_path", "/data/captures/{mission_id}.pcap").format(mission_id=mission_id),
+        "pcap_path": cfg.get("pcap_path", "/data/captures/{mission_id}.pcap").format(
+            mission_id=mission_id
+        ),
         "retention_hours": cfg.get("retention_hours", 24),
     }

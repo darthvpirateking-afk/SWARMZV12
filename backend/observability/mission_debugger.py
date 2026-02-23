@@ -52,13 +52,19 @@ class MissionDebugger:
 
     def get_decision_trace(self, decision_point: str) -> list[TraceEvent]:
         key = (decision_point or "").lower()
-        return [event for event in self.trace if key in event.function.lower() or key in event.module.lower()]
+        return [
+            event
+            for event in self.trace
+            if key in event.function.lower() or key in event.module.lower()
+        ]
 
     def export_trace(self, path: str | None = None) -> str:
         out_path = Path(path or f"data/debug/{self.mission_id}_trace.json")
         out_path.parent.mkdir(parents=True, exist_ok=True)
         payload = [asdict(event) for event in self.trace]
-        out_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+        out_path.write_text(
+            json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8"
+        )
         return str(out_path)
 
 

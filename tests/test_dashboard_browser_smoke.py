@@ -10,7 +10,12 @@ from swarmz_server import app
 
 def _mock_api_response(path: str) -> dict:
     if path.endswith("/health"):
-        return {"status": "healthy", "active_missions": 0, "max_missions": 5, "pattern_counters": 0}
+        return {
+            "status": "healthy",
+            "active_missions": 0,
+            "max_missions": 5,
+            "pattern_counters": 0,
+        }
     if "/v1/missions/list" in path:
         return {"missions": []}
     if "/v1/addons/patches" in path:
@@ -33,7 +38,7 @@ def test_dashboard_browser_smoke_clicks(route: str) -> None:
         assert response.status_code == 200
         html = response.text
 
-    html = html.replace("<head>", "<head><base href=\"http://swarmz.local/\">", 1)
+    html = html.replace("<head>", '<head><base href="http://swarmz.local/">', 1)
 
     page_errors: list[str] = []
 
@@ -56,7 +61,11 @@ def test_dashboard_browser_smoke_clicks(route: str) -> None:
             return
 
         payload = _mock_api_response(url)
-        route.fulfill(status=200, body=json.dumps(payload), headers={"content-type": "application/json"})
+        route.fulfill(
+            status=200,
+            body=json.dumps(payload),
+            headers={"content-type": "application/json"},
+        )
 
     with playwright.sync_playwright() as play:
         try:

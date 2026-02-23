@@ -37,17 +37,25 @@ TRAIT_BEHAVIOR_CONTRACTS = {
 }
 
 
-def detect_drift(samples: list[TraitBehaviorSample], traits: dict[str, int | float]) -> list[dict]:
+def detect_drift(
+    samples: list[TraitBehaviorSample], traits: dict[str, int | float]
+) -> list[dict]:
     alerts = []
     for trait, contract in TRAIT_BEHAVIOR_CONTRACTS.items():
         metric_samples = [sample for sample in samples if sample.trait == trait]
         if not metric_samples:
             continue
 
-        observed_avg = statistics.mean(sample.observed_value for sample in metric_samples)
+        observed_avg = statistics.mean(
+            sample.observed_value for sample in metric_samples
+        )
         nominal = int(traits.get(trait, 0))
         expected = contract["expected_fn"](nominal)
-        deviation = abs(observed_avg) if expected == 0 else abs(observed_avg - expected) / max(expected, 1e-6)
+        deviation = (
+            abs(observed_avg)
+            if expected == 0
+            else abs(observed_avg - expected) / max(expected, 1e-6)
+        )
 
         if deviation > contract["tolerance"]:
             alerts.append(

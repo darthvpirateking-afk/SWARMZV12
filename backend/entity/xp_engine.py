@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from backend.entity.mood_modifiers import apply_override
 
-
 XP_EVENTS = {
     "mission_complete": 50,
     "template_mission_complete": 60,

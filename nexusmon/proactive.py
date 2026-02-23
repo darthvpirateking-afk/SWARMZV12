@@ -10,7 +10,6 @@ for significant time-gaps, and categorise the session for greeting generation.
 
 from nexusmon.chronicle import get_chronicle, FIRST_BOOT, OPERATOR_RETURN, LONG_SILENCE
 
-
 # ── ProactiveEngine ────────────────────────────────────────────────────────────
 
 

@@ -14,9 +14,21 @@ class DefaultCredential:
 
 
 DEFAULT_CREDS_DB: dict[str, list[DefaultCredential]] = {
-    "tomcat": [DefaultCredential(product="tomcat", username="tomcat", password="tomcat", risk="high")],
-    "jenkins": [DefaultCredential(product="jenkins", username="admin", password="admin", risk="high")],
-    "routeros": [DefaultCredential(product="routeros", username="admin", password="admin", risk="critical")],
+    "tomcat": [
+        DefaultCredential(
+            product="tomcat", username="tomcat", password="tomcat", risk="high"
+        )
+    ],
+    "jenkins": [
+        DefaultCredential(
+            product="jenkins", username="admin", password="admin", risk="high"
+        )
+    ],
+    "routeros": [
+        DefaultCredential(
+            product="routeros", username="admin", password="admin", risk="critical"
+        )
+    ],
 }
 
 
@@ -34,9 +46,15 @@ def get_default_credentials(product: str) -> list[dict[str, str]]:
     return [asdict(item) for item in records]
 
 
-def is_default_credential(username: str, password: str, product: str | None = None) -> bool:
+def is_default_credential(
+    username: str, password: str, product: str | None = None
+) -> bool:
     product_key = (product or "").strip().lower()
-    pools = DEFAULT_CREDS_DB.values() if not product_key else [DEFAULT_CREDS_DB.get(product_key, [])]
+    pools = (
+        DEFAULT_CREDS_DB.values()
+        if not product_key
+        else [DEFAULT_CREDS_DB.get(product_key, [])]
+    )
     for records in pools:
         for candidate in records:
             if candidate.username == username and candidate.password == password:

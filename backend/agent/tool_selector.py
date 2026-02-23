@@ -9,7 +9,6 @@ from backend.intel.osint_enricher import enrich_target
 from backend.intel.vuln_db_client import search_vulnerabilities
 from backend.memory.why_layer import WhyEntry, log_why
 
-
 TOOL_TIERS = {
     "passive": ["nmap -sn", "whois", "dig", "curl"],
     "active": ["nmap -sV", "nikto", "gobuster", "sqlmap"],
@@ -19,7 +18,9 @@ TOOL_TIERS = {
 
 def select_tool_tier(aggression: int, mood: str | None = "calm") -> list[str]:
     if aggression >= 66:
-        selected = TOOL_TIERS["passive"] + TOOL_TIERS["active"] + TOOL_TIERS["aggressive"]
+        selected = (
+            TOOL_TIERS["passive"] + TOOL_TIERS["active"] + TOOL_TIERS["aggressive"]
+        )
     elif aggression >= 31:
         selected = TOOL_TIERS["passive"] + TOOL_TIERS["active"]
     else:
@@ -61,7 +62,9 @@ def build_pre_attack_intel(
         "cheats": [],
     }
 
-    recon_result = BrowserReconResult(url=target, dom_snapshot="", network_calls=[], ws_endpoints=[])
+    recon_result = BrowserReconResult(
+        url=target, dom_snapshot="", network_calls=[], ws_endpoints=[]
+    )
     intel["attack_surface"] = extract_attack_surface(recon_result, aggression=40)
 
     fuzz_results = fuzz_endpoint(
