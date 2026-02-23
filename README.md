@@ -1,6 +1,8 @@
 
 # SWARMZ - Operator-Sovereign "Do Anything" System
 
+> 🟢 **Status: SHIP NOW** — All blocking criteria met. See [SWARMZ_RELEASE_READINESS.md](SWARMZ_RELEASE_READINESS.md).
+
 **License:** Proprietary - All Rights Reserved (see `LICENSE`).
 
 **Copyright:** Copyright (c) 2026 SWARMZ. No use, copying, modification, distribution, hosting, resale, or derivative works without explicit written permission.

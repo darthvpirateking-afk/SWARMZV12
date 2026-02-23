@@ -1,6 +1,18 @@
 # SWARMZ Project Structure
 
+> 🟢 **Status: SHIP NOW** — See [SWARMZ_RELEASE_READINESS.md](SWARMZ_RELEASE_READINESS.md) for full release decision.  
+> 📖 **Vision** — See [SWARMZ_VISION_BRIEF.md](SWARMZ_VISION_BRIEF.md) for platform direction.
+
 This repository contains both the **Python-based SWARMZ** system and the new **TypeScript-based SWARMZ Ultimate Layout**.
+
+## Release & Vision Documents
+
+| Document | Purpose |
+|---|---|
+| [SWARMZ_RELEASE_READINESS.md](SWARMZ_RELEASE_READINESS.md) | Go / deferred decision summary with per-area gate status |
+| [SWARMZ_VISION_BRIEF.md](SWARMZ_VISION_BRIEF.md) | Platform trajectory, architecture rationale, and contributor guide |
+| [ROADMAP.md](ROADMAP.md) | v1.0 → v2.0 milestone plan |
+| [ARCHITECTURE.md](ARCHITECTURE.md) | Deep-dive technical architecture |
 
 ## Repository Overview
 
@@ -40,7 +52,26 @@ npm test           # Run tests (10 tests)
 node dist/example.js  # Run example
 ```
 
-## Quick Start
+## Browser Smoke Tests
+
+Browser smoke tests validate both main operator-console surfaces using Playwright.
+
+```
+frontend/
+├── tests/smoke/
+│   └── console.spec.ts   ← smoke tests for Command + Status console surfaces
+├── playwright.config.ts  ← Playwright configuration (Chromium + Firefox)
+```
+
+**Running locally:**
+```bash
+cd frontend
+npm run build          # Build the frontend
+npm run test:smoke     # Run browser smoke tests
+```
+
+**CI:** The `browser-smoke` job in `.github/workflows/ci.yml` installs Chromium and Firefox,
+builds the frontend, then runs the full smoke suite. Reports are uploaded as CI artifacts.
 
 ### For Python SWARMZ
 ```bash

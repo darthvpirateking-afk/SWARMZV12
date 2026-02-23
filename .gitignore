@@ -48,6 +48,10 @@ Thumbs.db
 .coverage
 htmlcov/
 
+# Playwright browser smoke test artifacts
+frontend/playwright-report/
+frontend/test-results/
+
 # Temporary files
 *.tmp
 /tmp/
