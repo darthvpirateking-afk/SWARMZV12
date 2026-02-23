@@ -1,9 +1,6 @@
-# SWARMZ Source Available License
-# Commercial use, hosting, and resale prohibited.
-# See LICENSE file for details.
-"""
-SWARMZ Hologram Evolution Ladder â€” Core Engine.
+# Reverting commit abfe8993bb8353c7ec5a015e0fd299957cceb2c3
 
+# This commit undoes the changes made in the specified commit. Adjusting the file to its previous state.
 XP = count(verified trials). Evolutions unlock at XP thresholds +
 minimum survival-data quality. Unlocks are deterministic (no vibes).
 
