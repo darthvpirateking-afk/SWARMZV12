@@ -68,7 +68,7 @@ def main():
         )
         if r.get("ok"):
             print(
-                f"PASS (event_id={r.get('event_id','?')}, mission_id={r.get('mission_id','?')})"
+                f"PASS (event_id={r.get('event_id', '?')}, mission_id={r.get('mission_id', '?')})"
             )
             passed += 1
         else:
@@ -132,7 +132,7 @@ def main():
         print(f"FAIL: {e}")
         failed += 1
 
-    print(f"\n{'='*40}")
+    print(f"\n{'=' * 40}")
     print(f"RESULT: {passed} passed, {failed} failed")
     sys.exit(1 if failed > 0 else 0)
 

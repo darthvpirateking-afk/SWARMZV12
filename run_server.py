@@ -84,6 +84,18 @@ def main():
     except Exception as exc:
         print(f"[COLD START] WARNING: {exc}")
 
+    # Boot NEXUSMON entity (SQLite state persistence)
+    try:
+        from nexusmon.entity import get_entity
+
+        entity = get_entity()
+        state = entity.boot()
+        print(
+            f"[NEXUSMON] Boot #{state.get('boot_count', '?')} — {entity.get_greeting()}"
+        )
+    except Exception as exc:
+        print(f"[NEXUSMON] WARNING: {exc}")
+
     # Initialise engine singletons (fast, safe)
     try:
         from core.context_pack import load as _load_engines

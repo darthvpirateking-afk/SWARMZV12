@@ -1,0 +1,10 @@
+{
+  "name": "lead_audit",
+  "version": "1.0.0",
+  "description": "Deterministic lead scoring and prioritization for decision bottleneck product.",
+  "entry_point": "lead_audit.py",
+  "capabilities": ["score_lead", "prioritize_leads", "audit_leads"],
+  "category": "analytics",
+  "author": "SWARMZ",
+  "license": "SWARMZ-SAL"
+}

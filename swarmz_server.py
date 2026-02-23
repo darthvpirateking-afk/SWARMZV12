@@ -18,7 +18,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, Optional
 
-from fastapi import Depends, FastAPI, HTTPException, Request
+from fastapi import Depends, FastAPI, HTTPException, Request, WebSocket
 from fastapi.responses import HTMLResponse, JSONResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
@@ -185,6 +185,13 @@ app.add_middleware(
 if _nexusmon_available:
     app.include_router(nexusmon_router)
 
+# Include NEXUSMON entity state routes (/v1/nexusmon/entity/*)
+try:
+    from nexusmon.routes.entity import router as _nexus_entity_router
+    app.include_router(_nexus_entity_router)
+except Exception as _e:
+    pass  # Non-fatal if entity routes fail to load
+
 if _bootstrap_router_available:
     app.include_router(bootstrap_router)
 
@@ -232,7 +239,7 @@ async def create_mission(req: MissionCreateRequest):
     """Create a new mission."""
     missions_file = Path("data/missions.jsonl")
     audit_file = Path("data/audit.jsonl")
-    mission_id = f"mission_{int(datetime.now(timezone.utc).timestamp()*1000)}"
+    mission_id = f"mission_{int(datetime.now(timezone.utc).timestamp() * 1000)}"
     created_at = _utc_now_iso_z()
     mission = {
         "mission_id": mission_id,
@@ -370,18 +377,18 @@ async def traceback_last():
     }
 
 
-# --- Console UI Route (now serves static HUD from web/) ---
+# --- Console UI Route (redirects to NEXUSMON) ---
 @app.get("/console")
 async def console_page():
-    """Serve the SWARMZ Console HUD UI."""
-    return FileResponse("web/index.html", media_type="text/html")
+    """Serve the NEXUSMON Console UI."""
+    return FileResponse("web/nexusmon_console.html", media_type="text/html")
 
 
-# --- Home route (serve HUD directly - no redirect loop) ---
+# --- Home route — NEXUSMON is the face of this system ---
 @app.get("/")
 async def home_page():
-    """Serve the SWARMZ Console HUD at root."""
-    return FileResponse("web/index.html", media_type="text/html")
+    """NEXUSMON wakes up here."""
+    return FileResponse("web/nexusmon_console.html", media_type="text/html")
 
 
 # --- Manifest, Icons, and Other PWA Routes ---
@@ -598,7 +605,7 @@ async def icon_svg():
     </linearGradient>
   </defs>
   <rect width="200" height="200" rx="40" fill="url(#grad)"/>
-  <text x="100" y="130" font-family="Arial, sans-serif" font-size="100" font-weight="bold" 
+  <text x="100" y="130" font-family="Arial, sans-serif" font-size="100" font-weight="bold"
         text-anchor="middle" fill="#ffffff">âš¡</text>
 </svg>"""
     return HTMLResponse(content=svg, media_type="image/svg+xml")
@@ -615,7 +622,7 @@ async def apple_touch_icon():
     </linearGradient>
   </defs>
   <rect width="180" height="180" fill="url(#grad)"/>
-  <text x="90" y="120" font-family="Arial, sans-serif" font-size="90" font-weight="bold" 
+  <text x="90" y="120" font-family="Arial, sans-serif" font-size="90" font-weight="bold"
         text-anchor="middle" fill="#ffffff">âš¡</text>
 </svg>"""
     return HTMLResponse(content=svg, media_type="image/svg+xml")
@@ -1116,6 +1123,14 @@ async def companion_message(request: Request):
             )
     except Exception as e:
         return JSONResponse({"ok": False, "error": str(e)}, status_code=500)
+
+
+# --- NEXUSMON WebSocket — real-time chat ---
+@app.websocket("/ws/nexusmon")
+async def nexusmon_websocket(websocket: WebSocket):
+    """Real-time WebSocket chat endpoint for NEXUSMON console."""
+    from nexusmon.console.ws_handler import handle_ws_chat
+    await handle_ws_chat(websocket)
 
 
 # --- Static file mount for HUD assets (CSS, JS) ---

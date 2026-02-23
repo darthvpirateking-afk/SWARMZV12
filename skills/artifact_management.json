@@ -1,0 +1,17 @@
+{
+  "name": "artifact_management",
+  "version": "1.0.0",
+  "description": "Create, store, retrieve, and manage artifact packs produced by the SWARMZ factory.",
+  "category": "storage",
+  "inputs": [
+    { "name": "operation", "type": "string", "required": true, "description": "Operation: save|load|list|rank" },
+    { "name": "artifact_id", "type": "string", "required": false, "description": "Artifact identifier for load operation" },
+    { "name": "pack", "type": "object", "required": false, "description": "Artifact pack to save" }
+  ],
+  "outputs": [
+    { "name": "artifact", "type": "object", "description": "Artifact pack data" },
+    { "name": "artifacts", "type": "array", "description": "List of available artifacts" }
+  ],
+  "author": "SWARMZ",
+  "tags": ["artifacts", "storage", "factory"]
+}

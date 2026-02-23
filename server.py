@@ -546,6 +546,11 @@ try:
         """Serve the MASTER SWARMZ interactive avatar + chat UI."""
         return _HoloFileResponse("web/avatar.html", media_type="text/html")
 
+    @app.get("/nexusmon")
+    async def nexusmon_page():
+        """Serve the NEXUSMON conversational console UI."""
+        return _HoloFileResponse("web/nexusmon_console.html", media_type="text/html")
+
 except Exception:
     pass
 
@@ -867,3 +872,64 @@ def avatar_matrix_state():
 def avatar_matrix_set_state(req: _AvatarStateRequest):
     """Set the avatar state, optionally switching variant."""
     return get_avatar_matrix().set_state(req.state, req.variant)
+
+
+# ── NEXUSMON WebSocket — real-time cockpit channel ──────────────────────────
+from fastapi import WebSocket as _WS
+import json as _json
+
+# XP thresholds for cockpit progress bar
+_XP_THRESHOLDS = {
+    "ROOKIE": 100.0, "CHAMPION": 500.0,
+    "ULTIMATE": 2000.0, "MEGA": 10000.0, "SOVEREIGN": float("inf"),
+}
+
+
+def _entity_payload(entity) -> dict:
+    """Build a cockpit-ready dict from the nexusmon entity.
+
+    Maps the new spec schema (uppercase forms/moods, separate traits table)
+    to the shape expected by updateEntityDisplay() in nexusmon_console.js.
+    """
+    try:
+        state = entity.get_state()
+        traits = entity.get_traits()
+    except Exception:
+        return {}
+
+    form_raw = state.get("current_form", "ROOKIE")
+    # Title-case the form for JS FORM_COLORS lookup (Rookie, Champion, …)
+    form = form_raw.capitalize() if form_raw else "Rookie"
+
+    mood_raw = state.get("mood", "CALM")
+    # Lowercase the mood for JS MOOD_COLORS lookup (calm, focused, …)
+    mood = mood_raw.lower() if mood_raw else "calm"
+
+    xp = float(state.get("evolution_xp") or 0.0)
+    xp_to_next = _XP_THRESHOLDS.get(form_raw, 100.0)
+    xp_pct = min(100.0, (xp / xp_to_next * 100.0)) if xp_to_next != float("inf") else 100.0
+
+    return {
+        "name": "NEXUSMON",
+        "form": form,
+        "mood": mood,
+        "xp": xp,
+        "xp_to_next": None if xp_to_next == float("inf") else xp_to_next,
+        "xp_pct": round(xp_pct, 1),
+        "boot_count": state.get("boot_count", 0),
+        "interaction_count": state.get("interaction_count", 0),
+        "traits": traits,
+        "operator_name": state.get("operator_name", ""),
+        "bond_established_at": state.get("bond_established_at", ""),
+    }
+
+
+@app.websocket("/ws/nexusmon")
+async def nexusmon_ws(websocket: _WS):
+    """WebSocket channel for the NEXUSMON cockpit.
+
+    Delegates to nexusmon.console.ws_handler which owns the full
+    chat loop: greeting → message loop → XP → evolution → disconnect.
+    """
+    from nexusmon.console.ws_handler import handle_ws_chat
+    await handle_ws_chat(websocket)

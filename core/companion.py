@@ -155,7 +155,9 @@ def _build_context_block(mem: Dict[str, Any]) -> str:
     outcomes = mem.get("mission_outcomes", [])
     if outcomes:
         recent = outcomes[-5:]
-        lines = [f"  - {o.get('intent','?')} â†’ {o.get('status','?')}" for o in recent]
+        lines = [
+            f"  - {o.get('intent', '?')} â†’ {o.get('status', '?')}" for o in recent
+        ]
         parts.append("RECENT OUTCOMES:\n" + "\n".join(lines))
     constraints = mem.get("learned_constraints", [])
     if constraints:
@@ -248,7 +250,9 @@ def _rule_engine(text: str, mem: Dict[str, Any]) -> str:
         else (
             "developing"
             if total < 10
-            else "confident" if total < 25 else "highly experienced"
+            else "confident"
+            if total < 25
+            else "highly experienced"
         )
     )
     success_rate = (success / total * 100) if total > 0 else 0
@@ -687,14 +691,16 @@ def _rule_engine(text: str, mem: Dict[str, Any]) -> str:
             return "No mission outcomes recorded yet. Standing by for first mission assignment.\n*Ready and eager to begin our operational partnership*"
         recent = outcomes[-5:]
         lines = [
-            f"  • {o.get('intent','Unknown')} → {o.get('status','Pending')}"
+            f"  • {o.get('intent', 'Unknown')} → {o.get('status', 'Pending')}"
             for o in recent
         ]
-        rate = f"{success/total:.0%}" if total else "N/A"
+        rate = f"{success / total:.0%}" if total else "N/A"
         status_mood = (
             "excellent"
             if success_rate > 80
-            else "strong" if success_rate > 60 else "developing"
+            else "strong"
+            if success_rate > 60
+            else "developing"
         )
         return (
             f"MISSION STATUS ({total} total, {rate} success rate — {status_mood} performance):\n"

@@ -1,0 +1,19 @@
+{
+  "name": "mission_execution",
+  "version": "1.0.0",
+  "description": "Execute a validated mission contract through the SWARMZ runtime.",
+  "category": "execution",
+  "inputs": [
+    { "name": "mission_id", "type": "string", "required": true, "description": "Unique mission identifier" },
+    { "name": "objective", "type": "string", "required": true, "description": "Mission objective" },
+    { "name": "target_profile", "type": "object", "required": true, "description": "Target audience or system profile" },
+    { "name": "channels", "type": "array", "required": true, "description": "Execution channels" },
+    { "name": "timebox", "type": "object", "required": true, "description": "Time constraints for the mission" }
+  ],
+  "outputs": [
+    { "name": "mission_result", "type": "object", "description": "Execution result with status and metrics" },
+    { "name": "artifacts", "type": "array", "description": "Artifacts produced during execution" }
+  ],
+  "author": "SWARMZ",
+  "tags": ["mission", "execution", "automation"]
+}

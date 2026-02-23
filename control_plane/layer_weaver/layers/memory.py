@@ -12,7 +12,6 @@ from .base import BaseLayer
 
 
 class MemoryLayer(BaseLayer):
-
     name = "Memory"
     variables = ["memory_utilization"]
 

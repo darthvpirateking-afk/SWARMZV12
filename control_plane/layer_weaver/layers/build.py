@@ -13,7 +13,6 @@ from .base import BaseLayer
 
 
 class BuildLayer(BaseLayer):
-
     name = "Build"
     variables = [
         "shipped_artifacts_weekly",
