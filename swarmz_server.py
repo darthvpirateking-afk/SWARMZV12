@@ -1482,6 +1482,24 @@ try:
 except Exception as _artifact_vault_err:
     print(f"Warning: artifact vault failed: {_artifact_vault_err}")
 
+try:
+    from nexusmon_operator_rank import fuse_operator_rank
+    fuse_operator_rank(app)
+except Exception as _operator_rank_err:
+    print(f"[WARN] Operator rank not loaded: {_operator_rank_err}")
+
+try:
+    from nexusmon_performance import fuse_performance
+    fuse_performance(app)
+except Exception as _perf_err:
+    print(f"[WARN] Performance not loaded: {_perf_err}")
+
+try:
+    from nexusmon_signal_modules import fuse_signal_modules
+    fuse_signal_modules(app)
+except Exception as _signal_modules_err:
+    print(f"[WARN] Signal modules not loaded: {_signal_modules_err}")
+
 
 # --- Static file mount for HUD assets (CSS, JS) ---
 # MUST come after all explicit routes so /web/* doesn't shadow API paths.
