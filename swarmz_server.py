@@ -1467,7 +1467,11 @@ except Exception as _cognition_err:
 
 # --- Static file mount for HUD assets (CSS, JS) ---
 # MUST come after all explicit routes so /web/* doesn't shadow API paths.
-app.mount("/web", StaticFiles(directory="web"), name="web-static")
+try:
+    if Path("web").exists():
+        app.mount("/web", StaticFiles(directory="web"), name="web-static")
+except Exception as _web_mount_err:
+    print(f"Warning: web static mount failed: {_web_mount_err}")
 
 
 # Serve frontend SPA build if present (single-process deploy model)
