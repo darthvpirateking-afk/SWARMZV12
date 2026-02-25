@@ -5,7 +5,7 @@
     "dockerfilePath": "Dockerfile"
   },
   "deploy": {
-    "startCommand": "python run_server.py --host 0.0.0.0 --port ${PORT:-8012}",
+    "startCommand": "uvicorn swarmz_server:app --host 0.0.0.0 --port $PORT --timeout-keep-alive 75",
     "healthcheckPath": "/v1/health",
     "healthcheckTimeout": 30,
     "restartPolicyType": "ON_FAILURE",
