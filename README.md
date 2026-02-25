@@ -1,12 +1,24 @@
 # NEXUSMON
 
-**Autonomous execution infrastructure. Built to run real missions.**
+**⚡ Quantum-geometric autonomy infrastructure. Built to run real missions.**
+
+```text
+                ◇      △      ◯
+            ◢────────────────────◣
+            │      NEXUSMON       │
+            │   OPERATOR SYSTEM   │
+            │    EXECUTION CORE   │
+            ◥────────────────────◤
+                ◯      ✶      ◇
+```
 
 NEXUSMON is an open-source autonomy stack engineered for real execution: mission orchestration, worker operations, artifact memory, governance, evolution state, and a live operator control surface.
 
+**Design language:** abstract geometry, high-signal interfaces, operator sovereignty.
+
 ---
 
-## What NEXUSMON Does
+## 🧠 What NEXUSMON Does
 
 A mission-native execution system that accepts intent, decomposes it into tasks, runs those tasks through workers, records every output as versioned artifacts, and upgrades capabilities based on proven history — under explicit operator control.
 
@@ -14,9 +26,11 @@ Not a chatbot. Not an agent wrapper. Not a thin panel over someone else's cloud.
 
 It is an autonomous operations stack owned by one operator, hardened by usage, and designed to compound over time.
 
+> Geometry in the shell. Precision in the engine.
+
 ---
 
-## Six Core Systems
+## 🧩 Six Core Systems
 
 | System | What It Does |
 |--------|-------------|
@@ -29,7 +43,7 @@ It is an autonomous operations stack owned by one operator, hardened by usage, a
 
 ---
 
-## Capability Progression
+## 📈 Capability Progression
 
 ```
 DORMANT   → AWAKENING  (1 mission)    unlocks RECALL, COMPANION
@@ -42,7 +56,7 @@ Completing missions earns XP. XP unlocks capabilities. Capabilities change what 
 
 ---
 
-## Mission Ranks
+## 🎯 Mission Ranks
 
 | Rank | Risk | Execution |
 |------|------|-----------|
@@ -55,7 +69,7 @@ Completing missions earns XP. XP unlocks capabilities. Capabilities change what 
 
 ---
 
-## Plugin Interface
+## 🔌 Plugin Interface
 
 ```python
 class WorkerPlugin:
@@ -72,17 +86,17 @@ Add workers without touching core code.
 
 ---
 
-## Why Teams Use It
+## 💥 Why Teams Use It
 
-- Executes work, not just chat.
-- Keeps full artifact history and review trails.
-- Enforces approval gates for high-risk actions.
-- Improves capability based on actual mission outcomes.
-- Stays operator-owned from development to deployment.
+- ⚙️ Executes work, not just chat.
+- 🧾 Keeps full artifact history and review trails.
+- 🛡️ Enforces approval gates for high-risk actions.
+- 📊 Improves capability based on actual mission outcomes.
+- 👤 Stays operator-owned from development to deployment.
 
 ---
 
-## API Surface
+## 📡 API Surface
 
 ```
 POST /v1/engine/missions              create mission
@@ -98,7 +112,7 @@ GET  /landing                         public landing page
 
 ---
 
-## Stack
+## 🛠️ Stack
 
 - **Backend**: Python + FastAPI
 - **Storage**: SQLite + JSONL (fully local, no cloud dependency)
@@ -107,7 +121,7 @@ GET  /landing                         public landing page
 
 ---
 
-## Run Locally
+## 🚀 Run Locally
 
 ```bash
 git clone https://github.com/darthvpirateking-afk/NEXUSMON
@@ -122,7 +136,7 @@ Open `http://localhost:8000/organism`
 
 ---
 
-## Deploy to Railway
+## ☁️ Deploy to Railway
 
 ```bash
 railway up
@@ -134,7 +148,7 @@ Add volume at `/app/data` — required for evolution persistence across deploys.
 
 ---
 
-## Phases
+## 🧭 Phases
 
 - **Phase 1 — Core Engine** ✅
 - **Phase 2 — Cockpit UI** ✅
@@ -143,6 +157,8 @@ Add volume at `/app/data` — required for evolution persistence across deploys.
 
 ---
 
-## License
+## 📜 License
 
 MIT. Run your own. Own your data. Own your organism.
+
+`◇ NEXUSMON: abstract form, concrete execution.`
