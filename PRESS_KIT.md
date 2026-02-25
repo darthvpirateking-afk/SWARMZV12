@@ -1,14 +1,12 @@
-# NEXUSMON PRESS KIT
+# NEXUSMON // LAUNCH INTEL
 
-All launch content for NEXUSMON — doctrine, launch thread, pitch deck, architecture diagrams, taglines, press release.
+Launch content for NEXUSMON — doctrine, launch thread, pitch deck, architecture diagrams, taglines, and press release.
 
 ```text
-      ◇      △      ◯
-    ┌──────────────────────┐
-    │      NEXUSMON        │
-    │   EXECUTION SYSTEM   │
-    └──────────────────────┘
-      ◯      ✶      ◇
+┌─────────────────────────────────────┐
+│              NEXUSMON               │
+│          LAUNCH BRIEFING            │
+└─────────────────────────────────────┘
 ```
 
 ---

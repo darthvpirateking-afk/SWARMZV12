@@ -1,20 +1,16 @@
-# NEXUSMON
+# NEXUSMON // OPERATOR COMMAND SYSTEM
 
-**⚡ Quantum-geometric autonomy infrastructure. Built to run real missions.**
+**Built to execute missions, enforce control, and scale autonomous capability.**
 
 ```text
-                ◇      △      ◯
-            ◢────────────────────◣
-            │      NEXUSMON       │
-            │   OPERATOR SYSTEM   │
-            │    EXECUTION CORE   │
-            ◥────────────────────◤
-                ◯      ✶      ◇
+┌─────────────────────────────────────┐
+│              NEXUSMON               │
+│        OPERATOR COMMAND CORE        │
+│      GOVERNED AUTONOMOUS STACK      │
+└─────────────────────────────────────┘
 ```
 
 NEXUSMON is an open-source autonomy stack engineered for real execution: mission orchestration, worker operations, artifact memory, governance, evolution state, and a live operator control surface.
-
-**Design language:** abstract geometry, high-signal interfaces, operator sovereignty.
 
 ---
 
@@ -26,7 +22,7 @@ Not a chatbot. Not an agent wrapper. Not a thin panel over someone else's cloud.
 
 It is an autonomous operations stack owned by one operator, hardened by usage, and designed to compound over time.
 
-> Geometry in the shell. Precision in the engine.
+> No theater. Just execution.
 
 ---
 
