@@ -661,6 +661,32 @@ body::after {
 .timeline-event .timestamp { font-size:7px; color:var(--dim); }
 .timeline-loading { color:var(--dim); font-size:11px; padding:8px; }
 /* ── Marketplace Styles ── */
+/* ── Notifications Rail ── */
+.notifications-rail { position:fixed; top:60px; right:12px; z-index:9999; display:flex; flex-direction:column; gap:8px; max-width:380px; }
+.notification-toast {
+  background:rgba(0,10,20,0.95); border:1px solid rgba(0,255,255,0.25); border-radius:6px; padding:12px 14px;
+  font-size:10px; color:var(--text);
+  animation:slideIn 0.3s ease-out;
+  display:flex; align-items:flex-start; gap:10px;
+  box-shadow:0 4px 20px rgba(0,0,0,0.6);
+  transition:opacity 0.3s, transform 0.3s;
+}
+.notification-toast.closing { animation:slideOut 0.3s ease-in forwards; }
+.notification-icon { font-size:14px; flex-shrink:0; line-height:1; }
+.notification-content { flex:1; display:flex; flex-direction:column; gap:3px; }
+.notification-title { font-weight:bold; color:var(--bright); font-size:10px; }
+.notification-msg { color:var(--text); font-size:9px; opacity:0.85; }
+.notification-close { font-size:11px; cursor:pointer; color:var(--dim); opacity:0.6; transition:opacity 0.2s; line-height:1; }
+.notification-close:hover { opacity:1; }
+/* Toast type colors */
+.notif-plugin-installed { border-left-color:#00ffaa; border-left-width:3px; padding-left:11px; }
+.notif-plugin-unlocked { border-left-color:#aa44ff; border-left-width:3px; padding-left:11px; }
+.notif-success { border-left-color:#00ff88; border-left-width:3px; padding-left:11px; }
+.notif-error { border-left-color:#ff3333; border-left-width:3px; padding-left:11px; }
+.notif-info { border-left-color:#00f0ff; border-left-width:3px; padding-left:11px; }
+@keyframes slideIn { from { transform:translateX(400px); opacity:0; } to { transform:translateX(0); opacity:1; } }
+@keyframes slideOut { from { transform:translateX(0); opacity:1; } to { transform:translateX(400px); opacity:0; } }
+
 .marketplace-container { display:flex; flex-direction:column; gap:16px; padding:12px; }
 .marketplace-header { display:flex; flex-direction:column; gap:12px; }
 .marketplace-header h2 { margin:0; font-size:16px; color:var(--bright); }
@@ -885,6 +911,11 @@ body {
 </head>
 <body>
 <canvas id="jarvis-particles"></canvas>
+<!-- NOTIFICATIONS RAIL -->
+<div id="notifications-rail" class="notifications-rail">
+  <!-- Notifications appended here -->
+</div>
+
 
 <!-- TOPBAR -->
 <header class="topbar">
@@ -1655,17 +1686,17 @@ function filterMarketplace() {
   const search = document.getElementById('mkt-search').value.toLowerCase();
   const typeFilter = document.getElementById('mkt-type-filter').value;
   const trustFilter = document.getElementById('mkt-trust-filter').value;
-  
+
   filteredMarketplaceData = marketplaceData.filter(p => {
     const matchSearch = !search || p.id.toLowerCase().includes(search) || (p.description || '').toLowerCase().includes(search) || (p.author || '').toLowerCase().includes(search);
     const matchType = !typeFilter || p.type === typeFilter;
     const matchTrust = !trustFilter || p.trust === trustFilter;
     return matchSearch && matchType && matchTrust;
   });
-  
+
   renderMarketplace(filteredMarketplaceData);
   document.getElementById('mkt-filtered').textContent = filteredMarketplaceData.length;
-  
+
   if (filteredMarketplaceData.length > 0) {
     const avgRating = (filteredMarketplaceData.reduce((s,p) => s + (p.rating || 0), 0) / filteredMarketplaceData.length).toFixed(1);
     document.getElementById('mkt-rating').textContent = avgRating;
@@ -1678,7 +1709,7 @@ function renderMarketplace(plugins) {
     grid.innerHTML = '<div style="grid-column:1/-1;color:var(--dim);text-align:center;padding:20px">No plugins match your filters</div>';
     return;
   }
-  
+
   const trustIcons = { core:'🔒', verified:'✓', community:'👥', unsigned:'⚠️' };
   grid.innerHTML = plugins.map(p => {
     const trustBadge = p.trust ? `<span class="marketplace-card-trust trust-${p.trust}">${trustIcons[p.trust]||'•'} ${p.trust}</span>` : '';
@@ -1719,6 +1750,100 @@ async function installMarketplacePlugin(pluginId, url) {
 
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', refreshMarketplace);
+
+// ── NOTIFICATIONS SYSTEM ──────────────────────────────────────
+
+const notificationIcons = {
+  plugin_installed: '🧩',
+  plugin_unlocked: '🔓',
+  xp_gain: '✨',
+  rank_up: '⬆️',
+  mission_complete: '🏁',
+  evolution: '🌙',
+  system: '⚙️',
+  success: '✓',
+  error: '✗',
+  info: 'ℹ'
+};
+
+function addNotification(title, message, type = 'info', duration = 4000) {
+  const rail = document.getElementById('notifications-rail');
+  if (!rail) return;
+
+  const notif = document.createElement('div');
+  const icon = notificationIcons[type] || '•';
+  const typeClass = `notif-${type}`;
+
+  notif.className = `notification-toast ${typeClass}`;
+  notif.innerHTML = `
+    <div class="notification-icon">${icon}</div>
+    <div class="notification-content">
+      <div class="notification-title">${title}</div>
+      <div class="notification-msg">${message}</div>
+    </div>
+    <div class="notification-close" onclick="this.closest('.notification-toast').closeNotif()">✕</div>
+  `;
+
+  notif.closeNotif = function() {
+    this.classList.add('closing');
+    setTimeout(() => this.remove(), 300);
+  };
+
+  rail.appendChild(notif);
+
+  if (duration > 0) {
+    setTimeout(() => notif.closeNotif(), duration);
+  }
+
+  return notif;
+}
+
+async function pollNotifications() {
+  try {
+    const r = await fetch('/v1/notifications', { method: 'GET' });
+    if (r.status === 200) {
+      const data = await r.json();
+      const events = data.events || [];
+
+      for (const evt of events) {
+        let title = evt.type.replace(/_/g, ' ').toUpperCase();
+        let msg = '';
+        let type = evt.type;
+
+        if (evt.type === 'plugin_installed') {
+          title = '🧩 Plugin Installed';
+          msg = `${evt.payload.id} v${evt.payload.version}`;
+        } else if (evt.type === 'plugin_unlocked') {
+          title = '🔓 Plugin Unlocked';
+          msg = evt.payload.id;
+        } else if (evt.type === 'xp_gain') {
+          title = '✨ XP Gained';
+          msg = `+${evt.payload.amount} ${evt.payload.reason}`;
+        } else if (evt.type === 'rank_up') {
+          title = '⬆️ Rank Up';
+          msg = `Promoted to ${evt.payload.new_rank}`;
+        } else if (evt.type === 'mission_complete') {
+          title = '🏁 Mission Complete';
+          msg = `${evt.payload.mission_id} (+${evt.payload.reward_xp} XP)`;
+        } else if (evt.type === 'evolution') {
+          title = '🌙 Evolution';
+          msg = `${evt.payload.old_stage} → ${evt.payload.new_stage}`;
+        } else if (evt.type === 'system') {
+          title = evt.payload.message;
+          msg = `[${evt.payload.severity}]`;
+          type = evt.payload.severity === 'error' ? 'error' : 'info';
+        }
+
+        addNotification(title, msg, type, 5000);
+      }
+    }
+  } catch(e) {
+    // Silent fail - don't spam with notification errors
+  }
+}
+
+// Poll for notifications every 2 seconds
+setInterval(pollNotifications, 2000);
 } else {
   refreshMarketplace();
 }

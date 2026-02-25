@@ -22,6 +22,7 @@ from pydantic import BaseModel
 
 from timeline_store import load_timeline, get_stats
 from event_hooks import on_plugin_installed, on_plugin_unlocked
+from event_hooks import get_event_buffer, clear_event_buffer
 
 router = APIRouter()
 
@@ -335,3 +336,22 @@ async def timeline_stats() -> Dict[str, Any]:
     Quick summary of organism evolution.
     """
     return get_stats()
+
+# ─────────────────────────────────────────────────────────────
+# GET /v1/notifications — Real-time notification feed
+# ─────────────────────────────────────────────────────────────
+
+@router.get("/v1/notifications")
+async def get_notifications(limit: int = Query(20, ge=1, le=100)) -> Dict[str, Any]:
+    """
+    Retrieve recent events for notification display.
+    This polls the event buffer from event_hooks.py
+    """
+    buffer = get_event_buffer()
+    recent = buffer[-limit:] if buffer else []
+    
+    return {
+        "events": recent,
+        "total": len(buffer),
+        "timestamp": datetime.utcnow().isoformat() + "Z"
+    }
