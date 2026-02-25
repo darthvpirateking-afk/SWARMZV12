@@ -14,7 +14,6 @@ if TYPE_CHECKING:
 _engine_instance = None
 
 
-def set_engine_provider(engine_provider: Callable):
 def set_engine_provider(engine_provider: Callable[[], Any]):
     """Set the engine provider function to avoid circular imports."""
     global _engine_instance

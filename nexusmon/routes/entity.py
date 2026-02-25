@@ -84,27 +84,52 @@ def get_traits():
 @router.get("/xp")
 def get_xp():
     state = _entity().get_state()
-    xp = state.get("xp", 0.0)
-    xp_to_next = state.get("xp_to_next", 100.0)
-    if xp_to_next == float("inf"):
+    xp = float(state.get("evolution_xp") or 0.0)
+    form = str(state.get("current_form", "ROOKIE")).upper()
+    # Compute xp_to_next from known evolution thresholds
+    try:
+        from nexusmon.evolution import FORM_XP_THRESHOLDS
+        xp_to_next = FORM_XP_THRESHOLDS.get(form)
+    except Exception:
+        _thresholds = {"ROOKIE": 100.0, "CHAMPION": 500.0, "ULTIMATE": 2000.0, "MEGA": 10000.0}
+        xp_to_next = _thresholds.get(form)
+    if xp_to_next is None or xp_to_next == float("inf"):
         xp_to_next = None
-    pct = round((xp / xp_to_next * 100), 1) if xp_to_next else 100.0
+        pct = 100.0
+    else:
+        pct = round(min(100.0, (xp / xp_to_next) * 100.0), 1) if xp_to_next else 100.0
     return {
         "ok": True,
         "xp": xp,
         "xp_to_next": xp_to_next,
         "pct": pct,
-        "form": state.get("form", "Rookie"),
+        "form": form.capitalize(),
     }
 
 
 @router.get("/evolution")
 def get_evolution():
     state = _entity().get_state()
+    current_form = str(state.get("current_form", "ROOKIE")).capitalize()
+    # Query evolution_events table for the log
+    evolution_log = []
+    try:
+        from nexusmon.memory import get_db
+        db = get_db()
+        rows = db.conn.execute(
+            "SELECT from_form, to_form, occurred_at, trigger FROM evolution_events ORDER BY id DESC LIMIT 50"
+        ).fetchall()
+        evolution_log = [
+            {"from_form": r["from_form"], "to_form": r["to_form"],
+             "occurred_at": r["occurred_at"], "trigger": r["trigger"]}
+            for r in rows
+        ]
+    except Exception:
+        pass
     return {
         "ok": True,
-        "form": state.get("form", "Rookie"),
-        "evolution_log": state.get("evolution_log", []),
+        "form": current_form,
+        "evolution_log": evolution_log,
     }
 
 
