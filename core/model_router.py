@@ -19,6 +19,15 @@ import urllib.error
 from pathlib import Path
 from typing import Dict, Any, Optional, List
 
+try:
+    from core.otel_tracing import trace_llm_call
+except ImportError:
+    # Fallback if tracing not available
+    from contextlib import contextmanager
+    @contextmanager
+    def trace_llm_call(*args, **kwargs):
+        yield None
+
 ROOT = Path(__file__).resolve().parent.parent
 CONFIG_FILE = ROOT / "config" / "runtime.json"
 
@@ -102,49 +111,67 @@ def _call_anthropic(
     timeout_ms: int,
     max_tokens: int,
 ) -> Dict[str, Any]:
-    url = "https://api.anthropic.com/v1/messages"
-    body = json.dumps(
-        {
-            "model": model,
-            "max_tokens": max_tokens,
-            "system": system,
-            "messages": messages,
-        }
-    ).encode("utf-8")
+    with trace_llm_call(
+        provider="anthropic",
+        model=model,
+        operation="messages.create",
+        max_tokens=max_tokens,
+        message_count=len(messages),
+        system_prompt=system if system else None,
+    ) as span:
+        url = "https://api.anthropic.com/v1/messages"
+        body = json.dumps(
+            {
+                "model": model,
+                "max_tokens": max_tokens,
+                "system": system,
+                "messages": messages,
+            }
+        ).encode("utf-8")
 
-    req = urllib.request.Request(url, data=body, method="POST")
-    req.add_header("Content-Type", "application/json")
-    req.add_header("x-api-key", api_key)
-    req.add_header("anthropic-version", "2023-06-01")
+        req = urllib.request.Request(url, data=body, method="POST")
+        req.add_header("Content-Type", "application/json")
+        req.add_header("x-api-key", api_key)
+        req.add_header("anthropic-version", "2023-06-01")
 
-    t0 = time.monotonic()
-    try:
-        timeout_s = max(timeout_ms / 1000, 5)
-        resp = urllib.request.urlopen(req, timeout=timeout_s)
-        data = json.loads(resp.read().decode("utf-8"))
-        latency = int((time.monotonic() - t0) * 1000)
-
-        text = ""
-        for block in data.get("content", []):
-            if block.get("type") == "text":
-                text += block.get("text", "")
-
-        usage = data.get("usage", {})
-        return _ok_response(text, usage, "anthropic", model, latency)
-
-    except urllib.error.HTTPError as e:
-        latency = int((time.monotonic() - t0) * 1000)
-        detail = ""
+        t0 = time.monotonic()
         try:
-            detail = e.read().decode("utf-8")[:500]
-        except Exception:
-            pass
-        return _err_response(
-            f"Anthropic HTTP {e.code}: {detail}", "anthropic", model, latency
-        )
-    except Exception as e:
-        latency = int((time.monotonic() - t0) * 1000)
-        return _err_response(f"Anthropic error: {str(e)}", "anthropic", model, latency)
+            timeout_s = max(timeout_ms / 1000, 5)
+            resp = urllib.request.urlopen(req, timeout=timeout_s)
+            data = json.loads(resp.read().decode("utf-8"))
+            latency = int((time.monotonic() - t0) * 1000)
+
+            text = ""
+            for block in data.get("content", []):
+                if block.get("type") == "text":
+                    text += block.get("text", "")
+
+            usage = {
+                "input": data.get("usage", {}).get("input_tokens", 0),
+                "output": data.get("usage", {}).get("output_tokens", 0),
+            }
+
+            # Add tracing attributes for response
+            if span:
+                span.set_attribute("llm.usage.input_tokens", usage["input"])
+                span.set_attribute("llm.usage.output_tokens", usage["output"])
+                span.set_attribute("llm.latency_ms", latency)
+
+            return _ok_response(text, usage, "anthropic", model, latency)
+
+        except urllib.error.HTTPError as e:
+            latency = int((time.monotonic() - t0) * 1000)
+            detail = ""
+            try:
+                detail = e.read().decode("utf-8")[:500]
+            except Exception:
+                pass
+            return _err_response(
+                f"Anthropic HTTP {e.code}: {detail}", "anthropic", model, latency
+            )
+        except Exception as e:
+            latency = int((time.monotonic() - t0) * 1000)
+            return _err_response(f"Anthropic error: {str(e)}", "anthropic", model, latency)
 
 
 # â”€â”€ OpenAI (Chat Completions API) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -158,49 +185,67 @@ def _call_openai(
     timeout_ms: int,
     max_tokens: int,
 ) -> Dict[str, Any]:
-    url = "https://api.openai.com/v1/chat/completions"
+    with trace_llm_call(
+        provider="openai",
+        model=model,
+        operation="chat.completions.create",
+        max_tokens=max_tokens,
+        message_count=len(messages) + (1 if system else 0),
+        has_system_prompt=bool(system),
+    ) as span:
+        url = "https://api.openai.com/v1/chat/completions"
 
-    full_messages = [{"role": "system", "content": system}] + messages
-    body = json.dumps(
-        {
-            "model": model,
-            "max_tokens": max_tokens,
-            "messages": full_messages,
-        }
-    ).encode("utf-8")
+        full_messages = [{"role": "system", "content": system}] + messages
+        body = json.dumps(
+            {
+                "model": model,
+                "max_tokens": max_tokens,
+                "messages": full_messages,
+            }
+        ).encode("utf-8")
 
-    req = urllib.request.Request(url, data=body, method="POST")
-    req.add_header("Content-Type", "application/json")
-    req.add_header("Authorization", f"Bearer {api_key}")
+        req = urllib.request.Request(url, data=body, method="POST")
+        req.add_header("Content-Type", "application/json")
+        req.add_header("Authorization", f"Bearer {api_key}")
 
-    t0 = time.monotonic()
-    try:
-        timeout_s = max(timeout_ms / 1000, 5)
-        resp = urllib.request.urlopen(req, timeout=timeout_s)
-        data = json.loads(resp.read().decode("utf-8"))
-        latency = int((time.monotonic() - t0) * 1000)
-
-        text = ""
-        choices = data.get("choices", [])
-        if choices:
-            text = choices[0].get("message", {}).get("content", "")
-
-        usage = data.get("usage", {})
-        return _ok_response(text, usage, "openai", model, latency)
-
-    except urllib.error.HTTPError as e:
-        latency = int((time.monotonic() - t0) * 1000)
-        detail = ""
+        t0 = time.monotonic()
         try:
-            detail = e.read().decode("utf-8")[:500]
-        except Exception:
-            pass
-        return _err_response(
-            f"OpenAI HTTP {e.code}: {detail}", "openai", model, latency
-        )
-    except Exception as e:
-        latency = int((time.monotonic() - t0) * 1000)
-        return _err_response(f"OpenAI error: {str(e)}", "openai", model, latency)
+            timeout_s = max(timeout_ms / 1000, 5)
+            resp = urllib.request.urlopen(req, timeout=timeout_s)
+            data = json.loads(resp.read().decode("utf-8"))
+            latency = int((time.monotonic() - t0) * 1000)
+
+            text = ""
+            choices = data.get("choices", [])
+            if choices:
+                text = choices[0].get("message", {}).get("content", "")
+
+            usage = {
+                "input": data.get("usage", {}).get("prompt_tokens", 0),
+                "output": data.get("usage", {}).get("completion_tokens", 0),
+            }
+
+            # Add tracing attributes for response
+            if span:
+                span.set_attribute("llm.usage.input_tokens", usage["input"])
+                span.set_attribute("llm.usage.output_tokens", usage["output"])
+                span.set_attribute("llm.latency_ms", latency)
+
+            return _ok_response(text, usage, "openai", model, latency)
+
+        except urllib.error.HTTPError as e:
+            latency = int((time.monotonic() - t0) * 1000)
+            detail = ""
+            try:
+                detail = e.read().decode("utf-8")[:500]
+            except Exception:
+                pass
+            return _err_response(
+                f"OpenAI HTTP {e.code}: {detail}", "openai", model, latency
+            )
+        except Exception as e:
+            latency = int((time.monotonic() - t0) * 1000)
+            return _err_response(f"OpenAI error: {str(e)}", "openai", model, latency)
 
 
 # â”€â”€ Public interface â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€

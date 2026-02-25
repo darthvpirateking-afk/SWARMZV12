@@ -1,6 +1,6 @@
 from fastapi.testclient import TestClient
 
-from server import app
+from swarmz_server import app
 
 
 def test_openapi_operation_ids_for_dashboard_and_runtime_routes():

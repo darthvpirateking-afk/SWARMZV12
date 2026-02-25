@@ -1,23 +1,11 @@
 services:
   - type: web
     name: swarmzv10
-    runtime: python
+    runtime: docker
     rootDir: .
-    buildCommand: pip install -r requirements.txt
-    startCommand: python run_server.py --host 0.0.0.0 --port $PORT
+    dockerfilePath: ./Dockerfile
     healthCheckPath: /health
     autoDeployTrigger: commit
     envVars:
       - key: ALLOWED_ORIGINS
         value: https://swarmz-frontend.onrender.com
-
-  - type: web
-    name: swarmz-frontend
-    runtime: static
-    rootDir: frontend
-    buildCommand: npm install && npm run build
-    staticPublishPath: dist
-    autoDeployTrigger: commit
-    envVars:
-      - key: VITE_API_BASE_URL
-        value: https://swarmzv10.onrender.com

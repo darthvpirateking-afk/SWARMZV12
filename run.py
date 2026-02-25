@@ -55,12 +55,12 @@ def _resolve_host_port() -> tuple[str, int]:
         or cfg.get("port")
         or cfg.get("api_port")
         or cfg.get("uiPort")
-        or 8012
+        or 8000
     )
     try:
         port = int(port_val)
     except Exception:
-        port = 8012
+        port = 8000
     return host, port
 
 
@@ -165,7 +165,7 @@ def main():
 
     # ── Serve ──────────────────────────────────────────────────────
     uvicorn.run(
-        "server:app",
+        "swarmz_server:app",
         host=args.host,
         port=args.port,
         reload=False,

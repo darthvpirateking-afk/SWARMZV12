@@ -24,6 +24,13 @@ conflict_log        -- disagreements and their resolutions
 import os
 import sqlite3
 
+
+def _default_db_path() -> str:
+    env_path = os.environ.get("DATABASE_URL")
+    if env_path:
+        return env_path
+    return "/app/data/nexusmon.db" if os.path.isdir("/app/data") else "data/nexusmon.db"
+
 # Canonical column set for entity_state -- used to detect stale schema
 _ENTITY_STATE_REQUIRED_COLS = {
     "id",
@@ -50,7 +57,8 @@ class NexusmonDB:
     Stale entity_state schemas (from prior versions) are migrated automatically.
     """
 
-    def __init__(self, db_path: str = "data/nexusmon.db") -> None:
+    def __init__(self, db_path: str | None = None) -> None:
+        db_path = db_path or _default_db_path()
         db_dir = os.path.dirname(db_path)
         if db_dir:
             os.makedirs(db_dir, exist_ok=True)

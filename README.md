@@ -135,9 +135,8 @@ python run_server.py
 
 # Access at:
 # Local:  http://localhost:8000
-# Local:  http://localhost:8012
-# LAN:    http://192.168.x.x:8012 (shown on startup)
-# API Docs: http://localhost:8012/docs
+# LAN:    http://192.168.x.x:8000 (shown on startup)
+# API Docs: http://localhost:8000/docs
 ```
 
 ### CLI Usage

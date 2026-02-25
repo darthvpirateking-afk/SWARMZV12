@@ -108,12 +108,12 @@ if (Test-Path (Join-Path $PSScriptRoot "run_server.py")) {
   exit $LASTEXITCODE
 }
 
-if (Test-Path (Join-Path $PSScriptRoot "server.py")) {
-  Write-Host ("run_server.py missing → starting via uvicorn server:app on {0}:{1}" -f $HostBind, $Port) -ForegroundColor Green
-  & $venvPy -m uvicorn server:app --host $HostBind --port $Port
+if (Test-Path (Join-Path $PSScriptRoot "swarmz_server.py")) {
+  Write-Host ("run_server.py missing → starting via uvicorn swarmz_server:app on {0}:{1}" -f $HostBind, $Port) -ForegroundColor Green
+  & $venvPy -m uvicorn swarmz_server:app --host $HostBind --port $Port
   exit $LASTEXITCODE
 }
 
-Write-Host "[ERROR] Missing run_server.py and server.py. Your repo has no server entrypoint." -ForegroundColor Red
-Write-Host "Tell your agent: create server.py (FastAPI app) + run_server.py (uvicorn runner)." -ForegroundColor Red
+Write-Host "[ERROR] Missing run_server.py and swarmz_server.py. Your repo has no server entrypoint." -ForegroundColor Red
+Write-Host "Tell your agent: create swarmz_server.py (FastAPI app) + run_server.py (uvicorn runner)." -ForegroundColor Red
 exit 1
