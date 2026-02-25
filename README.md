@@ -1,33 +1,30 @@
-# NEXUSMON // OPERATOR COMMAND SYSTEM
+﻿# NEXUSMON
 
-**BUILT TO EXECUTE MISSIONS, ENFORCE CONTROL, AND SCALE AUTONOMOUS CAPABILITY.**
+**MISSION EXECUTION INFRASTRUCTURE FOR OPERATORS WHO NEED OUTPUT, CONTROL, AND TRACEABILITY.**
+
+NEXUSMON is an open-source mission operations stack. It converts objectives into executable task graphs, runs worker pipelines, stores artifacts with full lineage, and enforces governance before high-risk actions.
 
 ```text
-┌─────────────────────────────────────┐
-│              NEXUSMON               │
-│        OPERATOR COMMAND CORE        │
-│      GOVERNED AUTONOMOUS STACK      │
-│     STATUS: LIVE // MODE: EXECUTE   │
-└─────────────────────────────────────┘
+OBJECTIVE -> TASK DAG -> WORKER EXECUTION -> VERSIONED ARTIFACTS -> OPERATOR REVIEW -> CAPABILITY GROWTH
 ```
-
-NEXUSMON is an open-source autonomy stack engineered for real execution: mission orchestration, worker operations, artifact memory, governance, evolution state, and a live operator control surface.
 
 ---
 
-## SECTION // WHAT NEXUSMON DOES
+## WHAT NEXUSMON DOES
 
-A mission-native execution system that accepts intent, decomposes it into tasks, runs those tasks through workers, records every output as versioned artifacts, and upgrades capabilities based on proven history — under explicit operator control.
+A mission-native execution system for operators who need output, control, and auditability in one loop.
+
+You provide objective → NEXUSMON decomposes it into a DAG → workers execute → artifacts are versioned → approvals gate critical actions → capability expands from proven outcomes.
 
 Not a chatbot. Not an agent wrapper. Not a thin panel over someone else's cloud.
 
-It is an autonomous operations stack owned by one operator, hardened by usage, and designed to compound over time.
+Local-first ownership. Plugin-extensible architecture. Governance-by-default execution.
 
-> No theater. Just execution.
+> Real work. Real controls. Real memory.
 
 ---
 
-## SECTION // SIX CORE SYSTEMS
+## SIX CORE SYSTEMS
 
 | System | What It Does |
 |--------|-------------|
@@ -40,7 +37,7 @@ It is an autonomous operations stack owned by one operator, hardened by usage, a
 
 ---
 
-## SECTION // CAPABILITY PROGRESSION
+## CAPABILITY PROGRESSION
 
 ```
 DORMANT   → AWAKENING  (1 mission)    unlocks RECALL, COMPANION
@@ -53,7 +50,7 @@ Completing missions earns XP. XP unlocks capabilities. Capabilities change what 
 
 ---
 
-## SECTION // MISSION RANKS
+## MISSION RANKS
 
 | Rank | Risk | Execution |
 |------|------|-----------|
@@ -66,7 +63,7 @@ Completing missions earns XP. XP unlocks capabilities. Capabilities change what 
 
 ---
 
-## SECTION // PLUGIN INTERFACE
+## PLUGIN INTERFACE
 
 ```python
 class WorkerPlugin:
@@ -83,7 +80,7 @@ Add workers without touching core code.
 
 ---
 
-## SECTION // WHY TEAMS USE IT
+## WHY TEAMS USE IT
 
 - ⚙️ Executes work, not just chat.
 - 🧾 Keeps full artifact history and review trails.
@@ -93,7 +90,7 @@ Add workers without touching core code.
 
 ---
 
-## SECTION // API SURFACE
+## API SURFACE
 
 ```
 POST /v1/engine/missions              create mission
@@ -109,7 +106,7 @@ GET  /landing                         public landing page
 
 ---
 
-## SECTION // STACK
+## STACK
 
 - **Backend**: Python + FastAPI
 - **Storage**: SQLite + JSONL (fully local, no cloud dependency)
@@ -118,34 +115,34 @@ GET  /landing                         public landing page
 
 ---
 
-## SECTION // RUN LOCALLY
+## RUN LOCALLY
 
 ```bash
 git clone https://github.com/darthvpirateking-afk/NEXUSMON
 cd NEXUSMON
 pip install -r requirements.txt
 cp .env.example .env
-# set ANTHROPIC_API_KEY, OPERATOR_KEY, SWARMZ_JWT_SECRET
-uvicorn swarmz_server:app --host 0.0.0.0 --port 8000
+# set ANTHROPIC_API_KEY, OPERATOR_KEY, NEXUSMON_JWT_SECRET
+uvicorn nexusmon_server:app --host 0.0.0.0 --port 8000
 ```
 
 Open `http://localhost:8000/organism`
 
 ---
 
-## SECTION // DEPLOY TO RAILWAY
+## DEPLOY TO RAILWAY
 
 ```bash
 railway up
 ```
 
-Set in dashboard: `ANTHROPIC_API_KEY`, `OPERATOR_KEY`, `SWARMZ_JWT_SECRET`
+Set in dashboard: `ANTHROPIC_API_KEY`, `OPERATOR_KEY`, `NEXUSMON_JWT_SECRET`
 
 Add volume at `/app/data` — required for evolution persistence across deploys.
 
 ---
 
-## SECTION // PHASES
+## PHASES
 
 - **Phase 1 — Core Engine** ✅
 - **Phase 2 — Cockpit UI** ✅
@@ -154,8 +151,9 @@ Add volume at `/app/data` — required for evolution persistence across deploys.
 
 ---
 
-## SECTION // LICENSE
+## LICENSE
 
 MIT. Run your own. Own your data. Own your organism.
 
 `◇ NEXUSMON: abstract form, concrete execution.`
+
