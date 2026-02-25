@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEXUSMON // ORGANISM COCKPIT</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap');
+
+:root {
+  --bg:      #03050a;
+  --panel:   #060a10;
+  --card:    #080d16;
+  --border:  #0c1520;
+  --bh:      #142030;
+  --text:    #7aaac0;
+  --dim:     #253545;
+  --bright:  #c0e0f0;
+  --accent:  #00ccff;
+  --a2:      #005580;
+  --green:   #00ff88;
+  --amber:   #ffaa00;
+  --red:     #ff3355;
+  --purple:  #aa55ff;
+  --mono:    'Share Tech Mono', monospace;
+  --head:    'Rajdhani', sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 12px;
+  min-height: 100vh;
+}
+
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,180,255,0.012) 3px, rgba(0,180,255,0.012) 4px);
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* ── TOPBAR ── */
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px; height: 52px;
+  border-bottom: 1px solid var(--bh);
+  background: var(--panel);
+  position: sticky; top: 0; z-index: 200;
+}
+
+.logo {
+  font-family: var(--head); font-size: 22px; font-weight: 700;
+  letter-spacing: 0.2em; color: var(--bright);
+}
+.logo em { color: var(--accent); font-style: normal; }
+.logo-sub { font-size: 10px; letter-spacing: 0.15em; color: var(--dim); margin-left: 12px; vertical-align: middle; }
+
+.topbar-right { display: flex; align-items: center; gap: 16px; }
+
+.stage-badge {
+  font-family: var(--head); font-size: 13px; font-weight: 600;
+  letter-spacing: 0.12em; padding: 4px 14px;
+  border: 1px solid currentColor; border-radius: 2px;
+  transition: all 0.4s;
+}
+
+.clock { font-size: 11px; color: var(--dim); letter-spacing: 0.08em; }
+
+.refresh-btn {
+  background: none; border: 1px solid var(--bh); border-radius: 2px;
+  color: var(--dim); font-family: var(--mono); font-size: 10px;
+  letter-spacing: 0.1em; padding: 5px 12px; cursor: pointer;
+  transition: all 0.2s;
+}
+.refresh-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ── LAYOUT ── */
+.shell {
+  display: grid;
+  grid-template-columns: 220px 1fr 280px;
+  grid-template-rows: auto 1fr;
+  min-height: calc(100vh - 52px);
+  gap: 0;
+}
+
+/* ── LEFT SIDEBAR ── */
+.sidebar-left {
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  background: var(--panel);
+}
+
+.side-section { padding: 16px; border-bottom: 1px solid var(--border); }
+
+.side-label {
+  font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--dim); margin-bottom: 12px;
+}
+
+/* Evolution stage display */
+.evo-stage {
+  text-align: center; padding: 12px 0;
+}
+.evo-stage-name {
+  font-family: var(--head); font-size: 28px; font-weight: 700;
+  letter-spacing: 0.1em; transition: color 0.4s;
+  line-height: 1;
+}
+.evo-rank-dots {
+  display: flex; justify-content: center; gap: 6px; margin: 10px 0 8px;
+}
+.rank-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  border: 1px solid var(--bh);
+  transition: all 0.4s;
+}
+.rank-dot.filled { border-color: var(--accent); background: var(--accent); box-shadow: 0 0 6px var(--accent); }
+
+.xp-row { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
+.xp-label { font-size: 9px; color: var(--dim); letter-spacing: 0.1em; }
+.xp-val { font-size: 11px; color: var(--accent); }
+.xp-bar { flex: 1; height: 2px; background: var(--border); border-radius: 1px; overflow: hidden; }
+.xp-fill { height: 100%; background: var(--accent); box-shadow: 0 0 4px var(--accent); transition: width 0.6s ease; }
+
+/* Traits list */
+.trait-list { display: flex; flex-direction: column; gap: 6px; }
+.trait-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 5px 8px; border-radius: 2px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  transition: all 0.2s;
+}
+.trait-item:hover { border-color: var(--bh); }
+.trait-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  flex-shrink: 0;
+}
+.trait-name { font-size: 10px; letter-spacing: 0.06em; color: var(--bright); }
+.trait-cat { font-size: 9px; color: var(--dim); margin-left: auto; }
+
+.cat-COGNITIVE { background: var(--accent); box-shadow: 0 0 4px var(--accent); }
+.cat-RESONANCE { background: var(--purple); box-shadow: 0 0 4px var(--purple); }
+.cat-TACTICAL  { background: var(--amber); box-shadow: 0 0 4px var(--amber); }
+.cat-ADAPTIVE  { background: var(--green); box-shadow: 0 0 4px var(--green); }
+
+/* Next stage */
+.next-stage-box {
+  font-size: 10px; color: var(--dim);
+  padding: 8px; border: 1px dashed var(--border); border-radius: 2px;
+}
+.next-stage-name { color: var(--text); letter-spacing: 0.08em; margin-bottom: 4px; }
+.next-req { display: flex; justify-content: space-between; margin-top: 3px; }
+
+/* ── MAIN AREA ── */
+.main {
+  overflow-y: auto;
+  display: flex; flex-direction: column;
+  gap: 0;
+}
+
+/* Tab nav */
+.tab-nav {
+  display: flex; border-bottom: 1px solid var(--border);
+  background: var(--panel); position: sticky; top: 0; z-index: 100;
+}
+.tab-btn {
+  padding: 12px 20px; font-family: var(--mono); font-size: 10px;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--dim); background: none; border: none;
+  border-bottom: 2px solid transparent; cursor: pointer;
+  transition: all 0.2s; margin-bottom: -1px;
+}
+.tab-btn:hover { color: var(--text); }
+.tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* Tab panels */
+.tab-panel { display: none; padding: 20px; flex-direction: column; gap: 16px; }
+.tab-panel.active { display: flex; }
+
+/* Cards */
+.card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 2px; overflow: hidden;
+}
+.card-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 14px; border-bottom: 1px solid var(--border);
+  background: var(--panel);
+}
+.card-title {
+  font-family: var(--head); font-size: 13px; font-weight: 600;
+  letter-spacing: 0.12em; color: var(--bright);
+}
+.card-body { padding: 14px; }
+
+/* Status grid */
+.status-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.stat-block {
+  background: var(--panel); border: 1px solid var(--border);
+  padding: 12px; border-radius: 2px;
+}
+.stat-val {
+  font-family: var(--head); font-size: 26px; font-weight: 600;
+  color: var(--bright); line-height: 1;
+}
+.stat-label { font-size: 9px; letter-spacing: 0.1em; color: var(--dim); margin-top: 4px; text-transform: uppercase; }
+
+/* Operator vocab */
+.vocab-cloud { display: flex; flex-wrap: wrap; gap: 6px; }
+.vocab-word {
+  font-size: 10px; padding: 2px 8px; border-radius: 2px;
+  background: var(--border); color: var(--text);
+  border: 1px solid var(--bh);
+}
+
+/* Worker panel */
+.worker-spawn-form { display: flex; flex-direction: column; gap: 10px; }
+.form-row { display: flex; gap: 8px; }
+.goal-input {
+  flex: 1; background: var(--panel); border: 1px solid var(--bh);
+  border-radius: 2px; color: var(--bright); font-family: var(--mono);
+  font-size: 12px; padding: 9px 12px; outline: none;
+  transition: border-color 0.2s;
+}
+.goal-input:focus { border-color: var(--accent); }
+.goal-input::placeholder { color: var(--dim); }
+
+.auto-toggle {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 10px; letter-spacing: 0.08em; color: var(--dim);
+}
+.toggle-switch {
+  width: 32px; height: 16px; border-radius: 8px;
+  border: 1px solid var(--bh); background: var(--border);
+  cursor: pointer; position: relative; transition: all 0.2s;
+}
+.toggle-switch.on { background: var(--a2); border-color: var(--accent); }
+.toggle-switch::after {
+  content: ''; position: absolute; top: 2px; left: 2px;
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--dim); transition: all 0.2s;
+}
+.toggle-switch.on::after { left: 18px; background: var(--accent); box-shadow: 0 0 4px var(--accent); }
+
+/* Buttons */
+.btn {
+  background: none; border: 1px solid var(--bh); border-radius: 2px;
+  color: var(--text); font-family: var(--mono); font-size: 10px;
+  letter-spacing: 0.1em; padding: 8px 16px; cursor: pointer;
+  transition: all 0.2s; white-space: nowrap;
+}
+.btn:hover { border-color: var(--accent); color: var(--accent); }
+.btn.primary {
+  border-color: var(--accent); color: var(--accent);
+  background: rgba(0,204,255,0.06);
+}
+.btn.primary:hover { background: rgba(0,204,255,0.14); }
+.btn.danger { border-color: var(--red); color: var(--red); }
+.btn.danger:hover { background: rgba(255,51,85,0.1); }
+.btn:disabled { opacity: 0.3; cursor: default; }
+
+/* Worker list */
+.worker-list { display: flex; flex-direction: column; gap: 8px; }
+.worker-row {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 12px; background: var(--panel); border: 1px solid var(--border);
+  border-radius: 2px; transition: border-color 0.2s;
+}
+.worker-row:hover { border-color: var(--bh); }
+.worker-id { font-size: 11px; color: var(--accent); min-width: 70px; letter-spacing: 0.04em; }
+.worker-goal { flex: 1; font-size: 11px; color: var(--bright); line-height: 1.4; }
+.worker-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+.status-badge {
+  font-size: 9px; letter-spacing: 0.1em; padding: 2px 8px;
+  border-radius: 2px; font-weight: 500; text-transform: uppercase;
+}
+.s-QUEUED    { background: rgba(0,204,255,0.1);  color: var(--accent); }
+.s-RUNNING   { background: rgba(0,255,136,0.1);  color: var(--green); animation: pulse-glow 1.5s infinite; }
+.s-COMPLETED { background: rgba(0,255,136,0.08); color: var(--green); }
+.s-FAILED    { background: rgba(255,51,85,0.1);  color: var(--red); }
+.s-CANCELLED { background: rgba(37,53,69,0.5);   color: var(--dim); }
+.s-PAUSED    { background: rgba(255,170,0,0.1);  color: var(--amber); }
+@keyframes pulse-glow { 0%,100%{opacity:1} 50%{opacity:0.5} }
+
+.worker-steps { display: flex; gap: 3px; margin-top: 4px; }
+.step-pip {
+  width: 20px; height: 3px; border-radius: 1px;
+  background: var(--border); transition: background 0.3s;
+}
+.step-pip.done { background: var(--green); box-shadow: 0 0 4px var(--green); }
+.step-pip.running { background: var(--amber); animation: pulse-glow 1s infinite; }
+.step-pip.fail { background: var(--red); }
+
+/* Companion */
+.companion-window {
+  background: var(--panel); border: 1px solid var(--border);
+  border-radius: 2px; overflow: hidden;
+  display: flex; flex-direction: column; height: 420px;
+}
+.companion-messages {
+  flex: 1; overflow-y: auto; padding: 14px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.msg { display: flex; flex-direction: column; gap: 3px; }
+.msg-source {
+  font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase;
+}
+.msg.op .msg-source { color: var(--accent); }
+.msg.nx .msg-source { color: var(--purple); }
+.msg-text {
+  font-size: 12px; line-height: 1.6; padding: 8px 10px;
+  border-radius: 2px; border-left: 2px solid;
+  max-width: 90%;
+}
+.msg.op .msg-text { background: rgba(0,204,255,0.05); border-color: var(--accent); }
+.msg.nx .msg-text { background: rgba(170,85,255,0.05); border-color: var(--purple); color: var(--bright); }
+.companion-input-row {
+  display: flex; border-top: 1px solid var(--border);
+}
+.companion-input {
+  flex: 1; background: transparent; border: none; outline: none;
+  color: var(--bright); font-family: var(--mono); font-size: 12px;
+  padding: 12px 14px;
+}
+.companion-input::placeholder { color: var(--dim); }
+.companion-send {
+  background: none; border: none; border-left: 1px solid var(--border);
+  color: var(--accent); font-family: var(--mono); font-size: 10px;
+  letter-spacing: 0.1em; padding: 0 16px; cursor: pointer;
+  transition: background 0.2s;
+}
+.companion-send:hover { background: rgba(0,204,255,0.06); }
+
+/* Fusion block */
+.fusion-block {
+  background: var(--panel); border: 1px solid var(--border);
+  padding: 12px; border-radius: 2px; font-size: 11px;
+  line-height: 1.7; color: var(--text); white-space: pre-wrap;
+  max-height: 200px; overflow-y: auto;
+}
+
+/* ── RIGHT SIDEBAR — event log ── */
+.sidebar-right {
+  border-left: 1px solid var(--border);
+  background: var(--panel);
+  overflow-y: auto;
+  display: flex; flex-direction: column;
+}
+
+.log-head {
+  padding: 12px 16px; border-bottom: 1px solid var(--border);
+  font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--dim); display: flex; align-items: center; justify-content: space-between;
+}
+.log-live { display: flex; align-items: center; gap: 5px; }
+.live-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--green); box-shadow: 0 0 6px var(--green);
+  animation: pulse-glow 2s infinite;
+}
+
+.event-list { flex: 1; overflow-y: auto; padding: 8px 0; }
+.event-item {
+  padding: 8px 16px; border-bottom: 1px solid var(--border);
+  display: flex; flex-direction: column; gap: 2px;
+}
+.event-type {
+  font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase;
+}
+.et-STAGE_CHANGE    { color: var(--amber); }
+.et-TRAIT_UNLOCKED  { color: var(--green); }
+.et-WORKER          { color: var(--accent); }
+.et-MISSION         { color: var(--purple); }
+.et-COMPANION       { color: var(--dim); }
+.et-ERROR           { color: var(--red); }
+.event-msg { font-size: 11px; color: var(--text); line-height: 1.4; }
+.event-ts { font-size: 9px; color: var(--dim); }
+
+/* misc */
+.empty { color: var(--dim); font-size: 11px; padding: 20px; text-align: center; }
+.error-msg { color: var(--red); font-size: 11px; padding: 8px; }
+.loading { color: var(--dim); font-size: 10px; letter-spacing: 0.08em; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.info-row { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid var(--border); }
+.info-key { color: var(--dim); font-size: 10px; letter-spacing: 0.06em; }
+.info-val { color: var(--bright); font-size: 10px; }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div style="display:flex;align-items:center;gap:8px">
+    <div class="logo">NEX<em>US</em>MON <span style="font-size:13px;color:var(--dim);font-weight:300">// ORGANISM</span></div>
+  </div>
+  <div class="topbar-right">
+    <span class="stage-badge" id="top-stage" style="color:var(--stage-0)">DORMANT</span>
+    <span class="clock" id="clock"></span>
+    <button class="refresh-btn" onclick="loadAll()">↻ SYNC</button>
+  </div>
+</header>
+
+<div class="shell">
+
+  <!-- LEFT SIDEBAR — Evolution -->
+  <aside class="sidebar-left">
+    <div class="side-section">
+      <div class="side-label">Evolution Stage</div>
+      <div class="evo-stage">
+        <div class="evo-stage-name" id="stage-name">—</div>
+        <div class="evo-rank-dots" id="rank-dots">
+          <div class="rank-dot"></div>
+          <div class="rank-dot"></div>
+          <div class="rank-dot"></div>
+          <div class="rank-dot"></div>
+          <div class="rank-dot"></div>
+        </div>
+        <div class="xp-row">
+          <span class="xp-label">XP</span>
+          <span class="xp-val" id="xp-val">0</span>
+          <div class="xp-bar"><div class="xp-fill" id="xp-fill" style="width:0%"></div></div>
+        </div>
+        <div style="margin-top:10px;display:flex;gap:8px;justify-content:center">
+          <div style="text-align:center">
+            <div style="font-size:18px;font-family:var(--head);font-weight:600;color:var(--bright)" id="total-missions">0</div>
+            <div style="font-size:9px;color:var(--dim);letter-spacing:0.1em">MISSIONS</div>
+          </div>
+          <div style="width:1px;background:var(--border)"></div>
+          <div style="text-align:center">
+            <div style="font-size:18px;font-family:var(--head);font-weight:600;color:var(--green)" id="success-rate">0%</div>
+            <div style="font-size:9px;color:var(--dim);letter-spacing:0.1em">SUCCESS</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-section" style="flex:1;overflow-y:auto">
+      <div class="side-label">Active Traits <span id="trait-count" style="color:var(--accent)">0</span></div>
+      <div class="trait-list" id="trait-list">
+        <div class="loading">loading…</div>
+      </div>
+    </div>
+
+    <div class="side-section" id="next-stage-wrap" style="display:none">
+      <div class="side-label">Next Stage</div>
+      <div class="next-stage-box">
+        <div class="next-stage-name" id="next-stage-name">—</div>
+        <div class="next-req">
+          <span style="color:var(--dim)">missions</span>
+          <span id="next-missions" style="color:var(--text)">—</span>
+        </div>
+        <div class="next-req">
+          <span style="color:var(--dim)">success rate</span>
+          <span id="next-rate" style="color:var(--text)">—</span>
+        </div>
+        <button class="btn" style="margin-top:10px;width:100%;font-size:9px" onclick="syncEvolution()">SYNC NOW</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <nav class="tab-nav">
+      <button class="tab-btn active" onclick="switchTab('status')">STATUS</button>
+      <button class="tab-btn" onclick="switchTab('operator')">OPERATOR</button>
+      <button class="tab-btn" onclick="switchTab('workers')">WORKERS</button>
+      <button class="tab-btn" onclick="switchTab('companion')">COMPANION</button>
+    </nav>
+
+    <!-- STATUS TAB -->
+    <div class="tab-panel active" id="tab-status">
+      <div class="status-grid" id="status-grid">
+        <div class="stat-block">
+          <div class="stat-val" id="s-stage">—</div>
+          <div class="stat-label">Stage</div>
+        </div>
+        <div class="stat-block">
+          <div class="stat-val" id="s-workers">—</div>
+          <div class="stat-label">Active Workers</div>
+        </div>
+        <div class="stat-block">
+          <div class="stat-val" id="s-beliefs">—</div>
+          <div class="stat-label">Beliefs Tracked</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">OPERATOR CONTEXT</div>
+          <button class="btn" onclick="loadFusion()" style="font-size:9px">VIEW FUSION BLOCK</button>
+        </div>
+        <div class="card-body">
+          <div class="grid-2" id="operator-quick">
+            <div class="info-row"><span class="info-key">Operator</span><span class="info-val" id="q-operator">—</span></div>
+            <div class="info-row"><span class="info-key">Interactions</span><span class="info-val" id="q-interactions">—</span></div>
+            <div class="info-row"><span class="info-key">Belief Revisions</span><span class="info-val" id="q-revisions">—</span></div>
+            <div class="info-row"><span class="info-key">Autonomy Trust</span><span class="info-val" id="q-trust">—</span></div>
+          </div>
+          <div style="margin-top:12px">
+            <div class="side-label" style="margin-bottom:8px">VOCABULARY SIGNATURE</div>
+            <div class="vocab-cloud" id="q-vocab"></div>
+          </div>
+          <div id="fusion-wrap" style="display:none;margin-top:12px">
+            <div class="side-label" style="margin-bottom:6px">FUSION PROMPT BLOCK</div>
+            <div class="fusion-block" id="fusion-content"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">ACTIVE WORKERS</div>
+          <span id="workers-count-badge" style="font-size:10px;color:var(--dim)"></span>
+        </div>
+        <div class="card-body">
+          <div id="active-workers-list"><div class="empty">No active workers</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- OPERATOR TAB -->
+    <div class="tab-panel" id="tab-operator">
+      <div class="card">
+        <div class="card-head"><div class="card-title">OPERATOR IDENTITY</div></div>
+        <div class="card-body">
+          <div id="operator-full"><div class="loading">loading…</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">FUSION BLOCK</div>
+          <button class="btn primary" onclick="loadFusion(true)">REFRESH</button>
+        </div>
+        <div class="card-body">
+          <div class="fusion-block" id="fusion-full">loading…</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WORKERS TAB -->
+    <div class="tab-panel" id="tab-workers">
+      <div class="card">
+        <div class="card-head"><div class="card-title">SPAWN WORKER</div></div>
+        <div class="card-body">
+          <div class="worker-spawn-form">
+            <div class="form-row">
+              <input class="goal-input" id="worker-goal" placeholder="Goal — what should the worker do?" />
+              <button class="btn primary" onclick="spawnWorker()">SPAWN</button>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <div class="auto-toggle">
+                <div class="toggle-switch on" id="auto-toggle" onclick="toggleAuto()"></div>
+                <span id="auto-label">AUTONOMOUS CHAIN</span>
+              </div>
+              <span style="font-size:9px;color:var(--dim)" id="auto-gate"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">WORKER LOG</div>
+          <div style="display:flex;gap:8px">
+            <select id="worker-filter" onchange="loadWorkers()" style="background:var(--panel);border:1px solid var(--bh);color:var(--text);font-family:var(--mono);font-size:10px;padding:4px 8px;border-radius:2px;outline:none">
+              <option value="">ALL</option>
+              <option value="RUNNING">RUNNING</option>
+              <option value="COMPLETED">COMPLETED</option>
+              <option value="FAILED">FAILED</option>
+              <option value="QUEUED">QUEUED</option>
+            </select>
+            <button class="btn" onclick="loadWorkers()">↻</button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="worker-list" id="worker-list"><div class="loading">loading…</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMPANION TAB -->
+    <div class="tab-panel" id="tab-companion">
+      <div class="companion-window">
+        <div class="companion-messages" id="companion-msgs">
+          <div class="msg nx">
+            <div class="msg-source">NEXUSMON</div>
+            <div class="msg-text">Organism online. Operator context loaded. Ready.</div>
+          </div>
+        </div>
+        <div class="companion-input-row">
+          <input class="companion-input" id="companion-input" placeholder="Transmit to NEXUSMON…"
+                 onkeydown="if(event.key==='Enter')sendCompanion()" />
+          <button class="companion-send" onclick="sendCompanion()">SEND ▶</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- RIGHT SIDEBAR — Event Log -->
+  <aside class="sidebar-right">
+    <div class="log-head">
+      <span>EVENT LOG</span>
+      <div class="log-live"><div class="live-dot"></div><span>LIVE</span></div>
+    </div>
+    <div class="event-list" id="event-list">
+      <div class="empty">awaiting events…</div>
+    </div>
+  </aside>
+
+</div>
+
+<script>
+const API = '';  // same origin — change to full URL if separate
+let autoOn = true;
+let eventLog = [];
+
+// ── Clock ──────────────────────────────────────────────────
+function tickClock() {
+  const d = new Date();
+  document.getElementById('clock').textContent =
+    d.toUTCString().replace('GMT','UTC').split(' ').slice(1).join(' ');
+}
+setInterval(tickClock, 1000); tickClock();
+
+// ── Tab switching ──────────────────────────────────────────
+function switchTab(name) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelector(`.tab-btn[onclick*="${name}"]`).classList.add('active');
+  document.getElementById('tab-' + name).classList.add('active');
+  if (name === 'operator') loadOperator();
+  if (name === 'workers') loadWorkers();
+  if (name === 'companion') {}
+}
+
+// ── Stage colors ───────────────────────────────────────────
+const STAGE_COLORS = {
+  DORMANT: '#2a4050', AWAKENING: '#0088cc', FORGING: '#cc7700',
+  SOVEREIGN: '#00aa55', APEX: '#8844cc'
+};
+const STAGE_RANK = { DORMANT:0, AWAKENING:1, FORGING:2, SOVEREIGN:3, APEX:4 };
+
+function applyStage(stage) {
+  const color = STAGE_COLORS[stage] || STAGE_COLORS.DORMANT;
+  const rank = STAGE_RANK[stage] || 0;
+  document.getElementById('stage-name').textContent = stage;
+  document.getElementById('stage-name').style.color = color;
+  document.getElementById('top-stage').textContent = stage;
+  document.getElementById('top-stage').style.color = color;
+  document.getElementById('s-stage').textContent = stage;
+  document.getElementById('s-stage').style.color = color;
+  const dots = document.querySelectorAll('.rank-dot');
+  dots.forEach((d, i) => {
+    d.classList.toggle('filled', i <= rank);
+    if (i <= rank) d.style.background = color;
+    else { d.style.background = ''; d.style.boxShadow = ''; }
+  });
+}
+
+// ── Load all (organism/status) ─────────────────────────────
+async function loadAll() {
+  try {
+    const r = await fetch(API + '/v1/nexusmon/organism/status');
+    const data = await r.json();
+    if (!data.ok) throw new Error(JSON.stringify(data));
+
+    // Evolution
+    const evo = data.evolution || {};
+    applyStage(evo.stage || 'DORMANT');
+    document.getElementById('xp-val').textContent = evo.xp || 0;
+    document.getElementById('xp-fill').style.width = Math.min(100, (evo.xp || 0) / 50) + '%';
+    document.getElementById('total-missions').textContent = evo.total_missions || 0;
+    document.getElementById('success-rate').textContent = Math.round((evo.success_rate || 0) * 100) + '%';
+    document.getElementById('trait-count').textContent = (evo.active_traits || []).length;
+
+    // Traits
+    const tl = document.getElementById('trait-list');
+    const traits = evo.active_traits || [];
+    tl.innerHTML = traits.length ? traits.map(t => `
+      <div class="trait-item">
+        <div class="trait-dot cat-${t.category}"></div>
+        <span class="trait-name">${t.label || t.id}</span>
+        <span class="trait-cat">${(t.category||'').slice(0,3)}</span>
+      </div>`).join('') : '<div class="empty">No traits yet</div>';
+
+    // Next stage
+    if (evo.next_stage) {
+      document.getElementById('next-stage-wrap').style.display = 'block';
+      document.getElementById('next-stage-name').textContent = evo.next_stage.label || evo.next_stage.name;
+      document.getElementById('next-missions').textContent = evo.next_stage.requires_missions || evo.next_stage.min_missions;
+      document.getElementById('next-rate').textContent = Math.round((evo.next_stage.requires_success_rate || evo.next_stage.min_rate || 0) * 100) + '%';
+    }
+
+    // Recent events → sidebar
+    const recentEvts = evo.recent_events || [];
+    recentEvts.forEach(e => pushEvent(e.type || 'EVENT', e.to || e.label || e.trait || '', e.timestamp));
+
+    // Operator quick
+    const op = data.operator || {};
+    document.getElementById('q-operator').textContent = op.operator_id || '—';
+    document.getElementById('q-interactions').textContent = op.total_interactions || 0;
+    document.getElementById('q-revisions').textContent = op.belief_calibration?.revisions || op.belief_calibration?.total_revisions || 0;
+    const trust = op.trust_signals || op.trust || {};
+    const pref = trust.autonomy_preference ?? trust.preference;
+    document.getElementById('q-trust').textContent = pref != null ? Math.round(pref * 100) + '%' : '—';
+
+    // Vocab
+    const vocab = document.getElementById('q-vocab');
+    vocab.innerHTML = (op.vocab_signature || []).map(w =>
+      `<span class="vocab-word">${w}</span>`).join('');
+
+    // Workers
+    const wdata = data.workers || {};
+    document.getElementById('s-workers').textContent = wdata.active_count || 0;
+    document.getElementById('workers-count-badge').textContent = (wdata.total || 0) + ' total';
+    const awl = document.getElementById('active-workers-list');
+    const active = wdata.active || [];
+    awl.innerHTML = active.length ? active.map(renderWorkerRow).join('') :
+      '<div class="empty">No active workers</div>';
+
+    // ClaimLab
+    const cl = data.claimlab || {};
+    document.getElementById('s-beliefs').textContent = cl.belief_count || 0;
+
+    // Check autonomous chain trait
+    const hasChain = traits.some(t => t.id === 'AUTONOMOUS_CHAIN');
+    document.getElementById('auto-gate').textContent = hasChain ? '' : 'AUTONOMOUS_CHAIN not yet unlocked';
+
+  } catch (e) {
+    pushEvent('ERROR', e.message, new Date().toISOString());
+  }
+}
+
+// ── Evolution sync ─────────────────────────────────────────
+async function syncEvolution() {
+  try {
+    const r = await fetch(API + '/v1/nexusmon/organism/evolution/sync', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({total_missions:0, success_count:0, belief_count:0})
+    });
+    const data = await r.json();
+    if (data.ok) {
+      (data.events || []).forEach(e => pushEvent(e.type, e.to || e.label || '', e.timestamp));
+      await loadAll();
+    }
+  } catch(e) { pushEvent('ERROR', e.message, new Date().toISOString()); }
+}
+
+// ── Operator full ──────────────────────────────────────────
+async function loadOperator() {
+  const el = document.getElementById('operator-full');
+  el.innerHTML = '<div class="loading">loading…</div>';
+  try {
+    const r = await fetch(API + '/v1/nexusmon/organism/operator');
+    const data = await r.json();
+    if (!data.ok) throw new Error('failed');
+    const op = data;
+    const topCats = (op.top_mission_categories || []).map(([k,v]) =>
+      `<div class="info-row"><span class="info-key">${k}</span><span class="info-val">${v} missions</span></div>`
+    ).join('') || '<div class="info-row"><span class="info-key">—</span><span class="info-val">no missions yet</span></div>';
+
+    el.innerHTML = `
+      <div class="info-row"><span class="info-key">Operator ID</span><span class="info-val">${op.operator_id||'—'}</span></div>
+      <div class="info-row"><span class="info-key">Total Interactions</span><span class="info-val">${op.total_interactions||0}</span></div>
+      <div class="info-row"><span class="info-key">Recent Context</span><span class="info-val">${op.recent_context_count||0} entries</span></div>
+      <div class="info-row"><span class="info-key">Belief Revisions</span><span class="info-val">${op.belief_calibration?.revisions||op.belief_calibration?.total_revisions||0}</span></div>
+      <div class="info-row"><span class="info-key">Avg Confidence Delta</span><span class="info-val">${op.belief_calibration?.avg_delta??'—'}</span></div>
+      <div style="margin-top:14px"><div class="side-label" style="margin-bottom:8px">MISSION CATEGORIES</div>${topCats}</div>
+    `;
+    loadFusion(true);
+  } catch(e) {
+    el.innerHTML = `<div class="error-msg">${e.message}</div>`;
+  }
+}
+
+// ── Fusion block ───────────────────────────────────────────
+async function loadFusion(full = false) {
+  try {
+    const r = await fetch(API + '/v1/nexusmon/organism/operator/fusion');
+    const data = await r.json();
+    const block = data.fusion_block || '(empty)';
+    if (full) {
+      document.getElementById('fusion-full').textContent = block;
+    }
+    // Also show in status tab if triggered
+    const fw = document.getElementById('fusion-wrap');
+    const fc = document.getElementById('fusion-content');
+    if (!full) {
+      fw.style.display = fw.style.display === 'none' ? 'block' : 'none';
+      fc.textContent = block;
+    }
+  } catch(e) {}
+}
+
+// ── Workers ────────────────────────────────────────────────
+function toggleAuto() {
+  autoOn = !autoOn;
+  const el = document.getElementById('auto-toggle');
+  el.classList.toggle('on', autoOn);
+  document.getElementById('auto-label').style.color = autoOn ? 'var(--text)' : 'var(--dim)';
+}
+
+async function spawnWorker() {
+  const goal = document.getElementById('worker-goal').value.trim();
+  if (!goal) return;
+  const btn = document.querySelector('[onclick="spawnWorker()"]');
+  btn.disabled = true; btn.textContent = 'SPAWNING…';
+  try {
+    const r = await fetch(API + '/v1/nexusmon/organism/worker/spawn', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({goal, autonomous: autoOn})
+    });
+    const data = await r.json();
+    if (data.ok) {
+      pushEvent('WORKER', `Spawned ${data.worker_id} — ${goal.slice(0,40)}`, new Date().toISOString());
+      document.getElementById('worker-goal').value = '';
+      setTimeout(loadWorkers, 800);
+    }
+  } catch(e) { pushEvent('ERROR', e.message, new Date().toISOString()); }
+  finally { btn.disabled = false; btn.textContent = 'SPAWN'; }
+}
+
+async function loadWorkers() {
+  const status = document.getElementById('worker-filter').value;
+  const url = API + '/v1/nexusmon/organism/worker' + (status ? `?status=${status}` : '');
+  const el = document.getElementById('worker-list');
+  try {
+    const r = await fetch(url);
+    const data = await r.json();
+    const workers = data.workers || [];
+    el.innerHTML = workers.length ? workers.map(renderWorkerRow).join('') :
+      '<div class="empty">No workers found</div>';
+  } catch(e) {
+    el.innerHTML = `<div class="error-msg">${e.message}</div>`;
+  }
+}
+
+function renderWorkerRow(w) {
+  const steps = w.steps || [];
+  const log = w.step_log || [];
+  const pips = steps.map((s, i) => {
+    const logEntry = log.find(l => l.step === i);
+    const cls = logEntry ? (logEntry.status === 'COMPLETED' ? 'done' : logEntry.status === 'FAILED' ? 'fail' : 'running') :
+                (s.status === 'RUNNING' ? 'running' : '');
+    return `<div class="step-pip ${cls}"></div>`;
+  }).join('');
+
+  const canCancel = ['QUEUED','PAUSED'].includes(w.status);
+  return `
+    <div class="worker-row">
+      <div>
+        <div class="worker-id">#${w.id}</div>
+        <div style="font-size:9px;color:var(--dim);margin-top:3px">${w.autonomous ? 'AUTO' : 'MANUAL'}</div>
+      </div>
+      <div style="flex:1">
+        <div class="worker-goal">${w.goal}</div>
+        <div class="worker-steps" style="margin-top:6px">${pips}</div>
+        ${w.error ? `<div style="font-size:10px;color:var(--red);margin-top:4px">${w.error}</div>` : ''}
+        ${w.output && w.status==='COMPLETED' ? `<div style="font-size:10px;color:var(--green);margin-top:4px">✓ ${JSON.stringify(w.output).slice(0,80)}</div>` : ''}
+      </div>
+      <div class="worker-meta">
+        <span class="status-badge s-${w.status}">${w.status}</span>
+        <span style="font-size:9px;color:var(--dim)">${fmtDate(w.created_at)}</span>
+        ${canCancel ? `<button class="btn danger" style="font-size:9px;padding:3px 8px" onclick="cancelWorker('${w.id}')">CANCEL</button>` : ''}
+        <button class="btn" style="font-size:9px;padding:3px 8px" onclick="loadWorkerDetail('${w.id}')">DETAIL</button>
+      </div>
+    </div>`;
+}
+
+async function cancelWorker(id) {
+  try {
+    await fetch(API + '/v1/nexusmon/organism/worker/' + id, {method:'DELETE'});
+    pushEvent('WORKER', `Cancelled ${id}`, new Date().toISOString());
+    loadWorkers();
+  } catch(e) {}
+}
+
+async function loadWorkerDetail(id) {
+  try {
+    const r = await fetch(API + '/v1/nexusmon/organism/worker/' + id);
+    const data = await r.json();
+    const w = data.worker;
+    const log = (w.step_log || []).map(s =>
+      `${s.step}:${s.type} → ${s.status} ${s.output ? JSON.stringify(s.output).slice(0,60) : s.error||''}`
+    ).join('\n');
+    alert(`WORKER ${w.id}\nGoal: ${w.goal}\nStatus: ${w.status}\n\nStep Log:\n${log}`);
+  } catch(e) {}
+}
+
+// ── Companion ──────────────────────────────────────────────
+async function sendCompanion() {
+  const input = document.getElementById('companion-input');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  addMsg('op', text);
+  try {
+    const r = await fetch(API + '/v1/nexusmon/organism/companion', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({text})
+    });
+    const data = await r.json();
+    addMsg('nx', data.ok ? data.reply : `ERROR: ${data.error}`);
+    pushEvent('COMPANION', text.slice(0,40), new Date().toISOString());
+  } catch(e) {
+    addMsg('nx', `[offline] ${e.message}`);
+  }
+}
+
+function addMsg(src, text) {
+  const msgs = document.getElementById('companion-msgs');
+  const div = document.createElement('div');
+  div.className = 'msg ' + src;
+  div.innerHTML = `
+    <div class="msg-source">${src === 'op' ? 'OPERATOR' : 'NEXUSMON'}</div>
+    <div class="msg-text">${text}</div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+// ── Event log ──────────────────────────────────────────────
+function pushEvent(type, msg, ts) {
+  eventLog.unshift({type, msg, ts});
+  if (eventLog.length > 50) eventLog.pop();
+  renderEventLog();
+}
+
+function renderEventLog() {
+  const el = document.getElementById('event-list');
+  if (!eventLog.length) { el.innerHTML = '<div class="empty">awaiting events…</div>'; return; }
+  el.innerHTML = eventLog.map(e => `
+    <div class="event-item">
+      <div class="event-type et-${e.type}">${e.type}</div>
+      <div class="event-msg">${e.msg}</div>
+      <div class="event-ts">${fmtDate(e.ts)}</div>
+    </div>`).join('');
+}
+
+function fmtDate(iso) {
+  if (!iso) return '';
+  try { return new Date(iso).toLocaleTimeString(); } catch { return iso; }
+}
+
+// ── Polling ────────────────────────────────────────────────
+loadAll();
+setInterval(loadAll, 8000);
+setInterval(loadWorkers, 5000);
+</script>
+</body>
+</html>

@@ -475,6 +475,12 @@ async def console_page():
     return FileResponse("web/nexusmon_console.html", media_type="text/html")
 
 
+@app.get("/organism")
+async def organism_cockpit():
+    """NEXUSMON Organism Cockpit — evolution, workers, companion, operator context."""
+    return FileResponse("web/nexusmon_cockpit.html", media_type="text/html")
+
+
 @app.get("/claimlab")
 async def claimlab_page():
     """Serve the ClaimLab epistemic scaffolding UI."""
