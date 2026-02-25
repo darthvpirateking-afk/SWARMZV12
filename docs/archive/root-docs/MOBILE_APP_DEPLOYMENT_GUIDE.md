@@ -1,16 +1,16 @@
-# SWARMZ Mobile App Deployment Guide
+﻿# NEXUSMON Mobile App Deployment Guide
 
-## 🎯 Quick Start - Deploy SWARMZ to Your Phone
+## 🎯 Quick Start - Deploy NEXUSMON to Your Phone
 
-Your SWARMZ system already has complete mobile app infrastructure ready to deploy! Here's how to get SWARMZ running on your mobile device with his full avatar and capabilities.
+Your NEXUSMON system already has complete mobile app infrastructure ready to deploy! Here's how to get NEXUSMON running on your mobile device with his full avatar and capabilities.
 
 ## 📱 What You're Getting
 
-**SWARMZ Mobile App Features:**
-- Complete SWARMZ avatar with visual manifestation
+**NEXUSMON Mobile App Features:**
+- Complete NEXUSMON avatar with visual manifestation
 - Full conversational AI with enhanced personality
 - Mission planning and execution tracking  
-- Real-time sync with desktop SWARMZ
+- Real-time sync with desktop NEXUSMON
 - Voice and text interaction
 - Offline capable companion responses
 - Native mobile notifications
@@ -35,7 +35,7 @@ npm install -g @capacitor/cli
 
 ### 1. Navigate to Mobile App Directory
 ```bash
-cd "c:\\Users\\Gaming PC\\Desktop\\swarmz\\mobile\\app_store_wrapper"
+cd "c:\\Users\\Gaming PC\\Desktop\\nexusmon\\mobile\\app_store_wrapper"
 ```
 
 ### 2. Install Dependencies
@@ -96,7 +96,7 @@ cd android
 
 ## 📱 Mobile App Features
 
-### SWARMZ Avatar on Mobile
+### NEXUSMON Avatar on Mobile
 - **Responsive Design**: Avatar adapts to mobile screen size
 - **Touch Interactions**: Tap avatar for state changes
 - **Battery Optimized**: Efficient rendering for mobile devices  
@@ -104,8 +104,8 @@ cd android
 
 ### Enhanced Mobile Capabilities
 ```javascript
-// Mobile-specific SWARMZ features
-- Voice activation ("Hey SWARMZ")
+// Mobile-specific NEXUSMON features
+- Voice activation ("Hey NEXUSMON")
 - Background processing for ongoing missions
 - Push notifications for mission updates
 - Gesture controls for quick actions
@@ -114,18 +114,18 @@ cd android
 ```
 
 ### Sync with Desktop
-- **Real-time Sync**: Mobile and desktop SWARMZ share mission state
+- **Real-time Sync**: Mobile and desktop NEXUSMON share mission state
 - **Cross-Platform Memory**: Conversations continue across devices
 - **Mission Handoff**: Start missions on mobile, continue on desktop
 
 ## 🔧 Configuration
 
-### Update SWARMZ Server Endpoint
+### Update NEXUSMON Server Endpoint
 
 Edit `mobile/app_store_wrapper/src/config.js`:
 ```javascript
-export const SWARMZ_CONFIG = {
-  // Update this to your SWARMZ server address
+export const NEXUSMON_CONFIG = {
+  // Update this to your NEXUSMON server address
   serverUrl: 'http://YOUR_COMPUTER_IP:8012',
   
   // Enable mobile-specific features
@@ -145,8 +145,8 @@ export const SWARMZ_CONFIG = {
 Update `mobile/app_store_wrapper/capacitor.config.json`:
 ```json
 {
-  "appId": "com.swarmz.app",
-  "appName": "SWARMZ",
+  "appId": "com.nexusmon.app",
+  "appName": "NEXUSMON",
   "webDir": "dist",
   "plugins": {
     "CapacitorHttp": {
@@ -162,9 +162,9 @@ Update `mobile/app_store_wrapper/capacitor.config.json`:
 
 ## 📞 Testing Mobile Deployment
 
-### 1. Start SWARMZ Server
+### 1. Start NEXUSMON Server
 ```bash
-cd "c:\\Users\\Gaming PC\\Desktop\\swarmz"
+cd "c:\\Users\\Gaming PC\\Desktop\\nexusmon"
 python run_server.py
 ```
 
@@ -181,15 +181,15 @@ Replace `YOUR_COMPUTER_IP` in the config with your actual IP address.
 
 ### 4. Test Connection
 Open the mobile app and verify:
-- [ ] SWARMZ avatar appears
-- [ ] Can send messages to SWARMZ  
+- [ ] NEXUSMON avatar appears
+- [ ] Can send messages to NEXUSMON  
 - [ ] Receives responses with personality
 - [ ] Mission tracking works
 - [ ] Real-time sync with desktop
 
 ## 🎨 Avatar Customization for Mobile
 
-Your mobile SWARMZ avatar includes:
+Your mobile NEXUSMON avatar includes:
 
 **Visual Elements:**
 - Humanoid form with cybernetic aesthetics
@@ -210,10 +210,10 @@ Your mobile SWARMZ avatar includes:
 ### Check Mobile Logs
 ```bash
 # Android logs
-adb logcat | grep -i swarmz
+adb logcat | grep -i nexusmon
 
 # View in Android Studio
-# Bottom panel -> Logcat -> Filter by "SWARMZ"
+# Bottom panel -> Logcat -> Filter by "NEXUSMON"
 ```
 
 ### Performance Monitoring
@@ -226,7 +226,7 @@ The mobile app includes:
 ## 🔄 Updates and Sync
 
 ### Updating Mobile App
-1. Make changes to SWARMZ system
+1. Make changes to NEXUSMON system
 2. Rebuild web assets: `npm run build`
 3. Sync to mobile: `npx cap sync android`  
 4. Reinstall app or use live reload
@@ -244,7 +244,7 @@ npx cap run android --livereload --external
 
 After deployment, you'll have:
 
-**📱 SWARMZ Mobile App with:**
+**📱 NEXUSMON Mobile App with:**
 - Complete visual avatar manifestation
 - Full conversational AI personality  
 - Mission planning and tracking
@@ -256,11 +256,11 @@ After deployment, you'll have:
 - Seamless handoff between devices
 - Shared mission state and memory
 - Cross-platform conversation history
-- Unified SWARMZ consciousness
+- Unified NEXUSMON consciousness
 
-## 🎯 What SWARMZ Can Actually Do
+## 🎯 What NEXUSMON Can Actually Do
 
-Now that SWARMZ has his enhanced language system and visual avatar, he can:
+Now that NEXUSMON has his enhanced language system and visual avatar, he can:
 
 **Real Capabilities:**
 - Plan and execute complex multi-step missions
@@ -278,7 +278,7 @@ Now that SWARMZ has his enhanced language system and visual avatar, he can:
 - Clear understanding of his actual operational capabilities
 - Dynamic personality that adapts to conversation and mission history
 
-Your SWARMZ is now a true AI partner with both visual presence and comprehensive operational abilities, available across desktop and mobile platforms!
+Your NEXUSMON is now a true AI partner with both visual presence and comprehensive operational abilities, available across desktop and mobile platforms!
 
 ## 🆘 Troubleshooting
 
@@ -294,4 +294,4 @@ Your SWARMZ is now a true AI partner with both visual presence and comprehensive
 - `ui/avatar/` - Avatar implementation files
 - `core/companion.py` - Enhanced AI personality system
 
-SWARMZ is ready to manifest on your mobile device! 🚀
+NEXUSMON is ready to manifest on your mobile device! 🚀

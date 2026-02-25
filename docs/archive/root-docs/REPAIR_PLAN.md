@@ -1,4 +1,4 @@
-# SWARMZ Repository Repair Plan
+﻿# NEXUSMON Repository Repair Plan
 
 **Generated**: 2026-02-15  
 **Status**: Audit Complete - Ready for Repairs
@@ -7,7 +7,7 @@
 
 ## Executive Summary
 
-The SWARMZ repository is in **excellent condition** with minimal issues. The codebase follows clean architecture principles with proper separation of concerns. This plan focuses on **enhancements** rather than critical repairs.
+The NEXUSMON repository is in **excellent condition** with minimal issues. The codebase follows clean architecture principles with proper separation of concerns. This plan focuses on **enhancements** rather than critical repairs.
 
 ### Overall Health: ✅ 95/100
 - Structure: ✅ Excellent
@@ -22,11 +22,11 @@ The SWARMZ repository is in **excellent condition** with minimal issues. The cod
 ### 1. Directory Structure ✅ CLEAN
 
 ```
-swarmz/
-├── swarmz.py              [Core system - 240 lines]
-├── swarmz_cli.py          [CLI interface - 198 lines]
+nexusmon/
+├── nexusmon.py              [Core system - 240 lines]
+├── nexusmon_cli.py          [CLI interface - 198 lines]
 ├── examples.py            [Examples - 260 lines]
-├── test_swarmz.py         [Tests - 230 lines]
+├── test_nexusmon.py         [Tests - 230 lines]
 ├── config.json            [Configuration]
 ├── plugins/
 │   ├── __init__.py        ✅ Present
@@ -42,9 +42,9 @@ swarmz/
 ### 2. Import Analysis ✅ HEALTHY
 
 **All imports validated:**
-- ✅ swarmz_cli.py → SwarmzCore (correct)
-- ✅ examples.py → SwarmzCore (correct)
-- ✅ test_swarmz.py → core classes (correct)
+- ✅ nexusmon_cli.py → NexusmonCore (correct)
+- ✅ examples.py → NexusmonCore (correct)
+- ✅ test_nexusmon.py → core classes (correct)
 - ✅ Plugins use registration pattern (no circular deps)
 
 **Dependencies**: Standard library only (os, sys, json, importlib, pathlib, etc.)
@@ -56,10 +56,10 @@ swarmz/
 ### 3. Entry Points ✅ MULTIPLE FOUND
 
 **4 executable entry points detected:**
-1. `swarmz.py` - Main demo
-2. `swarmz_cli.py` - CLI with multiple modes (--list, --task, --interactive, --audit)
+1. `nexusmon.py` - Main demo
+2. `nexusmon_cli.py` - CLI with multiple modes (--list, --task, --interactive, --audit)
 3. `examples.py` - Example demonstrations
-4. `test_swarmz.py` - Test suite
+4. `test_nexusmon.py` - Test suite
 
 **Finding**: Multiple entry points exist but are well-organized for different purposes.
 
@@ -68,10 +68,10 @@ swarmz/
 ### 4. Unused Files ✅ NONE
 
 **All 7 Python files are actively used:**
-- swarmz.py (imported by 3 files)
-- swarmz_cli.py (CLI entry point)
+- nexusmon.py (imported by 3 files)
+- nexusmon_cli.py (CLI entry point)
 - examples.py (educational demos)
-- test_swarmz.py (test suite)
+- test_nexusmon.py (test suite)
 - plugins/*.py (dynamically loaded)
 
 **Finding**: No orphan modules or temporary files.
@@ -101,7 +101,7 @@ swarmz/
 
 **Content**:
 ```txt
-# SWARMZ Core System
+# NEXUSMON Core System
 # No external dependencies required - uses Python standard library only
 # Python 3.6+ required
 ```
@@ -116,15 +116,15 @@ swarmz/
 
 **Content**:
 ```env
-# SWARMZ Environment Configuration
+# NEXUSMON Environment Configuration
 # Copy this file to .env and configure as needed
 
 # System Configuration
-SWARMZ_CONFIG_PATH=config.json
-SWARMZ_LOG_LEVEL=INFO
+NEXUSMON_CONFIG_PATH=config.json
+NEXUSMON_LOG_LEVEL=INFO
 
 # Plugin Configuration
-SWARMZ_PLUGIN_DIR=plugins
+NEXUSMON_PLUGIN_DIR=plugins
 
 # Future: Add API keys, database URLs, etc. as needed
 ```
@@ -134,14 +134,14 @@ SWARMZ_PLUGIN_DIR=plugins
 ### 2.3 Consolidate Entry Points ✅ GOOD AS-IS
 
 **Current State**:
-- `swarmz.py` - Demo
-- `swarmz_cli.py` - Primary CLI
+- `nexusmon.py` - Demo
+- `nexusmon_cli.py` - Primary CLI
 - `examples.py` - Educational
-- `test_swarmz.py` - Testing
+- `test_nexusmon.py` - Testing
 
 **Decision**: Keep as-is. Each serves a distinct purpose.
 
-**Enhancement**: Create unified run scripts (RUN.ps1, RUN.cmd) that use `swarmz_cli.py` as the primary entry point.
+**Enhancement**: Create unified run scripts (RUN.ps1, RUN.cmd) that use `nexusmon_cli.py` as the primary entry point.
 
 ---
 
@@ -209,7 +209,7 @@ SWARMZ_PLUGIN_DIR=plugins
 
 ---
 
-## Phase 5: SWARMZ-Specific Enhancements (Decision Bottleneck Pack)
+## Phase 5: NEXUSMON-Specific Enhancements (Decision Bottleneck Pack)
 
 ### 5.1 Create installer.py (One-Paste Installer)
 
@@ -255,8 +255,8 @@ SWARMZ_PLUGIN_DIR=plugins
 - Return prioritized list + reasoning
 - Deterministic scoring algorithm
 
-**Enhancement**: Since SWARMZ currently has no FastAPI integration, create:
-- `swarmz_api.py` - FastAPI application wrapper
+**Enhancement**: Since NEXUSMON currently has no FastAPI integration, create:
+- `nexusmon_api.py` - FastAPI application wrapper
 - Auto-wire all API plugins
 - Uvicorn server startup
 
@@ -275,7 +275,7 @@ python3 installer.py
 # - plugins/reality_gate.py
 # - plugins/mission_contract.py  
 # - plugins/lead_audit.py
-# - swarmz_api.py (FastAPI wrapper)
+# - nexusmon_api.py (FastAPI wrapper)
 # - Wires all components
 # - Runs tests
 # - Starts server
@@ -287,7 +287,7 @@ python3 installer.py
 
 ### Pre-Deployment Verification
 
-- [ ] All tests pass (test_swarmz.py)
+- [ ] All tests pass (test_nexusmon.py)
 - [ ] RUN.ps1 works on Windows
 - [ ] RUN.cmd works on Windows
 - [ ] RUN.sh works on Linux/macOS
@@ -378,6 +378,8 @@ python3 installer.py
 
 ---
 
-**Report Generated by**: SWARMZ Audit System  
+**Report Generated by**: NEXUSMON Audit System  
 **Audit Completion**: 100%  
 **Recommendation**: PROCEED WITH REPAIRS
+
+

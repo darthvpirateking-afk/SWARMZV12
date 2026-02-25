@@ -1,18 +1,18 @@
-# SWARMZ Runtime Audit
+﻿# NEXUSMON Runtime Audit
 
 ## Logging
-- Legacy server logging only in `swarmz_server.py` (writes to data/server_live.log); current FastAPI runtime (`swarmz_runtime/api/server.py`) had no centralized logging before this pass.
-- Mission/audit events are appended as JSONL via `swarmz_runtime/storage/db.py` and `swarmz_runtime/core/engine.py` (audit entries include timestamps).
+- Legacy server logging only in `nexusmon_server.py` (writes to data/server_live.log); current FastAPI runtime (`nexusmon_runtime/api/server.py`) had no centralized logging before this pass.
+- Mission/audit events are appended as JSONL via `nexusmon_runtime/storage/db.py` and `nexusmon_runtime/core/engine.py` (audit entries include timestamps).
 - No built-in verbose flag prior to this pass; added optional verbose toggle (`--verbose`) to surface start/stop and telemetry prints.
 
 ## Telemetry
 - Before: no dedicated telemetry bus; durations and failures were not tracked; mission/audit logs captured events only.
-- After: lightweight telemetry bus (`swarmz_runtime/core/telemetry.py`) appends events, durations, failures; mission runs emit durations to `data/runtime_metrics.jsonl`; generic events go to `data/telemetry.jsonl`.
+- After: lightweight telemetry bus (`nexusmon_runtime/core/telemetry.py`) appends events, durations, failures; mission runs emit durations to `data/runtime_metrics.jsonl`; generic events go to `data/telemetry.jsonl`.
 - No CPU/queue load metrics existed; runtime status endpoint now reports coarse load estimate and average step time when available.
 
 ## Execution Model
-- Uvicorn FastAPI app (`run_swarmz.py` -> `swarmz_runtime/api/server.py`) single-process, async-capable; mission logic inside `SwarmzEngine` is synchronous.
-- Auto loop (`swarmz_runtime/core/autoloop.py`) runs in a daemon thread with tick interval sleep; rate-limited and kill-switch aware.
+- Uvicorn FastAPI app (`run_nexusmon.py` -> `nexusmon_runtime/api/server.py`) single-process, async-capable; mission logic inside `NexusmonEngine` is synchronous.
+- Auto loop (`nexusmon_runtime/core/autoloop.py`) runs in a daemon thread with tick interval sleep; rate-limited and kill-switch aware.
 - Missions stored/updated in JSONL files (`data/missions.jsonl`, `data/audit.jsonl`); no IPC beyond files and in-memory engine instance.
 
 ## Bottlenecks / Risks
@@ -35,3 +35,5 @@
 - Observe `data/runtime_metrics.jsonl` growth and rotate if needed.
 - If mission volume increases, consider indexing/compaction for JSONL reads (outside current additive scope).
 - Optionally surface CPU/memory snapshots into telemetry for load estimation.
+
+

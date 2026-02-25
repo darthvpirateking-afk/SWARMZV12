@@ -1,14 +1,14 @@
-# SWARMZ Companion - User Guide
+﻿# NEXUSMON Companion - User Guide
 
 ## Overview
 
-**SWARMZ Companion** is a personal AI companion with dual-mode cognition that can freely converse (Companion Mode) and execute real tasks by spawning controlled worker agents (Operator Mode).
+**NEXUSMON Companion** is a personal AI companion with dual-mode cognition that can freely converse (Companion Mode) and execute real tasks by spawning controlled worker agents (Operator Mode).
 
 ## Core Architecture
 
 ### 1. Dual-Mode Cognition
 
-SWARMZ Companion has two exclusive states:
+NEXUSMON Companion has two exclusive states:
 
 #### Companion Mode 🗨️
 - Free conversation
@@ -54,7 +54,7 @@ Prevents stalling by forcing every task into exactly one state:
 
 ### 4. Worker Swarms
 
-SWARMZ is the only speaking entity. Workers return artifacts only.
+NEXUSMON is the only speaking entity. Workers return artifacts only.
 
 **Maximum: 3 workers per task**
 
@@ -103,7 +103,7 @@ System records:
 
 ### 7. Evolution Mechanism
 
-SWARMZ improves via **patchpacks** generated from logs.
+NEXUSMON improves via **patchpacks** generated from logs.
 
 Evolution can modify:
 - Decision weights
@@ -133,9 +133,9 @@ Persists only:
 python3 companion_cli.py --interactive
 
 # Single input
-python3 companion_cli.py --input "What is SWARMZ?"
+python3 companion_cli.py --input "What is NEXUSMON?"
 
-# With SWARMZ Core integration
+# With NEXUSMON Core integration
 python3 companion_cli.py --use-core --interactive
 
 # Show metrics
@@ -194,13 +194,13 @@ LOG: <execution time>
 ### Basic Usage
 
 ```python
-from companion import SwarmzCompanion
+from companion import NexusmonCompanion
 
 # Initialize
-companion = SwarmzCompanion()
+companion = NexusmonCompanion()
 
 # Interact (mode auto-detected)
-response = companion.interact("What is SWARMZ?")
+response = companion.interact("What is NEXUSMON?")
 print(response)  # Companion mode
 
 response = companion.interact("Create file", {"name": "test.txt"})
@@ -220,15 +220,15 @@ companion.save_memory("companion_memory.json")
 companion.load_memory("companion_memory.json")
 ```
 
-### With SWARMZ Core Integration
+### With NEXUSMON Core Integration
 
 ```python
-from companion import SwarmzCompanion
-from swarmz import SwarmzCore
+from companion import NexusmonCompanion
+from nexusmon import NexusmonCore
 
 # Initialize with core
-core = SwarmzCore()
-companion = SwarmzCompanion(swarmz_core=core)
+core = NexusmonCore()
+companion = NexusmonCompanion(nexusmon_core=core)
 
 # Now operator mode can execute real tasks through core
 response = companion.interact("Execute echo task", {"message": "Hello!"})
@@ -238,12 +238,12 @@ response = companion.interact("Execute echo task", {"message": "Hello!"})
 
 ```python
 from companion import (
-    SwarmzCompanion, ModeManager, OperatorMode,
+    NexusmonCompanion, ModeManager, OperatorMode,
     WorkerSwarm, CommitEngine, IntelligenceLayer
 )
 
 # Access internal components
-companion = SwarmzCompanion()
+companion = NexusmonCompanion()
 
 # Update memory
 companion.mode_manager.update_memory({
@@ -266,7 +266,7 @@ if patchpack:
 
 ## Success Metrics
 
-SWARMZ Companion tracks:
+NEXUSMON Companion tracks:
 
 - **completed_verified_actions_per_day** (primary metric to increase)
 - **error_rate** (keep low)
@@ -304,7 +304,7 @@ Just type naturally - mode will be auto-detected!
 ### Companion Mode Examples
 
 ```
-> What is SWARMZ?
+> What is NEXUSMON?
 > How does the execution loop work?
 > Can you explain worker swarms?
 > Why did the last task fail?
@@ -329,7 +329,7 @@ Just type naturally - mode will be auto-detected!
 ## Architecture Overview
 
 ```
-SwarmzCompanion
+NexusmonCompanion
     ├── ModeManager
     │   ├── CompanionMode
     │   │   └── conversation_history
@@ -396,29 +396,29 @@ python3 test_companion.py
 
 All tests should pass with 100% success rate.
 
-## Integration with SWARMZ Core
+## Integration with NEXUSMON Core
 
-The Companion system can integrate with the main SWARMZ system:
+The Companion system can integrate with the main NEXUSMON system:
 
 ```bash
 # CLI integration
 python3 companion_cli.py --use-core --interactive
 
 # Python API integration
-from companion import SwarmzCompanion
-from swarmz import SwarmzCore
+from companion import NexusmonCompanion
+from nexusmon import NexusmonCore
 
-core = SwarmzCore()
+core = NexusmonCore()
 core.load_plugin("plugins/filesystem.py")
 
-companion = SwarmzCompanion(swarmz_core=core)
+companion = NexusmonCompanion(nexusmon_core=core)
 ```
 
-This allows Operator Mode to execute real tasks through SWARMZ's plugin system.
+This allows Operator Mode to execute real tasks through NEXUSMON's plugin system.
 
 ## Philosophy
 
-SWARMZ Companion embodies:
+NEXUSMON Companion embodies:
 
 1. **Action-Oriented** - Bias toward execution
 2. **Intelligent** - Learns from every action
@@ -432,5 +432,7 @@ SWARMZ Companion embodies:
 
 For more information, see:
 - `ARCHITECTURE.md` - Overall system architecture
-- `README.md` - SWARMZ Core documentation
+- `README.md` - NEXUSMON Core documentation
 - `test_companion.py` - Test suite and examples
+
+

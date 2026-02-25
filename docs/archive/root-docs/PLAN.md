@@ -1,4 +1,4 @@
-# SWARMZ Folder Structure and Module Plan
+﻿# NEXUSMON Folder Structure and Module Plan
 
 ## Backend Folder Structure
 ```

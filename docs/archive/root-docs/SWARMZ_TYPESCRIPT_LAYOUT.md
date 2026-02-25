@@ -1,6 +1,6 @@
-# SWARMZ Ultimate Layout
+﻿# NEXUSMON Ultimate Layout
 
-This directory contains the TypeScript implementation of the SWARMZ Ultimate Layout - a minimal operational structure designed to avoid loops, agent chaos, and rewrite spirals.
+This directory contains the TypeScript implementation of the NEXUSMON Ultimate Layout - a minimal operational structure designed to avoid loops, agent chaos, and rewrite spirals.
 
 ## Architecture Overview
 
@@ -70,7 +70,7 @@ Stores stable truths only. No conversation logs as intelligence.
 - `templates.json` - Task and response templates
 
 ### 8. **Measurement Spine** (`/src/metrics`)
-Where SWARMZ actually becomes smarter. Records every action.
+Where NEXUSMON actually becomes smarter. Records every action.
 - `outcome_logger.ts` - Logs all outcomes
 - `cost_tracker.ts` - Tracks resource costs
 - `performance_index.ts` - Measures performance
@@ -190,3 +190,4 @@ All data structures are strongly typed:
 - `PatchPack` - Evolution proposals
 
 See `src/types.ts` for complete type definitions.
+

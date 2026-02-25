@@ -1,4 +1,4 @@
-# SWARMZ Release Readiness
+﻿# NEXUSMON Release Readiness
 
 Date: 2026-02-23
 Branch: copilot/sub-pr-37
@@ -51,5 +51,6 @@ python -m pytest tests/ -v --tb=short
 python -m pytest tests/test_dashboard_browser_smoke.py -v --tb=short
 
 # Optional infra readiness re-check
-& ".\SWARMZ_V5_LIVE_SETUP.ps1" -InstallPythonDeps -InstallSystemDeps
+& ".\NEXUSMON_V5_LIVE_SETUP.ps1" -InstallPythonDeps -InstallSystemDeps
 ```
+

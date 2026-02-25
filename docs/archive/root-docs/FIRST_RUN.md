@@ -1,7 +1,7 @@
-# SWARMZ First Run
+﻿# NEXUSMON First Run
 
 ## What happens on desktop
-- SWARMZ runs as a local web app in your browser. Open the URL derived from `config/runtime.json` (default http://localhost:8012/).
+- NEXUSMON runs as a local web app in your browser. Open the URL derived from `config/runtime.json` (default http://localhost:8012/).
 - The UI is a PWA shell (manifest + service worker) cached for offline viewing.
 
 ## What happens on phone
@@ -17,9 +17,9 @@
 - Health endpoint reports `offline_mode:true` so the UI shows "Mode: Offline".
 
 ## How to start
-- One-time setup: `python tools/swarmz_onboard.py` (choose bind/port/offline, writes config/runtime.json, ensures operator anchor/pin, runs doctor, smoke-starts server once).
-- Daily run: `SWARMZ_UP.ps1` (or `.cmd`) for normal session; it reads runtime config, runs self_check, opens the browser, and starts the server.
-- Always-on: `SWARMZ_DAEMON_UP.ps1`/`.cmd` to auto-restart and log to `data/daemon.log` (reads runtime config first).
+- One-time setup: `python tools/nexusmon_onboard.py` (choose bind/port/offline, writes config/runtime.json, ensures operator anchor/pin, runs doctor, smoke-starts server once).
+- Daily run: `NEXUSMON_UP.ps1` (or `.cmd`) for normal session; it reads runtime config, runs self_check, opens the browser, and starts the server.
+- Always-on: `NEXUSMON_DAEMON_UP.ps1`/`.cmd` to auto-restart and log to `data/daemon.log` (reads runtime config first).
 
 ## How to know it’s working
 - Check `GET /v1/health` (e.g., `Invoke-RestMethod http://127.0.0.1:8012/v1/health | ConvertTo-Json`) → `ok: true`.
@@ -35,3 +35,4 @@
 - data/ : missions.jsonl, audit.jsonl, profile.txt, daemon.log.
 - config/ : runtime.json.
 - data/operator_anchor.json + data/operator_pin.txt: operator identity/PIN.
+

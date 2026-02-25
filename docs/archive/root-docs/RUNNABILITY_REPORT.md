@@ -1,4 +1,4 @@
-# SWARMZ Runnability Report
+﻿# NEXUSMON Runnability Report
 
 ## Entrypoints
 - Backend: FastAPI `server:app` started by `run_server.py` (reads `config/runtime.json` for `bind` + `port`).
@@ -7,8 +7,8 @@
 - Data: `data/` (missions.jsonl, audit.jsonl, operator_pin.txt, daemon.log, runtime ledgers).
 
 ## Start Commands
-- PowerShell: `./SWARMZ_UP.ps1` (reads runtime config, runs self_check, opens browser, starts server).
-- CMD: `SWARMZ_UP.cmd` (same as above).
+- PowerShell: `./NEXUSMON_UP.ps1` (reads runtime config, runs self_check, opens browser, starts server).
+- CMD: `NEXUSMON_UP.cmd` (same as above).
 - Manual: `python run_server.py --host <bind> --port <port>` (defaults come from runtime config).
 
 ## Verified Health + Dispatch
@@ -30,7 +30,7 @@
 - PWA shell + service worker served from backend.
 
 ## Warnings / Notes
-- Existing nested package roots and duplicated directories (mobile/mobile, swarmz-mobile/swarmz-mobile) are reported as WARN; keep using repo root as authoritative.
+- Existing nested package roots and duplicated directories (mobile/mobile, nexusmon-mobile/nexusmon-mobile) are reported as WARN; keep using repo root as authoritative.
 - doctor reports WARN when the server is not running (health unreachable); start the server to clear it.
 - Category validation is strict; use coin/forge/library/sanctuary to avoid 500s.
 
@@ -54,4 +54,5 @@
 | 9 | Prepare final deliverables | DONE |
 
 ## Bug Fixed During Checklist
-- `swarmz_runtime/api/server.py` line 6: missing `timezone` import from `datetime` — added `from datetime import datetime, timezone`.
+- `nexusmon_runtime/api/server.py` line 6: missing `timezone` import from `datetime` — added `from datetime import datetime, timezone`.
+

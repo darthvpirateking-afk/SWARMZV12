@@ -1,10 +1,10 @@
-# SWARMZ Runtime System
+﻿# NEXUSMON Runtime System
 
 ## Quick Start
 
 Start the server:
 ```bash
-python run_swarmz.py
+python run_nexusmon.py
 ```
 
 Server will be available at: http://127.0.0.1:8012
@@ -114,7 +114,7 @@ curl -X POST http://127.0.0.1:8012/v1/missions/run \
   -H "Content-Type: application/json" \
   -d '{
     "mission_id": "abc123",
-    "operator_key": "swarmz_sovereign_key"
+    "operator_key": "nexusmon_sovereign_key"
   }'
 ```
 
@@ -162,6 +162,7 @@ System automatically detects repeated patterns:
 
 ## Operator Sovereignty
 
-Operator key: `swarmz_sovereign_key`
+Operator key: `nexusmon_sovereign_key`
 
 Use for approving borderline missions or overriding restrictions.
+

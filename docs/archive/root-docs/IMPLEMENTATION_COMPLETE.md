@@ -1,4 +1,4 @@
-# SWARMZ Complete Implementation Summary
+﻿# NEXUSMON Complete Implementation Summary
 
 ## Project Status: ✅ COMPLETE
 
@@ -68,7 +68,7 @@ All scripts handle:
 - Prioritization by recency/value/engagement
 - Composite scoring with reasoning
 
-### Phase 6: SWARMZ Runtime System ✅
+### Phase 6: NEXUSMON Runtime System ✅
 
 #### Core Engine Architecture
 Complete mission execution engine with:
@@ -194,7 +194,7 @@ Complete mission execution engine with:
 
 ### Start Server
 ```bash
-python run_swarmz.py
+python run_nexusmon.py
 ```
 
 ### Alternative Run Methods
@@ -259,27 +259,27 @@ Weight updates from outcomes, template extraction, strategy decay.
 ## File Structure
 
 ```
-swarmz/
-├── run_swarmz.py               # Main entry point
+nexusmon/
+├── run_nexusmon.py               # Main entry point
 ├── requirements.txt            # Python dependencies
-├── swarmz_runtime_requirements.txt  # Runtime-specific deps
+├── nexusmon_runtime_requirements.txt  # Runtime-specific deps
 ├── .env.example                # Environment template
 ├── HEALTHCHECK.py              # Automated validation
 ├── REPAIR_PLAN.md              # Audit findings
-├── SWARMZ_RUNTIME_README.md    # Runtime documentation
+├── NEXUSMON_RUNTIME_README.md    # Runtime documentation
 ├── example_requests.sh         # API usage examples
 ├── RUN.ps1                     # Windows PowerShell run script
 ├── RUN.cmd                     # Windows batch run script
 ├── RUN.sh                      # Unix/Linux/macOS run script
 │
-├── plugins/                    # SWARMZ plugins
+├── plugins/                    # NEXUSMON plugins
 │   ├── reality_gate.py         # External signal validation
 │   ├── mission_contract.py     # 12-law enforcement
 │   ├── lead_audit.py           # Lead scoring
 │   ├── filesystem.py           # File operations
 │   └── dataprocessing.py       # Data manipulation
 │
-├── swarmz_runtime/             # Runtime system
+├── nexusmon_runtime/             # Runtime system
 │   ├── api/                    # FastAPI routes
 │   │   ├── server.py           # Main app
 │   │   ├── missions.py         # Mission endpoints
@@ -378,7 +378,7 @@ While the system is complete and functional, potential future additions:
 
 ## Conclusion
 
-The SWARMZ system is a production-ready, constraint-driven mission execution engine that:
+The NEXUSMON system is a production-ready, constraint-driven mission execution engine that:
 
 ✅ Validates actions across 6 real-world dimensions
 ✅ Learns from outcomes and adapts behavior
@@ -395,3 +395,4 @@ The SWARMZ system is a production-ready, constraint-driven mission execution eng
 **Status: PRODUCTION READY**
 
 All requirements met. System operational.
+

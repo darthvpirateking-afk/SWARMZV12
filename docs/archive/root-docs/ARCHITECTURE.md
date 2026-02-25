@@ -1,8 +1,8 @@
-# SWARMZ Architecture
+﻿# NEXUSMON Architecture
 
 ## System Overview
 
-SWARMZ is built as an Operator-Sovereign "do anything" system with three core layers:
+NEXUSMON is built as an Operator-Sovereign "do anything" system with three core layers:
 
 ```
 ┌─────────────────────────────────────────────────────────┐
@@ -13,7 +13,7 @@ SWARMZ is built as an Operator-Sovereign "do anything" system with three core la
 ┌─────────────────────────────────────────────────────────┐
 │                     Core System Layer                    │
 │  ┌─────────────┐  ┌──────────────┐  ┌───────────────┐  │
-│  │  SwarmzCore │  │TaskExecutor  │  │OperatorSov.   │  │
+│  │  NexusmonCore │  │TaskExecutor  │  │OperatorSov.   │  │
 │  └─────────────┘  └──────────────┘  └───────────────┘  │
 └─────────────────────────────────────────────────────────┘
                            │
@@ -26,11 +26,11 @@ SWARMZ is built as an Operator-Sovereign "do anything" system with three core la
 └─────────────────────────────────────────────────────────┘
 ```
 
-## SWARMZ Software-Builder Architecture
+## NEXUSMON Software-Builder Architecture
 
 All safe, all powerful, all actionable. Let's lock it in.
 
-SWARMZ is structured as a governed multi-agent organism:
+NEXUSMON is structured as a governed multi-agent organism:
 
 ### 1. Operator Layer
 
@@ -64,7 +64,7 @@ Agents never act outside their lane.
 
 ### 4. Artifact Layer
 
-Everything SWARMZ produces is:
+Everything NEXUSMON produces is:
 - versioned
 - inspectable
 - modifiable
@@ -84,9 +84,9 @@ Assembles:
 
 This is the factory floor.
 
-## SWARMZ App-Factory Blueprint
+## NEXUSMON App-Factory Blueprint
 
-How SWARMZ builds full apps from scratch in four phases:
+How NEXUSMON builds full apps from scratch in four phases:
 
 ### Phase 1 - Specification
 - Operator gives mission
@@ -111,7 +111,7 @@ How SWARMZ builds full apps from scratch in four phases:
 
 This is deterministic, safe, and repeatable.
 
-## SWARMZ Agent Roles (Software Development)
+## NEXUSMON Agent Roles (Software Development)
 
 Each agent has a strict, operator-defined purpose.
 
@@ -170,7 +170,7 @@ Produces:
 
 Each agent is deterministic and governed.
 
-## SWARMZ Mission Templates (App Creation)
+## NEXUSMON Mission Templates (App Creation)
 
 Reusable commands for building software:
 
@@ -216,12 +216,12 @@ INPUT: entity type
 OUTPUT: web-based editor
 ```
 
-These missions allow SWARMZ to build software safely under operator control.
+These missions allow NEXUSMON to build software safely under operator control.
 
 ## Full App-Factory Blueprint (Complete)
 
 ```yaml
-SWARMZ_APP_FACTORY:
+NEXUSMON_APP_FACTORY:
     OPERATOR_LAYER:
         - missions
         - constraints
@@ -269,7 +269,7 @@ SWARMZ_APP_FACTORY:
 
 ## Next Move
 
-Now that the architecture is locked, SWARMZ can build first:
+Now that the architecture is locked, NEXUSMON can build first:
 
 1. A dashboard
 2. A backend service
@@ -324,7 +324,7 @@ class TaskExecutor:
     - plugins: Dict
 ```
 
-### 3. SwarmzCore
+### 3. NexusmonCore
 
 **Purpose**: Main system coordinator
 
@@ -336,7 +336,7 @@ class TaskExecutor:
 
 **Implementation**:
 ```python
-class SwarmzCore:
+class NexusmonCore:
     - execute(task_name, **kwargs) -> Any
     - list_capabilities() -> Dict
     - load_plugin(path) -> str
@@ -352,7 +352,7 @@ class SwarmzCore:
 ```
 User Request
      ↓
-SwarmzCore.execute()
+NexusmonCore.execute()
      ↓
 TaskExecutor.execute_task()
      ↓
@@ -461,7 +461,7 @@ Operators can override any restriction through:
 
 ## "Do Anything" Capability
 
-SWARMZ achieves "do anything" through:
+NEXUSMON achieves "do anything" through:
 
 ### 1. Arbitrary Code Execution
 
@@ -502,42 +502,42 @@ Operator can:
 
 ```bash
 # Direct task execution
-swarmz_cli.py --task <name> --params <json>
+nexusmon_cli.py --task <name> --params <json>
 
 # Plugin loading
-swarmz_cli.py --load-plugin <path>
+nexusmon_cli.py --load-plugin <path>
 
 # List capabilities
-swarmz_cli.py --list
+nexusmon_cli.py --list
 
 # Audit trail
-swarmz_cli.py --audit
+nexusmon_cli.py --audit
 ```
 
 ### 2. Interactive Mode
 
 ```bash
-swarmz_cli.py --interactive
-swarmz> list
-swarmz> task echo {"message": "Hello"}
-swarmz> audit
-swarmz> exit
+nexusmon_cli.py --interactive
+nexusmon> list
+nexusmon> task echo {"message": "Hello"}
+nexusmon> audit
+nexusmon> exit
 ```
 
 ### 3. Python API
 
 ```python
-from swarmz import SwarmzCore
+from nexusmon import NexusmonCore
 
-swarmz = SwarmzCore(config)
-result = swarmz.execute("task_name", param=value)
+nexusmon = NexusmonCore(config)
+result = nexusmon.execute("task_name", param=value)
 ```
 
 ### 4. Configuration File
 
 ```json
 {
-  "system_name": "SWARMZ",
+  "system_name": "NEXUSMON",
   "operator_sovereignty": {
     "enabled": true,
     "auto_approve": true
@@ -552,7 +552,7 @@ result = swarmz.execute("task_name", param=value)
 
 ### Trust Model
 
-SWARMZ operates on a **trusted operator model**:
+NEXUSMON operates on a **trusted operator model**:
 - Operators are trusted completely
 - No restrictions on capabilities
 - Transparency through audit logs
@@ -631,7 +631,7 @@ Add new interfaces:
 
 ## Future Extensions
 
-SWARMZ is designed for unlimited extension:
+NEXUSMON is designed for unlimited extension:
 
 1. **Network Capabilities**: HTTP, websockets, APIs
 2. **Database Integration**: SQL, NoSQL, ORM
@@ -644,7 +644,7 @@ SWARMZ is designed for unlimited extension:
 
 ## Summary
 
-SWARMZ architecture is built on three principles:
+NEXUSMON architecture is built on three principles:
 
 1. **Operator Sovereignty** - Complete operator control
 2. **Unlimited Extensibility** - "Do anything" capability
@@ -657,4 +657,6 @@ This creates a system that:
 - Scales infinitely through plugins
 - Remains simple and maintainable
 
-**The operator is always in control. SWARMZ is the tool.**
+**The operator is always in control. NEXUSMON is the tool.**
+
+

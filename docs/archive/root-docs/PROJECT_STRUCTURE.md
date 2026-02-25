@@ -1,22 +1,22 @@
-# SWARMZ Project Structure
+﻿# NEXUSMON Project Structure
 
-This repository contains both the **Python-based SWARMZ** system and the new **TypeScript-based SWARMZ Ultimate Layout**.
+This repository contains both the **Python-based NEXUSMON** system and the new **TypeScript-based NEXUSMON Ultimate Layout**.
 
 ## Repository Overview
 
 ### Release Docs Index
 
 - `README.md` - Main project documentation with current "Ship Now Status"
-- `SWARMZ_RELEASE_READINESS.md` - Current go/no-go release readiness summary
-- `SWARMZ_LIVE_READINESS_TODO.md` - Deferred optional live-infra checklist and resume steps
+- `NEXUSMON_RELEASE_READINESS.md` - Current go/no-go release readiness summary
+- `NEXUSMON_LIVE_READINESS_TODO.md` - Deferred optional live-infra checklist and resume steps
 
 ### Python Implementation (Original)
 Located in root directory:
-- `swarmz.py` - Core system
-- `swarmz_cli.py` - Command-line interface
-- `test_swarmz.py` - Test suite (14 tests)
+- `nexusmon.py` - Core system
+- `nexusmon_cli.py` - Command-line interface
+- `test_nexusmon.py` - Test suite (14 tests)
 - `plugins/` - Plugin system
-- `swarmz_runtime/` - Runtime components
+- `nexusmon_runtime/` - Runtime components
 
 **Documentation:**
 - `README.md` - Main documentation
@@ -25,18 +25,18 @@ Located in root directory:
 
 **Testing:**
 ```bash
-python3 test_swarmz.py
+python3 test_nexusmon.py
 ```
 
 ### TypeScript Implementation (New)
 Located in `src/` directory:
-- Implements the 9-layer SWARMZ Ultimate Layout architecture
+- Implements the 9-layer NEXUSMON Ultimate Layout architecture
 - 46 TypeScript files across 9 architectural layers
 - Comprehensive type definitions
 - Working example and tests
 
 **Documentation:**
-- `SWARMZ_TYPESCRIPT_LAYOUT.md` - TypeScript architecture
+- `NEXUSMON_TYPESCRIPT_LAYOUT.md` - TypeScript architecture
 
 **Building & Testing:**
 ```bash
@@ -48,19 +48,19 @@ node dist/example.js  # Run example
 
 ## Quick Start
 
-### For Python SWARMZ
+### For Python NEXUSMON
 ```bash
 # Run demo
-python3 swarmz.py
+python3 nexusmon.py
 
 # Interactive mode
-python3 swarmz_cli.py --interactive
+python3 nexusmon_cli.py --interactive
 
 # List capabilities
-python3 swarmz_cli.py --list
+python3 nexusmon_cli.py --list
 ```
 
-### For TypeScript SWARMZ
+### For TypeScript NEXUSMON
 ```bash
 # Install and build
 npm install
@@ -116,7 +116,7 @@ The two implementations can coexist:
 - `src/types.ts` - Core type definitions
 - `src/index.ts` - Main entry point
 - `src/example.ts` - Working example
-- `src/__tests__/swarmz.test.ts` - Test suite
+- `src/__tests__/nexusmon.test.ts` - Test suite
 
 ### Layer Implementations (9 layers)
 1. `src/interface/` - Interface layer (4 files)
@@ -135,7 +135,7 @@ The two implementations can coexist:
 - `jest.config.json` - Test configuration
 
 ### Documentation
-- `SWARMZ_TYPESCRIPT_LAYOUT.md` - Architecture guide
+- `NEXUSMON_TYPESCRIPT_LAYOUT.md` - Architecture guide
 
 ## Testing
 
@@ -143,7 +143,7 @@ Both systems have independent test suites:
 
 ```bash
 # Python tests (original system)
-python3 test_swarmz.py
+python3 test_nexusmon.py
 # Result: 14 tests, all passing
 
 # TypeScript tests (new architecture)
@@ -166,3 +166,4 @@ MIT License (see LICENSE file)
 - Python system: Follow existing plugin architecture
 - TypeScript system: Maintain layer separation principles
 - Both: Add tests for new features
+

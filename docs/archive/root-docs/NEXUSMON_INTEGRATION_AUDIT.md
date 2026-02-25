@@ -1,4 +1,4 @@
-# NEXUSMON MASTER INTEGRATION AUDIT - Phase 0
+﻿# NEXUSMON MASTER INTEGRATION AUDIT - Phase 0
 **Timestamp:** 2026-02-25  
 **Repository:** darthvpirateking-afk/NEXUSMON
 
@@ -8,7 +8,7 @@
 
 | FILE                       | STATUS  | ISSUES FOUND |
 |----------------------------|---------|--------------|
-| swarmz_server.py           | ✅ EXISTS | All 4 wires present, PORT correct (8000) |
+| nexusmon_server.py           | ✅ EXISTS | All 4 wires present, PORT correct (8000) |
 | nexusmon_organism.py       | ✅ EXISTS | Complete, _data_dir() implemented |
 | railway.toml               | ✅ EXISTS | Correct config, healthcheckPath=/v1/health |
 | Dockerfile                 | ✅ EXISTS | CMD correct, uses ${PORT:-8000} |
@@ -23,7 +23,7 @@
 
 **✅ PHASE 1 IMPORT CHECK:**
 ```bash
-$ python -c "import swarmz_server" 2>&1
+$ python -c "import nexusmon_server" 2>&1
 [OTEL] Configured OTLP exporter to localhost:4317
 [OTEL] Tracing configured successfully
 ```
@@ -31,7 +31,7 @@ $ python -c "import swarmz_server" 2>&1
 
 **✅ WIRE 1 - Organism Fusion:**
 ```python
-# Line 1456-1458 in swarmz_server.py
+# Line 1456-1458 in nexusmon_server.py
 try:
     from nexusmon_organism import fuse_into
     fuse_into(app)
@@ -42,7 +42,7 @@ except Exception as e:
 
 **✅ WIRE 2 - Mission Hook:**
 ```python
-# Line 390-392 in swarmz_server.py
+# Line 390-392 in nexusmon_server.py
 try:
     from nexusmon_organism import ctx_record_mission
     ctx_record_mission(mission_id, mission.get("category", "unknown"), "RUNNING")
@@ -53,7 +53,7 @@ except Exception:
 
 **✅ WIRE 3 - Companion Fallback:**
 ```python
-# Line 1395-1403 in swarmz_server.py  
+# Line 1395-1403 in nexusmon_server.py  
 try:
     from nexusmon_organism import ctx_record_message, get_fusion_block, evo_status
     import anthropic
@@ -79,7 +79,7 @@ except Exception:
 
 **✅ WIRE 4 - UI State Enrichment:**
 ```python
-# Line 449-453 and 468 in swarmz_server.py
+# Line 449-453 and 468 in nexusmon_server.py
 organism_stage = None
 try:
     from nexusmon_organism import evo_status
@@ -112,3 +112,4 @@ except Exception:
 - Add 3 missing packages to requirements.txt
 
 **Ready to proceed to Phase 1 - Dependency Fix**
+
