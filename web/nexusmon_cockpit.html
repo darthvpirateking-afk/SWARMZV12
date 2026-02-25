@@ -903,6 +903,39 @@ body::after {
       </div>
 
       <div class="card">
+        <div class="card-head"><div class="card-title">SIGNAL DIALS 🎛️</div></div>
+        <div class="card-body">
+          <div class="prediction-form">
+            <div class="pred-row" style="align-items:center;gap:10px;flex-wrap:wrap">
+              <label style="min-width:160px">LLM Steer</label>
+              <input id="dial-llm-steer" type="range" min="0" max="1" step="0.01" style="flex:1" />
+              <span id="dial-llm-steer-val" style="font-size:10px;color:var(--bright);min-width:42px">0.50</span>
+            </div>
+            <div class="pred-row" style="align-items:center;gap:10px;flex-wrap:wrap">
+              <label style="min-width:160px">Bio Aura</label>
+              <input id="dial-bio-aura" type="range" min="0" max="1" step="0.01" style="flex:1" />
+              <span id="dial-bio-aura-val" style="font-size:10px;color:var(--bright);min-width:42px">0.50</span>
+            </div>
+            <div class="pred-row" style="align-items:center;gap:10px;flex-wrap:wrap">
+              <label style="min-width:160px">Particle Intensity</label>
+              <input id="dial-particle-intensity" type="range" min="0" max="1" step="0.01" style="flex:1" />
+              <span id="dial-particle-intensity-val" style="font-size:10px;color:var(--bright);min-width:42px">0.50</span>
+            </div>
+            <div class="pred-row" style="align-items:center;gap:10px;flex-wrap:wrap">
+              <label style="min-width:160px">Strange Attractor Gain</label>
+              <input id="dial-strange-gain" type="range" min="0" max="1" step="0.01" style="flex:1" />
+              <span id="dial-strange-gain-val" style="font-size:10px;color:var(--bright);min-width:42px">0.50</span>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+              <button class="btn primary" onclick="saveSignalDials()">SAVE SIGNAL DIALS</button>
+              <button class="btn" onclick="loadSignalDials()">REFRESH</button>
+              <span id="signal-dials-result" style="font-size:10px;color:var(--dim)"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
         <div class="card-head"><div class="card-title">LOG PREDICTION</div></div>
         <div class="card-body">
           <div class="prediction-form">
@@ -973,6 +1006,24 @@ const API = '';
 let autoOn = true;
 let eventLog = [];
 let lastSyncData = { total: 0, success: 0, beliefs: 0 };
+let _cockpitData = null;
+let _lastSnapshot = 0;
+const SNAPSHOT_TTL = 3000;
+
+async function loadSnapshot(force = false) {
+  const now = Date.now();
+  if (!force && _cockpitData && (now - _lastSnapshot) < SNAPSHOT_TTL) {
+    return _cockpitData;
+  }
+  try {
+    const res = await fetch(API + '/v1/cockpit/snapshot');
+    _cockpitData = await res.json();
+    _lastSnapshot = now;
+  } catch (e) {
+    console.error('Snapshot failed:', e);
+  }
+  return _cockpitData;
+}
 
 // ── Clock ──────────────────────────────────────────────────
 function tickClock() {
@@ -988,18 +1039,32 @@ function setLastUpdated() {
 }
 
 // ── Tab switching ──────────────────────────────────────────
-function switchTab(name) {
+async function switchTab(name) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   const btn = document.querySelector(`.tab-btn[onclick*="'${name}'"]`);
   if (btn) btn.classList.add('active');
   const panel = document.getElementById('tab-' + name);
   if (panel) panel.classList.add('active');
-  if (name === 'operator') loadOperator();
+  const data = await loadSnapshot();
+  if (name === 'operator') {
+    if (data?.operator && !data.operator.error) {
+      _renderOperatorPanel(data.operator, { history: [] });
+      fetch(API + '/v1/operator/xp/history').then(r => r.json()).then(h => {
+        _renderOperatorPanel(data.operator, h);
+      }).catch(() => {});
+    } else {
+      loadOperator();
+    }
+  }
   if (name === 'workers') loadWorkers();
   if (name === 'missions') loadMissions();
   if (name === 'vault') loadVault();
-  if (name === 'cognition') loadCognition();
+  if (name === 'cognition') {
+    if (data?.cognition && !data.cognition.error) _renderCognition(data.cognition);
+    else loadCognition();
+    loadSignalDials();
+  }
 }
 
 // ── Stage colors ───────────────────────────────────────────
@@ -1032,9 +1097,10 @@ function applyStage(stage) {
 // ── Load all (organism/status) ─────────────────────────────
 async function loadAll() {
   try {
-    const r = await fetch(API + '/v1/nexusmon/organism/status');
-    const data = await r.json();
-    if (!data.ok) throw new Error(JSON.stringify(data));
+    const snap = await loadSnapshot(true);
+    if (!snap) throw new Error('Snapshot unavailable');
+    const data = snap.organism || {};
+    if (!data.ok) throw new Error(JSON.stringify(snap));
 
     // Evolution
     const evo = data.evolution || {};
@@ -1642,24 +1708,117 @@ async function rejectArtifact(id) {
 }
 
 // ── Cognition ────────────────────────────────────────────────
+function _renderCognition(data) {
+  const preds = data.predictions || {};
+  document.getElementById('cog-predictions').textContent = preds.total || 0;
+  const brier = preds.avg_brier_score ?? preds.avg_brier ?? '—';
+  document.getElementById('cog-brier').textContent = 'Brier ' + (typeof brier === 'number' ? brier.toFixed(3) : '—');
+
+  const errs = data.errors || {};
+  document.getElementById('cog-errors').textContent = errs.total || 0;
+  document.getElementById('cog-dominant-error').textContent = 'Dominant ' + (errs.dominant_type || '—');
+
+  const decisions = data.decisions || {};
+  document.getElementById('cog-autopsies').textContent = decisions.autopsies || decisions.total_autopsies || 0;
+  document.getElementById('cog-decisions').textContent = 'Decisions ' + (decisions.total || decisions.total_classified || '—');
+}
+
+function _setDialValue(inputId, labelId, value) {
+  const input = document.getElementById(inputId);
+  const label = document.getElementById(labelId);
+  if (!input || !label) return;
+  const number = Number(value ?? 0.5);
+  input.value = Number.isFinite(number) ? number : 0.5;
+  label.textContent = Number(input.value).toFixed(2);
+}
+
+function _readDialValue(inputId) {
+  const input = document.getElementById(inputId);
+  if (!input) return 0.5;
+  const number = Number(input.value);
+  return Number.isFinite(number) ? number : 0.5;
+}
+
+function _wireDialPreview() {
+  const dialMap = [
+    ['dial-llm-steer', 'dial-llm-steer-val'],
+    ['dial-bio-aura', 'dial-bio-aura-val'],
+    ['dial-particle-intensity', 'dial-particle-intensity-val'],
+    ['dial-strange-gain', 'dial-strange-gain-val'],
+  ];
+  dialMap.forEach(([inputId, labelId]) => {
+    const input = document.getElementById(inputId);
+    const label = document.getElementById(labelId);
+    if (!input || !label) return;
+    input.addEventListener('input', () => {
+      label.textContent = Number(input.value).toFixed(2);
+    });
+  });
+}
+
+async function loadSignalDials() {
+  const resultEl = document.getElementById('signal-dials-result');
+  try {
+    const response = await fetch(API + '/v1/nexusmon/signal/modules');
+    const data = await response.json();
+    if (!data.ok) throw new Error(data.detail || 'failed');
+    const dials = data.dials || {};
+    _setDialValue('dial-llm-steer', 'dial-llm-steer-val', dials.llm_steer);
+    _setDialValue('dial-bio-aura', 'dial-bio-aura-val', dials.bio_aura);
+    _setDialValue('dial-particle-intensity', 'dial-particle-intensity-val', dials.particle_intensity);
+    _setDialValue('dial-strange-gain', 'dial-strange-gain-val', dials.strange_attractor_gain);
+    if (resultEl) {
+      resultEl.textContent = 'Signal dials synced ⚡';
+      resultEl.style.color = 'var(--dim)';
+    }
+  } catch (e) {
+    if (resultEl) {
+      resultEl.textContent = 'Signal dial load failed: ' + e.message;
+      resultEl.style.color = 'var(--red)';
+    }
+  }
+}
+
+async function saveSignalDials() {
+  const resultEl = document.getElementById('signal-dials-result');
+  const payload = {
+    llm_steer: _readDialValue('dial-llm-steer'),
+    bio_aura: _readDialValue('dial-bio-aura'),
+    particle_intensity: _readDialValue('dial-particle-intensity'),
+    strange_attractor_gain: _readDialValue('dial-strange-gain'),
+  };
+  try {
+    const response = await fetch(API + '/v1/nexusmon/signal/dials', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await response.json();
+    if (!data.ok) throw new Error(data.detail || 'failed');
+    _setDialValue('dial-llm-steer', 'dial-llm-steer-val', data.dials?.llm_steer);
+    _setDialValue('dial-bio-aura', 'dial-bio-aura-val', data.dials?.bio_aura);
+    _setDialValue('dial-particle-intensity', 'dial-particle-intensity-val', data.dials?.particle_intensity);
+    _setDialValue('dial-strange-gain', 'dial-strange-gain-val', data.dials?.strange_attractor_gain);
+    if (resultEl) {
+      resultEl.textContent = 'Signal dials saved 🟢';
+      resultEl.style.color = 'var(--green)';
+    }
+    pushEvent('COGNITION', 'Signal dials updated', new Date().toISOString());
+  } catch (e) {
+    if (resultEl) {
+      resultEl.textContent = 'Signal dial save failed: ' + e.message;
+      resultEl.style.color = 'var(--red)';
+    }
+    pushEvent('ERROR', 'Signal dial save failed: ' + e.message, new Date().toISOString());
+  }
+}
+
 async function loadCognition() {
   try {
     const r = await fetch(API + '/v1/cognition/status');
     const data = await r.json();
     if (!data.ok) throw new Error(data.detail || 'failed');
-
-    const preds = data.predictions || {};
-    document.getElementById('cog-predictions').textContent = preds.total || 0;
-    const brier = preds.avg_brier_score ?? preds.avg_brier ?? '—';
-    document.getElementById('cog-brier').textContent = 'Brier ' + (typeof brier === 'number' ? brier.toFixed(3) : '—');
-
-    const errs = data.errors || {};
-    document.getElementById('cog-errors').textContent = errs.total || 0;
-    document.getElementById('cog-dominant-error').textContent = 'Dominant ' + (errs.dominant_type || '—');
-
-    const decisions = data.decisions || {};
-    document.getElementById('cog-autopsies').textContent = decisions.autopsies || decisions.total_autopsies || 0;
-    document.getElementById('cog-decisions').textContent = 'Decisions ' + (decisions.total || decisions.total_classified || '—');
+    _renderCognition(data);
   } catch(e) {
     document.getElementById('cog-predictions').textContent = '—';
     pushEvent('ERROR', 'Cognition load failed: ' + e.message, new Date().toISOString());
@@ -1785,6 +1944,8 @@ function fmtDate(iso) {
 
 // ── Polling ────────────────────────────────────────────────
 loadAll();
+_wireDialPreview();
+loadSignalDials();
 setInterval(loadAll, 8000);
 setInterval(loadWorkers, 5000);
 setInterval(updateNotifDots, 15000);
