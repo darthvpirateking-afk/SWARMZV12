@@ -1,18 +1,18 @@
 # NEXUSMON
 
-**Governed autonomy organism. One operator. One system. No limits except the ones you set.**
+**Sovereign autonomy infrastructure for a one-operator future.**
 
-NEXUSMON is an open-source autonomous execution system built on six real infrastructure layers — mission orchestration, worker execution, artifact memory, governance, evolution state, and operator control surface.
+NEXUSMON is an open-source autonomy stack engineered for real execution: mission orchestration, worker operations, artifact memory, governance, evolution state, and a live operator control surface.
 
 ---
 
 ## What It Is
 
-A system that accepts missions, decomposes them into tasks, executes them with workers, stores every output as a versioned artifact, and evolves its own capabilities based on your history — governed entirely by you.
+A mission-native execution organism that accepts intent, decomposes it into tasks, runs those tasks through workers, records every output as versioned artifacts, and upgrades capabilities based on proven history — under explicit operator control.
 
-Not a chatbot. Not an agent wrapper. Not a dashboard over someone else's API.
+Not a chatbot. Not an agent wrapper. Not a thin panel over someone else's cloud.
 
-An organism that belongs to one operator and grows through use.
+It is your autonomous operations core: owned by one operator, hardened by usage, and designed to compound over time.
 
 ---
 
