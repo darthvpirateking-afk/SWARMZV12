@@ -1474,13 +1474,17 @@ try:
     from nexusmon_mission_engine import fuse_mission_engine
     fuse_mission_engine(app)
 except Exception as _mission_engine_err:
+    import traceback as _tb
     print(f"Warning: mission engine failed: {_mission_engine_err}")
+    _tb.print_exc()
 
 try:
     from nexusmon_artifact_vault import fuse_artifact_vault
     fuse_artifact_vault(app)
 except Exception as _artifact_vault_err:
+    import traceback as _tb2
     print(f"Warning: artifact vault failed: {_artifact_vault_err}")
+    _tb2.print_exc()
 
 
 # --- Static file mount for HUD assets (CSS, JS) ---
