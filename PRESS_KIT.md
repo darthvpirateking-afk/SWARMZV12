@@ -1,23 +1,24 @@
 # NEXUSMON // LAUNCH INTEL
 
-Launch content for NEXUSMON — doctrine, launch thread, pitch deck, architecture diagrams, taglines, and press release.
+LAUNCH CONTENT FOR NEXUSMON — DOCTRINE, LAUNCH THREAD, PITCH DECK, ARCHITECTURE DIAGRAMS, TAGLINES, AND PRESS RELEASE.
 
 ```text
 ┌─────────────────────────────────────┐
 │              NEXUSMON               │
 │          LAUNCH BRIEFING            │
+│      MODE: PUBLIC RELEASE READY     │
 └─────────────────────────────────────┘
 ```
 
 ---
 
-## ONE-LINER
+## BRIEF // ONE-LINER
 
 NEXUSMON is an open-source governed autonomy system — mission execution infrastructure that decomposes goals into tasks, runs workers, stores versioned artifacts, and evolves capabilities from real performance history. One operator. Full control. No vendor lock-in.
 
 ---
 
-## DOCTRINE
+## BRIEF // DOCTRINE
 
 **1. OPERATOR SOVEREIGNTY**
 One operator. One organism. Non-transferable bond earned through use. The system exists to serve the operator, not the platform.
@@ -42,7 +43,7 @@ All data belongs to the operator. No cloud dependency required. The organism run
 
 ---
 
-## LAUNCH THREAD (X / TWITTER)
+## BRIEF // LAUNCH THREAD (X / TWITTER)
 
 **1/**
 I've been building an autonomous execution system called NEXUSMON.
@@ -127,7 +128,7 @@ github.com/darthvpirateking-afk/NEXUSMON
 
 ---
 
-## PITCH DECK (TEXT)
+## BRIEF // PITCH DECK (TEXT)
 
 **SLIDE 1 — TITLE**
 NEXUSMON
@@ -206,7 +207,7 @@ Your data. Your hardware. Your rules.
 
 ---
 
-## ARCHITECTURE DIAGRAM (ASCII)
+## BRIEF // ARCHITECTURE DIAGRAM (ASCII)
 
 ```
 OPERATOR
