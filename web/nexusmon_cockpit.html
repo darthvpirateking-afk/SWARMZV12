@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>NEXUSMON // ORGANISM COCKPIT ⚡🟢</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap');
 
@@ -29,20 +30,73 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  background: var(--bg);
+  background: linear-gradient(135deg, #0a0015 0%, #050510 50%, #0a0520 100%);
   color: var(--text);
   font-family: var(--mono);
   font-size: 12px;
   min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.holo-panel, .status-panel, .trait-section, .input-bar {
+  background: rgba(8,10,20,0.7);
+  border: 1px solid #00f0ff28;
+  box-shadow: 0 0 30px #00f0ff18, inset 0 0 15px #aa44ff08;
+  backdrop-filter: blur(14px);
+  border-radius: 10px;
+  transition: all 0.3s ease-out;
+}
+
+.holo-panel:hover, .status-panel:hover {
+  transform: translateY(-4px);
+  border-color: #00f0ff44;
+  box-shadow: 0 0 50px #00f0ff32, inset 0 0 20px #aa44ff12;
+}
+
+.neon-text, .trait-label, .status-title {
+  color: #00f0ff;
+  text-shadow: 0 0 8px #00f0ff, 0 0 16px #00f0ff66;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+@keyframes neon-flicker { 0%,100% { opacity:1; } 50% { opacity:0.96; } }
+
+.input-bar {
+  background: rgba(0,0,0,0.7);
+  border: 1px solid #00f0ff44;
+  box-shadow: 0 0 30px #00f0ff22;
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.input-bar input {
+  background: transparent;
+  border: none;
+  color: #00f0ff;
+  outline: none;
+  flex: 1;
+}
+
+.input-bar button {
+  background: #00f0ff22;
+  border: 1px solid #00f0ff;
+  color: #00f0ff;
+  border-radius: 8px;
+  padding: 10px 24px;
+  cursor: pointer;
 }
 
 body::after {
   content: '';
   position: fixed; inset: 0;
-  background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,180,255,0.012) 3px, rgba(0,180,255,0.012) 4px);
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,180,255,0.008) 2px, rgba(0,180,255,0.008) 3px);
   pointer-events: none;
   z-index: 9999;
+  animation: scanlines 8s linear infinite;
 }
+
+@keyframes scanlines { 0% { transform: translateY(0); } 100% { transform: translateY(2px); } }
 
 /* ── TOPBAR ── */
 .topbar {
@@ -83,19 +137,30 @@ body::after {
 /* ── LAYOUT ── */
 .shell {
   display: grid;
-  grid-template-columns: 220px 1fr 280px;
+  grid-template-columns: 200px 1fr 240px;
   grid-template-rows: auto 1fr;
   min-height: calc(100vh - 52px);
-  gap: 0;
+  gap: 1px;
+  background: var(--border);
+}
+
+@media (max-width: 1400px) {
+  .shell { grid-template-columns: 180px 1fr 200px; }
+}
+
+@media (max-width: 1024px) {
+  .shell { grid-template-columns: 1fr; }
+  .sidebar-left, .sidebar-right { display: none; }
 }
 
 /* ── LEFT SIDEBAR ── */
 .sidebar-left {
   border-right: 1px solid var(--border);
-  border-left: 3px solid var(--dim);
+  border-left: none;
   display: flex; flex-direction: column;
   background: var(--panel);
-  transition: border-left-color 0.4s;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .side-section { padding: 16px; border-bottom: 1px solid var(--border); }
@@ -171,18 +236,18 @@ body::after {
 .tab-nav {
   display: flex; border-bottom: 1px solid var(--border);
   background: var(--panel); position: sticky; top: 0; z-index: 100;
-  overflow-x: auto;
+  overflow-x: auto; gap: 2px; padding: 0 8px;
 }
 .tab-btn {
-  padding: 12px 18px; font-family: var(--mono); font-size: 10px;
-  letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 10px 16px; font-family: var(--mono); font-size: 11px;
+  letter-spacing: 0.08em; text-transform: uppercase; font-weight: 500;
   color: var(--dim); background: none; border: none;
   border-bottom: 2px solid transparent; cursor: pointer;
-  transition: all 0.2s; margin-bottom: -1px;
+  transition: color 0.2s, border-color 0.2s; margin-bottom: -1px;
   white-space: nowrap; position: relative;
 }
-.tab-btn:hover { color: var(--text); }
-.tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+.tab-btn:hover { color: var(--text); border-bottom-color: #00f0ff44; }
+.tab-btn.active { color: #00f0ff; border-bottom-color: #00f0ff; text-shadow: 0 0 8px #00f0ff; }
 
 /* Notification dot on tab */
 .tab-notif {
@@ -195,36 +260,38 @@ body::after {
 .tab-notif.visible { opacity: 1; }
 
 /* Tab panels */
-.tab-panel { display: none; padding: 20px; flex-direction: column; gap: 16px; }
+.tab-panel { display: none; padding: 16px; flex-direction: column; gap: 12px; overflow-y: auto; max-height: calc(100vh - 120px); }
 .tab-panel.active { display: flex; }
 
 /* Cards */
 .card {
   background: var(--card); border: 1px solid var(--border);
-  border-radius: 2px; overflow: hidden;
+  border-radius: 8px; overflow: hidden; transition: border-color 0.2s;
 }
+.card:hover { border-color: #00f0ff28; }
 .card-head {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 10px 14px; border-bottom: 1px solid var(--border);
-  background: var(--panel);
+  padding: 12px 14px; border-bottom: 1px solid var(--border);
+  background: rgba(8,10,20,0.4);
 }
 .card-title {
   font-family: var(--head); font-size: 13px; font-weight: 600;
-  letter-spacing: 0.12em; color: var(--bright);
+  letter-spacing: 0.1em; color: #00f0ff;
 }
-.card-body { padding: 14px; }
+.card-body { padding: 12px; }
 
 /* Status grid */
-.status-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.status-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; }
 .stat-block {
-  background: var(--panel); border: 1px solid var(--border);
-  padding: 12px; border-radius: 2px;
+  background: rgba(8,10,20,0.5); border: 1px solid var(--border);
+  padding: 12px; border-radius: 6px; transition: border-color 0.2s;
 }
+.stat-block:hover { border-color: #00f0ff28; }
 .stat-val {
-  font-family: var(--head); font-size: 26px; font-weight: 600;
-  color: var(--bright); line-height: 1;
+  font-family: var(--head); font-size: 24px; font-weight: 600;
+  color: #00ffaa; line-height: 1; text-shadow: 0 0 6px #00ffaa44;
 }
-.stat-label { font-size: 9px; letter-spacing: 0.1em; color: var(--dim); margin-top: 4px; text-transform: uppercase; }
+.stat-label { font-size: 10px; letter-spacing: 0.08em; color: var(--dim); margin-top: 6px; text-transform: uppercase; }
 
 /* Operator vocab */
 .vocab-cloud { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -320,43 +387,59 @@ body::after {
 
 /* Companion */
 .companion-window {
-  background: var(--panel); border: 1px solid var(--border);
-  border-radius: 2px; overflow: hidden;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 8px; overflow: hidden;
   display: flex; flex-direction: column; height: 480px;
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.1);
 }
 .companion-messages {
-  flex: 1; overflow-y: auto; padding: 14px;
-  display: flex; flex-direction: column; gap: 10px;
+  flex: 1; overflow-y: auto; padding: 12px;
+  display: flex; flex-direction: column; gap: 8px;
 }
-.msg { display: flex; flex-direction: column; gap: 3px; }
+.msg {
+  display: flex; flex-direction: column; gap: 3px;
+  padding: 8px 10px; border-radius: 6px; word-break: break-word;
+  animation: msgSlide 0.3s ease;
+}
+@keyframes msgSlide { 0% { opacity: 0; transform: translateY(4px); } 100% { opacity: 1; transform: translateY(0); } }
+.msg.op { background: rgba(0, 240, 255, 0.06); }
+.msg.nx { background: rgba(170, 68, 255, 0.06); }
 .msg-source {
   font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase;
+  font-weight: 600;
 }
-.msg.op .msg-source { color: var(--accent); }
-.msg.nx .msg-source { color: var(--purple); }
+.msg.op .msg-source { color: #00f0ff; }
+.msg.nx .msg-source { color: #aa44ff; }
 .msg-text {
-  font-size: 12px; line-height: 1.6; padding: 8px 10px;
-  border-radius: 2px; border-left: 2px solid;
+  font-size: 12px; line-height: 1.5; padding: 6px 8px;
+  border-radius: 4px; border-left: 2px solid;
   max-width: 90%;
 }
-.msg.op .msg-text { background: rgba(0,204,255,0.05); border-color: var(--accent); }
-.msg.nx .msg-text { background: rgba(170,85,255,0.05); border-color: var(--purple); color: var(--bright); }
+.msg.op .msg-text { background: rgba(0, 240, 255, 0.04); border-color: #00f0ff; }
+.msg.nx .msg-text { background: rgba(170, 68, 255, 0.04); border-color: #aa44ff; color: #00ffaa; }
 .companion-input-row {
   display: flex; border-top: 1px solid var(--border);
 }
 .companion-input {
   flex: 1; background: transparent; border: none; outline: none;
   color: var(--bright); font-family: var(--mono); font-size: 12px;
-  padding: 12px 14px;
+  padding: 10px 12px; transition: box-shadow 0.2s;
+}
+.companion-input:focus {
+  box-shadow: 0 0 8px rgba(0, 240, 255, 0.2);
 }
 .companion-input::placeholder { color: var(--dim); }
 .companion-send {
   background: none; border: none; border-left: 1px solid var(--border);
-  color: var(--accent); font-family: var(--mono); font-size: 10px;
-  letter-spacing: 0.1em; padding: 0 16px; cursor: pointer;
-  transition: background 0.2s;
+  color: #00ffaa; font-family: var(--mono); font-size: 10px;
+  letter-spacing: 0.1em; padding: 0 14px; cursor: pointer;
+  transition: all 0.2s; font-weight: 600;
 }
-.companion-send:hover { background: rgba(0,204,255,0.06); }
+.companion-send:hover {
+  background: rgba(0, 255, 170, 0.08);
+  color: #00ffcc;
+  border-left-color: rgba(0, 255, 170, 0.3);
+}
 
 /* Typing indicator */
 .typing-indicator {
@@ -495,39 +578,46 @@ body::after {
   border-left: 1px solid var(--border);
   background: var(--panel);
   overflow-y: auto;
+  overflow-x: hidden;
   display: flex; flex-direction: column;
+  font-size: 11px;
 }
 
 .log-head {
-  padding: 12px 16px; border-bottom: 1px solid var(--border);
-  font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase;
-  color: var(--dim); display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 12px; border-bottom: 1px solid var(--border);
+  font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: #00f0ff; display: flex; align-items: center; justify-content: space-between;
+  font-weight: 600;
 }
-.log-live { display: flex; align-items: center; gap: 5px; }
+.log-live { display: flex; align-items: center; gap: 6px; }
 .live-dot {
-  width: 5px; height: 5px; border-radius: 50%;
-  background: var(--green); box-shadow: 0 0 6px var(--green);
-  animation: pulse-glow 2s infinite;
+  width: 6px; height: 6px; border-radius: 50%;
+  background: #00ff88; box-shadow: 0 0 4px #00ff88;
+  animation: pulse-glow 1.5s infinite;
 }
 
-.event-list { flex: 1; overflow-y: auto; padding: 8px 0; }
+.event-list { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 6px 0; }
 .event-item {
-  padding: 8px 16px; border-bottom: 1px solid var(--border);
-  display: flex; flex-direction: column; gap: 2px;
+  padding: 8px 12px; border-bottom: 1px solid var(--border);
+  display: flex; flex-direction: column; gap: 3px;
+  transition: background 0.2s, border-color 0.2s;
+  word-wrap: break-word;
 }
+.event-item:hover { background: rgba(0, 240, 255, 0.04); }
 .event-type {
   font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase;
+  font-weight: 600;
 }
-.et-STAGE_CHANGE    { color: var(--amber); }
-.et-TRAIT_UNLOCKED  { color: var(--green); }
-.et-WORKER          { color: var(--accent); }
-.et-MISSION         { color: var(--purple); }
-.et-COMPANION       { color: var(--dim); }
-.et-ERROR           { color: var(--red); }
-.et-VAULT           { color: var(--amber); }
-.et-COGNITION       { color: var(--green); }
-.event-msg { font-size: 11px; color: var(--text); line-height: 1.4; }
-.event-ts { font-size: 9px; color: var(--dim); }
+.et-STAGE_CHANGE    { color: #ffaa00; }
+.et-TRAIT_UNLOCKED  { color: #00ffaa; text-shadow: 0 0 4px #00ffaa; }
+.et-WORKER          { color: #00f0ff; }
+.et-MISSION         { color: #aa44ff; }
+.et-COMPANION       { color: #7aaac0; }
+.et-ERROR           { color: #ff3355; }
+.et-VAULT           { color: #ffaa00; }
+.et-COGNITION       { color: #00ffaa; }
+.event-msg { font-size: 11px; color: var(--text); line-height: 1.4; word-break: break-word; }
+.event-ts { font-size: 9px; color: var(--dim); margin-top: 2px; }
 
 /* misc */
 .empty { color: var(--dim); font-size: 11px; padding: 20px; text-align: center; }
@@ -539,6 +629,37 @@ body::after {
 .info-val { color: var(--bright); font-size: 10px; }
 /* ── Operator Rank Panel ── */
 .operator-card { display:flex; flex-direction:column; gap:18px; max-width:580px; }
+
+/* ── Plugins Tab ── */
+.plugins-container { display:flex; flex-direction:column; gap:20px; }
+.plugins-header { padding:12px 0; border-bottom:1px solid rgba(0,255,255,0.15); }
+.plugins-header h2 { margin:0; font-size:18px; }
+.plugin-section { display:flex; flex-direction:column; gap:10px; }
+.section-title { font-size:12px; color:var(--bright); text-transform:uppercase; letter-spacing:2px; margin:0; padding:8px 0; border-bottom:1px solid rgba(170,68,255,0.2); }
+.plugin-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:8px; }
+.plugin-card { background:rgba(20,30,50,0.6); border:1px solid rgba(0,255,255,0.15); border-radius:6px; padding:10px; cursor:pointer; transition:all 0.2s ease; }
+.plugin-card:hover { border-color:rgba(0,255,255,0.35); box-shadow:0 0 16px rgba(0,255,255,0.15); transform:translateY(-2px); }
+.plugin-card.locked { opacity:0.5; border-color:rgba(255,100,100,0.2); cursor:not-allowed; }
+.plugin-card-id { font-size:11px; color:var(--bright); font-weight:bold; margin:0 0 4px; }
+.plugin-card-type { font-size:9px; color:var(--bright); opacity:0.7; }
+.plugin-card-version { font-size:9px; color:var(--dim); margin-top:4px; }
+.plugin-card-trust { font-size:8px; margin-top:6px; padding:2px 4px; border-radius:3px; display:inline-block; }
+.trust-core { background:rgba(255,200,0,0.2); color:var(--gold); }
+.trust-verified { background:rgba(0,255,255,0.1); color:var(--bright); }
+.trust-community { background:rgba(0,255,150,0.1); color:var(--green); }
+.trust-unsigned { background:rgba(255,100,100,0.1); color:#ff8888; }
+.plugin-card-btn { font-size:9px; margin-top:8px; padding:4px 8px; background:rgba(0,255,255,0.2); border:1px solid rgba(0,255,255,0.3); color:var(--bright); border-radius:3px; cursor:pointer; transition:all 0.15s; }
+.plugin-card-btn:hover { background:rgba(0,255,255,0.35); box-shadow:0 0 8px rgba(0,255,255,0.2); }
+.plugin-details-panel { position:fixed; right:0; bottom:0; width:340px; height:calc(100vh - 120px); background:rgba(0,0,0,0.85); border-left:1px solid rgba(0,255,255,0.2); padding:16px; overflow-y:auto; font-size:10px; }
+.plugin-details-panel h3 { margin:0 0 12px; font-size:13px; }
+@media (max-width:1024px) { .plugin-details-panel { display:none; } }
+.timeline-strip { display:flex; overflow-x:auto; gap:8px; padding:8px; background:rgba(0,0,0,0.5); border-top:1px solid rgba(0,255,255,0.15); height:92px; align-items:center; font-size:10px; }
+.timeline-event { flex-shrink:0; display:flex; flex-direction:column; gap:3px; align-items:center; width:80px; height:76px; padding:6px; border:1px solid rgba(0,255,255,0.15); border-radius:6px; background:rgba(10,10,30,0.6); cursor:pointer; transition:all 0.2s; text-align:center; }
+.timeline-event:hover { border-color:rgba(0,255,255,0.4); box-shadow:0 0 12px rgba(0,255,255,0.15); transform:translateY(-2px); }
+.timeline-event .icon { font-size:20px; line-height:1; }
+.timeline-event .type { font-size:8px; color:var(--bright); font-weight:bold; text-transform:uppercase; }
+.timeline-event .timestamp { font-size:7px; color:var(--dim); }
+.timeline-loading { color:var(--dim); font-size:11px; padding:8px; }
 .op-rank-section { display:flex; align-items:center; gap:16px; }
 .op-rank-badge { width:62px; height:62px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:26px; font-weight:900; font-family:monospace; letter-spacing:2px; border:2px solid rgba(255,255,255,0.1); }
 .rank-E { background:#1a1a1a; color:#666; }
@@ -574,9 +695,171 @@ body::after {
 .op-xp-event .action { color:var(--text); }
 .op-xp-event .points { color:#4aff7a; font-weight:700; }
 .op-empty { color:var(--dim); font-size:11px; font-style:italic; }
+
+/* JARVIS NEON HOLOGRAM OVERRIDE */
+:root {
+  --bg: #010308;
+  --panel: rgba(6, 10, 16, 0.6);
+  --card: rgba(8, 13, 22, 0.7);
+  --border: rgba(0, 204, 255, 0.2);
+  --bh: rgba(0, 204, 255, 0.4);
+  --text: #88ccff;
+  --dim: #336688;
+  --bright: #e0f8ff;
+  --accent: #00f0ff;
+  --a2: #0088cc;
+  --green: #00ffaa;
+  --amber: #ffcc00;
+  --red: #ff4466;
+  --purple: #aa44ff;
+}
+
+body {
+  background: #0a0015 radial-gradient(circle at center, #0a0015 0%, #000000 100%);
+  text-shadow: 0 0 4px rgba(0, 204, 255, 0.3);
+}
+
+/* Neon Borders & Glows */
+.topbar, .sidebar-left, .sidebar-right, .card, .stat-block, .worker-row, .mission-row, .artifact-row, .cog-block, .companion-window {
+  background: rgba(10, 20, 30, 0.6);
+  border: 1px solid #00f0ff33;
+  box-shadow: 0 0 30px #00f0ff22, inset 0 0 20px #aa44ff11;
+  backdrop-filter: blur(8px);
+  transition: all 0.4s;
+}
+.card:hover, .stat-block:hover, .worker-row:hover, .mission-row:hover, .artifact-row:hover, .cog-block:hover, .companion-window:hover {
+  box-shadow: 0 0 50px #00f0ff44, 0 0 80px #aa44ff22;
+  transform: translateY(-6px);
+}
+.neon-text {
+  color: #00f0ff; text-shadow: 0 0 10px #00f0ff, 0 0 20px #00f0ff88;
+  animation: neon-flicker 4s infinite alternate;
+}
+@keyframes neon-flicker { 0%,100% { opacity:1; } 50% { opacity:0.92; } }
+
+.trait-bar {
+  height: 10px; border-radius: 5px; overflow:hidden;
+  background: linear-gradient(90deg, #aa44ff, #00f0ff);
+  box-shadow: 0 0 15px #00f0ff44;
+}
+.trait-label { color:#00f0ff; text-shadow:0 0 8px #00f0ff; }
+
+.topbar { border-bottom: 2px solid var(--accent); box-shadow: 0 2px 20px rgba(0, 240, 255, 0.2); }
+.sidebar-left { border-right: 1px solid var(--border); border-left: 3px solid var(--accent); }
+.sidebar-right { border-left: 1px solid var(--border); }
+
+/* Typography Enhancements */
+.logo { text-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent); }
+.evo-stage-name, .stat-val, .cog-val { text-shadow: 0 0 15px currentColor; }
+.card-title, .side-label, .log-head { color: var(--accent); text-shadow: 0 0 8px var(--accent); letter-spacing: 0.2em; }
+
+/* Buttons & Inputs */
+.btn {
+  background: rgba(0, 240, 255, 0.08);
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  box-shadow: 0 0 8px rgba(0, 240, 255, 0.1);
+  text-shadow: 0 0 4px rgba(0, 240, 255, 0.4);
+  padding: 8px 16px; border-radius: 6px;
+  transition: all 0.2s;
+  cursor: pointer; font-weight: 500;
+}
+.btn:hover {
+  background: rgba(0, 240, 255, 0.2);
+  box-shadow: 0 0 16px rgba(0, 240, 255, 0.4);
+  border-color: rgba(0, 240, 255, 0.6);
+  transform: translateY(-1px);
+}
+.btn.primary {
+  background: rgba(0, 255, 170, 0.15);
+  border-color: rgba(0, 255, 170, 0.4);
+  color: #00ffaa;
+  text-shadow: 0 0 4px #00ffaa;
+}
+.btn.primary:hover {
+  background: rgba(0, 255, 170, 0.25);
+  box-shadow: 0 0 16px rgba(0, 255, 170, 0.4);
+  border-color: rgba(0, 255, 170, 0.7);
+}
+.goal-input, .companion-input, .pred-input, .form-select {
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(0, 240, 255, 0.25);
+  box-shadow: inset 0 0 8px rgba(0, 240, 255, 0.08);
+  padding: 8px 12px; border-radius: 6px;
+  color: var(--bright);
+  transition: all 0.2s;
+}
+.goal-input:focus, .companion-input:focus, .pred-input:focus, .form-select:focus {
+  border-color: rgba(0, 240, 255, 0.5);
+  box-shadow: inset 0 0 12px rgba(0, 240, 255, 0.15), 0 0 12px rgba(0, 240, 255, 0.2);
+  outline: none;
+}
+
+/* Tabs */
+.tab-btn {
+  color: var(--dim); padding: 10px 16px;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s; cursor: pointer;
+  font-weight: 500; font-size: 11px; letter-spacing: 0.6px;
+}
+.tab-btn:hover {
+  color: #00f0ff;
+  border-bottom-color: rgba(0, 240, 255, 0.2);
+}
+.tab-btn.active {
+  color: #00f0ff; font-weight: 600;
+  border-bottom: 2px solid #00f0ff;
+  text-shadow: 0 0 8px #00f0ff;
+  background: linear-gradient(0deg, rgba(0, 240, 255, 0.08) 0%, transparent 100%);
+}
+
+/* Scrollbars */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); }
+::-webkit-scrollbar-thumb { background: var(--bh); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); box-shadow: 0 0 10px var(--accent); }
+
+/* Particle Canvas */
+#jarvis-particles {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  pointer-events: none; z-index: 0;
+  opacity: 0.6;
+}
+
+.holo-center { backdrop-filter: blur(10px); }
+.holo-glow-overlay { animation: pulse-glow 6s infinite ease-in-out; }
+@keyframes pulse-glow { 0%,100% { opacity:0.18; } 50% { opacity:0.35; } }
+
+/* Ensure content sits above canvas */
+.topbar, .shell { position: relative; z-index: 10; }
+
+/* Avatar Iframe Container */
+.avatar-hologram-container {
+  width: 100%;
+  height: 400px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 0 30px rgba(0, 204, 255, 0.1), 0 0 20px rgba(0, 204, 255, 0.2);
+  background: radial-gradient(circle at center, rgba(0,204,255,0.05) 0%, transparent 70%);
+}
+.avatar-hologram-container::before {
+  content: 'AVATAR LINK ESTABLISHED';
+  position: absolute; top: 10px; left: 14px;
+  font-family: var(--mono); font-size: 10px; color: var(--accent);
+  letter-spacing: 0.2em; text-shadow: 0 0 5px var(--accent);
+  z-index: 5; pointer-events: none;
+}
+.avatar-hologram-container iframe {
+  width: 100%; height: 100%; border: none;
+  mix-blend-mode: screen;
+}
 </style>
 </head>
 <body>
+<canvas id="jarvis-particles"></canvas>
 
 <!-- TOPBAR -->
 <header class="topbar">
@@ -595,8 +878,8 @@ body::after {
 
   <!-- LEFT SIDEBAR — Evolution -->
   <aside class="sidebar-left" id="sidebar-evo">
-    <div class="side-section">
-      <div class="side-label">Evolution Stage ⚡</div>
+    <div class="side-section trait-section">
+      <div class="side-label neon-text">Evolution Stage ⚡</div>
       <div class="evo-stage">
         <div class="evo-stage-name" id="stage-name">—</div>
         <div class="evo-rank-dots" id="rank-dots">
@@ -625,15 +908,15 @@ body::after {
       </div>
     </div>
 
-    <div class="side-section" style="flex:1;overflow-y:auto">
-      <div class="side-label">Active Traits <span id="trait-count" style="color:var(--accent)">0</span></div>
+    <div class="side-section trait-section" style="flex:1;overflow-y:auto">
+      <div class="side-label neon-text">Active Traits <span id="trait-count" style="color:var(--accent)">0</span></div>
       <div class="trait-list" id="trait-list">
         <div class="loading">syncing glyphs…</div>
       </div>
     </div>
 
-    <div class="side-section" id="next-stage-wrap" style="display:none">
-      <div class="side-label">Next Stage Gate</div>
+    <div class="side-section trait-section" id="next-stage-wrap" style="display:none">
+      <div class="side-label neon-text">Next Stage Gate</div>
       <div class="next-stage-box">
         <div class="next-stage-name" id="next-stage-name">—</div>
         <div class="next-req">
@@ -659,28 +942,35 @@ body::after {
       <button class="tab-btn" onclick="switchTab('missions')">MISSIONS<span class="tab-notif" id="notif-missions"></span></button>
       <button class="tab-btn" onclick="switchTab('vault')">VAULT<span class="tab-notif" id="notif-vault"></span></button>
       <button class="tab-btn" onclick="switchTab('cognition')">COGNITION</button>
+      <button class="tab-btn" onclick="switchTab('plugins')">PLUGINS 🧩</button>
     </nav>
 
     <!-- STATUS TAB -->
     <div class="tab-panel active" id="tab-status">
+      <!-- Central JARVIS Hologram – Avatar Embed -->
+      <div class="holo-center" style="width:100%; height:80vh; position:relative; overflow:hidden; border:1px solid #00f0ff33; box-shadow:0 0 60px #00f0ff44; border-radius:16px; background:rgba(0,0,0,0.4);">
+        <iframe src="/avatar" style="width:100%; height:100%; border:none; background:transparent;"></iframe>
+        <div class="holo-glow-overlay" style="position:absolute; inset:0; pointer-events:none; background:radial-gradient(circle at center, rgba(0,240,255,0.18) 0%, transparent 70%);"></div>
+      </div>
+
       <div class="status-grid" id="status-grid">
-        <div class="stat-block">
+        <div class="stat-block status-panel">
           <div class="stat-val" id="s-stage">—</div>
-          <div class="stat-label">Stage</div>
+          <div class="stat-label neon-text">Stage</div>
         </div>
-        <div class="stat-block">
+        <div class="stat-block status-panel">
           <div class="stat-val" id="s-workers">—</div>
-          <div class="stat-label">Active Workers</div>
+          <div class="stat-label neon-text">Active Workers</div>
         </div>
-        <div class="stat-block">
+        <div class="stat-block status-panel">
           <div class="stat-val" id="s-beliefs">—</div>
-          <div class="stat-label">Beliefs Tracked</div>
+          <div class="stat-label neon-text">Beliefs Tracked</div>
         </div>
       </div>
 
-      <div class="card">
+      <div class="card holo-panel">
         <div class="card-head">
-          <div class="card-title">OPERATOR CONTEXT</div>
+          <div class="card-title neon-text">OPERATOR CONTEXT</div>
           <button class="btn" onclick="loadFusion()" style="font-size:9px">VIEW FUSION GLYPH</button>
         </div>
         <div class="card-body">
@@ -701,13 +991,30 @@ body::after {
         </div>
       </div>
 
-      <div class="card">
+      <div class="card holo-panel">
         <div class="card-head">
-          <div class="card-title">ACTIVE WORKERS</div>
+          <div class="card-title neon-text">ACTIVE WORKERS</div>
           <span id="workers-count-badge" style="font-size:10px;color:var(--dim)"></span>
         </div>
         <div class="card-body">
           <div id="active-workers-list"><div class="empty">No active workers in the swarm yet</div></div>
+        </div>
+      </div>
+
+      <!-- QUICK COMPANION CHAT (inline on STATUS tab) -->
+      <div class="card holo-panel" style="margin-top:16px">
+        <div class="card-head">
+          <div class="card-title neon-text">NEXUSMON COMPANION</div>
+          <span id="companion-source-badge" style="font-size:9px;color:var(--dim)"></span>
+        </div>
+        <div class="card-body">
+          <div id="companion-reply" style="min-height:60px; padding:12px; margin-bottom:12px; background:rgba(0,240,255,0.06); border:1px solid #00f0ff22; border-radius:10px; color:#00ffaa; font-size:13px; line-height:1.6; letter-spacing:0.3px; text-shadow:0 0 6px #00ffaa44;">
+            <span style="color:var(--dim);font-size:11px;">Ask NEXUSMON anything…</span>
+          </div>
+          <div style="display:flex; gap:10px;">
+            <input type="text" id="quick-companion-input" placeholder="Tell NEXUSMON what's on your mind..." style="flex:1; padding:10px 14px; background:rgba(0,0,0,0.5); border:1px solid #00f0ff44; border-radius:10px; color:#00f0ff; font-family:var(--mono); font-size:12px; outline:none;" onkeydown="if(event.key==='Enter')quickSendCompanion()" />
+            <button onclick="quickSendCompanion()" style="padding:10px 20px; background:#00f0ff18; border:1px solid #00f0ff; color:#00f0ff; border-radius:8px; cursor:pointer; font-family:var(--mono); font-size:11px; letter-spacing:0.1em;">SEND</button>
+          </div>
         </div>
       </div>
     </div>
@@ -751,10 +1058,10 @@ body::after {
 
     <!-- WORKERS TAB -->
     <div class="tab-panel" id="tab-workers">
-      <div class="card">
-        <div class="card-head"><div class="card-title">SPAWN WORKER</div></div>
+      <div class="card holo-panel">
+        <div class="card-head"><div class="card-title neon-text">SPAWN WORKER</div></div>
         <div class="card-body">
-          <div class="worker-spawn-form">
+          <div class="worker-spawn-form input-bar">
             <div class="form-row">
               <input class="goal-input" id="worker-goal" placeholder="Goal — what should the worker do?"
                      onkeydown="if(event.key==='Enter')spawnWorker()" />
@@ -771,9 +1078,9 @@ body::after {
           </div>
         </div>
       </div>
-      <div class="card">
+      <div class="card holo-panel">
         <div class="card-head">
-          <div class="card-title">WORKER LOG</div>
+          <div class="card-title neon-text">WORKER LOG</div>
           <div style="display:flex;gap:8px">
             <select id="worker-filter" onchange="loadWorkers()" class="form-select">
               <option value="">ALL</option>
@@ -805,20 +1112,19 @@ body::after {
           <div class="typing-dot"></div>
           <div class="typing-dot"></div>
         </div>
-        <div class="companion-input-row">
-          <input class="companion-input" id="companion-input" placeholder="Transmit to NEXUSMON…"
-                 onkeydown="if(event.key==='Enter')sendCompanion()" />
-          <button class="companion-send" onclick="sendCompanion()">SEND ▶</button>
+        <div class="input-holo" style="display:flex; gap:12px; padding:12px; background:rgba(0,0,0,0.6); border:1px solid #00f0ff44; border-radius:12px; box-shadow:0 0 30px #00f0ff22;">
+          <input type="text" id="companion-input" placeholder="Tell NEXUSMON..." style="flex:1; background:transparent; border:none; color:#00f0ff; outline:none;" onkeydown="if(event.key==='Enter')sendCompanion()" />
+          <button onclick="sendCompanion()" style="padding:10px 24px; background:#00f0ff22; border:1px solid #00f0ff; color:#00f0ff; border-radius:8px; cursor:pointer;">SEND</button>
         </div>
       </div>
     </div>
 
     <!-- MISSIONS TAB -->
     <div class="tab-panel" id="tab-missions">
-      <div class="card">
-        <div class="card-head"><div class="card-title">CREATE MISSION</div></div>
+      <div class="card holo-panel">
+        <div class="card-head"><div class="card-title neon-text">CREATE MISSION</div></div>
         <div class="card-body">
-          <div class="mission-create-form">
+          <div class="mission-create-form input-bar">
             <div class="form-row">
               <input class="goal-input" id="mission-goal" placeholder="Mission objective…"
                      onkeydown="if(event.key==='Enter')createMission()" />
@@ -836,9 +1142,9 @@ body::after {
           </div>
         </div>
       </div>
-      <div class="card">
+      <div class="card holo-panel">
         <div class="card-head">
-          <div class="card-title">MISSION LOG</div>
+          <div class="card-title neon-text">MISSION LOG</div>
           <div style="display:flex;gap:8px;align-items:center">
             <span id="missions-stats-badge" style="font-size:10px;color:var(--dim)"></span>
             <button class="btn" onclick="loadMissions()">↻</button>
@@ -852,9 +1158,9 @@ body::after {
 
     <!-- VAULT TAB -->
     <div class="tab-panel" id="tab-vault">
-      <div class="card">
+      <div class="card holo-panel">
         <div class="card-head">
-          <div class="card-title">ARTIFACT VAULT</div>
+          <div class="card-title neon-text">ARTIFACT VAULT</div>
           <div class="vault-filters">
             <select id="vault-status-filter" onchange="loadVault()" class="form-select">
               <option value="">ALL STATUS</option>
@@ -885,27 +1191,27 @@ body::after {
     <!-- COGNITION TAB -->
     <div class="tab-panel" id="tab-cognition">
       <div class="cog-grid" id="cog-grid">
-        <div class="cog-block">
+        <div class="cog-block status-panel">
           <div class="cog-val" id="cog-predictions">—</div>
-          <div class="cog-label">Predictions</div>
+          <div class="cog-label neon-text">Predictions</div>
           <div class="cog-sub" id="cog-brier">Brier —</div>
         </div>
-        <div class="cog-block">
+        <div class="cog-block status-panel">
           <div class="cog-val" id="cog-errors">—</div>
-          <div class="cog-label">Errors Logged</div>
+          <div class="cog-label neon-text">Errors Logged</div>
           <div class="cog-sub" id="cog-dominant-error">Dominant —</div>
         </div>
-        <div class="cog-block">
+        <div class="cog-block status-panel">
           <div class="cog-val" id="cog-autopsies">—</div>
-          <div class="cog-label">Autopsies</div>
+          <div class="cog-label neon-text">Autopsies</div>
           <div class="cog-sub" id="cog-decisions">Decisions —</div>
         </div>
       </div>
 
-      <div class="card">
-        <div class="card-head"><div class="card-title">SIGNAL DIALS 🎛️</div></div>
+      <div class="card holo-panel">
+        <div class="card-head"><div class="card-title neon-text">SIGNAL DIALS 🎛️</div></div>
         <div class="card-body">
-          <div class="prediction-form">
+          <div class="prediction-form input-bar">
             <div class="pred-row" style="align-items:center;gap:10px;flex-wrap:wrap">
               <label style="min-width:160px">LLM Steer</label>
               <input id="dial-llm-steer" type="range" min="0" max="1" step="0.01" style="flex:1" />
@@ -935,10 +1241,10 @@ body::after {
         </div>
       </div>
 
-      <div class="card">
-        <div class="card-head"><div class="card-title">LOG PREDICTION</div></div>
+      <div class="card holo-panel">
+        <div class="card-head"><div class="card-title neon-text">LOG PREDICTION</div></div>
         <div class="card-body">
-          <div class="prediction-form">
+          <div class="prediction-form input-bar">
             <input class="pred-input" id="pred-claim" placeholder="Claim being predicted…" />
             <div class="pred-row">
               <label>Confidence</label>
@@ -955,10 +1261,10 @@ body::after {
         </div>
       </div>
 
-      <div class="card">
-        <div class="card-head"><div class="card-title">DECISION AUTOPSY</div></div>
+      <div class="card holo-panel">
+        <div class="card-head"><div class="card-title neon-text">DECISION AUTOPSY</div></div>
         <div class="card-body">
-          <div class="prediction-form">
+          <div class="prediction-form input-bar">
             <input class="pred-input" id="autopsy-decision" placeholder="Decision or action taken…" />
             <input class="pred-input" id="autopsy-outcome" placeholder="What actually happened…" />
             <div class="pred-row">
@@ -973,6 +1279,61 @@ body::after {
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- PLUGINS TAB -->
+    <div class="tab-panel" id="tab-plugins">
+      <div class="plugins-container">
+        <div class="plugins-header">
+          <h2 class="neon-text">PLUGINS & MODULES</h2>
+          <p style="font-size:11px;color:var(--dim);margin-top:4px">organism evolution hub</p>
+        </div>
+
+        <!-- INSTALLED SECTION -->
+        <section class="plugin-section">
+          <h3 class="section-title">INSTALLED</h3>
+          <div class="plugin-grid" id="installed-grid">
+            <div style="color:var(--dim);font-size:11px;padding:12px">loading...</div>
+          </div>
+        </section>
+
+        <!-- UNLOCKABLE SECTION -->
+        <section class="plugin-section">
+          <h3 class="section-title">UNLOCKABLE</h3>
+          <div class="plugin-grid" id="unlockable-grid">
+            <div style="color:var(--dim);font-size:11px;padding:12px">loading...</div>
+          </div>
+        </section>
+
+        <!-- COMMUNITY SECTION -->
+        <section class="plugin-section">
+          <h3 class="section-title">COMMUNITY</h3>
+          <div class="plugin-grid" id="community-grid">
+            <div style="color:var(--dim);font-size:11px;padding:12px">loading...</div>
+          </div>
+        </section>
+
+        <!-- INSTALL FROM URL -->
+        <section class="plugin-section">
+          <h3 class="section-title">INSTALL FROM URL</h3>
+          <div class="input-bar" style="flex-direction:row;gap:8px;align-items:center">
+            <input id="install-url-input" type="text" placeholder="https://github.com/author/plugin" style="flex:1;padding:8px;" />
+            <button class="btn primary" onclick="installPluginFromUrl()">INSTALL</button>
+          </div>
+          <div id="install-status" style="font-size:10px;color:var(--dim);margin-top:8px"></div>
+        </section>
+
+        <!-- DETAILS PANEL -->
+        <aside class="plugin-details-panel">
+          <h3 class="neon-text" id="details-title">Plugin Details</h3>
+          <pre id="details-content" style="font-size:9px;overflow:auto;max-height:300px;opacity:0.85">Select a plugin to view details</pre>
+        </aside>
+      </div>
+    </div>
+
+    <!-- EVOLUTION TIMELINE -->
+    <div id="evolution-timeline" class="timeline-strip">
+      <div class="timeline-loading">loading evolution history...</div>
     </div>
 
   </main>
@@ -1024,6 +1385,188 @@ async function loadSnapshot(force = false) {
   }
   return _cockpitData;
 }
+
+// ── Plugins Tab Handlers ────────────────────────────────────
+async function refreshPlugins() {
+  try {
+    const res = await fetch('/v1/plugins');
+    const data = await res.json();
+    renderInstalledPlugins(data.installed);
+    renderUnlockablePlugins(data.unlockable);
+  } catch (e) {
+    console.error('Failed to refresh plugins:', e);
+  }
+
+  try {
+    const community = await fetch('/v1/plugins/community').then(r => r.json());
+    renderCommunityPlugins(community.plugins || []);
+  } catch (e) {
+    console.error('Failed to load community registry:', e);
+  }
+}
+
+function renderInstalledPlugins(plugins) {
+  const grid = document.getElementById('installed-grid');
+  if (!plugins || plugins.length === 0) {
+    grid.innerHTML = '<div style="color:var(--dim);font-size:11px;padding:12px">no installed plugins</div>';
+    return;
+  }
+  grid.innerHTML = plugins.map(p => `
+    <div class="plugin-card" onclick="showPluginDetails(${JSON.stringify(p).replace(/"/g, '&quot;')})">
+      <div class="plugin-card-id">${p.id}</div>
+      <div class="plugin-card-type">${p.type}</div>
+      <div class="plugin-card-version">v${p.version}</div>
+      <div class="plugin-card-trust trust-${p.trust}">${p.trust}</div>
+      <div style="font-size:8px;color:var(--dim);margin-top:4px">state: ${p.state}</div>
+    </div>
+  `).join('');
+}
+
+function renderUnlockablePlugins(plugins) {
+  const grid = document.getElementById('unlockable-grid');
+  if (!plugins || plugins.length === 0) {
+    grid.innerHTML = '<div style="color:var(--dim);font-size:11px;padding:12px">no unlockable plugins</div>';
+    return;
+  }
+  grid.innerHTML = plugins.map(p => `
+    <div class="plugin-card locked">
+      <div class="plugin-card-id">${p.id}</div>
+      <div class="plugin-card-type">${p.type}</div>
+      <div style="font-size:9px;color:var(--dim);margin-top:6px">
+        requires: ${Object.entries(p.requires).map(([k,v]) => `${k}=${v}`).join(', ')}
+      </div>
+      <button class="plugin-card-btn" onclick="unlockPlugin('${p.id}')">UNLOCK</button>
+    </div>
+  `).join('');
+}
+
+function renderCommunityPlugins(plugins) {
+  const grid = document.getElementById('community-grid');
+  if (!plugins || plugins.length === 0) {
+    grid.innerHTML = '<div style="color:var(--dim);font-size:11px;padding:12px">no community plugins</div>';
+    return;
+  }
+  grid.innerHTML = plugins.map(p => `
+    <div class="plugin-card" onclick="showPluginDetails(${JSON.stringify(p).replace(/"/g, '&quot;')})">
+      <div class="plugin-card-id">${p.id}</div>
+      <div class="plugin-card-type">${p.type}</div>
+      <div class="plugin-card-version">v${p.version}</div>
+      <div style="font-size:8px;color:var(--dim);margin-top:4px">sandbox: ${p.sandbox}</div>
+      <button class="plugin-card-btn" onclick="event.stopPropagation(); installPluginFromGitHub('${p.repo}')">INSTALL</button>
+    </div>
+  `).join('');
+}
+
+function showPluginDetails(plugin) {
+  const title = document.getElementById('details-title');
+  const content = document.getElementById('details-content');
+  title.textContent = plugin.id;
+  content.textContent = JSON.stringify(plugin, null, 2);
+}
+
+async function unlockPlugin(pluginId) {
+  const status = document.getElementById('install-status');
+  status.textContent = `unlocking ${pluginId}...`;
+  try {
+    const res = await fetch('/v1/plugins/unlock', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: pluginId })
+    });
+    if (res.ok) {
+      status.textContent = `✓ unlocked ${pluginId}`;
+      status.style.color = 'var(--green)';
+      setTimeout(() => refreshPlugins(), 2000);
+    } else {
+      const err = await res.json();
+      status.textContent = `failed: ${err.detail || 'unknown error'}`;
+      status.style.color = '#ff8888';
+    }
+  } catch (e) {
+    status.textContent = `error: ${e.message}`;
+    status.style.color = '#ff8888';
+  }
+}
+
+async function installPluginFromUrl() {
+  const input = document.getElementById('install-url-input');
+  const url = input.value.trim();
+  const status = document.getElementById('install-status');
+
+  if (!url) {
+    status.textContent = 'enter a GitHub URL';
+    status.style.color = '#ff8888';
+    return;
+  }
+
+  status.textContent = `installing from ${url}...`;
+  status.style.color = 'var(--dim)';
+
+  try {
+    const res = await fetch('/v1/plugins/install', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url })
+    });
+
+    if (res.ok) {
+      const result = await res.json();
+      status.textContent = `✓ installed ${result.plugin_id}`;
+      status.style.color = 'var(--green)';
+      input.value = '';
+      setTimeout(() => refreshPlugins(), 2000);
+    } else {
+      const err = await res.json();
+      status.textContent = `failed: ${err.detail || 'unknown error'}`;
+      status.style.color = '#ff8888';
+    }
+  } catch (e) {
+    status.textContent = `error: ${e.message}`;
+    status.style.color = '#ff8888';
+  }
+}
+
+async function installPluginFromGitHub(repo) {
+  if (!repo) return;
+  document.getElementById('install-url-input').value = repo;
+  await installPluginFromUrl();
+}
+
+// Load plugins + timeline on page init
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => { refreshPlugins(); loadEvolutionTimeline(); });
+} else {
+  refreshPlugins(); loadEvolutionTimeline();
+}
+
+async function loadEvolutionTimeline() {
+  try {
+    const r = await fetch('/v1/timeline');
+    const d = await r.json();
+    renderEvolutionTimeline(d.timeline || []);
+  } catch(e) {
+    document.getElementById('evolution-timeline').innerHTML = '<div class="timeline-loading">failed to load</div>';
+  }
+}
+
+function renderEvolutionTimeline(events) {
+  const icons = {
+    plugin_installed:'🧩', plugin_unlocked:'🔓', xp_gain:'✨',
+    rank_up:'⬆️', mission_complete:'🏁', evolution:'🌙', system:'⚙️'
+  };
+  const strip = document.getElementById('evolution-timeline');
+  if (!events.length) {
+    strip.innerHTML = '<div class="timeline-loading">no events yet</div>';
+    return;
+  }
+  events.sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
+  strip.innerHTML = events.slice(0,30).map(e => {
+    const ts = new Date(e.timestamp).toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'});
+    return `<div class="timeline-event" title="${e.type}: ${e.timestamp}"><div class="icon">${icons[e.type]||'●'}</div><div class="type">${e.type.replace(/_/g,' ')}</div><div class="timestamp">${ts}</div></div>`;
+  }).join('');
+}
+
+setInterval(loadEvolutionTimeline, 8000);
 
 // ── Clock ──────────────────────────────────────────────────
 function tickClock() {
@@ -1121,10 +1664,12 @@ async function loadAll() {
     const tl = document.getElementById('trait-list');
     const traits = evo.active_traits || [];
     tl.innerHTML = traits.length ? traits.map(t => `
-      <div class="trait-item">
-        <div class="trait-dot cat-${t.category}"></div>
-        <span class="trait-name">${t.label || t.id}</span>
-        <span class="trait-cat">${(t.category||'').slice(0,3)}</span>
+      <div class="trait-item" style="display:flex; flex-direction:column; gap:4px; align-items:stretch; background:transparent; border:none; padding:4px 0;">
+        <div style="display:flex; justify-content:space-between;">
+          <span class="trait-label" style="font-size:10px; letter-spacing:0.06em;">${t.label || t.id}</span>
+          <span class="trait-cat" style="font-size:9px; color:var(--dim);">${(t.category||'').slice(0,3)}</span>
+        </div>
+        <div class="trait-bar"></div>
       </div>`).join('') : '<div class="empty">No traits unlocked yet — run missions to awaken</div>';
 
     // Next stage
@@ -1443,7 +1988,29 @@ function closeDetail() {
   document.getElementById('detail-overlay').classList.remove('open');
 }
 
+// ── Typewriter effect ──────────────────────────────────────
+function typeReply(el, text, speed) {
+  speed = speed || 25;
+  el.textContent = '';
+  let i = 0;
+  function t() {
+    if (i < text.length) {
+      el.textContent += text[i++];
+      setTimeout(t, speed);
+    }
+  }
+  t();
+}
+
 // ── Companion ──────────────────────────────────────────────
+async function _companionCall(text) {
+  const r = await fetch(API + '/v1/nexusmon/organism/companion', {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({text})
+  });
+  return await r.json();
+}
+
 async function sendCompanion() {
   const input = document.getElementById('companion-input');
   const text = input.value.trim();
@@ -1453,17 +2020,41 @@ async function sendCompanion() {
   const typing = document.getElementById('typing-indicator');
   typing.classList.add('visible');
   try {
-    const r = await fetch(API + '/v1/nexusmon/organism/companion', {
-      method: 'POST', headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({text})
-    });
-    const data = await r.json();
+    const data = await _companionCall(text);
     typing.classList.remove('visible');
-    addMsg('nx', data.ok ? data.reply : `ERROR: ${data.error || data.detail}`);
+    const reply = data.ok ? data.reply : `ERROR: ${data.error || data.detail}`;
+    addMsg('nx', reply);
+    // Mirror reply to STATUS tab reply div
+    const replyEl = document.getElementById('companion-reply');
+    if (replyEl) typeReply(replyEl, reply);
+    const srcBadge = document.getElementById('companion-source-badge');
+    if (srcBadge) srcBadge.textContent = data.source ? `via ${data.source}` : '';
     pushEvent('COMPANION', text.slice(0,40), new Date().toISOString());
   } catch(e) {
     typing.classList.remove('visible');
     addMsg('nx', `[offline] ${e.message}`);
+  }
+}
+
+async function quickSendCompanion() {
+  const input = document.getElementById('quick-companion-input');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  const replyEl = document.getElementById('companion-reply');
+  if (replyEl) { replyEl.textContent = ''; replyEl.style.opacity = '0.5'; replyEl.textContent = 'thinking…'; }
+  try {
+    const data = await _companionCall(text);
+    const reply = data.ok ? data.reply : `ERROR: ${data.error || data.detail}`;
+    if (replyEl) { replyEl.style.opacity = '1'; typeReply(replyEl, reply); }
+    // Also push to COMPANION tab messages
+    addMsg('op', text);
+    addMsg('nx', reply);
+    const srcBadge = document.getElementById('companion-source-badge');
+    if (srcBadge) srcBadge.textContent = data.source ? `via ${data.source}` : '';
+    pushEvent('COMPANION', text.slice(0,40), new Date().toISOString());
+  } catch(e) {
+    if (replyEl) { replyEl.style.opacity = '1'; replyEl.textContent = `[offline] ${e.message}`; }
   }
 }
 
@@ -1949,6 +2540,72 @@ loadSignalDials();
 setInterval(loadAll, 8000);
 setInterval(loadWorkers, 5000);
 setInterval(updateNotifDots, 15000);
+</script>
+
+<!-- JARVIS PARTICLES JS -->
+<script id="jarvis-particles-js">
+(function() {
+  const pCanvas = document.getElementById('jarvis-particles');
+  if (!pCanvas) return;
+  const pCtx = pCanvas.getContext('2d');
+
+  function resize() {
+    pCanvas.width = window.innerWidth;
+    pCanvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  let particles = [];
+  for (let i = 0; i < 80; i++) {
+    particles.push({
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * window.innerHeight,
+      size: Math.random() * 2 + 1,
+      speed: Math.random() * 0.5 + 0.1,
+      hue: Math.random() * 60 + 180 // cyan-purple range
+    });
+  }
+
+  function animateParticles() {
+    pCtx.fillStyle = 'rgba(10,0,30,0.05)';
+    pCtx.fillRect(0,0,pCanvas.width,pCanvas.height);
+    particles.forEach(p => {
+      p.y += p.speed;
+      if (p.y > pCanvas.height) p.y = 0;
+      pCtx.fillStyle = `hsla(${p.hue}, 80%, 60%, 0.6)`;
+      pCtx.beginPath();
+      pCtx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+      pCtx.fill();
+    });
+    requestAnimationFrame(animateParticles);
+  }
+  animateParticles();
+})();
+
+// GSAP Floating Panels
+if (typeof gsap !== 'undefined') {
+  gsap.utils.toArray(".card, .stat-block, .companion-window, .holo-panel, .status-panel, .trait-section").forEach((panel, i) => {
+    gsap.to(panel, {
+      y: "random(-8,8)",
+      rotation: "random(-1.5,1.5)",
+      duration: "random(6,12)",
+      repeat: -1,
+      yoyo: true,
+      ease: "sine.inOut",
+      delay: i * 0.3
+    });
+  });
+
+  // Text neon flicker
+  gsap.to(".neon-text", {
+    textShadow: "0 0 10px #00f0ff, 0 0 20px #00f0ff88, 0 0 40px #aa44ff44",
+    duration: 2,
+    repeat: -1,
+    yoyo: true,
+    ease: "sine.inOut"
+  });
+}
 </script>
 </body>
 </html>

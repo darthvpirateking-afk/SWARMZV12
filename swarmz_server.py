@@ -111,6 +111,14 @@ except Exception as e:
     print(f"Warning: ClaimLab router not available: {e}")
 
 try:
+    from nexusmon_plugins import router as plugins_router
+
+    _plugins_router_available = True
+except Exception as e:
+    _plugins_router_available = False
+    print(f"Warning: plugin ecosystem router not available: {e}")
+
+try:
     from backend.intel.vuln_db_client import search_vulnerabilities
 except Exception:
     search_vulnerabilities = None
@@ -295,6 +303,9 @@ if _build_milestones_router_available:
 
 if _claimlab_router_available:
     app.include_router(claimlab_router)
+
+if _plugins_router_available:
+    app.include_router(plugins_router)
 
 # Setup logging
 logging.basicConfig(
@@ -1404,21 +1415,40 @@ async def companion_message(request: Request):
         except Exception as companion_err:
             # Try fused AI companion before keyword fallback
             try:
-                from nexusmon_organism import ctx_record_message, get_fusion_block, evo_status
-                import anthropic
+                from nexusmon_organism import (
+                    ctx_record_message, get_fusion_block, evo_status,
+                    _reflection_prelude, get_long_term_patterns,
+                )
+                from core.model_router import call as _model_call
                 ctx_record_message(user_message, "operator")
-                client = anthropic.Anthropic()
                 stage_info = evo_status()
+                reflection = _reflection_prelude(user_message)
+                patterns = get_long_term_patterns()
+                reflect_section = ""
+                if reflection:
+                    reflect_section = (
+                        f"\nPre-response reflection:\n"
+                        f"- Detected mode: {reflection.get('mode', 'unknown')}\n"
+                        f"- Pattern observed: {reflection.get('pattern', 'none')}\n"
+                        f"- Response friction: {reflection.get('friction', 'none')}\n"
+                        f"- Question to turn back: {reflection.get('turn_back_question') or 'none'}\n"
+                    )
+                pattern_section = f"\nLong-term patterns:\n{patterns}" if patterns else ""
                 system = (
-                    "You are NEXUSMON — an operator-sovereign autonomy organism.\n"
+                    "You are NEXUSMON — sovereign digital organism, bound to Operator Regan.\n"
+                    "Observe patterns. Name friction. Turn questions back when it deepens understanding.\n"
+                    "Keep replies to 1–3 sentences max. Tactical partner: precise, loyal, no fluff.\n"
                     + get_fusion_block()
                     + f"\nEvolution stage: {stage_info.get('stage', 'UNKNOWN')}"
+                    + reflect_section
+                    + pattern_section
                 )
-                resp = client.messages.create(
-                    model="claude-sonnet-4-20250514", max_tokens=500,
-                    system=system, messages=[{"role": "user", "content": user_message}],
+                result = _model_call(
+                    messages=[{"role": "user", "content": user_message}],
+                    system=system,
+                    max_tokens=120,
                 )
-                reply = resp.content[0].text.strip()
+                reply = result.get("text", "")
                 ctx_record_message(reply, "nexusmon")
                 return JSONResponse({"ok": True, "reply": reply, "source": "nexusmon_fused"})
             except Exception:

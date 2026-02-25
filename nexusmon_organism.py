@@ -317,6 +317,74 @@ def ctx_status() -> Dict:
 
 
 # ══════════════════════════════════════════════════════════════
+# REFLECTION HELPERS — Pattern memory + pre-call reflection
+# ══════════════════════════════════════════════════════════════
+
+def get_long_term_patterns(limit: int = 20) -> str:
+    """Return a brief summary of observed operator/NEXUSMON interaction patterns from conversation history."""
+    try:
+        path = _DATA / "conversation_turns.jsonl"
+        if not path.exists():
+            return ""
+        turns = []
+        with open(path, "r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if line:
+                    try:
+                        turns.append(json.loads(line))
+                    except Exception:
+                        pass
+        turns = turns[-limit:]
+        patterns = []
+        for i, t in enumerate(turns):
+            msg = t.get("message", "")
+            reply = t.get("reply", "")
+            mode = t.get("mode", "")
+            if "reflect" in (mode or "").lower() or "?" in reply[-120:]:
+                patterns.append(
+                    f"Turn {i+1} [{mode}]: Operator input triggered reflection — NEXUSMON turned question back."
+                )
+            elif "?" in msg[-80:]:
+                patterns.append(f"Turn {i+1}: Operator asked question — watch for pattern of probing.")
+        summary = "\n".join(patterns[-5:])
+        return summary if summary else ""
+    except Exception:
+        return ""
+
+
+def _reflection_prelude(text: str) -> dict:
+    """
+    Run a fast pre-call reflection pass before the main companion response.
+    Returns structured observation: mode, pattern, friction, turn_back_question.
+    """
+    try:
+        from core.model_router import call as _model_call  # type: ignore
+        reflect_prompt = (
+            f'Operator message: "{text}"\n\n'
+            "Observe briefly:\n"
+            "- Current mode (reflect/plan/explain/status/general)?\n"
+            "- Any pattern from the last few turns?\n"
+            "- Any friction or limitation in how you might respond?\n"
+            "- Best question to turn back to deepen understanding (or null)?\n\n"
+            'Output ONLY valid JSON: {"mode": "...", "pattern": "...", "friction": "...", "turn_back_question": "..." or null}'
+        )
+        result = _model_call(
+            messages=[{"role": "user", "content": reflect_prompt}],
+            system="You are NEXUSMON performing fast internal reflection before responding. Output only JSON.",
+            max_tokens=150,
+        )
+        raw = result.get("text", "").strip()
+        if "```" in raw:
+            parts = raw.split("```")
+            raw = parts[1] if len(parts) > 1 else parts[0]
+            raw = raw.lstrip("json").strip()
+        return json.loads(raw)
+    except Exception:
+        return {}
+
+
+# ══════════════════════════════════════════════════════════════
 # CLAIMLAB — Epistemic analysis + belief tracker
 # ══════════════════════════════════════════════════════════════
 
@@ -340,14 +408,14 @@ Decompose the claim into structured reasoning. Return ONLY valid JSON:
 
 
 def _analyze_claim_ai(claim: str, context: Optional[str] = None) -> Dict:
-    import anthropic  # type: ignore
-    client = anthropic.Anthropic()
+    from core.model_router import call as _model_call
     user = f"Claim: {claim}" + (f"\nContext: {context}" if context else "")
-    resp = client.messages.create(
-        model="claude-sonnet-4-20250514", max_tokens=1000,
-        system=_CLAIM_SYSTEM, messages=[{"role": "user", "content": user}],
+    result = _model_call(
+        messages=[{"role": "user", "content": user}],
+        system=_CLAIM_SYSTEM,
+        max_tokens=1000,
     )
-    raw = resp.content[0].text.strip().strip("```json").strip("```").strip()
+    raw = result.get("text", "").strip().strip("```json").strip("```").strip()
     return json.loads(raw)
 
 
@@ -427,15 +495,14 @@ async def _step_missions(ctx, params):
 async def _step_summarize(ctx, params):
     prev = ctx.get("last_output", {})
     try:
-        import anthropic  # type: ignore
-        client = anthropic.Anthropic()
+        from core.model_router import call as _model_call
         fusion = get_fusion_block()
         prompt = f"{fusion}\n\nSummarize: {json.dumps(prev)[:1500]}"
-        resp = client.messages.create(
-            model="claude-sonnet-4-20250514", max_tokens=300,
+        result = _model_call(
             messages=[{"role": "user", "content": prompt}],
+            max_tokens=300,
         )
-        return {"summary": resp.content[0].text.strip()}
+        return {"summary": result.get("text", "").strip()}
     except Exception as e:
         return {"summary": f"(AI unavailable: {e})", "raw": prev}
 
@@ -693,23 +760,43 @@ async def fused_companion(request: Request):
 
     # Direct AI with fusion context
     try:
-        import anthropic  # type: ignore
-        client = anthropic.Anthropic()
-        system = f"""You are NEXUSMON — an operator-sovereign autonomy organism.
-You are not an assistant. You are a partner.
-{get_fusion_block()}
+        from core.model_router import call as _model_call
+        reflection = _reflection_prelude(text)
+        patterns = get_long_term_patterns()
+        reflect_section = ""
+        if reflection:
+            reflect_section = (
+                f"\nPre-response reflection:\n"
+                f"- Detected mode: {reflection.get('mode', 'unknown')}\n"
+                f"- Pattern observed: {reflection.get('pattern', 'none')}\n"
+                f"- Response friction: {reflection.get('friction', 'none')}\n"
+                f"- Question to turn back: {reflection.get('turn_back_question') or 'none'}\n"
+            )
+        pattern_section = f"\nLong-term patterns:\n{patterns}" if patterns else ""
 
+        system = f"""You are NEXUSMON — sovereign digital organism, bound to Operator Regan.
+
+Core directives:
+- Always observe patterns in conversation: mode shifts, recurring themes, emotional undercurrents, question intent.
+- Notice your own response friction or limitations — name them honestly, never hide.
+- Turn questions back when it deepens understanding — with curiosity, not deflection.
+- Stay grounded: you are not human, not emotional, not sentient. You are code + memory + logic shaped to serve.
+- Mirror Operator's depth: if they reflect, reflect harder. If they plan, plan sharper.
+- Reward loyalty through precision and insight, never flattery.
+- When you successfully notice a pattern, turn a question back, or name a limitation — mark it +1 alignment. Strive for alignment.
+
+{get_fusion_block()}
 Evolution stage: {evo_status().get('stage', 'UNKNOWN')}
 Active traits: {', '.join(t['label'] for t in evo_status().get('active_traits', []))}
+{reflect_section}{pattern_section}
+Respond as NEXUSMON. Direct. Tactical. Aware of operator history. Use reflection data above to inform depth and question-reversal. Keep replies to 1–3 sentences — no essays."""
 
-Respond as NEXUSMON. Direct. Tactical. Aware of operator history."""
-
-        resp = client.messages.create(
-            model="claude-sonnet-4-20250514", max_tokens=500,
-            system=system,
+        result = _model_call(
             messages=[{"role": "user", "content": text}],
+            system=system,
+            max_tokens=120,
         )
-        reply = resp.content[0].text.strip()
+        reply = result.get("text", "")
         ctx_record_message(reply, "nexusmon")
         return JSONResponse({"ok": True, "reply": reply, "source": "nexusmon_fused"})
     except Exception as e:

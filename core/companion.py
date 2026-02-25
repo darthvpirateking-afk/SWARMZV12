@@ -193,6 +193,10 @@ def chat(user_text: str) -> Dict[str, Any]:
     key_env = prov_cfg.get("apiKeyEnv", "")
     has_key = bool(os.environ.get(key_env)) if key_env else False
 
+    # Ollama doesn't need an API key — skip the key check
+    if prov == "ollama":
+        has_key = True
+
     if not has_key:
         reply = _rule_engine(user_text, mem)
         _audit_companion(now, user_text, reply, "rule_engine")
