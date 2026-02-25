@@ -1,8 +1,8 @@
-# OPERATE SWARMZ (Quick Operator Guide)
+﻿# OPERATE NEXUSMON (Quick Operator Guide)
 
 ## Start + URLs
 
-- Start (Windows): `SWARMZ_UP.ps1` or `SWARMZ_UP.cmd`
+- Start (Windows): `NEXUSMON_UP.ps1` or `NEXUSMON_UP.cmd`
 - Default local URL: `http://127.0.0.1:8012/`
 - API docs: `http://127.0.0.1:8012/docs`
 - Health: `http://127.0.0.1:8012/v1/health`
@@ -12,8 +12,8 @@
 
 - Main runtime: port `8012` (configured in `config/runtime.json`)
 - Main launcher path: `run_server.py` -> `server:app`
-- Alternate launcher path: `swarmz_server.py` (also defaults to `8012`)
-- Daemon mode: `SWARMZ_DAEMON_UP.ps1` / `SWARMZ_DAEMON_UP.cmd`
+- Alternate launcher path: `nexusmon_server.py` (also defaults to `8012`)
+- Daemon mode: `NEXUSMON_DAEMON_UP.ps1` / `NEXUSMON_DAEMON_UP.cmd`
 - Docker profile (separate): `8000` API, `5173` UI, `5432` Postgres
 
 ## Runtime Profiles (Local vs Render)
@@ -25,8 +25,8 @@
 - Switch to Render profile:
 	- `python tools/switch_runtime_profile.py render`
 - Convenience wrappers:
-	- `SWARMZ_PROFILE.cmd local` or `SWARMZ_PROFILE.cmd render`
-	- `./SWARMZ_PROFILE.ps1 local` or `./SWARMZ_PROFILE.ps1 render`
+	- `NEXUSMON_PROFILE.cmd local` or `NEXUSMON_PROFILE.cmd render`
+	- `./NEXUSMON_PROFILE.ps1 local` or `./NEXUSMON_PROFILE.ps1 render`
 
 ## What Each Main Button Does (`/app`)
 
@@ -71,8 +71,8 @@
 
 - Check health first: `/v1/health`
 - Confirm paired state and token in the Pairing section
-- Re-open with `SWARMZ_UP.ps1`
-- Use `python tools/swarmz_doctor.py` for diagnostics
+- Re-open with `NEXUSMON_UP.ps1`
+- Use `python tools/nexusmon_doctor.py` for diagnostics
 
 ## Release Readiness Commands
 

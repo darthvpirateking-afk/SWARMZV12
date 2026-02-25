@@ -1,4 +1,4 @@
-# SWARMZ — Agent Changelog
+﻿# NEXUSMON — Agent Changelog
 
 > Append-only log of all changes made by automated agents.  
 > Each entry records WHAT changed, WHEN, and WHY.
@@ -26,8 +26,8 @@
 
 ### Added
 - `core/zapier_bridge.py` — Zapier Universal Connector Bridge
-  - `POST /v1/zapier/inbound` — Zapier → SWARMZ mission creation
-  - `POST /v1/zapier/emit` — SWARMZ → Zapier Catch Hook
+  - `POST /v1/zapier/inbound` — Zapier → NEXUSMON mission creation
+  - `POST /v1/zapier/emit` — NEXUSMON → Zapier Catch Hook
   - In-memory dedupe (10-min TTL), append-only JSONL logging
   - stdlib-only (urllib.request for outbound)
 - `data/zapier/inbound.jsonl` — Inbound event log (seed)
@@ -37,7 +37,7 @@
 - `tools/doctor/doctor.py` — Enhanced diagnostic tool
 - `docs/ZAPIER_BRIDGE.md` — Zapier bridge documentation with setup instructions
 - `docs/RUNNABILITY_REPORT.md` — What runs, what fails, known issues
-- `docs/WHAT_SWARMZ_DOES.md` — Plain-English system explanation
+- `docs/WHAT_NEXUSMON_DOES.md` — Plain-English system explanation
 - `docs/QUICKSTART.md` — 5-minute setup guide with LAN + phone access
 - `docs/SMOKE_TESTS.md` — Smoke test documentation
 - `docs/UPGRADE_CONTRACT.md` — Invariants and versioning rules
@@ -48,10 +48,11 @@
 - `server.py` — Added Zapier bridge registration (fail-open)
 
 ### Known Issues Documented
-- `run_swarmz.py` imports `swarmz_runtime.api.server` which doesn't exist → use `SWARMZ_UP.cmd` instead
+- `run_nexusmon.py` imports `nexusmon_runtime.api.server` which doesn't exist → use `NEXUSMON_UP.cmd` instead
 - Zapier `shared_secret` is placeholder `"change-me-to-a-real-secret"` → operator must change
 - No HTTPS → LAN only without tunnel
 
 ---
 
 *To add a new entry: append a new section below with date, what changed, and why.*
+

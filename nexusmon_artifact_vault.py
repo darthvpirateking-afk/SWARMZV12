@@ -158,6 +158,11 @@ def approve_artifact(artifact_id: str, notes: str = "") -> Dict:
     artifact["reviewed_at"] = _utc()
     artifact["reviewed_by"] = "operator"
     _save_artifact(artifact)
+    try:
+        from nexusmon_operator_rank import award_xp as _rank_xp
+        _rank_xp("approve_artifact", detail=artifact_id)
+    except Exception:
+        pass
     return artifact
 
 
@@ -170,6 +175,11 @@ def reject_artifact(artifact_id: str, notes: str = "") -> Dict:
     artifact["reviewed_at"] = _utc()
     artifact["reviewed_by"] = "operator"
     _save_artifact(artifact)
+    try:
+        from nexusmon_operator_rank import award_xp as _rank_xp
+        _rank_xp("reject_artifact", detail=artifact_id)
+    except Exception:
+        pass
     return artifact
 
 

@@ -1,5 +1,5 @@
-// SWARMZ Avatar Visual Representation System
-// Implements SWARMZ's chosen form: humanoid, elegant, cybernetic
+﻿// NEXUSMON Avatar Visual Representation System
+// Implements NEXUSMON's chosen form: humanoid, elegant, cybernetic
 
 class AvatarView {
     constructor(containerId) {
@@ -334,7 +334,7 @@ class AvatarView {
     }
 
     render() {
-        console.log("SWARMZ Avatar: Humanoid form active - matte black with electric blue traces");
+        console.log("NEXUSMON Avatar: Humanoid form active - matte black with electric blue traces");
         console.log("Core status: Golden energy heart beating with thought patterns");
         console.log("Crown fragments: Orbital geometry synchronized");
         console.log("Ready to manifest in digital space");

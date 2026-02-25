@@ -607,6 +607,11 @@ async def sync_evolution(payload: EvoSync):
     if beliefs == 0:
         beliefs = len([b for b in _load_jsonl(_beliefs_path()) if b.get("status") == "active"])
     state, events = evolve(total, success, beliefs)
+    try:
+        from nexusmon_operator_rank import award_xp as _rank_xp
+        _rank_xp("evolution_sync", detail=f"stage={state['stage']}")
+    except Exception:
+        pass
     return {"ok": True, "stage": state["stage"], "xp": state["xp"], "events": events}
 
 

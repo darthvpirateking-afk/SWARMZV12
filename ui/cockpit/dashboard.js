@@ -1,4 +1,4 @@
-// Dashboard module for SWARMZ cockpit
+﻿// Dashboard module for NEXUSMON cockpit
 
 class Dashboard {
     constructor() {

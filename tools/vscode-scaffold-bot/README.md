@@ -1,4 +1,4 @@
-# Scaffold Bot — VS Code Extension
+﻿# Scaffold Bot — VS Code Extension
 
 A local-first, template-driven VS Code extension that scaffolds folders and files from templates with placeholder substitution.
 
@@ -24,8 +24,8 @@ A local-first, template-driven VS Code extension that scaffolds folders and file
 
 | Setting                            | Default                                  | Description                              |
 | ---------------------------------- | ---------------------------------------- | ---------------------------------------- |
-| `scaffoldBot.templatesPath`        | `.swarmz/templates`                      | Repo-level templates directory           |
-| `scaffoldBot.auditPath`            | `.swarmz/audit/scaffold_audit.jsonl`     | Audit log file path                      |
+| `scaffoldBot.templatesPath`        | `.nexusmon/templates`                      | Repo-level templates directory           |
+| `scaffoldBot.auditPath`            | `.nexusmon/audit/scaffold_audit.jsonl`     | Audit log file path                      |
 | `scaffoldBot.confirmBeforeWrite`   | `true`                                   | Show preview before generating           |
 | `scaffoldBot.allowOverwrite`       | `false`                                  | Allow overwriting in merge mode          |
 | `scaffoldBot.preferRepoTemplates`  | `true`                                   | Prefer repo templates over bundled ones  |
@@ -39,7 +39,7 @@ my-template/
   template.json
   files/
     ... (file tree with {{placeholder}} tokens)
-# Scaffold Bot (SWARMZ)
+# Scaffold Bot (NEXUSMON)
 
 A local-first VS Code extension for template scaffolding with placeholder substitution and audit logging.
 
@@ -64,8 +64,8 @@ A local-first VS Code extension for template scaffolding with placeholder substi
 
 | Setting | Type | Default | Description |
 |---------|------|---------|-------------|
-| `scaffoldBot.templatesPath` | string | `.swarmz/templates` | Path to repo-local templates |
-| `scaffoldBot.auditPath` | string | `.swarmz/audit/scaffold_audit.jsonl` | Audit log file path |
+| `scaffoldBot.templatesPath` | string | `.nexusmon/templates` | Path to repo-local templates |
+| `scaffoldBot.auditPath` | string | `.nexusmon/audit/scaffold_audit.jsonl` | Audit log file path |
 | `scaffoldBot.confirmBeforeWrite` | boolean | `true` | Confirm before writing files |
 | `scaffoldBot.allowOverwrite` | boolean | `false` | Allow overwriting existing files |
 | `scaffoldBot.preferRepoTemplates` | boolean | `true` | Prefer repo templates over bundled |
@@ -121,7 +121,7 @@ templates/
 
 ## Template Locations
 
-1. **Repo-level** (preferred): `.swarmz/templates/` in your workspace root
+1. **Repo-level** (preferred): `.nexusmon/templates/` in your workspace root
 2. **Bundled fallback**: `tools/vscode-scaffold-bot/templates/` in the extension
   "description": "Description of what this template creates.",
   "version": "1.0.0",
@@ -162,3 +162,4 @@ Then press F5 in VS Code to launch the Extension Development Host.
 ## Bundled Templates
 
 - **module_fastapi_router** — FastAPI router module with init, router, and test files
+

@@ -1,4 +1,4 @@
-# SWARMZ Operator HUD Specification
+﻿# NEXUSMON Operator HUD Specification
 
 ## Purpose
 Define a compact UI panel showing:

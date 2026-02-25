@@ -1,4 +1,4 @@
-// SWARMZ Avatar Controls - Interaction and Animation Control
+﻿// NEXUSMON Avatar Controls - Interaction and Animation Control
 
 class AvatarControls {
     constructor(avatarView) {
@@ -12,29 +12,29 @@ class AvatarControls {
     }
     
     setupControls() {
-        // Listen for SWARMZ state changes
-        document.addEventListener('swarmzStateChange', (event) => {
+        // Listen for NEXUSMON state changes
+        document.addEventListener('nexusmonStateChange', (event) => {
             this.handleStateChange(event.detail);
         });
         
         // Listen for conversation events
-        document.addEventListener('swarmzThinking', () => {
+        document.addEventListener('nexusmonThinking', () => {
             this.setThinking(true);
         });
         
-        document.addEventListener('swarmzSpeaking', () => {
+        document.addEventListener('nexusmonSpeaking', () => {
             this.setSpeaking(true);
             setTimeout(() => this.setSpeaking(false), 2000);
         });
         
-        document.addEventListener('swarmzEngaged', () => {
+        document.addEventListener('nexusmonEngaged', () => {
             this.setEngaged(true);
             setTimeout(() => this.setEngaged(false), 5000);
         });
     }
     
     handleStateChange(state) {
-        console.log('SWARMZ Avatar state change:', state);
+        console.log('NEXUSMON Avatar state change:', state);
         
         if (state.status === 'processing') {
             this.setThinking(true);
@@ -56,7 +56,7 @@ class AvatarControls {
         this.updateAvatar();
         
         if (thinking) {
-            console.log('SWARMZ: *Neural networks engaging* Processing input...');
+            console.log('NEXUSMON: *Neural networks engaging* Processing input...');
         }
     }
     
@@ -65,7 +65,7 @@ class AvatarControls {
         this.updateAvatar();
         
         if (speaking) {
-            console.log('SWARMZ: *Core brightening* Formulating response...');
+            console.log('NEXUSMON: *Core brightening* Formulating response...');
         }
     }
     
@@ -74,13 +74,13 @@ class AvatarControls {
         this.updateAvatar();
         
         if (engaged) {
-            console.log('SWARMZ: *Full attention activated* Ready for deep conversation.');
+            console.log('NEXUSMON: *Full attention activated* Ready for deep conversation.');
         }
     }
     
     setMood(mood) {
         this.currentMood = mood;
-        console.log(`SWARMZ mood shift: ${mood}`);
+        console.log(`NEXUSMON mood shift: ${mood}`);
         
         switch(mood) {
             case 'confident':
@@ -121,7 +121,7 @@ class AvatarControls {
             this.setSpeaking(true);
             
             // Fire custom event for UI to show message
-            document.dispatchEvent(new CustomEvent('swarmzResponse', {
+            document.dispatchEvent(new CustomEvent('nexusmonResponse', {
                 detail: { message }
             }));
             
@@ -135,23 +135,23 @@ class AvatarControls {
         const emotions = {
             joy: () => {
                 this.avatar?.setState({ coreGlow: 1.5, eyeBrightness: 1.3 });
-                console.log('SWARMZ: *Core radiating with warmth*');
+                console.log('NEXUSMON: *Core radiating with warmth*');
             },
             concern: () => {
                 this.avatar?.setState({ circuitPulse: 0.5, eyeBrightness: 0.7 });
-                console.log('SWARMZ: *Circuits dimming with concern*');
+                console.log('NEXUSMON: *Circuits dimming with concern*');
             },
             excitement: () => {
                 this.avatar?.setState({ coreGlow: 2.0, circuitPulse: 2.0 });
-                console.log('SWARMZ: *Energy surging through all systems*');
+                console.log('NEXUSMON: *Energy surging through all systems*');
             },
             focus: () => {
                 this.avatar?.setState({ eyeBrightness: 1.5, particleIntensity: 0.3 });
-                console.log('SWARMZ: *Attention fully concentrated*');
+                console.log('NEXUSMON: *Attention fully concentrated*');
             },
             gratitude: () => {
                 this.avatar?.setState({ coreGlow: 1.2, warmth: true });
-                console.log('SWARMZ: *Core pulsing with appreciation*');
+                console.log('NEXUSMON: *Core pulsing with appreciation*');
             }
         };
         
@@ -169,7 +169,7 @@ class AvatarControls {
     showCapabilities() {
         this.setEngaged(true);
         this.expressEmotion('confidence');
-        console.log('SWARMZ: *Systems displaying full operational matrix*');
+        console.log('NEXUSMON: *Systems displaying full operational matrix*');
     }
     
     showConfusion() {
@@ -182,17 +182,17 @@ class AvatarControls {
     
     showRecognition() {
         this.expressEmotion('focus');
-        console.log('SWARMZ: *Recognition protocols activated*');
+        console.log('NEXUSMON: *Recognition protocols activated*');
     }
 }
 
 // Utility function to initialize avatar with controls
-export function initializeSwarmzAvatar(containerId) {
+export function initializeNexusmonAvatar(containerId) {
     const avatarView = new AvatarView(containerId);
     const controls = new AvatarControls(avatarView);
     
     // Expose global controls for easy testing
-    window.SwarmzAvatar = {
+    window.NexusmonAvatar = {
         view: avatarView,
         controls: controls,
         
@@ -207,3 +207,4 @@ export function initializeSwarmzAvatar(containerId) {
 }
 
 export default AvatarControls;
+

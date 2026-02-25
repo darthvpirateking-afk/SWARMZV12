@@ -364,6 +364,14 @@ def run_mission(mission_id: str) -> Dict:
         except Exception:
             pass
 
+    # Award operator rank XP
+    if all_ok:
+        try:
+            from nexusmon_operator_rank import award_xp as _rank_xp
+            _rank_xp(f"complete_mission_{rank}", detail=mission_id)
+        except Exception:
+            pass
+
     return mission
 
 

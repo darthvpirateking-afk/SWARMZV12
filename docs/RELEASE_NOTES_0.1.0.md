@@ -1,4 +1,4 @@
-# SWARMZ Release Notes — v0.1.0
+﻿# NEXUSMON Release Notes — v0.1.0
 
 Date: 2026-02-20
 Branch: copilot/sub-pr-37
@@ -18,9 +18,10 @@ This release is focused, low-risk, and release-ready.
 - Packaging build passed (`python -m build`).
 
 ## Artifacts
-- `dist/swarmz-0.1.0.tar.gz`
-- `dist/swarmz-0.1.0-py3-none-any.whl`
+- `dist/nexusmon-0.1.0.tar.gz`
+- `dist/nexusmon-0.1.0-py3-none-any.whl`
 
 ## Notes
 - Runtime test/build commands can update operational JSON/JSONL files under `data/` and `prepared_actions/`; these were restored to keep branch clean.
 - Final branch status verified clean and synced with origin.
+

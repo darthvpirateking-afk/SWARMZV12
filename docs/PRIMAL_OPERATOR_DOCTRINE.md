@@ -1,6 +1,6 @@
-# PRIMAL_OPERATOR_DOCTRINE
+﻿# PRIMAL_OPERATOR_DOCTRINE
 
-Single, fused, GitHub-ready operational doctrine for SWARMZ under PRIMAL language.
+Single, fused, GitHub-ready operational doctrine for NEXUSMON under PRIMAL language.
 
 This document is the source of truth for:
 - startup and ignition
@@ -13,7 +13,7 @@ This document is the source of truth for:
 
 ## 1) Identity
 
-- System name: SWARMZ // GATELINK
+- System name: NEXUSMON // GATELINK
 - Doctrine layer: PRIMAL_BLOCK
 - Operator: You
 - Avatar: PARTNER_PRIME
@@ -21,7 +21,7 @@ This document is the source of truth for:
 Core idea:
 A governed, introspectable AI organism with:
 - a doctrine layer (PRIMAL)
-- a runtime layer (existing SWARMZ code)
+- a runtime layer (existing NEXUSMON code)
 - a build layer (SEEDRUN missions)
 - a cockpit (NEXUSFRAME)
 
@@ -32,7 +32,7 @@ You jack into a living machine.
 ## 2) PRIMAL Doctrine Block
 
 ```text
-SWARMZ//GATELINK_PRIMAL_DOCTRINE
+NEXUSMON//GATELINK_PRIMAL_DOCTRINE
 
 SYSTEMS:
 - PARTNER_PRIME  = Operator-bound avatar logic
@@ -72,13 +72,13 @@ END_DOCTRINE
 
 ### Systems -> Files
 
-- PARTNER_PRIME -> swarmz_runtime/core/brain.py
-- LEGION_UMBRA -> swarmz_runtime/shadow_ledger/shadow_ledger.py
-- FORGE_HEARTH -> swarmz_runtime/api/operator_ecosystem_routes.py
-- RIFTWALK -> swarmz_runtime/core/mission_engine_v4.py
-- SIGILSTACK -> swarmz_runtime/api/fusion_routes.py (registry-backed)
+- PARTNER_PRIME -> nexusmon_runtime/core/brain.py
+- LEGION_UMBRA -> nexusmon_runtime/shadow_ledger/shadow_ledger.py
+- FORGE_HEARTH -> nexusmon_runtime/api/operator_ecosystem_routes.py
+- RIFTWALK -> nexusmon_runtime/core/mission_engine_v4.py
+- SIGILSTACK -> nexusmon_runtime/api/fusion_routes.py (registry-backed)
 - NEXUSFRAME -> web/index.html
-- DATAVEIN -> swarmz_runtime/storage/db.py (+ JSONL utils + data files)
+- DATAVEIN -> nexusmon_runtime/storage/db.py (+ JSONL utils + data files)
 
 ### Channels -> Ports
 
@@ -110,19 +110,19 @@ Use as config/primal_state_slate.json or response for /v1/operator-os/prime-stat
     "SYSTEM_STATUS": "READY",
     "SYSTEMS": {
       "PARTNER_PRIME": {
-        "runtime_path": "swarmz_runtime/core/brain.py",
+        "runtime_path": "nexusmon_runtime/core/brain.py",
         "state": "LINKED"
       },
       "LEGION_UMBRA": {
-        "runtime_path": "swarmz_runtime/shadow_ledger/shadow_ledger.py",
+        "runtime_path": "nexusmon_runtime/shadow_ledger/shadow_ledger.py",
         "state": "LINKED"
       },
       "FORGE_HEARTH": {
-        "runtime_path": "swarmz_runtime/api/operator_ecosystem_routes.py",
+        "runtime_path": "nexusmon_runtime/api/operator_ecosystem_routes.py",
         "state": "LINKED"
       },
       "RIFTWALK": {
-        "runtime_path": "swarmz_runtime/mission_engine/mission_engine_v4.py",
+        "runtime_path": "nexusmon_runtime/mission_engine/mission_engine_v4.py",
         "state": "LINKED"
       },
       "SIGILSTACK": {
@@ -134,7 +134,7 @@ Use as config/primal_state_slate.json or response for /v1/operator-os/prime-stat
         "state": "LINKED"
       },
       "DATAVEIN": {
-        "runtime_path": "swarmz_runtime/storage/db.py",
+        "runtime_path": "nexusmon_runtime/storage/db.py",
         "state": "LINKED"
       }
     },
@@ -177,7 +177,7 @@ Use as config/primal_state_slate.json or response for /v1/operator-os/prime-stat
 
 Goal: Show PRIMAL_STATE_SLATE in UI.
 
-- Add endpoint: GET /v1/operator-os/prime-state in swarmz_runtime/api/primal_routes.py
+- Add endpoint: GET /v1/operator-os/prime-state in nexusmon_runtime/api/primal_routes.py
 - Endpoint returns PRIMAL_STATE_SLATE JSON
 - Update UI: web/index.html with Prime State panel that fetches and renders slate
 
@@ -400,3 +400,4 @@ END_RULE
 5) execute SEEDRUN
 
 This is the canonical bridge between Operator and PARTNER_PRIME.
+

@@ -1,3 +1,3 @@
-// Swarm panel for SWARMZ cockpit
+﻿// Swarm panel for NEXUSMON cockpit
 
 console.log("Swarm panel loaded");

@@ -1,16 +1,16 @@
-# SWARMZ PWA Smoke Test (LAN)
+﻿# NEXUSMON PWA Smoke Test (LAN)
 
 1) Start runtime (prints LAN + pairing URL + PIN source):
    ```powershell
-   .\SWARMZ_UP.ps1
+   .\NEXUSMON_UP.ps1
    ```
-   Or directly: `python run_swarmz.py`.
+   Or directly: `python run_nexusmon.py`.
 
 2) From your phone on the same Wi‑Fi, open the LAN URL printed (http://<lan>:8012). Install the PWA if prompted.
 
 3) Pair:
    - Base URL defaults to the current page.
-   - Enter Operator PIN (env `SWARMZ_OPERATOR_PIN`, `data/config.json`, or generated in `data/operator_pin.txt`).
+   - Enter Operator PIN (env `NEXUSMON_OPERATOR_PIN`, `data/config.json`, or generated in `data/operator_pin.txt`).
    - Tap Pair. Token is stored locally.
 
 4) Verify endpoints (optional from desktop):
@@ -31,3 +31,4 @@
    ```
 
 Data stays under `./data` and `./packs`. No cloud dependencies.
+

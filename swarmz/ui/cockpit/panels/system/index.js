@@ -1,3 +1,3 @@
-// System panel for SWARMZ cockpit
+﻿// System panel for NEXUSMON cockpit
 
 console.log("System panel loaded");

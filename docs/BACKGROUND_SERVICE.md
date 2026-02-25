@@ -1,6 +1,6 @@
-# Background Service Setup
+﻿# Background Service Setup
 
-This document explains how to set up SWARMZ as a background service.
+This document explains how to set up NEXUSMON as a background service.
 
 ## Supported Platforms
 - Windows
@@ -17,4 +17,4 @@ python tools/install_service.py
 Service logs are stored in `data/logs/service.log`.
 
 ## Fail-Open Principle
-If the service manager is unavailable, SWARMZ will not crash.
+If the service manager is unavailable, NEXUSMON will not crash.

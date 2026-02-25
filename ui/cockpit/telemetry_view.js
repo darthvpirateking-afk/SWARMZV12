@@ -1,3 +1,3 @@
-// Telemetry view module for SWARMZ cockpit
+﻿// Telemetry view module for NEXUSMON cockpit
 
 // Define telemetry view logic here

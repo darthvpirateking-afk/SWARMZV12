@@ -1,6 +1,6 @@
-# Layer-Weaver Control Plane
+﻿# Layer-Weaver Control Plane
 
-Self-contained, event-driven control plane embedded inside Swarmz.
+Self-contained, event-driven control plane embedded inside Nexusmon.
 
 ## Quick Start
 
@@ -58,7 +58,7 @@ run_weaver.cmd --loop --interval 30
    hysteresis (min_duration_active, cooldown_after_exit).
 4. **Score actions** – deterministic scoring with tie-breaking.
 5. **Select or suppress** – best positive score wins; otherwise `NO_ACTION`.
-6. **Execute** – publish task via SwarmzAdapter.
+6. **Execute** – publish task via NexusmonAdapter.
 7. **Log** – append decision to `data/decision_log.jsonl` with config_hash.
 
 ### Verification & Rollback
@@ -190,3 +190,4 @@ Activation conditions in objectives use a restricted expression evaluator:
 - Allowed: numbers, booleans, variable names, `and`/`or`/`not`, parentheses, comparisons
 - **NO** attribute access, function calls, or imports
 - Unknown variables → condition evaluates to `False`
+

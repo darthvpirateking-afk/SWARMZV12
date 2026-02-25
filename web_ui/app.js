@@ -1,6 +1,6 @@
-const state = {
+﻿const state = {
   baseUrl: window.location.origin,
-  token: localStorage.getItem("swarmz_token") || "",
+  token: localStorage.getItem("nexusmon_token") || "",
   runs: [],
   currentRunId: null,
   offlineMode: false,
@@ -345,7 +345,7 @@ async function pairNow() {
     }
 
     state.token = token;
-    localStorage.setItem("swarmz_token", token);
+    localStorage.setItem("nexusmon_token", token);
     setPairStatus("Paired", true);
     setHint("Token stored. Ignition controls activated - operator sovereignty engaged.");
     showIgnitionControls();
@@ -414,7 +414,7 @@ async function refreshHealth() {
 }
 
 async function dispatchNow() {
-  const goal = prompt("Goal (what do you want SWARMZ to do)?", "status");
+  const goal = prompt("Goal (what do you want NEXUSMON to do)?", "status");
   if (!goal) return;
 
   try {
@@ -491,7 +491,7 @@ async function runConsolePrompt() {
       }
       case "clear": {
         const box = $("consoleOutput");
-        if (box) box.innerHTML = "SWARMZ console cleared.";
+        if (box) box.innerHTML = "NEXUSMON console cleared.";
         break;
       }
       default:
@@ -537,7 +537,7 @@ function wireConsolePrompt() {
   $("consoleRunBtn")?.addEventListener("click", () => runConsolePrompt());
   $("consoleClearBtn")?.addEventListener("click", () => {
     const box = $("consoleOutput");
-    if (box) box.innerHTML = "SWARMZ console cleared.";
+    if (box) box.innerHTML = "NEXUSMON console cleared.";
     if (prompt) prompt.value = "";
     highlightCommand("");
     updateAutocomplete("");
@@ -1023,3 +1023,4 @@ function boot() {
 }
 
 document.addEventListener("DOMContentLoaded", boot);
+

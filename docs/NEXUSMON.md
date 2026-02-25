@@ -1,8 +1,8 @@
-# NEXUSMON — Agent Summary
+﻿# NEXUSMON — Agent Summary
 
 ## What Is NEXUSMON?
 
-NEXUSMON is the **conversational interface layer** of the SWARMZ system. It is an evolution-aware AI companion that allows operators (humans) to interact with the SWARMZ runtime through natural language. Rather than clicking through dashboards alone, an operator can type a message such as "Help me plan a mission" or "What is happening right now?" and NEXUSMON replies with contextualised, structured intelligence.
+NEXUSMON is the **conversational interface layer** of the NEXUSMON system. It is an evolution-aware AI companion that allows operators (humans) to interact with the NEXUSMON runtime through natural language. Rather than clicking through dashboards alone, an operator can type a message such as "Help me plan a mission" or "What is happening right now?" and NEXUSMON replies with contextualised, structured intelligence.
 
 NEXUSMON has strict **operator sovereignty invariants**: it never takes autonomous action, never deceives, never flatters, and never pretends to be human. Every reply is grounded in missions, audit trails, or visible system state.
 
@@ -10,10 +10,10 @@ NEXUSMON has strict **operator sovereignty invariants**: it never takes autonomo
 
 ## System Integration
 
-NEXUSMON is mounted on the SWARMZ FastAPI server (`swarmz_server.py`) under the prefix `/v1/nexusmon`. The router import is guarded so the server stays functional even if NEXUSMON dependencies are unavailable:
+NEXUSMON is mounted on the NEXUSMON FastAPI server (`nexusmon_server.py`) under the prefix `/v1/nexusmon`. The router import is guarded so the server stays functional even if NEXUSMON dependencies are unavailable:
 
 ```python
-# swarmz_server.py
+# nexusmon_server.py
 from core.nexusmon_router import router as nexusmon_router
 app.include_router(nexusmon_router)
 ```
@@ -40,7 +40,7 @@ All runtime data is stored as append-only JSONL files under `data/` (which is gi
 
 ### NexusForm — Operator Evolution State
 
-Every operator has a `NexusForm` that represents their current level of mastery in SWARMZ. NEXUSMON adjusts its tone and abstraction based on this form.
+Every operator has a `NexusForm` that represents their current level of mastery in NEXUSMON. NEXUSMON adjusts its tone and abstraction based on this form.
 
 | Form | Description | Persona Tone |
 |------|-------------|--------------|
@@ -186,3 +186,4 @@ These are enforced at the prompt level and in the `PersonaConstraints` model. NE
 6. **Always** ground responses in missions, audit trails, or system structure.
 7. **Never** initiate autonomous actions without operator consent.
 8. **Always** be transparent about uncertainty and its own limits.
+

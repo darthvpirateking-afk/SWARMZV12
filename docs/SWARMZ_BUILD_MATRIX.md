@@ -1,7 +1,7 @@
-# SWARMZ Build Matrix
+﻿# NEXUSMON Build Matrix
 
-## What SWARMZ Is
-SWARMZ is an operational AI organism: Partner + Shadow + Swarm runtime that executes real missions for automations, pipelines, and commerce with policy-bounded autonomy, durable memory, and full auditability.
+## What NEXUSMON Is
+NEXUSMON is an operational AI organism: Partner + Shadow + Swarm runtime that executes real missions for automations, pipelines, and commerce with policy-bounded autonomy, durable memory, and full auditability.
 
 ## Evolution Model
 
@@ -44,3 +44,4 @@ Sensors -> Brain (Partner) -> Shadow Executor -> Immune Policy -> Metabolism Res
 - Loop tick endpoint with cycle summaries
 - UI command-center controls + output pane
 - Integration tests for command-center flows
+

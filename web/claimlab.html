@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ClaimLab — Epistemic Scaffolding</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap');
+
+  :root {
+    --bg:       #0a0c10;
+    --surface:  #0f1218;
+    --border:   #1e2530;
+    --border-h: #2e3d50;
+    --text:     #c8d4e0;
+    --muted:    #4a5a6a;
+    --accent:   #3b9eff;
+    --accent-d: #1a6fd4;
+    --green:    #2dce89;
+    --amber:    #f5a623;
+    --red:      #e84545;
+    --purple:   #8b5cf6;
+    --mono:     'IBM Plex Mono', monospace;
+    --sans:     'IBM Plex Sans', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ── Layout ── */
+  .shell {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    grid-template-rows: 56px 1fr;
+    height: 100vh;
+    gap: 0;
+  }
+
+  .topbar {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 24px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+
+  .topbar-logo {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  .topbar-logo span { color: var(--accent); }
+
+  .topbar-divider { width: 1px; height: 20px; background: var(--border); margin: 0 4px; }
+
+  .topbar-title {
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+
+  .tab-row {
+    display: flex;
+    gap: 2px;
+    margin-left: auto;
+  }
+  .tab {
+    padding: 6px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    font-family: var(--mono);
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    border: none;
+    background: transparent;
+    transition: all 0.15s;
+  }
+  .tab:hover { color: var(--text); background: var(--border); }
+  .tab.active { color: var(--accent); background: rgba(59,158,255,0.08); }
+
+  /* ── Main panel ── */
+  .main {
+    padding: 28px 32px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .section-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+
+  /* ── Input area ── */
+  .claim-input-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .claim-input-wrap:focus-within { border-color: var(--accent); }
+
+  .claim-input-wrap textarea {
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 1.7;
+    padding: 16px 18px 12px;
+    resize: none;
+    min-height: 88px;
+  }
+  .claim-input-wrap textarea::placeholder { color: var(--muted); }
+
+  .claim-input-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 14px;
+    border-top: 1px solid var(--border);
+  }
+
+  .context-toggle {
+    font-size: 11px;
+    color: var(--muted);
+    cursor: pointer;
+    font-family: var(--mono);
+    letter-spacing: 0.06em;
+    background: none;
+    border: none;
+    transition: color 0.15s;
+  }
+  .context-toggle:hover { color: var(--text); }
+
+  .analyze-btn {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 7px 20px;
+    font-size: 12px;
+    font-family: var(--mono);
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: background 0.15s, opacity 0.15s;
+  }
+  .analyze-btn:hover { background: var(--accent-d); }
+  .analyze-btn:disabled { opacity: 0.4; cursor: default; }
+
+  .context-field {
+    display: none;
+    border-top: 1px solid var(--border);
+    padding: 10px 18px;
+  }
+  .context-field.open { display: block; }
+  .context-field textarea {
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--muted);
+    font-family: var(--sans);
+    font-size: 12px;
+    resize: none;
+    min-height: 52px;
+  }
+  .context-field textarea::placeholder { color: var(--border-h); }
+
+  /* ── Analysis output ── */
+  .analysis-output { display: none; flex-direction: column; gap: 14px; }
+  .analysis-output.visible { display: flex; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px 18px;
+  }
+  .card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .card-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .badge {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-weight: 500;
+    text-transform: uppercase;
+  }
+  .badge-blue   { background: rgba(59,158,255,0.12); color: var(--accent); }
+  .badge-green  { background: rgba(45,206,137,0.12); color: var(--green); }
+  .badge-amber  { background: rgba(245,166,35,0.12); color: var(--amber); }
+  .badge-purple { background: rgba(139,92,246,0.12); color: var(--purple); }
+  .badge-red    { background: rgba(232,69,69,0.12);  color: var(--red); }
+  .badge-muted  { background: var(--border); color: var(--muted); }
+
+  .card-body { font-size: 13px; line-height: 1.65; }
+
+  .pill-list { display: flex; flex-wrap: wrap; gap: 6px; }
+  .pill {
+    font-size: 11px;
+    font-family: var(--mono);
+    padding: 3px 10px;
+    border-radius: 3px;
+    background: var(--border);
+    color: var(--text);
+    border: 1px solid var(--border-h);
+  }
+
+  .falsify-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .falsify-col h4 {
+    font-size: 10px;
+    font-family: var(--mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .falsify-col.support h4 { color: var(--green); }
+  .falsify-col.falsify h4 { color: var(--red); }
+  .falsify-col ul { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+  .falsify-col ul li {
+    font-size: 12px;
+    padding-left: 12px;
+    position: relative;
+    color: var(--text);
+    opacity: 0.85;
+  }
+  .falsify-col ul li::before { content: '—'; position: absolute; left: 0; color: var(--muted); }
+
+  .bias-list { display: flex; flex-direction: column; gap: 10px; }
+  .bias-item {}
+  .bias-name { font-weight: 600; font-size: 12px; color: var(--amber); margin-bottom: 2px; }
+  .bias-desc { font-size: 12px; color: var(--text); opacity: 0.8; }
+
+  /* uncertainty meter */
+  .uncertainty-bar-wrap { margin-top: 8px; }
+  .uncertainty-bar {
+    height: 3px;
+    border-radius: 2px;
+    background: var(--border);
+    overflow: hidden;
+    margin-top: 6px;
+  }
+  .uncertainty-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+
+  /* loading */
+  .loader {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    padding: 8px 0;
+  }
+  .loader.visible { display: flex; }
+  .loader-dots span {
+    display: inline-block;
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 1.2s infinite;
+  }
+  .loader-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .loader-dots span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes pulse { 0%,80%,100%{opacity:0.2} 40%{opacity:1} }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    border-left: 1px solid var(--border);
+    background: var(--surface);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sidebar-head {
+    padding: 18px 20px 12px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .sidebar-head h2 {
+    font-size: 11px;
+    font-family: var(--mono);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .belief-form {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .belief-form.hidden { display: none; }
+
+  .form-field input, .form-field textarea {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 12px;
+    padding: 8px 10px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .form-field input:focus, .form-field textarea:focus { border-color: var(--accent); }
+  .form-field textarea { resize: none; min-height: 56px; }
+  .form-field label {
+    display: block;
+    font-size: 10px;
+    font-family: var(--mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 5px;
+  }
+
+  .confidence-row { display: flex; align-items: center; gap: 10px; }
+  .confidence-row input[type=range] {
+    flex: 1;
+    -webkit-appearance: none;
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    outline: none;
+    border: none;
+    padding: 0;
+  }
+  .confidence-row input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+  }
+  .confidence-val {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+    min-width: 34px;
+    text-align: right;
+  }
+
+  .form-actions { display: flex; gap: 6px; }
+  .btn-sm {
+    flex: 1;
+    padding: 7px;
+    font-size: 11px;
+    font-family: var(--mono);
+    letter-spacing: 0.06em;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-sm:hover { color: var(--text); border-color: var(--border-h); }
+  .btn-sm.primary {
+    background: rgba(59,158,255,0.1);
+    border-color: rgba(59,158,255,0.3);
+    color: var(--accent);
+  }
+  .btn-sm.primary:hover { background: rgba(59,158,255,0.18); }
+
+  .belief-list { flex: 1; overflow-y: auto; padding: 8px 0; }
+  .belief-item {
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: background 0.1s;
+    position: relative;
+  }
+  .belief-item:hover { background: rgba(255,255,255,0.02); }
+  .belief-claim {
+    font-size: 12px;
+    line-height: 1.5;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+  .belief-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .belief-conf {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.06em;
+  }
+  .belief-date { font-size: 10px; color: var(--muted); }
+
+  .conf-bar {
+    height: 2px;
+    background: var(--border);
+    border-radius: 1px;
+    overflow: hidden;
+    margin-bottom: 6px;
+  }
+  .conf-bar-fill { height: 100%; border-radius: 1px; }
+
+  .belief-revisions { font-size: 10px; color: var(--muted); font-family: var(--mono); }
+
+  .empty-state {
+    padding: 32px 20px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.7;
+  }
+  .empty-state .icon { font-size: 28px; margin-bottom: 10px; opacity: 0.4; }
+
+  /* ── View tabs for sidebar ── */
+  .panel { display: none; }
+  .panel.active { display: flex; flex-direction: column; flex: 1; }
+
+  /* ── Belief detail overlay ── */
+  .detail-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+  }
+  .detail-overlay.open { display: flex; }
+  .detail-box {
+    background: var(--surface);
+    border: 1px solid var(--border-h);
+    border-radius: 8px;
+    width: 560px;
+    max-height: 80vh;
+    overflow-y: auto;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .detail-header { display: flex; align-items: flex-start; justify-content: space-between; }
+  .detail-header h3 { font-size: 14px; font-weight: 500; line-height: 1.5; max-width: 440px; }
+  .close-btn {
+    background: none; border: none; color: var(--muted);
+    font-size: 18px; cursor: pointer; line-height: 1;
+    transition: color 0.15s;
+  }
+  .close-btn:hover { color: var(--text); }
+
+  .revision-log { display: flex; flex-direction: column; gap: 8px; }
+  .revision-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px;
+    background: var(--bg);
+    border-radius: 4px;
+    border: 1px solid var(--border);
+  }
+  .revision-delta {
+    font-family: var(--mono);
+    font-size: 11px;
+    min-width: 50px;
+    text-align: right;
+    font-weight: 500;
+  }
+  .delta-pos { color: var(--green); }
+  .delta-neg { color: var(--red); }
+  .delta-zero { color: var(--muted); }
+  .revision-evidence { font-size: 12px; color: var(--text); flex: 1; }
+  .revision-date { font-size: 10px; color: var(--muted); font-family: var(--mono); white-space: nowrap; }
+
+  .update-form { display: flex; flex-direction: column; gap: 10px; }
+  .update-form h4 {
+    font-size: 10px;
+    font-family: var(--mono);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .update-form textarea {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 12px;
+    padding: 8px 10px;
+    outline: none;
+    resize: none;
+    min-height: 60px;
+  }
+  .update-form textarea:focus { border-color: var(--accent); }
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <!-- Top bar -->
+  <header class="topbar">
+    <div class="topbar-logo">NEXUSMON / <span>ClaimLab</span></div>
+    <div class="topbar-divider"></div>
+    <div class="topbar-title">Epistemic Scaffolding</div>
+    <div class="tab-row">
+      <button class="tab active" onclick="switchTab('analyze')">Analyze</button>
+      <button class="tab" onclick="switchTab('beliefs')">Belief Tracker</button>
+    </div>
+  </header>
+
+  <!-- Main panel -->
+  <main class="main">
+
+    <!-- Analyze panel -->
+    <div id="panel-analyze" class="panel active">
+      <div class="section-label">Paste a claim — news headline, quote, assertion</div>
+
+      <div class="claim-input-wrap">
+        <textarea id="claim-input" rows="3" placeholder="E.g. 'Remote work increases productivity by 13%' or 'Social media is making teenagers more anxious.'"></textarea>
+        <div class="context-field" id="context-field">
+          <textarea id="context-input" rows="2" placeholder="Optional context: article headline, conversation, source…"></textarea>
+        </div>
+        <div class="claim-input-footer">
+          <button class="context-toggle" onclick="toggleContext()">+ add context</button>
+          <button class="analyze-btn" id="analyze-btn" onclick="runAnalysis()">Analyze →</button>
+        </div>
+      </div>
+
+      <div class="loader" id="loader">
+        <div class="loader-dots"><span></span><span></span><span></span></div>
+        Decomposing claim structure…
+      </div>
+
+      <div class="analysis-output" id="analysis-output">
+
+        <!-- Exact claim -->
+        <div class="card">
+          <div class="card-head">
+            <div class="card-label">Exact Claim</div>
+            <span class="badge badge-muted" id="source-badge">ai</span>
+          </div>
+          <div class="card-body" id="out-exact-claim" style="font-style:italic;opacity:0.9;"></div>
+        </div>
+
+        <!-- Type + uncertainty -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <div class="card">
+            <div class="card-head">
+              <div class="card-label">Claim Type</div>
+              <span class="badge" id="out-type-badge">—</span>
+            </div>
+            <div class="card-body" id="out-type-reasoning" style="font-size:12px;opacity:0.8;"></div>
+          </div>
+          <div class="card">
+            <div class="card-head">
+              <div class="card-label">Uncertainty</div>
+              <span class="badge" id="out-uncertainty-badge">—</span>
+            </div>
+            <div class="card-body">
+              <div style="font-size:12px;opacity:0.8;" id="out-uncertainty-reason"></div>
+              <div class="uncertainty-bar">
+                <div class="uncertainty-bar-fill" id="out-uncertainty-fill"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Component claims -->
+        <div class="card" id="card-components">
+          <div class="card-head">
+            <div class="card-label">Component Claims</div>
+          </div>
+          <div class="card-body pill-list" id="out-components"></div>
+        </div>
+
+        <!-- Falsifiability -->
+        <div class="card">
+          <div class="card-head">
+            <div class="card-label">Falsifiability</div>
+            <span class="badge" id="out-falsifiable-badge">—</span>
+          </div>
+          <div class="falsify-grid">
+            <div class="falsify-col support">
+              <h4>Would Support</h4>
+              <ul id="out-support"></ul>
+            </div>
+            <div class="falsify-col falsify">
+              <h4>Would Falsify</h4>
+              <ul id="out-falsify"></ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Measurables -->
+        <div class="card" id="card-measurables">
+          <div class="card-head">
+            <div class="card-label">Measurable Quantities Implied</div>
+          </div>
+          <div class="card-body pill-list" id="out-measurables"></div>
+        </div>
+
+        <!-- Biases -->
+        <div class="card" id="card-biases">
+          <div class="card-head">
+            <div class="card-label">Cognitive Biases at Play</div>
+          </div>
+          <div class="card-body bias-list" id="out-biases"></div>
+        </div>
+
+        <!-- Log as belief -->
+        <div style="display:flex;justify-content:flex-end">
+          <button class="analyze-btn" onclick="prefillBeliefFromAnalysis()">Log as Belief →</button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Beliefs panel (main area, hidden by default) -->
+    <div id="panel-beliefs-main" class="panel">
+      <div class="section-label">Bayesian belief tracker — log what you believe, revisit when evidence arrives</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+        <button class="analyze-btn" onclick="openNewBeliefForm()">+ New Belief</button>
+        <span style="font-size:12px;color:var(--muted);font-family:var(--mono)" id="belief-count-main"></span>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Sidebar: belief tracker -->
+  <aside class="sidebar">
+    <div class="sidebar-head">
+      <h2>Belief Tracker</h2>
+      <button class="btn-sm" onclick="openNewBeliefForm()" style="flex:none;width:auto;padding:4px 10px">+ New</button>
+    </div>
+
+    <!-- New belief form -->
+    <div class="belief-form hidden" id="belief-form">
+      <div class="form-field">
+        <label>Claim</label>
+        <textarea id="bf-claim" rows="2" placeholder="What do you believe?"></textarea>
+      </div>
+      <div class="form-field">
+        <label>Confidence <span style="color:var(--text)" id="conf-pct">50%</span></label>
+        <div class="confidence-row">
+          <input type="range" id="bf-confidence" min="0" max="100" value="50"
+                 oninput="document.getElementById('conf-pct').textContent=this.value+'%'">
+          <span class="confidence-val" id="conf-val">0.50</span>
+        </div>
+      </div>
+      <div class="form-field">
+        <label>Rationale (optional)</label>
+        <textarea id="bf-rationale" rows="2" placeholder="Why do you hold this?"></textarea>
+      </div>
+      <div class="form-actions">
+        <button class="btn-sm" onclick="cancelBeliefForm()">Cancel</button>
+        <button class="btn-sm primary" onclick="saveBelief()">Log Belief</button>
+      </div>
+    </div>
+
+    <!-- Belief list -->
+    <div class="belief-list" id="belief-list">
+      <div class="empty-state">
+        <div class="icon">◎</div>
+        No beliefs logged yet.<br>
+        Analyze a claim or use the<br>+ New button to start tracking.
+      </div>
+    </div>
+  </aside>
+</div>
+
+<!-- Belief detail overlay -->
+<div class="detail-overlay" id="detail-overlay">
+  <div class="detail-box">
+    <div class="detail-header">
+      <h3 id="detail-claim"></h3>
+      <button class="close-btn" onclick="closeDetail()">×</button>
+    </div>
+    <div id="detail-conf-row" style="display:flex;align-items:center;gap:12px">
+      <span class="section-label" style="margin:0">Current Confidence</span>
+      <span class="badge badge-blue" id="detail-conf-val"></span>
+      <span class="belief-date" id="detail-revised"></span>
+    </div>
+    <div>
+      <div class="section-label">Revision History</div>
+      <div class="revision-log" id="detail-revisions">
+        <div style="color:var(--muted);font-size:12px">No revisions yet.</div>
+      </div>
+    </div>
+    <div class="update-form">
+      <h4>Update Belief</h4>
+      <div class="confidence-row">
+        <input type="range" id="detail-conf-slider" min="0" max="100" value="50"
+               oninput="document.getElementById('detail-conf-live').textContent=this.value+'%'">
+        <span class="confidence-val" id="detail-conf-live">50%</span>
+      </div>
+      <textarea id="detail-evidence" placeholder="What new evidence changed your view?"></textarea>
+      <button class="analyze-btn" onclick="submitRevision()">Update →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = '';  // same origin
+
+let currentAnalysis = null;
+let currentBeliefId = null;
+
+// ── Tab switching ──────────────────────────────────────────────
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('panel-' + (tab === 'analyze' ? 'analyze' : 'beliefs-main'))?.classList.add('active');
+  if (tab === 'analyze') document.getElementById('panel-analyze').classList.add('active');
+  if (tab === 'beliefs') document.getElementById('panel-beliefs-main').classList.add('active');
+  if (tab === 'beliefs') loadBeliefs();
+}
+
+// ── Context toggle ─────────────────────────────────────────────
+function toggleContext() {
+  const f = document.getElementById('context-field');
+  f.classList.toggle('open');
+}
+
+// ── Claim analysis ─────────────────────────────────────────────
+async function runAnalysis() {
+  const claim = document.getElementById('claim-input').value.trim();
+  if (!claim) return;
+  const context = document.getElementById('context-input').value.trim() || null;
+
+  document.getElementById('analyze-btn').disabled = true;
+  document.getElementById('loader').classList.add('visible');
+  document.getElementById('analysis-output').classList.remove('visible');
+
+  try {
+    const res = await fetch(API + '/v1/claimlab/analyze', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ claim, context }),
+    });
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.detail || 'API error');
+    currentAnalysis = data;
+    renderAnalysis(data);
+  } catch (err) {
+    alert('Analysis failed: ' + err.message);
+  } finally {
+    document.getElementById('analyze-btn').disabled = false;
+    document.getElementById('loader').classList.remove('visible');
+  }
+}
+
+function renderAnalysis(data) {
+  const a = data.analysis;
+
+  // Source badge
+  const sb = document.getElementById('source-badge');
+  sb.textContent = data.source === 'ai' ? 'AI' : 'heuristic';
+  sb.className = 'badge ' + (data.source === 'ai' ? 'badge-green' : 'badge-amber');
+
+  // Exact claim
+  document.getElementById('out-exact-claim').textContent = a.exact_claim || data.claim;
+
+  // Type
+  const typeMap = { descriptive: 'badge-blue', normative: 'badge-purple', mixed: 'badge-amber' };
+  const tb = document.getElementById('out-type-badge');
+  tb.textContent = a.claim_type || '—';
+  tb.className = 'badge ' + (typeMap[a.claim_type] || 'badge-muted');
+  document.getElementById('out-type-reasoning').textContent = a.claim_type_reasoning || '';
+
+  // Uncertainty
+  const uMap = { low: { cls: 'badge-green', w: '25%', col: '#2dce89' },
+                  medium: { cls: 'badge-amber', w: '55%', col: '#f5a623' },
+                  high: { cls: 'badge-red', w: '85%', col: '#e84545' },
+                  indeterminate: { cls: 'badge-muted', w: '50%', col: '#4a5a6a' } };
+  const u = uMap[a.uncertainty_level] || uMap.indeterminate;
+  const ub = document.getElementById('out-uncertainty-badge');
+  ub.textContent = a.uncertainty_level || '—';
+  ub.className = 'badge ' + u.cls;
+  document.getElementById('out-uncertainty-reason').textContent = a.uncertainty_reasoning || '';
+  const fill = document.getElementById('out-uncertainty-fill');
+  fill.style.width = u.w;
+  fill.style.background = u.col;
+
+  // Component claims
+  const comps = a.component_claims || [];
+  const compEl = document.getElementById('out-components');
+  compEl.innerHTML = '';
+  comps.forEach(c => {
+    const p = document.createElement('span');
+    p.className = 'pill';
+    p.textContent = c;
+    compEl.appendChild(p);
+  });
+  document.getElementById('card-components').style.display = comps.length <= 1 ? 'none' : 'block';
+
+  // Falsifiability
+  const fb = document.getElementById('out-falsifiable-badge');
+  const fals = a.falsifiability || {};
+  fb.textContent = fals.falsifiable ? 'Falsifiable' : 'Not falsifiable';
+  fb.className = 'badge ' + (fals.falsifiable ? 'badge-green' : 'badge-red');
+
+  const renderList = (elId, items) => {
+    const el = document.getElementById(elId);
+    el.innerHTML = '';
+    (items || []).forEach(item => {
+      const li = document.createElement('li');
+      li.textContent = item;
+      el.appendChild(li);
+    });
+  };
+  renderList('out-support', fals.conditions_that_would_support);
+  renderList('out-falsify', fals.conditions_that_would_falsify);
+
+  // Measurables
+  const meEl = document.getElementById('out-measurables');
+  meEl.innerHTML = '';
+  (a.measurable_quantities || []).forEach(m => {
+    const p = document.createElement('span');
+    p.className = 'pill';
+    p.textContent = m;
+    meEl.appendChild(p);
+  });
+  document.getElementById('card-measurables').style.display =
+    (a.measurable_quantities || []).length === 0 ? 'none' : 'block';
+
+  // Biases
+  const biasEl = document.getElementById('out-biases');
+  biasEl.innerHTML = '';
+  (a.cognitive_biases_at_play || []).forEach(b => {
+    const d = document.createElement('div');
+    d.className = 'bias-item';
+    d.innerHTML = `<div class="bias-name">${b.bias}</div><div class="bias-desc">${b.explanation}</div>`;
+    biasEl.appendChild(d);
+  });
+  document.getElementById('card-biases').style.display =
+    (a.cognitive_biases_at_play || []).length === 0 ? 'none' : 'block';
+
+  document.getElementById('analysis-output').classList.add('visible');
+}
+
+// ── Belief form ────────────────────────────────────────────────
+function openNewBeliefForm() {
+  document.getElementById('belief-form').classList.remove('hidden');
+  document.getElementById('bf-claim').focus();
+}
+function cancelBeliefForm() {
+  document.getElementById('belief-form').classList.add('hidden');
+  document.getElementById('bf-claim').value = '';
+  document.getElementById('bf-rationale').value = '';
+  document.getElementById('bf-confidence').value = 50;
+  document.getElementById('conf-pct').textContent = '50%';
+  document.getElementById('conf-val').textContent = '0.50';
+}
+
+document.getElementById('bf-confidence').addEventListener('input', function() {
+  document.getElementById('conf-val').textContent = (this.value / 100).toFixed(2);
+});
+
+function prefillBeliefFromAnalysis() {
+  if (!currentAnalysis) return;
+  document.getElementById('bf-claim').value = currentAnalysis.analysis.exact_claim || currentAnalysis.claim;
+  openNewBeliefForm();
+}
+
+async function saveBelief() {
+  const claim = document.getElementById('bf-claim').value.trim();
+  if (!claim) return;
+  const confidence = parseInt(document.getElementById('bf-confidence').value) / 100;
+  const rationale = document.getElementById('bf-rationale').value.trim() || null;
+
+  try {
+    const res = await fetch(API + '/v1/claimlab/beliefs', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ claim, confidence, rationale, tags: [] }),
+    });
+    const data = await res.json();
+    if (!data.ok) throw new Error('Save failed');
+    cancelBeliefForm();
+    loadBeliefs();
+  } catch (err) {
+    alert('Failed to save belief: ' + err.message);
+  }
+}
+
+// ── Beliefs list ───────────────────────────────────────────────
+async function loadBeliefs() {
+  try {
+    const res = await fetch(API + '/v1/claimlab/beliefs');
+    const data = await res.json();
+    if (!data.ok) return;
+    renderBeliefs(data.beliefs || []);
+    const c = document.getElementById('belief-count-main');
+    if (c) c.textContent = data.count + ' beliefs tracked';
+  } catch (e) { /* network error, ignore */ }
+}
+
+function confColor(c) {
+  if (c >= 0.8) return '#2dce89';
+  if (c >= 0.5) return '#3b9eff';
+  if (c >= 0.3) return '#f5a623';
+  return '#e84545';
+}
+
+function renderBeliefs(beliefs) {
+  const el = document.getElementById('belief-list');
+  if (!beliefs.length) {
+    el.innerHTML = `<div class="empty-state"><div class="icon">◎</div>No beliefs logged yet.<br>Analyze a claim or use the<br>+ New button to start tracking.</div>`;
+    return;
+  }
+  el.innerHTML = '';
+  beliefs.forEach(b => {
+    const conf = b.confidence || 0;
+    const color = confColor(conf);
+    const div = document.createElement('div');
+    div.className = 'belief-item';
+    div.onclick = () => openDetail(b);
+    div.innerHTML = `
+      <div class="conf-bar"><div class="conf-bar-fill" style="width:${conf*100}%;background:${color}"></div></div>
+      <div class="belief-claim">${b.claim}</div>
+      <div class="belief-meta">
+        <span class="belief-conf" style="color:${color}">${Math.round(conf*100)}%</span>
+        <span class="belief-date">${fmtDate(b.revised_at)}</span>
+        ${b.revision_count > 0 ? `<span class="belief-revisions">· ${b.revision_count} revision${b.revision_count>1?'s':''}</span>` : ''}
+      </div>
+    `;
+    el.appendChild(div);
+  });
+}
+
+function fmtDate(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
+// ── Belief detail ──────────────────────────────────────────────
+function openDetail(belief) {
+  currentBeliefId = belief.id;
+  document.getElementById('detail-claim').textContent = belief.claim;
+  document.getElementById('detail-conf-val').textContent = Math.round(belief.confidence * 100) + '%';
+  document.getElementById('detail-revised').textContent = 'Revised ' + fmtDate(belief.revised_at);
+  document.getElementById('detail-conf-slider').value = Math.round(belief.confidence * 100);
+  document.getElementById('detail-conf-live').textContent = Math.round(belief.confidence * 100) + '%';
+  document.getElementById('detail-evidence').value = '';
+
+  const log = document.getElementById('detail-revisions');
+  const history = belief.revision_history || [];
+  if (!history.length) {
+    log.innerHTML = '<div style="color:var(--muted);font-size:12px">No revisions yet.</div>';
+  } else {
+    log.innerHTML = '';
+    [...history].reverse().forEach(r => {
+      const delta = r.delta || 0;
+      const deltaStr = delta > 0 ? '+' + (delta*100).toFixed(0)+'%' : (delta*100).toFixed(0)+'%';
+      const deltaClass = delta > 0 ? 'delta-pos' : delta < 0 ? 'delta-neg' : 'delta-zero';
+      const div = document.createElement('div');
+      div.className = 'revision-row';
+      div.innerHTML = `
+        <span class="revision-delta ${deltaClass}">${deltaStr}</span>
+        <span class="revision-evidence">${r.evidence}</span>
+        <span class="revision-date">${fmtDate(r.revised_at)}</span>
+      `;
+      log.appendChild(div);
+    });
+  }
+
+  document.getElementById('detail-overlay').classList.add('open');
+}
+
+function closeDetail() {
+  document.getElementById('detail-overlay').classList.remove('open');
+  currentBeliefId = null;
+}
+
+async function submitRevision() {
+  if (!currentBeliefId) return;
+  const confidence = parseInt(document.getElementById('detail-conf-slider').value) / 100;
+  const evidence = document.getElementById('detail-evidence').value.trim();
+  if (!evidence) { alert('Please describe the evidence that changed your view.'); return; }
+
+  try {
+    const res = await fetch(API + '/v1/claimlab/beliefs/' + currentBeliefId, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ confidence, evidence }),
+    });
+    const data = await res.json();
+    if (!data.ok) throw new Error('Update failed');
+    closeDetail();
+    loadBeliefs();
+  } catch (err) {
+    alert('Failed: ' + err.message);
+  }
+}
+
+// Keyboard close
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDetail(); });
+
+// Load on startup
+loadBeliefs();
+</script>
+</body>
+</html>

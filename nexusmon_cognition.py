@@ -666,6 +666,11 @@ async def create_prediction(payload: PredictionCreate):
         "created_at": _utc(),
     }
     _append_jsonl(_PRED_PATH(), record)
+    try:
+        from nexusmon_operator_rank import award_xp as _rank_xp
+        _rank_xp("log_prediction", detail=pid)
+    except Exception:
+        pass
     return {"ok": True, "prediction_id": pid, "prediction": record}
 
 
@@ -808,6 +813,11 @@ async def create_autopsy(payload: DecisionAutopsyCreate):
         "created_at": _utc(),
     }
     _append_jsonl(_AUTOPSY_PATH(), record)
+    try:
+        from nexusmon_operator_rank import award_xp as _rank_xp
+        _rank_xp("decision_autopsy", detail=record["id"])
+    except Exception:
+        pass
     return {
         "ok": True,
         "autopsy_id": record["id"],
@@ -896,6 +906,11 @@ async def log_error(payload: ErrorCreate):
         "created_at": _utc(),
     }
     _append_jsonl(_ERR_PATH(), record)
+    try:
+        from nexusmon_operator_rank import award_xp as _rank_xp
+        _rank_xp("log_cognition_error", detail=record["id"])
+    except Exception:
+        pass
     return {"ok": True, "error_id": record["id"], "classified_as": record["error_type"]}
 
 

@@ -1,1 +1,2 @@
-SWARMZ_AUTHORITY=official
+﻿NEXUSMON_AUTHORITY=official
+
