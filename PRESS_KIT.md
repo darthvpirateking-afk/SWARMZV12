@@ -2,35 +2,44 @@
 
 All launch content for NEXUSMON — doctrine, launch thread, pitch deck, architecture diagrams, taglines, press release.
 
+```text
+      ◇      △      ◯
+    ┌──────────────────────┐
+    │      NEXUSMON        │
+    │   EXECUTION SYSTEM   │
+    └──────────────────────┘
+      ◯      ✶      ◇
+```
+
 ---
 
 ## ONE-LINER
 
-NEXUSMON is an open-source governed autonomy organism — a mission execution system that decomposes goals into tasks, runs workers, stores versioned artifacts, and evolves its own capabilities based on your history. One operator. Full control. No vendor lock-in.
+NEXUSMON is an open-source governed autonomy system — mission execution infrastructure that decomposes goals into tasks, runs workers, stores versioned artifacts, and evolves capabilities from real performance history. One operator. Full control. No vendor lock-in.
 
 ---
 
 ## DOCTRINE
 
-**1. THE OPERATOR IS SOVEREIGN**
+**1. OPERATOR SOVEREIGNTY**
 One operator. One organism. Non-transferable bond earned through use. The system exists to serve the operator, not the platform.
 
-**2. AUTONOMY IS EARNED, NOT GRANTED**
+**2. EARNED AUTONOMY**
 Every capability must be unlocked through demonstrated performance. You don't start with autonomous execution. You earn it. E-rank missions first. S-rank when the system has proven itself.
 
-**3. GOVERNANCE IS NOT OPTIONAL**
+**3. MANDATORY GOVERNANCE**
 Every action is logged. Every artifact is versioned. Every A/S-rank mission requires explicit approval. Reproducibility is legitimacy. If you can't replay it, it didn't happen.
 
-**4. EVOLUTION IS CAPABILITY, NOT PERSONALITY**
+**4. CAPABILITY-BASED EVOLUTION**
 Traits are permissions. Stages are access levels. The organism does not have feelings. It has an expanding operational envelope. DORMANT cannot spawn workers. SOVEREIGN can chain them autonomously. That is the only difference that matters.
 
 **5. INFRASTRUCTURE BEFORE AESTHETICS**
 The cockpit is real only if the engine is real. The evolution is meaningful only if the permissions are enforced. Build the nervous system first. Dress it after.
 
-**6. OPEN BY DESIGN**
+**6. OPEN ARCHITECTURE**
 Workers are plugins. Missions are templates. Evolution paths are modules. If a contributor cannot add capability without editing core code, the architecture has failed.
 
-**7. LOCAL FIRST**
+**7. LOCAL-FIRST OWNERSHIP**
 All data belongs to the operator. No cloud dependency required. The organism runs on your hardware, stores to your disk, answers to no one but you.
 
 ---
@@ -42,7 +51,7 @@ I've been building an autonomous execution system called NEXUSMON.
 
 Not a chatbot. Not an agent wrapper. Not another LLM dashboard.
 
-A governed autonomy organism — mission engine, worker swarm, artifact vault, evolution layer. One operator. Full control.
+A governed autonomy system — mission engine, worker swarm, artifact vault, evolution layer. One operator. Full control.
 
 Here's what it actually is:
 
