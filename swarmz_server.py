@@ -1447,6 +1447,29 @@ async def companion_message(request: Request):
         return JSONResponse({"ok": False, "error": str(e)}, status_code=500)
 
 
+# --- Companion Memory ---
+@app.get("/v1/companion/memory")
+async def get_companion_memory(limit: int = 10):
+    """Return recent voice/text conversation history."""
+    try:
+        from nexusmon_organism import _load_jsonl, _data_dir
+        history = _load_jsonl(_data_dir() / "companion_memory.jsonl")
+        return {"ok": True, "history": history[-limit:]}
+    except Exception as e:
+        return {"ok": False, "history": [], "error": str(e)}
+
+@app.post("/v1/companion/memory/save")
+async def save_companion_memory(request: Request):
+    """Append a conversation turn to memory."""
+    try:
+        from nexusmon_organism import _append_jsonl, _data_dir
+        entry = await request.json()
+        _append_jsonl(_data_dir() / "companion_memory.jsonl", entry)
+        return {"ok": True}
+    except Exception as e:
+        return {"ok": False, "error": str(e)}
+
+
 # --- NEXUSMON WebSocket — real-time chat ---
 @app.websocket("/ws/nexusmon")
 async def nexusmon_websocket(websocket: WebSocket):

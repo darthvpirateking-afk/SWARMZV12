@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>NEXUSMON</title>
+<script src="https://cdn.jsdelivr.net/npm/elevenlabs@latest/elevenlabs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+<script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:#05050f;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:'Courier New',monospace;color:#fff;overflow:hidden}
@@ -122,6 +126,18 @@ canvas{position:fixed;top:0;left:0;z-index:0}
     </div>
   </div>
 </div>
+<a-scene id="ar-scene" embedded arjs="trackingMethod: best;" style="display:none;position:fixed;inset:0;z-index:9999">
+  <a-marker preset="hiro">
+    <a-box position="0 0.5 0" material="color:#00ccff;opacity:0.8"></a-box>
+  </a-marker>
+  <a-entity camera></a-entity>
+</a-scene>
+<button id="ar-toggle" style="position:fixed;bottom:80px;right:20px;padding:12px 20px;background:#aa44ff;color:#fff;border:none;border-radius:8px;cursor:pointer;z-index:100;font-family:'Courier New',monospace;font-weight:bold;letter-spacing:1px">
+  AR: OFF
+</button>
+<button id="voice-toggle" style="position:fixed;bottom:20px;right:20px;padding:12px 20px;background:#00ccff;color:#000;border:none;border-radius:8px;cursor:pointer;z-index:100;font-family:'Courier New',monospace;font-weight:bold;letter-spacing:1px">
+  MIC: OFF
+</button>
 <div class="scanlines"></div>
 
 <script>
@@ -215,6 +231,7 @@ async function load(){
       const svg = document.getElementById('svg');
       svg.classList.add('digivolve');
       setTimeout(() => svg.classList.remove('digivolve'), 2400);
+      playMorph(t);
       lastTier = t;
     }
     root.className = `container tier-${t}`;
@@ -245,6 +262,174 @@ async function load(){
 }
 load();
 setInterval(load, 7000);
+
+// ── Config ────────────────────────────────────────────────
+const ELEVENLABS_KEY = ''; // elevenlabs.io free key — leave blank for browser TTS
+const VOICE_ID = '21m00Tcm4TlvDq8ikWAM'; // Rachel — swap for any ElevenLabs voice ID
+
+// ── Voice Input ───────────────────────────────────────────
+let recognition = null;
+let micActive = false;
+const voiceBtn = document.getElementById('voice-toggle');
+
+if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
+  recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+  recognition.continuous = true;
+  recognition.interimResults = false;
+  recognition.lang = 'en-US';
+  recognition.onresult = async (ev) => {
+    const text = ev.results[ev.results.length - 1][0].transcript.trim();
+    if (text) await handleVoiceCommand(text);
+  };
+  recognition.onerror = (e) => console.error('Voice error:', e.error);
+  recognition.onend = () => { if (micActive) recognition.start(); };
+} else {
+  voiceBtn.style.opacity = '0.4';
+  voiceBtn.title = 'SpeechRecognition not supported';
+}
+
+voiceBtn.addEventListener('click', () => {
+  if (!recognition) return;
+  micActive = !micActive;
+  if (micActive) {
+    recognition.start();
+    voiceBtn.textContent = 'MIC: ON';
+    voiceBtn.style.background = '#00ff99';
+  } else {
+    recognition.stop();
+    voiceBtn.textContent = 'MIC: OFF';
+    voiceBtn.style.background = '#00ccff';
+  }
+});
+
+async function handleVoiceCommand(text) {
+  const lower = text.toLowerCase();
+  if (lower.includes('summon scouts') || lower.includes('summon shadows')) {
+    await summonShadows(3, text.split('for')[1]?.trim() || '');
+    return;
+  }
+  if (lower.includes('ar mode') || lower.includes('augmented reality')) {
+    toggleAR(); return;
+  }
+  await sendToCompanion(text);
+}
+
+async function sendToCompanion(text) {
+  try {
+    const res = await fetch('/v1/companion/message', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text, source: 'voice' })
+    });
+    if (!res.ok) throw new Error('Companion failed');
+    const data = await res.json();
+    const reply = data.reply || 'Acknowledged, Operator.';
+    if (ELEVENLABS_KEY) {
+      try { new Audio(await elevenLabsAudio(reply)).play(); }
+      catch { fallbackSpeak(reply); }
+    } else {
+      fallbackSpeak(reply);
+    }
+    await saveMemory(text, reply);
+  } catch(e) {
+    console.error('Companion error:', e);
+    fallbackSpeak('Connection to core failed.');
+  }
+}
+
+async function elevenLabsAudio(text) {
+  const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${VOICE_ID}`, {
+    method: 'POST',
+    headers: { 'Accept': 'audio/mpeg', 'xi-api-key': ELEVENLABS_KEY, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text, model_id: 'eleven_monolingual_v1',
+      voice_settings: { stability: 0.5, similarity_boost: 0.8 } })
+  });
+  if (!res.ok) throw new Error('ElevenLabs error');
+  return URL.createObjectURL(await res.blob());
+}
+
+function fallbackSpeak(text) {
+  const u = new SpeechSynthesisUtterance(text);
+  u.rate = 1.0; u.pitch = 0.9;
+  speechSynthesis.speak(u);
+}
+
+// ── Persistent Memory ─────────────────────────────────────
+async function saveMemory(userText, aiText) {
+  try {
+    await fetch('/v1/companion/memory/save', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user: userText, ai: aiText, timestamp: new Date().toISOString() })
+    });
+  } catch(e) {}
+}
+
+async function loadMemory() {
+  try {
+    const res = await fetch('/v1/companion/memory?limit=10');
+    const data = await res.json();
+    console.log('[NEXUSMON] Memory loaded:', data.history?.length || 0, 'entries');
+  } catch(e) {}
+}
+loadMemory();
+
+// ── Shadow Summons ────────────────────────────────────────
+async function summonShadows(count = 3, goalSuffix = '') {
+  const goal = goalSuffix ? `Scout intel on: ${goalSuffix}` : 'Gather situational intel';
+  fallbackSpeak(`Summoning ${count} shadow scouts.`);
+  const reports = [];
+  for (let i = 0; i < count; i++) {
+    try {
+      const cr = await fetch('/v1/engine/missions', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ goal: `${goal} #${i+1}`, rank: 'E' })
+      });
+      const m = await cr.json();
+      const mid = m.mission?.id;
+      if (mid) {
+        await fetch(`/v1/engine/missions/${mid}/run`, { method: 'POST',
+          headers: { 'Content-Type': 'application/json' }, body: '{}' });
+        reports.push(`Shadow ${i+1}: mission dispatched.`);
+      }
+    } catch(e) { reports.push(`Shadow ${i+1}: connection lost.`); }
+  }
+  fallbackSpeak('Shadow scouts deployed. ' + reports.join(' '));
+}
+
+// ── AR Toggle ─────────────────────────────────────────────
+function toggleAR() {
+  const ar = document.getElementById('ar-scene');
+  const btn = document.getElementById('ar-toggle');
+  const root = document.getElementById('root');
+  const on = ar.style.display !== 'none';
+  ar.style.display = on ? 'none' : 'block';
+  root.style.display = on ? 'flex' : 'none';
+  btn.textContent = on ? 'AR: OFF' : 'AR: ON';
+  btn.style.background = on ? '#aa44ff' : '#ffcc33';
+}
+document.getElementById('ar-toggle')?.addEventListener('click', toggleAR);
+
+// ── GSAP Morph on Tier Change ─────────────────────────────
+let morphTl = null;
+function playMorph(tier) {
+  if (typeof gsap === 'undefined') return;
+  if (morphTl) morphTl.kill();
+  morphTl = gsap.timeline({ defaults: { ease: 'power3.inOut' } });
+  // Screen shake
+  gsap.to('#root', { scale: 1.08, rotationX: 8, duration: 0.3, yoyo: true, repeat: 1 });
+  if (tier === 'ACTIVE') {
+    morphTl.to('#wings', { opacity: 0.5, duration: 2 }, 0);
+  }
+  if (tier === 'EVOLVED') {
+    morphTl.to('#wings', { opacity: 0.85, scale: 1.2, duration: 2.5 }, 0);
+  }
+  if (tier === 'ASCENDED') {
+    morphTl.to('#hood', { opacity: 1, duration: 1.8 }, 0);
+    morphTl.to('#wings', { opacity: 1, scale: 1.5, duration: 3 }, 0.3);
+    morphTl.to('#core', { attr: { r: 30 }, duration: 1.5, yoyo: true, repeat: -1 }, 0);
+  }
+}
 </script>
 </body>
 </html>
