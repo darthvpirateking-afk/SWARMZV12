@@ -495,6 +495,12 @@ async def claimlab_page():
     return FileResponse("web/claimlab.html", media_type="text/html")
 
 
+@app.get("/landing")
+async def nexusmon_landing():
+    """Public landing page for NEXUSMON."""
+    return FileResponse("web/nexusmon_landing.html", media_type="text/html")
+
+
 # --- Home route — NEXUSMON is the face of this system ---
 @app.get("/")
 async def home_page():

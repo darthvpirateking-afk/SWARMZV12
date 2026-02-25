@@ -1,340 +1,138 @@
+# NEXUSMON
 
-# SWARMZ - Operator-Sovereign "Do Anything" System
+**Governed autonomy organism. One operator. One system. No limits except the ones you set.**
 
-**License:** Proprietary - All Rights Reserved (see `LICENSE`).
+NEXUSMON is an open-source autonomous execution system built on six real infrastructure layers — mission orchestration, worker execution, artifact memory, governance, evolution state, and operator control surface. The aesthetics are inspired by MegaMan Battle Network, Digimon, and Solo Leveling. The architecture is not.
 
-**Copyright:** Copyright (c) 2026 SWARMZ. No use, copying, modification, distribution, hosting, resale, or derivative works without explicit written permission.
+---
 
-## Overview
+## What It Is
 
-**SWARMZ** is an **Operator-Sovereign "Do Anything" System** - a flexible, extensible framework that empowers operators with complete control and sovereignty over all system operations.
+A system that accepts missions, decomposes them into tasks, executes them with workers, stores every output as a versioned artifact, and evolves its own capabilities based on your history — governed entirely by you.
 
-## What SWARMZ Is
+Not a chatbot. Not an agent wrapper. Not a dashboard over someone else's API.
 
-### Lore + Technical (Operator Definition)
+An organism that belongs to one operator and grows through use.
 
-#### THE LIVING ORGANISM
-- A Partner (embodied intelligence, visible, evolving)
-- A Shadow (tactical executor, high-risk, gated)
-- A Swarm (4-6+ agents running missions)
-- A Ledger (append-only truth spine)
-- A NetGrid (your mission world)
+---
 
-#### THE RUNTIME
-- Deterministic
-- Snapshot-based
-- Mission-driven
-- Multi-agent
-- Governed
-- Auditable
-- Extensible
+## The Six Core Systems
 
-#### THE PURPOSE
-To run:
-- automations
-- product pipelines
-- simulations
-- code generation
-- fulfillment
-- learning loops
-- evolution cycles
+| System | What It Does |
+|--------|-------------|
+| **Mission Engine** | Accept → decompose → assign → track → complete |
+| **Worker Layer** | Tool runners, script executors, API connectors, plugin workers |
+| **Artifact Vault** | Versioned outputs, logs, snapshots, operator review trails |
+| **Governance** | Capability flags, risk tiers, approval gates, full audit log |
+| **Evolution State** | Unlocked capabilities, not personality — traits are permissions |
+| **Cockpit UI** | Mission feed, worker monitor, artifact vault, evolution tree |
 
-All under your control.
+---
 
-## SWARMZ Build Matrix v1.0
+## Evolution Is a Permissions System
 
-| Layer | What It Contains |
-|---|---|
-| 0. FOUNDATION | create_app(), Postgres, JSONL ledger, health/ready, logs, metrics, deterministic startup, object storage. |
-| 1. AGENTS | Planner, Coder, Tester, Verifier, Formatter, Governance Agent, Memory Agent, Reflection Agent, optional Grok specialist node. |
-| 2. ORCHESTRATOR | LangGraph 1.0.8 StateGraph, checkpoints, retries, idempotency, run history. |
-| 3. MEMORY | Vector DB (Chroma), semantic recall, experience archive, nightly reflection loop. |
-| 4. SAFETY | NIST RMF, OECD Due Diligence, AUS 8 Principles, Governance Agent scoring, human-in-loop, policy engine. |
-| 5. BLUEPRINTS | Registry, versions, artifacts, validations, approvals. |
-| 6. STORE | Offers, SKUs, listings, checkout, payment webhook, cart, catalog. |
-| 7. FULFILLMENT | Digital delivery + 1 physical provider, tracking, jobs. |
-| 8. LEDGER | Revenue, COGS, fees, credits, withdrawals, optional token bridge. |
-| 9. AUTONOMY | Sensors, policy engine, learning loop, reproduction rules, KPI-based evolution. |
-
-### Core Principles
-
-1. **Operator Sovereignty** - The operator maintains ultimate authority over all operations
-2. **Extensibility** - Easy to add new capabilities through a plugin system
-3. **Transparency** - All actions are logged and auditable
-4. **Flexibility** - "Do anything" philosophy with unlimited extensibility
-5. **Safety** - Built-in safeguards with operator override capability
-
-## Features
-
-- 🎯 **Task Execution Engine** - Execute any registered task with full control
-- 🔌 **Plugin System** - Extend capabilities dynamically
-- 📝 **Audit Logging** - Complete transparency of all operations
-- 🛡️ **Operator Sovereignty** - You're always in control
-- 🔧 **Built-in Tasks** - Core functionality out of the box
-- 💻 **CLI Interface** - Command-line and interactive modes
-- 🌐 **Web Server & REST API** - FastAPI-based API with OpenAPI docs
-- 📱 **Progressive Web App** - Mobile-friendly PWA with offline support
-- 🚀 **Cross-Platform** - Windows, Linux, macOS, and Android (Termux)
-- 📦 **Easy Configuration** - JSON-based configuration
-
-## Runtime Boundary
-
-- `apps/gate-link` is an isolated game project for separate Play Store packaging.
-- Core SWARMZ backend/runtime builds and deploys do not load or bundle `apps/gate-link`.
-- Keep game release pipeline separate from SWARMZ runtime release pipeline.
-
-## Quick Start
-
-## Ship Now Status (2026-02-23)
-
-- **Go** for normal development release (core API/UI/mission-path regression coverage is green).
-- Latest full suite: **303 passed, 3 skipped**.
-- Browser parity smoke (`/` + `/console`): **2 passed**.
-- Full release readiness and deferred live-infra items: [SWARMZ_RELEASE_READINESS.md](SWARMZ_RELEASE_READINESS.md).
-
-Quick verification commands:
-
-```powershell
-python -m pytest tests/ -v --tb=short
-python -m pytest tests/test_dashboard_browser_smoke.py -v --tb=short
+```
+DORMANT   → AWAKENING  (1 mission)    unlocks RECALL, COMPANION
+AWAKENING → FORGING    (10 missions)  unlocks WORKER_SPAWN, BELIEF_TRACK
+FORGING   → SOVEREIGN  (50 missions)  unlocks AUTONOMOUS_CHAIN, OPERATOR_FUSION
+SOVEREIGN → APEX       (200 missions) unlocks everything
 ```
 
-### Fastest Windows Start (Canonical)
+Completing missions earns XP. XP unlocks capabilities. Capabilities change what the system can do autonomously. Digimon philosophy as a real permissions system.
 
-```powershell
-# 1) Start SWARMZ
-./RUN.ps1
+---
 
-# 2) Open UI
-# http://localhost:8012
+## Mission Ranks
 
-# 3) Create desktop app icon shortcut (one-time)
-./CREATE_SWARMZ_APP_ICON.ps1
+| Rank | Risk | Execution |
+|------|------|-----------|
+| E | Trivial | Auto-execute |
+| D | Low | Auto-execute |
+| C | Medium | Log + flag for review |
+| B | Elevated | Log + flag for review |
+| A | High | Requires operator approval |
+| S | Critical | Requires operator approval |
+
+---
+
+## Plugin Interface
+
+```python
+class WorkerPlugin:
+    name: str
+    capabilities: List[str]
+    risk_level: str  # E D C B A S
+    requires_approval: bool
+
+    async def execute(self, task: Task) -> Result:
+        ...
 ```
 
-Then double-click the `SWARMZ` icon on your desktop.
+Add workers without touching core code.
 
-### Phone Mode (Same Wi-Fi)
+---
 
-```powershell
-# One-click phone-ready launcher
-./PHONE_MODE.ps1
+## API Surface
 
-# Or double-click PHONE_MODE.cmd
+```
+POST /v1/engine/missions              create mission
+GET  /v1/engine/missions              list missions
+POST /v1/engine/missions/{id}/approve operator approval gate
+POST /v1/engine/missions/{id}/run     execute
+GET  /v1/vault/artifacts              artifact vault
+GET  /v1/nexusmon/organism/status     full organism readout
+GET  /v1/cognition/status             cognitive instrumentation
+GET  /organism                        cockpit UI
+GET  /landing                         public landing page
 ```
 
-Then open the printed LAN URL on your phone (example: `http://192.168.x.x:8012/`).
+---
 
-### Web Server (Recommended)
+## Stack
+
+- **Backend**: Python + FastAPI
+- **Storage**: SQLite + JSONL (fully local, no cloud dependency)
+- **AI**: Anthropic Claude (optional — graceful fallback if unavailable)
+- **Deploy**: Docker + Railway / any VPS
+
+---
+
+## Run Locally
 
 ```bash
-# Windows: Double-click RUN.cmd or RUN.ps1
-# Or manually:
+git clone https://github.com/darthvpirateking-afk/NEXUSMON
+cd NEXUSMON
 pip install -r requirements.txt
-python run_server.py
-
-# Access at:
-# Local:  http://localhost:8000
-# LAN:    http://192.168.x.x:8000 (shown on startup)
-# API Docs: http://localhost:8000/docs
+cp .env.example .env
+# set ANTHROPIC_API_KEY, OPERATOR_KEY, SWARMZ_JWT_SECRET
+uvicorn swarmz_server:app --host 0.0.0.0 --port 8000
 ```
 
-### CLI Usage
+Open `http://localhost:8000/organism`
+
+---
+
+## Deploy to Railway
 
 ```bash
-# Run the demo
-python3 swarmz.py
-
-# List all capabilities
-python3 swarmz_cli.py --list
-
-
-Execute:
-
-python3 swarmz_cli.py --task echo --params '{"message":"hello"}'
-
-
-Interactive:
-
-python3 swarmz_cli.py --interactive
-
-Module System
-
-Modules register tasks into the runtime.
-
-Example:
-
-def register(executor):
-
-    def my_task(a, b):
-        return f"{a}-{b}"
-
-    executor.register_task(
-        "my_task",
-        my_task,
-        {"description": "example"}
-    )
-
-
-Load:
-
-python3 swarmz_cli.py --load-plugin plugins/example.py
-
-Included Capabilities
-
-Core:
-
-echo
-
-system_info
-
-execute_python
-
-Filesystem module:
-
-list
-
-read
-
-write
-
-mkdir
-
-info
-
-Data module:
-
-json parse/stringify
-
-hashing
-
-transforms
-
-encoding
-
-Configuration
-
-config.json
-
-{
-  "audit_enabled": true,
-  "auto_load": [
-    "plugins/filesystem.py",
-    "plugins/dataprocessing.py"
-  ]
-}
-
-Python Usage
-from swarmz import SwarmzCore
-
-swarmz = SwarmzCore()
-
-swarmz.execute("echo", message="hi")
-swarmz.load_plugin("plugins/filesystem.py")
-swarmz.list_capabilities()
-swarmz.get_audit_log()
-
-Security Model
-
-SWARMZ assumes a trusted operator.
-
-Important implications:
-
-Code execution is unrestricted
-
-Modules have full local access
-
-No isolation boundary exists
-
-Audit exists for traceability, not prevention
-
-Do not expose directly to untrusted users.
-
-Intended Uses
-
-Personal automation runtime
-
-Local admin tooling
-
-Data manipulation workspace
-
-Rapid capability prototyping
-
-Operator-controlled integrations
-
-Requirements
-
-Core:
-Python 3.6+
-
-Web UI:
-FastAPI + Uvicorn
-
-Deployment
-
-Runs on:
-
-Windows
-
-Linux
-
-macOS
-
-Android (Termux)
-
-Render (recommended config):
-
-- Build command: `pip install -r requirements.txt`
-- Start command: `python run_server.py --host 0.0.0.0 --port $PORT`
-- Health check path: `/v1/health`
-- Required env vars for live model routing:
-  - `OPENAI_API_KEY=<your key>` (if using OpenAI provider)
-  - `ANTHROPIC_API_KEY=<your key>` (if using Anthropic provider)
-  - `OFFLINE_MODE=false`
-  - `MODEL_PROVIDER=openai` or `MODEL_PROVIDER=anthropic`
-- Optional env vars:
-  - `SWARMZ_MODEL=gpt-4.1` (or your allowed model)
-  - `OPENAI_BASE_URL=https://api.openai.com/v1`
-
-Post-deploy verification:
-
-```bash
-python tools/render_post_deploy_check.py --base https://swarmzV10-.onrender.com
+railway up
 ```
 
-Project Position
+Set in dashboard: `ANTHROPIC_API_KEY`, `OPERATOR_KEY`, `SWARMZ_JWT_SECRET`
 
-This repository provides a controllable execution runtime.
-It is a tool, not a platform service.
+Add volume at `/app/data` — required for evolution persistence across deploys.
 
-Behavior is defined by the operator and loaded modules.
+---
 
-Notice
+## Phases
 
-The system executes exactly what it is instructed to execute.
-Responsibility for usage and exposure rests with the operator.
+- **Phase 1 — Core Engine** ✅
+- **Phase 2 — Cockpit UI** ✅
+- **Phase 3 — Evolution Layer** ✅
+- **Phase 4 — Plugin Ecosystem** 🔲
 
+---
 
-<!-- MARKETPLACE_START -->
-## Marketplace
+## License
 
-### Plugins (5)
-
-| Name | Version | Category | Description |
-|------|---------|----------|-------------|
-| dataprocessing | 1.0.0 | data | Data manipulation and processing capabilities including JSON parsing, hashing, and data transformation. |
-| filesystem | 1.0.0 | storage | File system manipulation capabilities including read, write, and directory operations. |
-| lead_audit | 1.0.0 | analytics | Deterministic lead scoring and prioritization for decision bottleneck product. |
-| mission_contract | 1.0.0 | governance | Converts 12 laws into hard preflight validation. Enforces minimum required fields and external signal requirements. |
-| reality_gate | 1.0.0 | safety | Ensures SWARMZ only learns and mutates based on external signals, not internal reflections. |
-
-### Skills (5)
-
-| Name | Version | Category | Description |
-|------|---------|----------|-------------|
-| artifact_management | 1.0.0 | storage | Create, store, retrieve, and manage artifact packs produced by the SWARMZ factory. |
-| data_analysis | 1.0.0 | analytics | Analyze structured data, compute statistics, and identify patterns. |
-| file_operations | 1.0.0 | storage | Read, write, and manage files in the operator's workspace. |
-| mission_execution | 1.0.0 | execution | Execute a validated mission contract through the SWARMZ runtime. |
-| nexusmon_interact | 1.0.0 | interface | Interact with the Nexusmon avatar - absorb data, execute directives, and receive results. |
-<!-- MARKETPLACE_END -->
+MIT. Run your own. Own your data. Own your organism.

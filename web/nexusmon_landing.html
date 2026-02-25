@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEXUSMON — Governed Autonomy Organism</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Cutive+Mono&display=swap');
+
+:root {
+  --bg: #020408;
+  --panel: #050a10;
+  --border: #0a1520;
+  --accent: #00ccff;
+  --accent2: #0055aa;
+  --green: #00ff88;
+  --amber: #ffaa00;
+  --red: #ff3355;
+  --text: #6a9ab0;
+  --bright: #c0e8f8;
+  --dim: #1a3040;
+  --head: 'Orbitron', sans-serif;
+  --mono: 'Cutive Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 13px;
+  overflow-x: hidden;
+}
+
+/* grain */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 1000; opacity: 0.4;
+}
+
+/* scanlines */
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,180,255,0.008) 3px, rgba(0,180,255,0.008) 4px);
+  pointer-events: none; z-index: 999;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 40px; height: 56px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(2,4,8,0.95);
+  backdrop-filter: blur(10px);
+}
+
+.nav-logo {
+  font-family: var(--head); font-size: 18px; font-weight: 900;
+  letter-spacing: 0.2em; color: var(--bright);
+}
+.nav-logo span { color: var(--accent); }
+
+.nav-links { display: flex; gap: 32px; }
+.nav-links a {
+  color: var(--text); text-decoration: none; font-size: 11px;
+  letter-spacing: 0.15em; text-transform: uppercase;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--accent); }
+
+.nav-cta {
+  background: none; border: 1px solid var(--accent); border-radius: 1px;
+  color: var(--accent); font-family: var(--mono); font-size: 11px;
+  letter-spacing: 0.15em; padding: 8px 20px; cursor: pointer;
+  text-decoration: none; text-transform: uppercase;
+  transition: all 0.2s;
+}
+.nav-cta:hover { background: var(--accent); color: var(--bg); }
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 80px 40px 60px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(0,204,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,204,255,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse at 60% 50%, black 30%, transparent 80%);
+}
+
+.hero-label {
+  font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--accent2); margin-bottom: 24px;
+  animation: fadeUp 0.8s ease both;
+}
+
+.hero-title {
+  font-family: var(--head); font-weight: 900;
+  font-size: clamp(52px, 8vw, 96px);
+  line-height: 0.95; letter-spacing: -0.01em;
+  color: var(--bright);
+  animation: fadeUp 0.8s 0.1s ease both;
+}
+
+.hero-title .accent { color: var(--accent); }
+.hero-title .dim-line {
+  display: block; font-size: 0.45em; font-weight: 400;
+  color: var(--text); letter-spacing: 0.1em; margin-top: 8px;
+}
+
+.hero-sub {
+  max-width: 560px; margin-top: 32px;
+  font-size: 15px; line-height: 1.8; color: var(--text);
+  animation: fadeUp 0.8s 0.2s ease both;
+}
+
+.hero-sub strong { color: var(--bright); font-weight: normal; }
+
+.hero-actions {
+  display: flex; gap: 16px; margin-top: 40px; flex-wrap: wrap;
+  animation: fadeUp 0.8s 0.3s ease both;
+}
+
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: var(--accent); color: var(--bg);
+  font-family: var(--head); font-size: 12px; font-weight: 700;
+  letter-spacing: 0.15em; padding: 14px 28px;
+  border: none; border-radius: 1px; cursor: pointer;
+  text-decoration: none; text-transform: uppercase;
+  transition: all 0.2s;
+}
+.btn-primary:hover { background: #33ddff; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(0,204,255,0.3); }
+
+.btn-secondary {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: none; color: var(--text);
+  font-family: var(--mono); font-size: 12px;
+  letter-spacing: 0.1em; padding: 14px 28px;
+  border: 1px solid var(--border); border-radius: 1px; cursor: pointer;
+  text-decoration: none; text-transform: uppercase;
+  transition: all 0.2s;
+}
+.btn-secondary:hover { border-color: var(--text); color: var(--bright); }
+
+.live-indicator {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 10px; letter-spacing: 0.15em; color: var(--green);
+  margin-top: 32px; animation: fadeUp 0.8s 0.4s ease both;
+}
+.live-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--green); box-shadow: 0 0 8px var(--green);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
+@keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+/* ── SYSTEMS SECTION ── */
+section { padding: 100px 40px; }
+
+.section-label {
+  font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--accent2); margin-bottom: 16px;
+}
+
+.section-title {
+  font-family: var(--head); font-size: clamp(28px, 4vw, 48px);
+  font-weight: 900; color: var(--bright); letter-spacing: 0.05em;
+  line-height: 1.1; margin-bottom: 48px;
+}
+
+.systems-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+
+.system-card {
+  background: var(--panel);
+  padding: 32px;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.3s;
+}
+.system-card:hover { background: #060d16; }
+.system-card::before {
+  content: attr(data-num);
+  position: absolute; top: 24px; right: 24px;
+  font-family: var(--head); font-size: 48px; font-weight: 900;
+  color: var(--border); line-height: 1;
+}
+
+.system-icon {
+  width: 8px; height: 8px; border-radius: 50%;
+  margin-bottom: 20px;
+}
+
+.system-name {
+  font-family: var(--head); font-size: 14px; font-weight: 700;
+  letter-spacing: 0.12em; color: var(--bright); margin-bottom: 12px;
+}
+
+.system-desc {
+  font-size: 12px; line-height: 1.8; color: var(--text);
+}
+
+.system-items {
+  margin-top: 16px; display: flex; flex-direction: column; gap: 4px;
+}
+.system-item {
+  font-size: 11px; color: var(--dim);
+  padding-left: 12px; position: relative;
+}
+.system-item::before {
+  content: '→'; position: absolute; left: 0; color: var(--accent2);
+}
+
+/* ── EVOLUTION ── */
+.evo-section { background: var(--panel); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+
+.evo-ladder {
+  display: flex; gap: 0; margin-top: 48px; overflow-x: auto;
+  border: 1px solid var(--border);
+}
+
+.evo-stage {
+  flex: 1; min-width: 150px; padding: 24px 20px;
+  border-right: 1px solid var(--border);
+  position: relative; transition: background 0.3s;
+}
+.evo-stage:last-child { border-right: none; }
+.evo-stage:hover { background: rgba(0,204,255,0.03); }
+
+.evo-stage-name {
+  font-family: var(--head); font-size: 13px; font-weight: 700;
+  letter-spacing: 0.1em; margin-bottom: 12px;
+}
+.evo-req {
+  font-size: 10px; color: var(--dim); margin-bottom: 16px;
+  letter-spacing: 0.06em;
+}
+.evo-traits { display: flex; flex-direction: column; gap: 4px; }
+.evo-trait {
+  font-size: 10px; padding: 2px 6px; border-radius: 1px;
+  background: var(--border); letter-spacing: 0.06em;
+}
+
+/* ── GOVERNANCE ── */
+.rank-table {
+  width: 100%; border-collapse: collapse; margin-top: 48px;
+}
+.rank-table th {
+  text-align: left; padding: 10px 16px;
+  font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--dim); border-bottom: 1px solid var(--border);
+}
+.rank-table td {
+  padding: 14px 16px; border-bottom: 1px solid var(--border);
+  font-size: 12px;
+}
+.rank-table tr:hover td { background: rgba(0,204,255,0.02); }
+.rank-badge {
+  font-family: var(--head); font-size: 13px; font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+/* ── CODE BLOCK ── */
+.code-block {
+  background: var(--panel); border: 1px solid var(--border);
+  padding: 24px; font-size: 12px; line-height: 1.8;
+  overflow-x: auto; margin-top: 32px;
+  position: relative;
+}
+.code-block::before {
+  content: attr(data-label);
+  position: absolute; top: 10px; right: 16px;
+  font-size: 9px; letter-spacing: 0.1em; color: var(--dim);
+  text-transform: uppercase;
+}
+.kw { color: var(--accent); }
+.cm { color: var(--dim); }
+.st { color: var(--green); }
+.ty { color: var(--amber); }
+
+/* ── CTA SECTION ── */
+.cta-section {
+  text-align: center; padding: 120px 40px;
+  background: linear-gradient(180deg, var(--bg) 0%, #020c18 50%, var(--bg) 100%);
+  position: relative; overflow: hidden;
+}
+.cta-section::before {
+  content: '';
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+  width: 600px; height: 600px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,204,255,0.04) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.cta-title {
+  font-family: var(--head); font-size: clamp(32px, 5vw, 64px);
+  font-weight: 900; color: var(--bright); letter-spacing: 0.05em;
+  margin-bottom: 16px;
+}
+.cta-sub {
+  font-size: 14px; color: var(--text); max-width: 480px;
+  margin: 0 auto 40px; line-height: 1.8;
+}
+
+/* ── FOOTER ── */
+footer {
+  border-top: 1px solid var(--border); padding: 32px 40px;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 16px;
+}
+.footer-logo {
+  font-family: var(--head); font-size: 14px; font-weight: 900;
+  letter-spacing: 0.2em; color: var(--dim);
+}
+.footer-logo span { color: var(--accent2); }
+.footer-links { display: flex; gap: 24px; }
+.footer-links a {
+  color: var(--dim); text-decoration: none; font-size: 11px;
+  letter-spacing: 0.1em; transition: color 0.2s;
+}
+.footer-links a:hover { color: var(--text); }
+.footer-copy { font-size: 10px; color: var(--dim); letter-spacing: 0.08em; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">NEX<span>US</span>MON</div>
+  <div class="nav-links">
+    <a href="#systems">Systems</a>
+    <a href="#evolution">Evolution</a>
+    <a href="#governance">Governance</a>
+    <a href="#build">Build</a>
+  </div>
+  <a class="nav-cta" href="https://github.com/darthvpirateking-afk/NEXUSMON">GitHub</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-label">// OPEN SOURCE AUTONOMY INFRASTRUCTURE</div>
+  <h1 class="hero-title">
+    NEX<span class="accent">US</span>MON
+    <span class="dim-line">GOVERNED AUTONOMY ORGANISM</span>
+  </h1>
+  <p class="hero-sub">
+    A mission engine, worker swarm, artifact vault, and evolution system fused into a
+    <strong>single operator-controlled organism.</strong>
+    Not a chatbot. Not an agent wrapper.
+    <strong>Infrastructure for controlled autonomous execution.</strong>
+  </p>
+  <div class="hero-actions">
+    <a class="btn-primary" href="https://github.com/darthvpirateking-afk/NEXUSMON">
+      ↗ VIEW ON GITHUB
+    </a>
+    <a class="btn-secondary" href="/organism">
+      LIVE COCKPIT →
+    </a>
+  </div>
+  <div class="live-indicator">
+    <div class="live-dot"></div>
+    ORGANISM ONLINE — STAGE: DORMANT — AWAITING FIRST MISSION
+  </div>
+</section>
+
+<!-- SYSTEMS -->
+<section id="systems">
+  <div class="section-label">// CORE ARCHITECTURE</div>
+  <h2 class="section-title">SIX REAL SYSTEMS.<br>ZERO COSPLAY.</h2>
+
+  <div class="systems-grid">
+    <div class="system-card" data-num="01">
+      <div class="system-icon" style="background:var(--accent);box-shadow:0 0 8px var(--accent)"></div>
+      <div class="system-name">MISSION ENGINE</div>
+      <div class="system-desc">Accepts goals. Decomposes into typed tasks. Executes as a dependency DAG. Tracks every state transition.</div>
+      <div class="system-items">
+        <div class="system-item">Goal → task decomposition via AI</div>
+        <div class="system-item">DAG execution with dependencies</div>
+        <div class="system-item">E/D/C/B/A/S rank system</div>
+        <div class="system-item">XP awarded on completion</div>
+      </div>
+    </div>
+    <div class="system-card" data-num="02">
+      <div class="system-icon" style="background:var(--green);box-shadow:0 0 8px var(--green)"></div>
+      <div class="system-name">WORKER LAYER</div>
+      <div class="system-desc">Plugin-based execution. Tool runners, script workers, API connectors. Add workers without touching core code.</div>
+      <div class="system-items">
+        <div class="system-item">WorkerPlugin interface</div>
+        <div class="system-item">Parallel execution</div>
+        <div class="system-item">Step-by-step chaining</div>
+        <div class="system-item">Trait-gated autonomy</div>
+      </div>
+    </div>
+    <div class="system-card" data-num="03">
+      <div class="system-icon" style="background:var(--amber);box-shadow:0 0 8px var(--amber)"></div>
+      <div class="system-name">ARTIFACT VAULT</div>
+      <div class="system-desc">Every output is stored, versioned, and reviewable. Exact input snapshots. Full operator review trails. Every mission replayable.</div>
+      <div class="system-items">
+        <div class="system-item">Versioned outputs</div>
+        <div class="system-item">Operator approve / reject</div>
+        <div class="system-item">Input snapshots</div>
+        <div class="system-item">Full version history</div>
+      </div>
+    </div>
+    <div class="system-card" data-num="04">
+      <div class="system-icon" style="background:var(--red);box-shadow:0 0 8px var(--red)"></div>
+      <div class="system-name">GOVERNANCE</div>
+      <div class="system-desc">Risk-tiered execution. A/S rank missions blocked until explicit operator approval. Every action logged. Reproducibility = legitimacy.</div>
+      <div class="system-items">
+        <div class="system-item">Capability flags</div>
+        <div class="system-item">Approval queues</div>
+        <div class="system-item">Full audit log</div>
+        <div class="system-item">Replayable state history</div>
+      </div>
+    </div>
+    <div class="system-card" data-num="05">
+      <div class="system-icon" style="background:#aa55ff;box-shadow:0 0 8px #aa55ff"></div>
+      <div class="system-name">EVOLUTION STATE</div>
+      <div class="system-desc">Not personality. Not emotion. Unlocked capabilities. Traits are permissions. Stages are access levels. Earned through missions.</div>
+      <div class="system-items">
+        <div class="system-item">DORMANT → APEX</div>
+        <div class="system-item">Traits = permission gates</div>
+        <div class="system-item">XP → stage transitions</div>
+        <div class="system-item">Capability unlocks</div>
+      </div>
+    </div>
+    <div class="system-card" data-num="06">
+      <div class="system-icon" style="background:#00ccaa;box-shadow:0 0 8px #00ccaa"></div>
+      <div class="system-name">COCKPIT UI</div>
+      <div class="system-desc">Command the system. Don't chat with it. Everything visible. Nothing hidden. No secret autonomous actions.</div>
+      <div class="system-items">
+        <div class="system-item">Mission feed + DAG view</div>
+        <div class="system-item">Live worker monitor</div>
+        <div class="system-item">Artifact vault</div>
+        <div class="system-item">Evolution tree</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EVOLUTION -->
+<section id="evolution" class="evo-section">
+  <div class="section-label">// EVOLUTION SYSTEM</div>
+  <h2 class="section-title">CAPABILITY IS EARNED.<br>NEVER GRANTED.</h2>
+
+  <div class="evo-ladder">
+    <div class="evo-stage">
+      <div class="evo-stage-name" style="color:#2a6080">DORMANT</div>
+      <div class="evo-req">0 missions</div>
+      <div class="evo-traits">
+        <div class="evo-trait" style="color:#2a6080">OBSERVE</div>
+      </div>
+    </div>
+    <div class="evo-stage">
+      <div class="evo-stage-name" style="color:#0088cc">AWAKENING</div>
+      <div class="evo-req">1+ missions</div>
+      <div class="evo-traits">
+        <div class="evo-trait" style="color:#0088cc">RECALL</div>
+        <div class="evo-trait" style="color:#0088cc">COMPANION</div>
+      </div>
+    </div>
+    <div class="evo-stage">
+      <div class="evo-stage-name" style="color:#cc7700">FORGING</div>
+      <div class="evo-req">10+ / 30% rate</div>
+      <div class="evo-traits">
+        <div class="evo-trait" style="color:#cc7700">WORKER_SPAWN</div>
+        <div class="evo-trait" style="color:#cc7700">BELIEF_TRACK</div>
+        <div class="evo-trait" style="color:#cc7700">ANALYZE</div>
+      </div>
+    </div>
+    <div class="evo-stage">
+      <div class="evo-stage-name" style="color:#00aa55">SOVEREIGN</div>
+      <div class="evo-req">50+ / 60% rate</div>
+      <div class="evo-traits">
+        <div class="evo-trait" style="color:#00aa55">AUTO_CHAIN</div>
+        <div class="evo-trait" style="color:#00aa55">OP_FUSION</div>
+        <div class="evo-trait" style="color:#00aa55">CLAIM_ANALYZE</div>
+      </div>
+    </div>
+    <div class="evo-stage">
+      <div class="evo-stage-name" style="color:#8844cc">APEX</div>
+      <div class="evo-req">200+ / 80% rate</div>
+      <div class="evo-traits">
+        <div class="evo-trait" style="color:#8844cc">ALL TRAITS</div>
+        <div class="evo-trait" style="color:#8844cc">SELF_MODIFY</div>
+        <div class="evo-trait" style="color:#8844cc">MULTI_DOMAIN</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GOVERNANCE -->
+<section id="governance">
+  <div class="section-label">// GOVERNANCE LAYER</div>
+  <h2 class="section-title">AUTONOMY WITHOUT<br>ACCOUNTABILITY IS LIABILITY.</h2>
+
+  <table class="rank-table">
+    <thead>
+      <tr>
+        <th>Rank</th><th>Risk Level</th><th>Execution</th><th>Review</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><span class="rank-badge" style="color:#4a8a9a">E</span></td><td>Trivial</td><td style="color:var(--green)">Auto-execute</td><td style="color:var(--dim)">None required</td></tr>
+      <tr><td><span class="rank-badge" style="color:#0088cc">D</span></td><td>Low</td><td style="color:var(--green)">Auto-execute</td><td style="color:var(--dim)">None required</td></tr>
+      <tr><td><span class="rank-badge" style="color:#cc7700">C</span></td><td>Medium</td><td style="color:var(--amber)">Execute + flag</td><td style="color:var(--amber)">Flagged for review</td></tr>
+      <tr><td><span class="rank-badge" style="color:#cc4400">B</span></td><td>Elevated</td><td style="color:var(--amber)">Execute + flag</td><td style="color:var(--amber)">Flagged for review</td></tr>
+      <tr><td><span class="rank-badge" style="color:#cc2244">A</span></td><td>High</td><td style="color:var(--red)">BLOCKED</td><td style="color:var(--red)">Approval required</td></tr>
+      <tr><td><span class="rank-badge" style="color:#ff3355">S</span></td><td>Critical</td><td style="color:var(--red)">BLOCKED</td><td style="color:var(--red)">Approval required</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- BUILD -->
+<section id="build">
+  <div class="section-label">// GET STARTED</div>
+  <h2 class="section-title">RUN YOUR OWN<br>ORGANISM.</h2>
+
+  <div class="code-block" data-label="terminal">
+<span class="cm"># clone and run locally</span>
+<span class="kw">git</span> clone https://github.com/darthvpirateking-afk/NEXUSMON
+<span class="kw">cd</span> NEXUSMON
+<span class="kw">pip</span> install -r requirements.txt
+<span class="kw">cp</span> .env.example .env
+<span class="cm"># set ANTHROPIC_API_KEY, OPERATOR_KEY, SWARMZ_JWT_SECRET</span>
+<span class="kw">uvicorn</span> swarmz_server:app --host 0.0.0.0 --port 8000
+
+<span class="cm"># open cockpit</span>
+open http://localhost:8000/organism
+  </div>
+
+  <div class="code-block" data-label="plugin interface" style="margin-top:16px">
+<span class="cm"># add a worker plugin without touching core code</span>
+<span class="kw">class</span> <span class="ty">MyWorkerPlugin</span>:
+    name: <span class="st">"my_worker"</span>
+    capabilities: [<span class="st">"web_search"</span>, <span class="st">"summarize"</span>]
+    risk_level: <span class="st">"D"</span>
+    requires_approval: <span class="kw">False</span>
+
+    <span class="kw">async def</span> execute(self, task: Task) -> Result:
+        ...
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <h2 class="cta-title">THE GATES ARE OPEN.</h2>
+  <p class="cta-sub">Run your own organism. Own your data. Own your autonomy. MIT licensed. No vendor lock-in. No cloud required.</p>
+  <div class="hero-actions" style="justify-content:center">
+    <a class="btn-primary" href="https://github.com/darthvpirateking-afk/NEXUSMON">↗ STEP INTO THE BUILD</a>
+    <a class="btn-secondary" href="/organism">LIVE COCKPIT →</a>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">NEX<span>US</span>MON</div>
+  <div class="footer-links">
+    <a href="https://github.com/darthvpirateking-afk/NEXUSMON">GitHub</a>
+    <a href="/organism">Cockpit</a>
+    <a href="/docs">API Docs</a>
+  </div>
+  <div class="footer-copy">MIT LICENSE — OWN YOUR ORGANISM</div>
+</footer>
+
+</body>
+</html>
