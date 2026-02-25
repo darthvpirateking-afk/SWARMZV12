@@ -1470,20 +1470,25 @@ try:
 except Exception as _cognition_err:
     print(f"Warning: cognition layer failed: {_cognition_err}")
 
+import sys as _sys
+print("FUSE: about to load mission engine", flush=True); _sys.stdout.flush()
 try:
     from nexusmon_mission_engine import fuse_mission_engine
     fuse_mission_engine(app)
+    print(f"FUSE: mission engine OK — routes: {len([r for r in app.routes if hasattr(r, 'path') and '/engine/' in getattr(r, 'path', '')])}", flush=True)
 except Exception as _mission_engine_err:
     import traceback as _tb
-    print(f"Warning: mission engine failed: {_mission_engine_err}")
+    print(f"FUSE: mission engine FAILED: {_mission_engine_err}", flush=True)
     _tb.print_exc()
 
+print("FUSE: about to load artifact vault", flush=True); _sys.stdout.flush()
 try:
     from nexusmon_artifact_vault import fuse_artifact_vault
     fuse_artifact_vault(app)
+    print(f"FUSE: artifact vault OK — routes: {len([r for r in app.routes if hasattr(r, 'path') and '/vault/' in getattr(r, 'path', '')])}", flush=True)
 except Exception as _artifact_vault_err:
     import traceback as _tb2
-    print(f"Warning: artifact vault failed: {_artifact_vault_err}")
+    print(f"FUSE: artifact vault FAILED: {_artifact_vault_err}", flush=True)
     _tb2.print_exc()
 
 
