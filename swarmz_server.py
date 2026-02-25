@@ -444,6 +444,13 @@ async def ui_state():
     last_events = audit_events[-10:] if audit_events else []
     phase = compute_phase(len(missions), success_count)
 
+    organism_stage = None
+    try:
+        from nexusmon_organism import evo_status
+        organism_stage = evo_status().get("stage")
+    except Exception:
+        pass
+
     now = _utc_now_iso_z()
     return {
         "ok": True,
@@ -456,6 +463,7 @@ async def ui_state():
         "missions": {"count_total": len(missions), "count_by_status": status_counts},
         "last_events": last_events,
         "phase": phase,
+        "organism_stage": organism_stage,
     }
 
 
@@ -1337,7 +1345,28 @@ async def companion_message(request: Request):
                 resp["latencyMs"] = result["latencyMs"]
             return JSONResponse(resp)
         except Exception as companion_err:
-            # Fallback: keyword-based rule engine
+            # Try fused AI companion before keyword fallback
+            try:
+                from nexusmon_organism import ctx_record_message, get_fusion_block, evo_status
+                import anthropic
+                ctx_record_message(user_message, "operator")
+                client = anthropic.Anthropic()
+                stage_info = evo_status()
+                system = (
+                    "You are NEXUSMON — an operator-sovereign autonomy organism.\n"
+                    + get_fusion_block()
+                    + f"\nEvolution stage: {stage_info.get('stage', 'UNKNOWN')}"
+                )
+                resp = client.messages.create(
+                    model="claude-sonnet-4-20250514", max_tokens=500,
+                    system=system, messages=[{"role": "user", "content": user_message}],
+                )
+                reply = resp.content[0].text.strip()
+                ctx_record_message(reply, "nexusmon")
+                return JSONResponse({"ok": True, "reply": reply, "source": "nexusmon_fused"})
+            except Exception:
+                pass
+            # Last resort: keyword-based rule engine
             lower = user_message.lower()
             if "status" in lower:
                 reply = "System operational. Use the BUILD tab to dispatch missions."
