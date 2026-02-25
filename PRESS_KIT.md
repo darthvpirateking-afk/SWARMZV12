@@ -66,7 +66,7 @@ SOVEREIGN: autonomous chain execution, operator fusion
 APEX: everything
 
 You don't buy capabilities. You earn them through missions.
-Digimon philosophy as real access control.
+Progression implemented as real access control.
 
 **4/**
 Mission ranks map to risk tiers:
@@ -109,9 +109,9 @@ Open source. MIT. Run your own.
 **8/**
 The name is NEXUSMON.
 
-MegaMan Battle Network for the operator/partner dynamic.
-Digimon for evolution and identity.
-Solo Leveling for progression and missions.
+Operator/partner execution dynamic.
+Evolution and identity through usage.
+Progression tied directly to mission outcomes.
 
 The aesthetics are the skin.
 The infrastructure is the organism.

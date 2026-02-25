@@ -2,7 +2,7 @@
 
 **Governed autonomy organism. One operator. One system. No limits except the ones you set.**
 
-NEXUSMON is an open-source autonomous execution system built on six real infrastructure layers — mission orchestration, worker execution, artifact memory, governance, evolution state, and operator control surface. The aesthetics are inspired by MegaMan Battle Network, Digimon, and Solo Leveling. The architecture is not.
+NEXUSMON is an open-source autonomous execution system built on six real infrastructure layers — mission orchestration, worker execution, artifact memory, governance, evolution state, and operator control surface.
 
 ---
 
@@ -38,7 +38,7 @@ FORGING   → SOVEREIGN  (50 missions)  unlocks AUTONOMOUS_CHAIN, OPERATOR_FUSIO
 SOVEREIGN → APEX       (200 missions) unlocks everything
 ```
 
-Completing missions earns XP. XP unlocks capabilities. Capabilities change what the system can do autonomously. Digimon philosophy as a real permissions system.
+Completing missions earns XP. XP unlocks capabilities. Capabilities change what the system can do autonomously. Progression acts as a real permissions system.
 
 ---
 
