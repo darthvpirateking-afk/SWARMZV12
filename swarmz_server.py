@@ -1470,47 +1470,18 @@ try:
 except Exception as _cognition_err:
     print(f"Warning: cognition layer failed: {_cognition_err}")
 
-import sys as _sys
-print("FUSE: about to load mission engine", flush=True); _sys.stdout.flush()
 try:
     from nexusmon_mission_engine import fuse_mission_engine
     fuse_mission_engine(app)
-    print(f"FUSE: mission engine OK — routes: {len([r for r in app.routes if hasattr(r, 'path') and '/engine/' in getattr(r, 'path', '')])}", flush=True)
 except Exception as _mission_engine_err:
-    import traceback as _tb
-    print(f"FUSE: mission engine FAILED: {_mission_engine_err}", flush=True)
-    _tb.print_exc()
+    print(f"Warning: mission engine failed: {_mission_engine_err}")
 
-print("FUSE: about to load artifact vault", flush=True); _sys.stdout.flush()
 try:
     from nexusmon_artifact_vault import fuse_artifact_vault
     fuse_artifact_vault(app)
-    print(f"FUSE: artifact vault OK — routes: {len([r for r in app.routes if hasattr(r, 'path') and '/vault/' in getattr(r, 'path', '')])}", flush=True)
 except Exception as _artifact_vault_err:
-    import traceback as _tb2
-    print(f"FUSE: artifact vault FAILED: {_artifact_vault_err}", flush=True)
-    _tb2.print_exc()
+    print(f"Warning: artifact vault failed: {_artifact_vault_err}")
 
-
-# --- Diagnostic route — shows which modules loaded ---
-@app.get("/v1/fuse-check")
-async def fuse_check():
-    engine_routes = [r.path for r in app.routes if hasattr(r, 'path') and '/engine/' in getattr(r, 'path', '')]
-    vault_routes = [r.path for r in app.routes if hasattr(r, 'path') and '/vault/' in getattr(r, 'path', '')]
-    import os
-    return {
-        "ok": True,
-        "total_routes": len(app.routes),
-        "engine_routes": engine_routes,
-        "vault_routes": vault_routes,
-        "files_exist": {
-            "nexusmon_mission_engine.py": os.path.exists("nexusmon_mission_engine.py"),
-            "nexusmon_artifact_vault.py": os.path.exists("nexusmon_artifact_vault.py"),
-            "server_legacy_overlay.py": os.path.exists("server_legacy_overlay.py"),
-        },
-        "cwd": os.getcwd(),
-        "dir_listing": [f for f in os.listdir(".") if f.startswith("nexusmon_")],
-    }
 
 # --- Static file mount for HUD assets (CSS, JS) ---
 # MUST come after all explicit routes so /web/* doesn't shadow API paths.
