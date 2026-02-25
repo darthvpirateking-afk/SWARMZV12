@@ -501,6 +501,12 @@ async def nexusmon_landing():
     return FileResponse("web/nexusmon_landing.html", media_type="text/html")
 
 
+@app.get("/avatar")
+async def avatar_page():
+    """NEXUSMON Avatar — holographic companion interface."""
+    return FileResponse("web/avatar.html", media_type="text/html")
+
+
 # --- Home route — NEXUSMON is the face of this system ---
 @app.get("/")
 async def home_page():

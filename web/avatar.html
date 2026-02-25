@@ -1,407 +1,250 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-  <meta name="theme-color" content="#030508">
-  <title>MASTER SWARMZ — Avatar</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-  <style>
-    /* ====== RESET & GLOBALS ====== */
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    :root{
-      --bg:#030508;--surface:#0a0e18;--border:#1a2040;
-      --cyan:#00e5ff;--purple:#b388ff;--magenta:#ff40ff;
-      --gold:#ffd740;--green:#69f0ae;--red:#ff5252;
-      --text:#e0e6f0;--text-dim:#6a7a9a;
-      --glow-cyan:0 0 30px rgba(0,229,255,.4);
-      --glow-purple:0 0 30px rgba(179,136,255,.4);
-    }
-    html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:14px}
-
-    /* ====== STARFIELD ====== */
-    .starfield{position:fixed;inset:0;z-index:0;overflow:hidden}
-    .star{position:absolute;border-radius:50%;background:#fff;animation:twinkle var(--dur) ease-in-out infinite alternate}
-    @keyframes twinkle{0%{opacity:.1;transform:scale(.5)}100%{opacity:.8;transform:scale(1.2)}}
-
-    /* ====== SCANLINES ====== */
-    .scanlines{position:fixed;inset:0;z-index:1;pointer-events:none;
-      background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,229,255,.02) 2px,rgba(0,229,255,.02) 4px)}
-
-    /* ====== LAYOUT ====== */
-    .app{position:relative;z-index:2;display:flex;flex-direction:column;height:100vh}
-    header{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-bottom:1px solid var(--border);backdrop-filter:blur(12px);background:rgba(10,14,24,.8)}
-    .logo{font-family:'Orbitron',sans-serif;font-size:16px;font-weight:800;letter-spacing:3px;color:var(--cyan);text-shadow:var(--glow-cyan)}
-    .phase-badge{font-family:'Orbitron',sans-serif;font-size:11px;padding:4px 12px;border-radius:20px;background:rgba(0,229,255,.1);border:1px solid var(--cyan);color:var(--cyan);letter-spacing:2px}
-
-    .main{flex:1;display:flex;overflow:hidden}
-
-    /* ====== LEFT: AVATAR SCENE ====== */
-    .avatar-scene{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;min-width:0}
-
-    /* Holographic figure */
-    .holo-figure{position:relative;width:280px;height:420px;display:flex;align-items:center;justify-content:center}
-
-    /* Base glow platform */
-    .holo-platform{position:absolute;bottom:0;width:200px;height:12px;border-radius:50%;
-      background:radial-gradient(ellipse,var(--cyan),transparent 70%);
-      box-shadow:0 0 60px 20px rgba(0,229,255,.15);animation:platform-pulse 3s ease-in-out infinite}
-    @keyframes platform-pulse{0%,100%{opacity:.6;transform:scaleX(1)}50%{opacity:1;transform:scaleX(1.1)}}
-
-    /* Body silhouette */
-    .holo-body{position:relative;width:160px;height:380px;display:flex;flex-direction:column;align-items:center}
-
-    /* Head */
-    .holo-head{width:80px;height:80px;border-radius:50%;position:relative;
-      background:radial-gradient(circle at 40% 35%,rgba(0,229,255,.25),rgba(179,136,255,.15),transparent);
-      border:2px solid rgba(0,229,255,.3);
-      box-shadow:var(--glow-cyan),inset 0 0 20px rgba(0,229,255,.1);
-      animation:head-float 4s ease-in-out infinite}
-    @keyframes head-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-
-    /* Eyes */
-    .holo-eyes{position:absolute;top:28px;left:50%;transform:translateX(-50%);display:flex;gap:18px}
-    .holo-eye{width:12px;height:12px;border-radius:50%;background:var(--cyan);
-      box-shadow:0 0 12px var(--cyan),0 0 30px rgba(0,229,255,.5);animation:eye-glow 3s ease-in-out infinite}
-    .holo-eye.right{animation-delay:.15s}
-    @keyframes eye-glow{0%,100%{opacity:.7;transform:scale(1)}50%{opacity:1;transform:scale(1.15)}}
-    /* Blink */
-    .holo-eye.blink{animation:blink .2s ease-in-out}
-    @keyframes blink{0%,100%{transform:scaleY(1)}50%{transform:scaleY(.1)}}
-
-    /* Expression mouth */
-    .holo-mouth{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);width:20px;height:3px;
-      border-radius:2px;background:rgba(0,229,255,.4);transition:all .3s}
-    .holo-mouth.speaking{animation:speak .4s ease-in-out infinite;background:var(--cyan)}
-    @keyframes speak{0%,100%{height:3px;width:20px;border-radius:2px}50%{height:10px;width:24px;border-radius:50%}}
-    .holo-mouth.happy{width:24px;height:12px;border-radius:0 0 12px 12px;background:rgba(0,229,255,.5)}
-
-    /* Neck */
-    .holo-neck{width:20px;height:16px;background:linear-gradient(180deg,rgba(0,229,255,.2),rgba(179,136,255,.1))}
-
-    /* Torso */
-    .holo-torso{width:100px;height:120px;position:relative;
-      background:linear-gradient(180deg,rgba(0,229,255,.12),rgba(179,136,255,.08));
-      clip-path:polygon(20% 0%,80% 0%,95% 100%,5% 100%);
-      border:1px solid rgba(0,229,255,.15)}
-    .holo-torso::before{content:'';position:absolute;top:20px;left:50%;transform:translateX(-50%);
-      width:40px;height:40px;border-radius:50%;
-      background:radial-gradient(circle,rgba(0,229,255,.3),transparent);
-      box-shadow:0 0 20px rgba(0,229,255,.2);animation:core-pulse 2s ease-in-out infinite}
-    @keyframes core-pulse{0%,100%{opacity:.5;transform:translateX(-50%) scale(.9)}50%{opacity:1;transform:translateX(-50%) scale(1.1)}}
-
-    /* Arms */
-    .holo-arms{position:absolute;top:100px;width:160px;height:100px;display:flex;justify-content:space-between}
-    .holo-arm{width:18px;height:90px;
-      background:linear-gradient(180deg,rgba(0,229,255,.15),rgba(179,136,255,.05));
-      border:1px solid rgba(0,229,255,.1);border-radius:8px}
-    .holo-arm.left{transform:rotate(8deg);transform-origin:top center}
-    .holo-arm.right{transform:rotate(-8deg);transform-origin:top center}
-
-    /* Legs */
-    .holo-legs{display:flex;gap:16px;margin-top:4px}
-    .holo-leg{width:22px;height:80px;
-      background:linear-gradient(180deg,rgba(179,136,255,.1),rgba(0,229,255,.05));
-      border:1px solid rgba(0,229,255,.08);border-radius:0 0 6px 6px}
-
-    /* Holographic noise overlay */
-    .holo-noise{position:absolute;inset:0;pointer-events:none;
-      background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,229,255,.015) 3px,rgba(0,229,255,.015) 4px);
-      animation:noise-scroll 8s linear infinite}
-    @keyframes noise-scroll{from{background-position:0 0}to{background-position:0 400px}}
-
-    /* Floating particles around figure */
-    .holo-particles{position:absolute;inset:-40px;pointer-events:none}
-    .particle{position:absolute;width:3px;height:3px;border-radius:50%;background:var(--cyan);opacity:0;animation:particle-drift var(--dur) var(--delay) ease-in-out infinite}
-    @keyframes particle-drift{0%{opacity:0;transform:translateY(0) scale(.5)}30%{opacity:.7}70%{opacity:.5}100%{opacity:0;transform:translateY(-80px) scale(0)}}
-
-    /* Status bar under avatar */
-    .avatar-status{margin-top:24px;text-align:center}
-    .avatar-name{font-family:'Orbitron',sans-serif;font-size:20px;font-weight:800;letter-spacing:4px;color:var(--cyan);text-shadow:var(--glow-cyan)}
-    .avatar-title{font-size:11px;color:var(--text-dim);letter-spacing:2px;margin-top:4px}
-    .status-chips{display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap}
-    .s-chip{font-size:10px;padding:3px 10px;border-radius:12px;border:1px solid var(--border);color:var(--text-dim);letter-spacing:1px}
-    .s-chip.online{border-color:var(--green);color:var(--green)}
-    .s-chip.sovereign{border-color:var(--gold);color:var(--gold)}
-
-    /* ====== RIGHT: CHAT ====== */
-    .chat-panel{width:380px;display:flex;flex-direction:column;border-left:1px solid var(--border);background:rgba(10,14,24,.6);backdrop-filter:blur(8px)}
-    .chat-header{padding:16px;border-bottom:1px solid var(--border);font-family:'Orbitron',sans-serif;font-size:12px;letter-spacing:2px;color:var(--purple)}
-    .chat-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;scroll-behavior:smooth}
-    .chat-messages::-webkit-scrollbar{width:4px}
-    .chat-messages::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
-
-    .msg{max-width:90%;padding:10px 14px;border-radius:12px;font-size:13px;line-height:1.5;animation:msg-in .3s ease-out}
-    @keyframes msg-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-    .msg.ai{align-self:flex-start;background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.15);color:var(--text)}
-    .msg.user{align-self:flex-end;background:rgba(179,136,255,.1);border:1px solid rgba(179,136,255,.2);color:var(--text)}
-    .msg .sender{font-size:10px;font-weight:600;letter-spacing:1px;margin-bottom:4px;opacity:.6}
-    .msg.ai .sender{color:var(--cyan)}
-    .msg.user .sender{color:var(--purple)}
-    .msg .text{white-space:pre-wrap;word-break:break-word}
-    
-    /* SWARMZ Custom Text Styling */
-    .msg.ai .text{font-family:'Orbitron',monospace;font-weight:500;letter-spacing:0.5px;color:var(--cyan);text-shadow:0 0 2px rgba(0,229,255,0.3)}
-    .msg.ai .text .typing-cursor{color:var(--cyan);animation:cursor-blink 1s infinite;font-weight:300}
-
-    .typing-indicator{align-self:flex-start;display:flex;gap:4px;padding:12px 16px}
-    .typing-indicator span{width:6px;height:6px;border-radius:50%;background:var(--cyan);opacity:.3;animation:typing-bounce 1.2s ease-in-out infinite}
-    .typing-indicator span:nth-child(2){animation-delay:.2s}
-    .typing-indicator span:nth-child(3){animation-delay:.4s}
-    @keyframes typing-bounce{0%,100%{opacity:.3;transform:translateY(0)}50%{opacity:1;transform:translateY(-6px)}}
-    @keyframes cursor-blink{0%,50%{opacity:1}51%,100%{opacity:0}}
-
-    .chat-input-area{padding:12px;border-top:1px solid var(--border);display:flex;gap:8px}
-    .chat-input{flex:1;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-family:inherit;font-size:13px;outline:none;transition:border-color .2s}
-    .chat-input:focus{border-color:var(--cyan)}
-    .chat-input::placeholder{color:var(--text-dim)}
-    .send-btn{background:rgba(0,229,255,.15);border:1px solid var(--cyan);border-radius:8px;padding:10px 16px;color:var(--cyan);font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:1px;cursor:pointer;transition:all .2s}
-    .send-btn:hover{background:rgba(0,229,255,.25);box-shadow:var(--glow-cyan)}
-    .send-btn:disabled{opacity:.3;cursor:not-allowed}
-
-    /* ====== MOBILE ====== */
-    @media(max-width:768px){
-      .main{flex-direction:column}
-      .avatar-scene{flex:0 0 50vh}
-      .chat-panel{width:100%;flex:1;border-left:none;border-top:1px solid var(--border)}
-      .holo-figure{transform:scale(.7)}
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>NEXUSMON</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#05050f;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:'Courier New',monospace;color:#fff;overflow:hidden}
+canvas{position:fixed;top:0;left:0;z-index:0}
+.container{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;width:100%;transition:all 2.2s cubic-bezier(0.23,1,0.32,1)}
+.mech-stage{position:relative;width:380px;height:480px;perspective:1200px;transition:transform 2.5s}
+/* scale via CSS so var(--scale) resolves — SVG transform attributes can't use CSS vars */
+.robot-svg{position:relative;z-index:3;width:100%;height:100%;filter:drop-shadow(0 0 60px var(--glow));transform:scale(var(--scale));transform-box:fill-box;transform-origin:50% 55%;transform-style:preserve-3d;transition:transform 2.5s cubic-bezier(0.23,1,0.32,1),filter 2.2s}
+.digivolve{animation:digiEvolve 2.4s forwards}
+@keyframes digiEvolve{0%{opacity:1;transform:scale(var(--scale)) rotateX(0deg)}15%{opacity:0.3;transform:scale(calc(var(--scale)*1.5)) rotateX(20deg)}35%{opacity:0.7;transform:scale(calc(var(--scale)*1.1)) rotateX(-15deg)}55%{opacity:0.5;transform:scale(calc(var(--scale)*1.4)) rotateX(12deg)}100%{opacity:1;transform:scale(var(--scale)) rotateX(0deg)}}
+.scanlines{position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,255,255,0.04) 3px,rgba(0,255,255,0.04) 6px);pointer-events:none;z-index:20;animation:scanRoll 20s linear infinite;opacity:0.3}
+@keyframes scanRoll{0%{transform:translateY(0)}100%{transform:translateY(-6px)}}
+.matrix{position:fixed;inset:0;pointer-events:none;z-index:5;overflow:hidden;opacity:0.12}
+.matrix-col{position:absolute;top:-100%;font-size:14px;font-family:monospace;color:var(--glow);white-space:pre;animation:matrixFall linear infinite}
+@keyframes matrixFall{0%{transform:translateY(-100vh)}100%{transform:translateY(200vh)}}
+.particles{position:absolute;inset:0;pointer-events:none;z-index:4;overflow:hidden}
+.particle{position:absolute;width:4px;height:4px;background:var(--glow);border-radius:50%;opacity:0;animation:particleRise 5s linear infinite}
+@keyframes particleRise{0%{opacity:0;transform:translateY(0) scale(0.4)}30%{opacity:0.9}100%{opacity:0;transform:translateY(-220px) scale(1.3)}}
+.status-bar{margin-top:40px;text-align:center}
+.name{font-size:32px;font-weight:900;letter-spacing:8px;text-shadow:0 0 30px var(--glow)}
+.tier{font-size:13px;letter-spacing:7px;opacity:0.6;margin:6px 0 12px}
+.rank-badge{display:inline-flex;align-items:center;gap:14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);padding:12px 30px;border-radius:10px}
+.rank-letter{font-size:38px;font-weight:900;text-shadow:0 0 20px var(--glow)}
+.xp{font-size:14px}
+#mission-status{margin-top:16px;font-size:14px;opacity:0.75;text-shadow:0 0 12px var(--glow);display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center}
+#progress-container{width:220px;height:8px;background:rgba(255,255,255,0.08);border-radius:4px;overflow:hidden;transition:box-shadow 0.4s}
+#progress-bar{height:100%;width:0%;background:linear-gradient(90deg,#00ffaa,#00cc88);transition:width 1.2s ease;box-shadow:0 0 12px #00ffaa}
+#mission-flash{color:#ffd700;opacity:0;transition:opacity 0.8s;font-weight:bold}
+/* tier CSS vars */
+.tier-DORMANT  {--glow:#445566;--eye:#667788;--scale:0.6; --wings:0;   --hood:0}
+.tier-INITIATED{--glow:#00ccff;--eye:#00eeff;--scale:1;   --wings:0;   --hood:0}
+.tier-ACTIVE   {--glow:#00ffaa;--eye:#00ffcc;--scale:1.2; --wings:0.45;--hood:0}
+.tier-EVOLVED  {--glow:#aa44ff;--eye:#cc77ff;--scale:1.4; --wings:0.85;--hood:0.3}
+.tier-ASCENDED {--glow:#ffcc33;--eye:#ffee66;--scale:1.65;--wings:1;   --hood:1}
+/* wings + hood opacity via CSS (not SVG attr — attrs can't use CSS vars) */
+#wings{transition:opacity 2.5s;opacity:var(--wings)}
+#hood{transition:opacity 2.5s;opacity:var(--hood)}
+</style>
 </head>
 <body>
+<canvas id="bg"></canvas>
+<div class="matrix" id="matrix"></div>
+<div class="particles" id="particles"></div>
+<div id="root" class="container tier-INITIATED">
+  <div class="mech-stage">
+    <svg class="robot-svg" id="svg" viewBox="0 0 380 480" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="bodyG" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#1a1a25"/>
+          <stop offset="100%" stop-color="#0a0a14"/>
+        </linearGradient>
+        <linearGradient id="eyeG" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#00eeff"/>
+          <stop offset="100%" stop-color="#0066ff"/>
+        </linearGradient>
+        <filter id="glowF">
+          <feGaussianBlur stdDeviation="16" result="b"/>
+          <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
 
-<div class="starfield" id="starfield"></div>
-<div class="scanlines"></div>
+      <!-- Robot body centred in viewBox (scale handled by CSS on .robot-svg) -->
+      <g id="body" transform="translate(190 240)">
+        <!-- Helmet -->
+        <path d="M-90 -140 Q-90 -170 -40 -180 Q10 -170 10 -140 L15 -80 Q15 -60 -10 -45 L-90 -45 Q-115 -60 -115 -80 Z" fill="url(#bodyG)" stroke="#2a2a3a" stroke-width="10"/>
+        <!-- Ear horns -->
+        <polygon points="-100,-120 -120,-160 -95,-130" fill="#1a1a25" stroke="#2a2a3a" stroke-width="6"/>
+        <polygon points="20,-120 40,-160 15,-130" fill="#1a1a25" stroke="#2a2a3a" stroke-width="6"/>
+        <!-- Eyes -->
+        <circle cx="-60" cy="-120" r="22" fill="#0a0a14"/>
+        <circle cx="20"  cy="-120" r="22" fill="#0a0a14"/>
+        <circle cx="-60" cy="-120" r="14" fill="url(#eyeG)" filter="url(#glowF)" id="eyeL"/>
+        <circle cx="20"  cy="-120" r="14" fill="url(#eyeG)" filter="url(#glowF)" id="eyeR"/>
+        <circle cx="-60" cy="-120" r="6"  fill="#fff"/>
+        <circle cx="20"  cy="-120" r="6"  fill="#fff"/>
+        <!-- Chest plate -->
+        <path d="M-85 -40 Q-85 20 -60 50 L60 50 Q85 20 85 -40 Q85 -70 0 -80 Q-85 -70 -85 -40" fill="url(#bodyG)" stroke="#2a2a3a" stroke-width="12"/>
+        <!-- Core orb -->
+        <circle cx="0" cy="0" r="32" fill="#0a0a14"/>
+        <circle cx="0" cy="0" r="22" fill="#00ddff" filter="url(#glowF)" id="core"/>
+        <circle cx="0" cy="0" r="8"  fill="#fff"/>
+        <!-- Arms -->
+        <rect x="-110" y="-50" width="30" height="130" rx="10" fill="url(#bodyG)" stroke="#2a2a3a" stroke-width="8"/>
+        <rect x="80"   y="-50" width="30" height="130" rx="10" fill="url(#bodyG)" stroke="#2a2a3a" stroke-width="8"/>
+        <!-- Legs -->
+        <rect x="-60" y="60" width="50" height="110" rx="8" fill="url(#bodyG)" stroke="#2a2a3a" stroke-width="8"/>
+        <rect x="10"  y="60" width="50" height="110" rx="8" fill="url(#bodyG)" stroke="#2a2a3a" stroke-width="8"/>
+      </g>
 
-<div class="app">
-  <header>
-    <div class="logo">MASTER SWARMZ</div>
-    <div style="display:flex;gap:8px;align-items:center">
-      <span class="phase-badge" id="phaseBadge">LOADING</span>
-      <a href="/hologram" style="font-size:11px;color:var(--text-dim);text-decoration:none;letter-spacing:1px" title="Evolution Orb">ORB ↗</a>
-      <a href="/ui" style="font-size:11px;color:var(--text-dim);text-decoration:none;letter-spacing:1px" title="Control Console">CONSOLE ↗</a>
+      <!-- Energy wings — opacity via CSS #wings rule above -->
+      <g id="wings" filter="url(#glowF)" transform="translate(190 240)">
+        <path d="M-100 -20 Q-180 -100 -220 -180 Q-140 -80 -90 -30" fill="none" stroke="#00ddff" stroke-width="24" opacity="0.75"/>
+        <path d="M100  -20 Q180  -100 220  -180 Q140  -80 90  -30"  fill="none" stroke="#00ddff" stroke-width="24" opacity="0.75"/>
+      </g>
+
+      <!-- Mega hood overlay — opacity via CSS #hood rule above -->
+      <path id="hood" transform="translate(100 100)"
+        d="M-90 -140 Q-90 -170 -40 -180 Q10 -170 10 -140 L15 -80 Q15 -60 -10 -45 L-90 -45 Q-115 -60 -115 -80 Z"
+        fill="#0a0a14" stroke="#2a2a3a" stroke-width="10"/>
+    </svg>
+  </div>
+
+  <div class="status-bar">
+    <div class="name" id="name">NEXUSMON</div>
+    <div class="tier" id="tier">INITIATED</div>
+    <div class="rank-badge">
+      <span class="rank-letter" id="rank">E</span>
+      <span class="xp" id="xp">0 XP</span>
     </div>
-  </header>
-
-  <div class="main">
-    <!-- AVATAR -->
-    <div class="avatar-scene">
-      <div class="holo-figure">
-        <div class="holo-particles" id="particles"></div>
-        <div class="holo-noise"></div>
-        <div class="holo-body">
-          <div class="holo-head" id="head">
-            <div class="holo-eyes">
-              <div class="holo-eye left" id="eyeL"></div>
-              <div class="holo-eye right" id="eyeR"></div>
-            </div>
-            <div class="holo-mouth" id="mouth"></div>
-          </div>
-          <div class="holo-neck"></div>
-          <div class="holo-torso">
-            <div class="holo-arms">
-              <div class="holo-arm left"></div>
-              <div class="holo-arm right"></div>
-            </div>
-          </div>
-          <div class="holo-legs">
-            <div class="holo-leg left"></div>
-            <div class="holo-leg right"></div>
-          </div>
-        </div>
-        <div class="holo-platform"></div>
+    <div id="mission-status">
+      <span id="active-missions">0 active missions</span>
+      <div id="progress-container">
+        <div id="progress-bar"></div>
       </div>
-
-      <div class="avatar-status">
-        <div class="avatar-name">MASTER SWARMZ</div>
-        <div class="avatar-title" id="avatarTitle">OPERATOR-SOVEREIGN AI COMPANION</div>
-        <div class="status-chips">
-          <span class="s-chip online" id="chipOnline">● ONLINE</span>
-          <span class="s-chip sovereign" id="chipPhase">SOVEREIGN</span>
-          <span class="s-chip" id="chipMissions">81 MISSIONS</span>
-          <span class="s-chip" id="chipPolicy">ACTIVE</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- CHAT -->
-    <div class="chat-panel">
-      <div class="chat-header">COMPANION CHANNEL</div>
-      <div class="chat-messages" id="messages">
-        <!-- Initial greeting will be added via JavaScript with typewriter effect -->
-      </div>
-      <div class="chat-input-area">
-        <input class="chat-input" id="chatInput" type="text" placeholder="Talk to SWARMZ..." autocomplete="off">
-        <button class="send-btn" id="sendBtn">SEND</button>
-      </div>
+      <span id="mission-flash"></span>
     </div>
   </div>
 </div>
+<div class="scanlines"></div>
 
 <script>
-/* ====== STARFIELD ====== */
-(function(){
-  const sf = document.getElementById('starfield');
-  for(let i=0;i<80;i++){
-    const s = document.createElement('div');
-    s.className = 'star';
-    s.style.cssText = `left:${Math.random()*100}%;top:${Math.random()*100}%;width:${1+Math.random()*2}px;height:${1+Math.random()*2}px;--dur:${2+Math.random()*4}s;animation-delay:${Math.random()*4}s`;
-    sf.appendChild(s);
-  }
-})();
-
-/* ====== PARTICLES ====== */
-(function(){
-  const pc = document.getElementById('particles');
-  for(let i=0;i<20;i++){
-    const p = document.createElement('div');
-    p.className = 'particle';
-    p.style.cssText = `left:${10+Math.random()*80}%;bottom:${Math.random()*60}%;--dur:${3+Math.random()*5}s;--delay:${Math.random()*4}s`;
-    pc.appendChild(p);
-  }
-})();
-
-/* ====== EYE BLINK ====== */
-(function(){
-  const eyeL = document.getElementById('eyeL');
-  const eyeR = document.getElementById('eyeR');
-  function blink(){
-    eyeL.classList.add('blink'); eyeR.classList.add('blink');
-    setTimeout(()=>{ eyeL.classList.remove('blink'); eyeR.classList.remove('blink'); }, 200);
-  }
-  setInterval(()=>{ if(Math.random()<.3) blink(); }, 3000);
-})();
-
-/* ====== STATUS POLLING ====== */
-async function fetchStatus(){
-  try{
-    const r = await fetch('/v1/runtime/status');
-    const d = await r.json();
-    document.getElementById('phaseBadge').textContent = d.phase||'UNKNOWN';
-    document.getElementById('chipPhase').textContent = d.phase||'?';
-    document.getElementById('chipMissions').textContent = (d.total_missions||0)+' MISSIONS';
-    document.getElementById('chipPolicy').textContent = (d.policy||'active').toUpperCase();
-  }catch(e){
-    document.getElementById('phaseBadge').textContent = 'OFFLINE';
-    document.getElementById('chipOnline').textContent = '○ OFFLINE';
-    document.getElementById('chipOnline').classList.remove('online');
+// ── Starfield ─────────────────────────────────────────────
+const c = document.getElementById('bg'), ctx = c.getContext('2d');
+let stars = [];
+function initStars(){
+  c.width = innerWidth; c.height = innerHeight; stars = [];
+  for(let i = 0; i < 350; i++){
+    stars.push({ x: Math.random()*c.width, y: Math.random()*c.height,
+                 z: Math.random()*2.5+0.5, speed: Math.random()*0.4+0.1 });
   }
 }
-fetchStatus(); setInterval(fetchStatus, 10000);
-
-/* ====== CHAT ====== */
-const messagesEl = document.getElementById('messages');
-const chatInput = document.getElementById('chatInput');
-const sendBtn = document.getElementById('sendBtn');
-const mouth = document.getElementById('mouth');
-
-function addMsg(text, sender, useTypewriter = false){
-  const div = document.createElement('div');
-  div.className = 'msg '+(sender==='ai'?'ai':'user');
-  div.innerHTML = `<div class="sender">${sender==='ai'?'MASTER SWARMZ':'YOU'}</div><div class="text"></div>`;
-  const textEl = div.querySelector('.text');
-  
-  messagesEl.appendChild(div);
-  messagesEl.scrollTop = messagesEl.scrollHeight;
-  
-  if(useTypewriter && sender === 'ai'){
-    typewriterEffect(textEl, text);
-  } else {
-    textEl.textContent = text;
-  }
+function drawStars(){
+  ctx.fillStyle = '#05050f'; ctx.fillRect(0, 0, c.width, c.height);
+  stars.forEach(s => {
+    s.y += s.speed * s.z;
+    if(s.y > c.height) s.y = 0;
+    const sz = s.z * 1.4;
+    ctx.fillStyle = `rgba(180,220,255,${0.4 + s.z * 0.35})`;
+    ctx.fillRect(s.x, s.y, sz, sz);
+  });
+  requestAnimationFrame(drawStars);
 }
+initStars(); drawStars(); window.addEventListener('resize', initStars);
 
-function typewriterEffect(element, text, speed = 45){
-  element.innerHTML = '';
-  let i = 0;
-  
-  // Start mouth speaking animation
-  mouth.classList.add('speaking');
-  
-  function typeChar(){
-    if(i < text.length){
-      if(text.charAt(i) === '\n'){
-        element.appendChild(document.createElement('br'));
-      } else {
-        element.appendChild(document.createTextNode(text.charAt(i)));
-      }
-      i++;
-      messagesEl.scrollTop = messagesEl.scrollHeight;
-      
-      // Variable speed: slower for punctuation, faster for regular chars
-      let nextDelay = speed;
-      if(text.charAt(i-1) === '.' || text.charAt(i-1) === '!' || text.charAt(i-1) === '?'){
-        nextDelay = speed * 4; // Pause after sentences
-      } else if(text.charAt(i-1) === ',' || text.charAt(i-1) === ';'){
-        nextDelay = speed * 2; // Pause after commas
-      } else if(text.charAt(i-1) === ' '){
-        nextDelay = speed * 0.7; // Slightly faster for spaces
-      }
-      
-      setTimeout(typeChar, nextDelay);
-    } else {
-      // Typing finished
-      mouth.classList.remove('speaking');
-      mouth.classList.add('happy');
-      setTimeout(() => mouth.classList.remove('happy'), 2000);
+// ── Matrix rain ───────────────────────────────────────────
+(function(){
+  const m = document.getElementById('matrix');
+  const chars = '01アイウエオカキクケコ∇∆◊◆';
+  for(let i = 0; i < 30; i++){
+    const col = document.createElement('div');
+    col.className = 'matrix-col';
+    col.style.left = (Math.random() * 100) + '%';
+    col.style.animationDuration = (8 + Math.random() * 12) + 's';
+    col.style.animationDelay = -(Math.random() * 10) + 's';
+    let txt = '';
+    for(let j = 0; j < 40; j++) txt += chars[Math.floor(Math.random() * chars.length)] + '\n';
+    col.textContent = txt;
+    m.appendChild(col);
+  }
+})();
+
+// ── Rising particles ──────────────────────────────────────
+(function(){
+  const p = document.getElementById('particles');
+  for(let i = 0; i < 15; i++){
+    const el = document.createElement('div');
+    el.className = 'particle';
+    el.style.left = (Math.random() * 100) + '%';
+    el.style.bottom = '0';
+    el.style.animationDelay = (Math.random() * 5) + 's';
+    el.style.animationDuration = (4 + Math.random() * 4) + 's';
+    p.appendChild(el);
+  }
+})();
+
+// ── Idle: core breathing + eye blink ─────────────────────
+(function(){
+  const core = document.getElementById('core');
+  const eyes = [document.getElementById('eyeL'), document.getElementById('eyeR')];
+  setInterval(() => {
+    const r = 22 + Math.sin(Date.now() * 0.0012) * 4;
+    core.setAttribute('r', r);
+    if(Math.random() < 0.025){
+      eyes.forEach(e => e.style.opacity = '0.25');
+      setTimeout(() => eyes.forEach(e => e.style.opacity = '1'), 140);
     }
-  }
-  
-  typeChar();
-}
+  }, 120);
+})();
 
-function showTyping(){
-  const t = document.createElement('div');
-  t.className = 'typing-indicator'; t.id = 'typing';
-  t.innerHTML = '<span></span><span></span><span></span>';
-  messagesEl.appendChild(t);
-  messagesEl.scrollTop = messagesEl.scrollHeight;
-  mouth.classList.add('speaking');
-}
-function hideTyping(){
-  const t = document.getElementById('typing');
-  if(t) t.remove();
-  mouth.classList.remove('speaking');
-  mouth.classList.add('happy');
-  setTimeout(()=> mouth.classList.remove('happy'), 2000);
-}
+// ── Rank + mission polling ────────────────────────────────
+const tierMap = { E:'DORMANT', D:'INITIATED', C:'ACTIVE', B:'EVOLVED', A:'ASCENDED', S:'ASCENDED' };
+let lastTier = 'INITIATED';
+let lastXP = 0;
+let lastProgress = 0;
 
-async function sendMessage(){
-  const text = chatInput.value.trim();
-  if(!text) return;
-  chatInput.value = '';
-  sendBtn.disabled = true;
-  addMsg(text, 'user');
-
-  showTyping();
+async function load(){
   try{
-    const r = await fetch('/v1/companion/message', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({text})
-    });
+    const r = await fetch('/v1/operator/rank');
     const d = await r.json();
-    hideTyping();
-    addMsg(d.reply || d.error || 'No response.', 'ai', true);
-  }catch(e){
-    hideTyping();
-    addMsg('Connection lost. Please try again.', 'ai');
-  }
-  sendBtn.disabled = false;
-  chatInput.focus();
+    const rank = d.rank || 'E';
+    const t = tierMap[rank] || 'INITIATED';
+    const xp = d.xp || 0;
+    const missions = d.missions || {};
+    const active = missions.active_missions || 0;
+    const progress = missions.progress_pct || 0;
+
+    const root = document.getElementById('root');
+    if(t !== lastTier){
+      const svg = document.getElementById('svg');
+      svg.classList.add('digivolve');
+      setTimeout(() => svg.classList.remove('digivolve'), 2400);
+      lastTier = t;
+    }
+    root.className = `container tier-${t}`;
+    document.getElementById('rank').textContent = rank;
+    document.getElementById('tier').textContent = t;
+    document.getElementById('xp').textContent = xp + ' XP';
+    document.getElementById('active-missions').textContent = active + ' active missions';
+    document.getElementById('progress-bar').style.width = progress + '%';
+
+    // XP gain flash
+    if(xp > lastXP){
+      const flash = document.getElementById('mission-flash');
+      flash.textContent = `+${xp - lastXP} XP! Mission complete`;
+      flash.style.opacity = '1';
+      setTimeout(() => { flash.style.opacity = '0'; flash.textContent = ''; }, 5000);
+    }
+    lastXP = xp;
+
+    // Progress bar pulse on change
+    if(Math.abs(progress - lastProgress) > 1){
+      const pc = document.getElementById('progress-container');
+      pc.style.boxShadow = '0 0 16px #00ffaa';
+      setTimeout(() => { pc.style.boxShadow = 'none'; }, 1200);
+    }
+    lastProgress = progress;
+
+  } catch(e){ console.error('Poll failed:', e); }
 }
-
-sendBtn.addEventListener('click', sendMessage);
-chatInput.addEventListener('keydown', e=>{ if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();} });
-
-// Initial greeting with typewriter effect
-setTimeout(() => {
-  addMsg("Hello. I am MASTER SWARMZ — your AI companion.\nI am here, alive and ready to serve.\nHow can I help you today?", 'ai', true);
-}, 1000);
-
-chatInput.focus();
+load();
+setInterval(load, 7000);
 </script>
 </body>
 </html>
