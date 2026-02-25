@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -120,6 +120,27 @@ nav {
   animation: fadeUp 0.8s 0.2s ease both;
 }
 .hero-body strong { color: var(--bright); font-weight: normal; }
+.hero-body .mx { color: var(--green); }
+
+.signal-pack {
+  margin-top: 22px;
+  border: 1px solid var(--border);
+  background: rgba(0, 255, 136, 0.02);
+  padding: 14px 16px;
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--text);
+}
+
+.glyph-head {
+  color: var(--accent);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: 10px;
+  margin-bottom: 8px;
+}
+
+.beast-line { color: var(--green); }
 
 .hero-actions {
   display: flex; gap: 16px; margin-top: 40px; flex-wrap: wrap;
@@ -339,18 +360,24 @@ footer {
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-eyebrow">// sovereign execution infrastructure</div>
+  <div class="hero-eyebrow">// matrix signal // sovereign execution infrastructure</div>
   <h1 class="hero-title">
     NEX<span class="accent">US</span>MON
-    <span class="sub">ONE OPERATOR. ONE ORGANISM. TOTAL CONTROL.</span>
+    <span class="sub">ONE OPERATOR. ONE ORGANISM. TOTAL CONTROL. ⚡🟢</span>
   </h1>
   <p class="hero-body">
-    Six systems. One sovereign bond.
+    Six systems. One sovereign bond. 🧠
     <strong>NEXUSMON decomposes your missions into executable task graphs,</strong>
     runs workers under risk-tiered governance, stores every output as a versioned artifact,
     and <strong>evolves its own operational permissions through your history.</strong>
-    Infrastructure. Not imitation.
+    <span class="mx">Green-text energy. Real backend muscle.</span>
   </p>
+  <div class="signal-pack">
+    <div class="glyph-head">// signal beasts // our lingo</div>
+    <div class="beast-line">BYTEWOLF  /\_/\   code-hunter • path-finder</div>
+    <div class="beast-line">GLITCHRA  &lt;\\=//&gt;  anomaly-seer • gate-caller</div>
+    <div class="beast-line">SIGILDRONE [::]=&gt;  task-runner • vault-courier</div>
+  </div>
   <div class="hero-actions">
     <a class="btn-primary" href="https://github.com/darthvpirateking-afk/NEXUSMON">
       ↗ ENTER THE BUILD
@@ -361,7 +388,7 @@ footer {
   </div>
   <div class="status-bar">
     <div class="status-dot"></div>
-    ORGANISM ONLINE — STAGE: DORMANT — FIRST MISSION CHANGES EVERYTHING
+    ORGANISM ONLINE 🟢 — STAGE: DORMANT — FIRST MISSION CHANGES EVERYTHING
   </div>
 </section>
 
@@ -598,8 +625,8 @@ footer {
 <span class="kw">cd</span> NEXUSMON
 <span class="kw">pip</span> install -r requirements.txt
 <span class="kw">cp</span> .env.example .env
-<span class="cm"># ANTHROPIC_API_KEY  OPERATOR_KEY  SWARMZ_JWT_SECRET</span>
-<span class="kw">uvicorn</span> swarmz_server:app --host 0.0.0.0 --port 8000
+<span class="cm"># ANTHROPIC_API_KEY  OPERATOR_KEY  NEXUSMON_JWT_SECRET</span>
+<span class="kw">uvicorn</span> nexusmon_server:app --host 0.0.0.0 --port 8000
 
 <span class="cm"># organism is live at:</span>
 <span class="cm"># /organism   → cockpit</span>
@@ -622,8 +649,8 @@ footer {
 
 <!-- CTA -->
 <section class="cta-block">
-  <h2 class="cta-title">THE FIRST MISSION<br>IS WAITING.</h2>
-  <p class="cta-sub">DORMANT ends the moment you send one. MIT. Local. Yours. No lock-in. No middleman. No ceiling.</p>
+  <h2 class="cta-title">THE FIRST MISSION<br>IS WAITING. ⚡</h2>
+  <p class="cta-sub">DORMANT ends the moment you send one. MIT. Local. Yours. No lock-in. No middleman. No ceiling. Enter the green-line era. 🟢</p>
   <div class="hero-actions" style="justify-content:center">
     <a class="btn-primary" href="https://github.com/darthvpirateking-afk/NEXUSMON">↗ TAKE SOVEREIGNTY</a>
     <a class="btn-ghost" href="/organism">LIVE COCKPIT →</a>
@@ -644,3 +671,4 @@ footer {
 
 </body>
 </html>
+

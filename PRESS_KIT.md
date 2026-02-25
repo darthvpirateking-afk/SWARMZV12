@@ -1,6 +1,8 @@
-# NEXUSMON // LAUNCH INTEL
+﻿# NEXUSMON // LAUNCH INTEL ⚡🟢
 
 LAUNCH CONTENT FOR NEXUSMON — DOCTRINE, LAUNCH THREAD, PITCH DECK, ARCHITECTURE DIAGRAMS, TAGLINES, AND PRESS RELEASE.
+
+Signal-heavy. Human tone. Zero corporate fog. 🧠⚔️
 
 ```text
 ┌─────────────────────────────────────┐
@@ -10,11 +12,27 @@ LAUNCH CONTENT FOR NEXUSMON — DOCTRINE, LAUNCH THREAD, PITCH DECK, ARCHITECTUR
 └─────────────────────────────────────┘
 ```
 
+```text
+┌─────────────────────────────────────────────────────────────┐
+│ NEXUS SIGNAL BEASTS // OUR VERSION                         │
+├─────────────────────────────────────────────────────────────┤
+│ BYTEWOLF   /\_/\      code-hunter • path-finder            │
+│           ( o.o )                                           │
+│            > ^ <                                            │
+│                                                             │
+│ GLITCHRA   <\\=//>     anomaly-seer • gate-caller           │
+│             /_ _\                                            │
+│              /_\                                             │
+│                                                             │
+│ SIGILDRONE [::]=>      task-runner • vault-courier          │
+└─────────────────────────────────────────────────────────────┘
+```
+
 ---
 
 ## BRIEF // ONE-LINER
 
-NEXUSMON is an open-source governed autonomy system — mission execution infrastructure that decomposes goals into tasks, runs workers, stores versioned artifacts, and evolves capabilities from real performance history. One operator. Full control. No vendor lock-in.
+NEXUSMON is an open-source governed autonomy system — mission execution infrastructure that turns intent into task DAGs, runs workers, stores versioned artifacts, and unlocks capability from real mission history. One operator. Full control. No lock-in. 🟢
 
 ---
 
@@ -46,16 +64,18 @@ All data belongs to the operator. No cloud dependency required. The organism run
 ## BRIEF // LAUNCH THREAD (X / TWITTER)
 
 **1/**
-I've been building an autonomous execution system called NEXUSMON.
+I built an autonomous execution system called NEXUSMON ⚡
 
-Not a chatbot. Not an agent wrapper. Not another LLM dashboard.
+Not a chatbot. Not an agent wrapper. Not another dashboard skin.
 
 A governed autonomy system — mission engine, worker swarm, artifact vault, evolution layer. One operator. Full control.
 
-Here's what it actually is:
+Matrix vibe, but real infrastructure under it.
+
+Here’s what it actually is:
 
 **2/**
-Six real systems under the hood:
+Six real systems under the hood 🧠
 
 → Mission Engine: accepts goals, decomposes into tasks, executes as DAG
 → Worker Layer: tool runners, API connectors, script executors
@@ -87,7 +107,7 @@ No autonomous S-rank execution without explicit operator sign-off.
 This is how you build trustworthy autonomy — not by trusting it, by architecting the constraints first.
 
 **5/**
-Every output is stored as a versioned artifact.
+Every output is stored as a versioned artifact 📜
 
 Title. Content. The exact input that produced it.
 Operator approval or rejection.
@@ -106,7 +126,7 @@ GET /v1/cognition/status → prediction calibration, error taxonomy
 All routes. All local. All yours.
 
 **7/**
-Built with:
+Built with 🛠️
 → FastAPI + Python
 → SQLite + JSONL (no cloud dependency)
 → Anthropic Claude (optional, graceful fallback)
@@ -121,8 +141,8 @@ Operator/partner execution dynamic.
 Evolution and identity through usage.
 Progression tied directly to mission outcomes.
 
-The aesthetics are the skin.
-The infrastructure is the organism.
+The aesthetic is signal.
+The infrastructure is still the organism.
 
 github.com/darthvpirateking-afk/NEXUSMON
 
@@ -220,7 +240,7 @@ OPERATOR
                │ HTTP + WebSocket
                ▼
 ╔══════════════════════════════════════════╗
-║         swarmz_server.py (FastAPI)       ║
+║         nexusmon_server.py (FastAPI)       ║
 ║                                          ║
 ║  ┌─────────────┐  ┌────────────────────┐ ║
 ║  │ nexusmon_   │  │ nexusmon_          │ ║
@@ -313,7 +333,8 @@ NEXUSMON is available under the MIT license at:
 https://github.com/darthvpirateking-afk/NEXUSMON
 
 Live cockpit:
-https://swarmzv10-production.up.railway.app/organism
+https://nexusmonv10-production.up.railway.app/organism
 
 Landing page:
-https://swarmzv10-production.up.railway.app/landing
+https://nexusmonv10-production.up.railway.app/landing
+
