@@ -70,6 +70,7 @@ body::after {
 }
 
 .clock { font-size: 11px; color: var(--dim); letter-spacing: 0.08em; }
+.last-updated { font-size: 9px; color: var(--dim); letter-spacing: 0.06em; }
 
 .refresh-btn {
   background: none; border: 1px solid var(--bh); border-radius: 2px;
@@ -91,8 +92,10 @@ body::after {
 /* ── LEFT SIDEBAR ── */
 .sidebar-left {
   border-right: 1px solid var(--border);
+  border-left: 3px solid var(--dim);
   display: flex; flex-direction: column;
   background: var(--panel);
+  transition: border-left-color 0.4s;
 }
 
 .side-section { padding: 16px; border-bottom: 1px solid var(--border); }
@@ -168,16 +171,28 @@ body::after {
 .tab-nav {
   display: flex; border-bottom: 1px solid var(--border);
   background: var(--panel); position: sticky; top: 0; z-index: 100;
+  overflow-x: auto;
 }
 .tab-btn {
-  padding: 12px 20px; font-family: var(--mono); font-size: 10px;
+  padding: 12px 18px; font-family: var(--mono); font-size: 10px;
   letter-spacing: 0.1em; text-transform: uppercase;
   color: var(--dim); background: none; border: none;
   border-bottom: 2px solid transparent; cursor: pointer;
   transition: all 0.2s; margin-bottom: -1px;
+  white-space: nowrap; position: relative;
 }
 .tab-btn:hover { color: var(--text); }
 .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* Notification dot on tab */
+.tab-notif {
+  display: inline-block; background: var(--red); color: #fff;
+  font-size: 8px; border-radius: 8px; padding: 1px 5px;
+  margin-left: 5px; vertical-align: middle; min-width: 16px;
+  text-align: center; line-height: 14px;
+  opacity: 0; transition: opacity 0.3s;
+}
+.tab-notif.visible { opacity: 1; }
 
 /* Tab panels */
 .tab-panel { display: none; padding: 20px; flex-direction: column; gap: 16px; }
@@ -261,8 +276,12 @@ body::after {
   background: rgba(0,204,255,0.06);
 }
 .btn.primary:hover { background: rgba(0,204,255,0.14); }
+.btn.success { border-color: var(--green); color: var(--green); }
+.btn.success:hover { background: rgba(0,255,136,0.1); }
 .btn.danger { border-color: var(--red); color: var(--red); }
 .btn.danger:hover { background: rgba(255,51,85,0.1); }
+.btn.amber { border-color: var(--amber); color: var(--amber); }
+.btn.amber:hover { background: rgba(255,170,0,0.1); }
 .btn:disabled { opacity: 0.3; cursor: default; }
 
 /* Worker list */
@@ -286,6 +305,8 @@ body::after {
 .s-FAILED    { background: rgba(255,51,85,0.1);  color: var(--red); }
 .s-CANCELLED { background: rgba(37,53,69,0.5);   color: var(--dim); }
 .s-PAUSED    { background: rgba(255,170,0,0.1);  color: var(--amber); }
+.s-PENDING   { background: rgba(0,204,255,0.08); color: var(--accent); }
+.s-BLOCKED   { background: rgba(255,51,85,0.08); color: var(--red); }
 @keyframes pulse-glow { 0%,100%{opacity:1} 50%{opacity:0.5} }
 
 .worker-steps { display: flex; gap: 3px; margin-top: 4px; }
@@ -301,7 +322,7 @@ body::after {
 .companion-window {
   background: var(--panel); border: 1px solid var(--border);
   border-radius: 2px; overflow: hidden;
-  display: flex; flex-direction: column; height: 420px;
+  display: flex; flex-direction: column; height: 480px;
 }
 .companion-messages {
   flex: 1; overflow-y: auto; padding: 14px;
@@ -337,6 +358,21 @@ body::after {
 }
 .companion-send:hover { background: rgba(0,204,255,0.06); }
 
+/* Typing indicator */
+.typing-indicator {
+  display: none; align-items: center; gap: 4px;
+  padding: 8px 10px;
+}
+.typing-indicator.visible { display: flex; }
+.typing-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--purple); opacity: 0.4;
+  animation: typing-bounce 1.2s infinite;
+}
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes typing-bounce { 0%,60%,100%{transform:translateY(0);opacity:0.4} 30%{transform:translateY(-4px);opacity:1} }
+
 /* Fusion block */
 .fusion-block {
   background: var(--panel); border: 1px solid var(--border);
@@ -344,6 +380,115 @@ body::after {
   line-height: 1.7; color: var(--text); white-space: pre-wrap;
   max-height: 200px; overflow-y: auto;
 }
+
+/* ── MISSIONS TAB ── */
+.mission-list { display: flex; flex-direction: column; gap: 8px; }
+.mission-row {
+  padding: 12px; background: var(--panel); border: 1px solid var(--border);
+  border-radius: 2px; transition: border-color 0.2s;
+}
+.mission-row:hover { border-color: var(--bh); }
+.mission-top { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+.rank-badge {
+  font-size: 9px; font-weight: 700; letter-spacing: 0.1em;
+  padding: 2px 7px; border-radius: 2px; border: 1px solid;
+}
+.rank-E, .rank-D { border-color: var(--accent); color: var(--accent); background: rgba(0,204,255,0.08); }
+.rank-C, .rank-B { border-color: var(--amber); color: var(--amber); background: rgba(255,170,0,0.08); }
+.rank-A, .rank-S { border-color: var(--red); color: var(--red); background: rgba(255,51,85,0.08); }
+.mission-goal { flex: 1; font-size: 11px; color: var(--bright); }
+.mission-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.mission-actions { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+.task-dag { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 6px; }
+.task-chip {
+  font-size: 9px; padding: 2px 7px; border-radius: 2px;
+  background: var(--border); color: var(--dim); border: 1px solid var(--bh);
+}
+.task-chip.done { color: var(--green); border-color: var(--green); background: rgba(0,255,136,0.06); }
+.task-chip.fail { color: var(--red); border-color: var(--red); }
+.task-chip.run { color: var(--amber); border-color: var(--amber); animation: pulse-glow 1s infinite; }
+.mission-create-form { display: flex; flex-direction: column; gap: 10px; }
+.form-select {
+  background: var(--panel); border: 1px solid var(--bh); border-radius: 2px;
+  color: var(--text); font-family: var(--mono); font-size: 10px;
+  padding: 8px 10px; outline: none; cursor: pointer;
+}
+
+/* ── VAULT TAB ── */
+.artifact-list { display: flex; flex-direction: column; gap: 8px; }
+.artifact-row {
+  padding: 12px; background: var(--panel); border: 1px solid var(--border);
+  border-radius: 2px;
+}
+.artifact-top { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+.type-badge {
+  font-size: 9px; letter-spacing: 0.08em; padding: 2px 7px;
+  border-radius: 2px; border: 1px solid var(--bh);
+  color: var(--dim);
+}
+.artifact-title { flex: 1; font-size: 11px; color: var(--bright); }
+.artifact-preview {
+  font-size: 10px; color: var(--dim); line-height: 1.5;
+  max-height: 40px; overflow: hidden;
+  border-left: 2px solid var(--border); padding-left: 8px;
+  margin-top: 4px;
+}
+.artifact-actions { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+.vault-filters { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+/* ── COGNITION TAB ── */
+.cog-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.cog-block {
+  background: var(--panel); border: 1px solid var(--border);
+  padding: 12px; border-radius: 2px;
+}
+.cog-val {
+  font-family: var(--head); font-size: 22px; font-weight: 600;
+  color: var(--bright); line-height: 1;
+}
+.cog-label { font-size: 9px; letter-spacing: 0.1em; color: var(--dim); margin-top: 4px; text-transform: uppercase; }
+.cog-sub { font-size: 10px; color: var(--accent); margin-top: 4px; }
+.prediction-form { display: flex; flex-direction: column; gap: 8px; }
+.pred-input {
+  background: var(--panel); border: 1px solid var(--bh); border-radius: 2px;
+  color: var(--bright); font-family: var(--mono); font-size: 11px;
+  padding: 8px 10px; outline: none; width: 100%;
+  transition: border-color 0.2s;
+}
+.pred-input:focus { border-color: var(--accent); }
+.pred-input::placeholder { color: var(--dim); }
+.pred-row { display: flex; gap: 8px; align-items: center; }
+.pred-row label { font-size: 9px; color: var(--dim); letter-spacing: 0.08em; min-width: 80px; }
+
+/* ── WORKER DETAIL OVERLAY ── */
+.detail-overlay {
+  position: fixed; inset: 0; background: rgba(3,5,10,0.92);
+  z-index: 500; display: none; align-items: center; justify-content: center;
+  padding: 24px;
+}
+.detail-overlay.open { display: flex; }
+.detail-panel {
+  background: var(--card); border: 1px solid var(--bh);
+  border-radius: 2px; max-width: 680px; width: 100%;
+  max-height: 80vh; overflow-y: auto;
+  display: flex; flex-direction: column;
+}
+.detail-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px; border-bottom: 1px solid var(--border);
+  background: var(--panel); position: sticky; top: 0;
+}
+.detail-title { font-family: var(--head); font-size: 16px; font-weight: 600; letter-spacing: 0.1em; color: var(--bright); }
+.detail-body { padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+.step-log-entry {
+  padding: 8px 10px; background: var(--panel); border: 1px solid var(--border);
+  border-radius: 2px; font-size: 10px; line-height: 1.5;
+}
+.step-log-entry.ok { border-left: 2px solid var(--green); }
+.step-log-entry.fail { border-left: 2px solid var(--red); }
+.step-num { color: var(--accent); margin-right: 8px; }
+.step-type { color: var(--bright); }
+.step-out { color: var(--dim); margin-top: 3px; word-break: break-all; }
 
 /* ── RIGHT SIDEBAR — event log ── */
 .sidebar-right {
@@ -379,12 +524,14 @@ body::after {
 .et-MISSION         { color: var(--purple); }
 .et-COMPANION       { color: var(--dim); }
 .et-ERROR           { color: var(--red); }
+.et-VAULT           { color: var(--amber); }
+.et-COGNITION       { color: var(--green); }
 .event-msg { font-size: 11px; color: var(--text); line-height: 1.4; }
 .event-ts { font-size: 9px; color: var(--dim); }
 
 /* misc */
 .empty { color: var(--dim); font-size: 11px; padding: 20px; text-align: center; }
-.error-msg { color: var(--red); font-size: 11px; padding: 8px; }
+.error-msg { color: var(--red); font-size: 11px; padding: 8px; border: 1px solid rgba(255,51,85,0.2); border-radius: 2px; }
 .loading { color: var(--dim); font-size: 10px; letter-spacing: 0.08em; }
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .info-row { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid var(--border); }
@@ -400,7 +547,8 @@ body::after {
     <div class="logo">NEX<em>US</em>MON <span style="font-size:13px;color:var(--dim);font-weight:300">// ORGANISM</span></div>
   </div>
   <div class="topbar-right">
-    <span class="stage-badge" id="top-stage" style="color:var(--stage-0)">DORMANT</span>
+    <span class="last-updated" id="last-updated"></span>
+    <span class="stage-badge" id="top-stage" style="color:var(--dim)">DORMANT</span>
     <span class="clock" id="clock"></span>
     <button class="refresh-btn" onclick="loadAll()">↻ SYNC</button>
   </div>
@@ -409,7 +557,7 @@ body::after {
 <div class="shell">
 
   <!-- LEFT SIDEBAR — Evolution -->
-  <aside class="sidebar-left">
+  <aside class="sidebar-left" id="sidebar-evo">
     <div class="side-section">
       <div class="side-label">Evolution Stage</div>
       <div class="evo-stage">
@@ -471,6 +619,9 @@ body::after {
       <button class="tab-btn" onclick="switchTab('operator')">OPERATOR</button>
       <button class="tab-btn" onclick="switchTab('workers')">WORKERS</button>
       <button class="tab-btn" onclick="switchTab('companion')">COMPANION</button>
+      <button class="tab-btn" onclick="switchTab('missions')">MISSIONS<span class="tab-notif" id="notif-missions"></span></button>
+      <button class="tab-btn" onclick="switchTab('vault')">VAULT<span class="tab-notif" id="notif-vault"></span></button>
+      <button class="tab-btn" onclick="switchTab('cognition')">COGNITION</button>
     </nav>
 
     <!-- STATUS TAB -->
@@ -550,8 +701,9 @@ body::after {
         <div class="card-body">
           <div class="worker-spawn-form">
             <div class="form-row">
-              <input class="goal-input" id="worker-goal" placeholder="Goal — what should the worker do?" />
-              <button class="btn primary" onclick="spawnWorker()">SPAWN</button>
+              <input class="goal-input" id="worker-goal" placeholder="Goal — what should the worker do?"
+                     onkeydown="if(event.key==='Enter')spawnWorker()" />
+              <button class="btn primary" id="spawn-btn" onclick="spawnWorker()">SPAWN</button>
             </div>
             <div style="display:flex;align-items:center;justify-content:space-between">
               <div class="auto-toggle">
@@ -560,6 +712,7 @@ body::after {
               </div>
               <span style="font-size:9px;color:var(--dim)" id="auto-gate"></span>
             </div>
+            <div id="spawn-error" style="display:none" class="error-msg"></div>
           </div>
         </div>
       </div>
@@ -567,7 +720,7 @@ body::after {
         <div class="card-head">
           <div class="card-title">WORKER LOG</div>
           <div style="display:flex;gap:8px">
-            <select id="worker-filter" onchange="loadWorkers()" style="background:var(--panel);border:1px solid var(--bh);color:var(--text);font-family:var(--mono);font-size:10px;padding:4px 8px;border-radius:2px;outline:none">
+            <select id="worker-filter" onchange="loadWorkers()" class="form-select">
               <option value="">ALL</option>
               <option value="RUNNING">RUNNING</option>
               <option value="COMPLETED">COMPLETED</option>
@@ -592,10 +745,144 @@ body::after {
             <div class="msg-text">Organism online. Operator context loaded. Ready.</div>
           </div>
         </div>
+        <div class="typing-indicator" id="typing-indicator">
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+        </div>
         <div class="companion-input-row">
           <input class="companion-input" id="companion-input" placeholder="Transmit to NEXUSMON…"
                  onkeydown="if(event.key==='Enter')sendCompanion()" />
           <button class="companion-send" onclick="sendCompanion()">SEND ▶</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MISSIONS TAB -->
+    <div class="tab-panel" id="tab-missions">
+      <div class="card">
+        <div class="card-head"><div class="card-title">CREATE MISSION</div></div>
+        <div class="card-body">
+          <div class="mission-create-form">
+            <div class="form-row">
+              <input class="goal-input" id="mission-goal" placeholder="Mission objective…"
+                     onkeydown="if(event.key==='Enter')createMission()" />
+              <select id="mission-rank" class="form-select" style="width:80px">
+                <option value="E">E</option>
+                <option value="D" selected>D</option>
+                <option value="C">C</option>
+                <option value="B">B</option>
+                <option value="A">A</option>
+                <option value="S">S</option>
+              </select>
+              <button class="btn primary" id="create-mission-btn" onclick="createMission()">CREATE</button>
+            </div>
+            <div id="mission-create-error" style="display:none" class="error-msg"></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">MISSION LOG</div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <span id="missions-stats-badge" style="font-size:10px;color:var(--dim)"></span>
+            <button class="btn" onclick="loadMissions()">↻</button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="mission-list" id="mission-list"><div class="loading">loading…</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VAULT TAB -->
+    <div class="tab-panel" id="tab-vault">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">ARTIFACT VAULT</div>
+          <div class="vault-filters">
+            <select id="vault-status-filter" onchange="loadVault()" class="form-select">
+              <option value="">ALL STATUS</option>
+              <option value="PENDING_REVIEW">PENDING REVIEW</option>
+              <option value="APPROVED">APPROVED</option>
+              <option value="REJECTED">REJECTED</option>
+            </select>
+            <select id="vault-type-filter" onchange="loadVault()" class="form-select">
+              <option value="">ALL TYPES</option>
+              <option value="LOG">LOG</option>
+              <option value="TEXT">TEXT</option>
+              <option value="CODE">CODE</option>
+              <option value="DATA">DATA</option>
+              <option value="REPORT">REPORT</option>
+              <option value="ANALYSIS">ANALYSIS</option>
+              <option value="DECISION">DECISION</option>
+            </select>
+            <button class="btn" onclick="loadVault()">↻</button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div id="vault-stats" style="margin-bottom:10px;font-size:10px;color:var(--dim)"></div>
+          <div class="artifact-list" id="artifact-list"><div class="loading">loading…</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COGNITION TAB -->
+    <div class="tab-panel" id="tab-cognition">
+      <div class="cog-grid" id="cog-grid">
+        <div class="cog-block">
+          <div class="cog-val" id="cog-predictions">—</div>
+          <div class="cog-label">Predictions</div>
+          <div class="cog-sub" id="cog-brier">Brier —</div>
+        </div>
+        <div class="cog-block">
+          <div class="cog-val" id="cog-errors">—</div>
+          <div class="cog-label">Errors Logged</div>
+          <div class="cog-sub" id="cog-dominant-error">Dominant —</div>
+        </div>
+        <div class="cog-block">
+          <div class="cog-val" id="cog-autopsies">—</div>
+          <div class="cog-label">Autopsies</div>
+          <div class="cog-sub" id="cog-decisions">Decisions —</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><div class="card-title">LOG PREDICTION</div></div>
+        <div class="card-body">
+          <div class="prediction-form">
+            <input class="pred-input" id="pred-claim" placeholder="Claim being predicted…" />
+            <div class="pred-row">
+              <label>Confidence</label>
+              <input class="pred-input" id="pred-confidence" type="number" min="0" max="1" step="0.05"
+                     placeholder="0.0 – 1.0" style="width:120px" />
+              <label style="margin-left:12px">Category</label>
+              <input class="pred-input" id="pred-category" placeholder="e.g. TECHNICAL" style="width:140px" />
+            </div>
+            <div style="display:flex;gap:8px">
+              <button class="btn primary" onclick="logPrediction()">LOG PREDICTION</button>
+              <span id="pred-result" style="font-size:10px;color:var(--dim);align-self:center"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><div class="card-title">DECISION AUTOPSY</div></div>
+        <div class="card-body">
+          <div class="prediction-form">
+            <input class="pred-input" id="autopsy-decision" placeholder="Decision or action taken…" />
+            <input class="pred-input" id="autopsy-outcome" placeholder="What actually happened…" />
+            <div class="pred-row">
+              <label>Quality (0–1)</label>
+              <input class="pred-input" id="autopsy-quality" type="number" min="0" max="1" step="0.1"
+                     placeholder="0.0 – 1.0" style="width:120px" />
+            </div>
+            <div style="display:flex;gap:8px">
+              <button class="btn primary" onclick="submitAutopsy()">SUBMIT AUTOPSY</button>
+              <span id="autopsy-result" style="font-size:10px;color:var(--dim);align-self:center"></span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -615,10 +902,22 @@ body::after {
 
 </div>
 
+<!-- WORKER DETAIL OVERLAY -->
+<div class="detail-overlay" id="detail-overlay" onclick="if(event.target===this)closeDetail()">
+  <div class="detail-panel">
+    <div class="detail-head">
+      <div class="detail-title" id="detail-title">WORKER DETAIL</div>
+      <button class="btn danger" style="font-size:9px" onclick="closeDetail()">CLOSE ✕</button>
+    </div>
+    <div class="detail-body" id="detail-body"></div>
+  </div>
+</div>
+
 <script>
-const API = '';  // same origin — change to full URL if separate
+const API = '';
 let autoOn = true;
 let eventLog = [];
+let lastSyncData = { total: 0, success: 0, beliefs: 0 };
 
 // ── Clock ──────────────────────────────────────────────────
 function tickClock() {
@@ -628,15 +927,24 @@ function tickClock() {
 }
 setInterval(tickClock, 1000); tickClock();
 
+function setLastUpdated() {
+  const el = document.getElementById('last-updated');
+  if (el) el.textContent = 'synced ' + new Date().toLocaleTimeString();
+}
+
 // ── Tab switching ──────────────────────────────────────────
 function switchTab(name) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  document.querySelector(`.tab-btn[onclick*="${name}"]`).classList.add('active');
-  document.getElementById('tab-' + name).classList.add('active');
+  const btn = document.querySelector(`.tab-btn[onclick*="'${name}'"]`);
+  if (btn) btn.classList.add('active');
+  const panel = document.getElementById('tab-' + name);
+  if (panel) panel.classList.add('active');
   if (name === 'operator') loadOperator();
   if (name === 'workers') loadWorkers();
-  if (name === 'companion') {}
+  if (name === 'missions') loadMissions();
+  if (name === 'vault') loadVault();
+  if (name === 'cognition') loadCognition();
 }
 
 // ── Stage colors ───────────────────────────────────────────
@@ -658,9 +966,12 @@ function applyStage(stage) {
   const dots = document.querySelectorAll('.rank-dot');
   dots.forEach((d, i) => {
     d.classList.toggle('filled', i <= rank);
-    if (i <= rank) d.style.background = color;
-    else { d.style.background = ''; d.style.boxShadow = ''; }
+    if (i <= rank) { d.style.background = color; d.style.borderColor = color; d.style.boxShadow = `0 0 6px ${color}`; }
+    else { d.style.background = ''; d.style.boxShadow = ''; d.style.borderColor = ''; }
   });
+  // Stage color on sidebar border
+  const sidebar = document.getElementById('sidebar-evo');
+  if (sidebar) sidebar.style.borderLeftColor = color;
 }
 
 // ── Load all (organism/status) ─────────────────────────────
@@ -678,6 +989,12 @@ async function loadAll() {
     document.getElementById('total-missions').textContent = evo.total_missions || 0;
     document.getElementById('success-rate').textContent = Math.round((evo.success_rate || 0) * 100) + '%';
     document.getElementById('trait-count').textContent = (evo.active_traits || []).length;
+
+    // Track real values for syncEvolution
+    const beliefs = data.claimlab?.belief_count || 0;
+    const total = evo.total_missions || 0;
+    const success = Math.round((evo.success_rate || 0) * total);
+    lastSyncData = { total, success, beliefs };
 
     // Traits
     const tl = document.getElementById('trait-list');
@@ -732,6 +1049,8 @@ async function loadAll() {
     const hasChain = traits.some(t => t.id === 'AUTONOMOUS_CHAIN');
     document.getElementById('auto-gate').textContent = hasChain ? '' : 'AUTONOMOUS_CHAIN not yet unlocked';
 
+    setLastUpdated();
+    updateNotifDots();
   } catch (e) {
     pushEvent('ERROR', e.message, new Date().toISOString());
   }
@@ -739,17 +1058,29 @@ async function loadAll() {
 
 // ── Evolution sync ─────────────────────────────────────────
 async function syncEvolution() {
+  const btn = document.querySelector('[onclick="syncEvolution()"]');
+  if (btn) { btn.disabled = true; btn.textContent = 'SYNCING…'; }
   try {
     const r = await fetch(API + '/v1/nexusmon/organism/evolution/sync', {
       method: 'POST', headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({total_missions:0, success_count:0, belief_count:0})
+      body: JSON.stringify({
+        total_missions: lastSyncData.total,
+        success_count: lastSyncData.success,
+        belief_count: lastSyncData.beliefs
+      })
     });
     const data = await r.json();
     if (data.ok) {
       (data.events || []).forEach(e => pushEvent(e.type, e.to || e.label || '', e.timestamp));
       await loadAll();
+    } else {
+      pushEvent('ERROR', 'Sync failed: ' + JSON.stringify(data), new Date().toISOString());
     }
-  } catch(e) { pushEvent('ERROR', e.message, new Date().toISOString()); }
+  } catch(e) {
+    pushEvent('ERROR', 'Sync error: ' + e.message, new Date().toISOString());
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = 'SYNC NOW'; }
+  }
 }
 
 // ── Operator full ──────────────────────────────────────────
@@ -759,9 +1090,9 @@ async function loadOperator() {
   try {
     const r = await fetch(API + '/v1/nexusmon/organism/operator');
     const data = await r.json();
-    if (!data.ok) throw new Error('failed');
+    if (!data.ok) throw new Error(data.detail || 'failed');
     const op = data;
-    const topCats = (op.top_mission_categories || []).map(([k,v]) =>
+    const topCats = (op.top_categories || op.top_mission_categories || []).map(([k,v]) =>
       `<div class="info-row"><span class="info-key">${k}</span><span class="info-val">${v} missions</span></div>`
     ).join('') || '<div class="info-row"><span class="info-key">—</span><span class="info-val">no missions yet</span></div>';
 
@@ -775,7 +1106,7 @@ async function loadOperator() {
     `;
     loadFusion(true);
   } catch(e) {
-    el.innerHTML = `<div class="error-msg">${e.message}</div>`;
+    el.innerHTML = `<div class="error-msg">Failed to load operator: ${e.message}</div>`;
   }
 }
 
@@ -784,18 +1115,20 @@ async function loadFusion(full = false) {
   try {
     const r = await fetch(API + '/v1/nexusmon/organism/operator/fusion');
     const data = await r.json();
-    const block = data.fusion_block || '(empty)';
+    const block = data.fusion_block || '(no fusion block)';
     if (full) {
       document.getElementById('fusion-full').textContent = block;
-    }
-    // Also show in status tab if triggered
-    const fw = document.getElementById('fusion-wrap');
-    const fc = document.getElementById('fusion-content');
-    if (!full) {
+    } else {
+      const fw = document.getElementById('fusion-wrap');
+      const fc = document.getElementById('fusion-content');
       fw.style.display = fw.style.display === 'none' ? 'block' : 'none';
       fc.textContent = block;
     }
-  } catch(e) {}
+  } catch(e) {
+    if (full) {
+      document.getElementById('fusion-full').textContent = 'Error: ' + e.message;
+    }
+  }
 }
 
 // ── Workers ────────────────────────────────────────────────
@@ -809,7 +1142,9 @@ function toggleAuto() {
 async function spawnWorker() {
   const goal = document.getElementById('worker-goal').value.trim();
   if (!goal) return;
-  const btn = document.querySelector('[onclick="spawnWorker()"]');
+  const btn = document.getElementById('spawn-btn');
+  const errEl = document.getElementById('spawn-error');
+  errEl.style.display = 'none';
   btn.disabled = true; btn.textContent = 'SPAWNING…';
   try {
     const r = await fetch(API + '/v1/nexusmon/organism/worker/spawn', {
@@ -820,10 +1155,17 @@ async function spawnWorker() {
     if (data.ok) {
       pushEvent('WORKER', `Spawned ${data.worker_id} — ${goal.slice(0,40)}`, new Date().toISOString());
       document.getElementById('worker-goal').value = '';
-      setTimeout(loadWorkers, 800);
+      switchTab('workers');
+      setTimeout(loadWorkers, 600);
+    } else {
+      errEl.textContent = 'Spawn failed: ' + (data.detail || JSON.stringify(data));
+      errEl.style.display = 'block';
     }
-  } catch(e) { pushEvent('ERROR', e.message, new Date().toISOString()); }
-  finally { btn.disabled = false; btn.textContent = 'SPAWN'; }
+  } catch(e) {
+    errEl.textContent = 'Spawn error: ' + e.message;
+    errEl.style.display = 'block';
+  }
+  btn.disabled = false; btn.textContent = 'SPAWN';
 }
 
 async function loadWorkers() {
@@ -837,7 +1179,7 @@ async function loadWorkers() {
     el.innerHTML = workers.length ? workers.map(renderWorkerRow).join('') :
       '<div class="empty">No workers found</div>';
   } catch(e) {
-    el.innerHTML = `<div class="error-msg">${e.message}</div>`;
+    el.innerHTML = `<div class="error-msg">Failed to load workers: ${e.message}</div>`;
   }
 }
 
@@ -875,22 +1217,57 @@ function renderWorkerRow(w) {
 
 async function cancelWorker(id) {
   try {
-    await fetch(API + '/v1/nexusmon/organism/worker/' + id, {method:'DELETE'});
-    pushEvent('WORKER', `Cancelled ${id}`, new Date().toISOString());
-    loadWorkers();
-  } catch(e) {}
+    const r = await fetch(API + '/v1/nexusmon/organism/worker/' + id, {method:'DELETE'});
+    const data = await r.json();
+    if (data.ok !== false) {
+      pushEvent('WORKER', `Cancelled ${id}`, new Date().toISOString());
+      loadWorkers();
+    } else {
+      pushEvent('ERROR', `Cancel failed: ${data.detail || JSON.stringify(data)}`, new Date().toISOString());
+    }
+  } catch(e) {
+    pushEvent('ERROR', `Cancel error: ${e.message}`, new Date().toISOString());
+  }
 }
 
 async function loadWorkerDetail(id) {
   try {
     const r = await fetch(API + '/v1/nexusmon/organism/worker/' + id);
     const data = await r.json();
-    const w = data.worker;
-    const log = (w.step_log || []).map(s =>
-      `${s.step}:${s.type} → ${s.status} ${s.output ? JSON.stringify(s.output).slice(0,60) : s.error||''}`
-    ).join('\n');
-    alert(`WORKER ${w.id}\nGoal: ${w.goal}\nStatus: ${w.status}\n\nStep Log:\n${log}`);
-  } catch(e) {}
+    const w = data.worker || data;
+    showWorkerDetail(w);
+  } catch(e) {
+    pushEvent('ERROR', `Detail fetch error: ${e.message}`, new Date().toISOString());
+  }
+}
+
+function showWorkerDetail(w) {
+  document.getElementById('detail-title').textContent = `WORKER #${w.id}`;
+  const logEntries = (w.step_log || []).map(s => `
+    <div class="step-log-entry ${s.status==='COMPLETED'?'ok':s.status==='FAILED'?'fail':''}">
+      <span class="step-num">[${s.step}]</span>
+      <span class="step-type">${s.type}</span>
+      <span class="status-badge s-${s.status}" style="margin-left:8px;font-size:8px">${s.status}</span>
+      <div class="step-out">${s.output ? JSON.stringify(s.output).slice(0,200) : s.error || ''}</div>
+    </div>`).join('') || '<div class="empty">No step log</div>';
+
+  document.getElementById('detail-body').innerHTML = `
+    <div class="info-row"><span class="info-key">Status</span><span class="info-val"><span class="status-badge s-${w.status}">${w.status}</span></span></div>
+    <div class="info-row"><span class="info-key">Goal</span><span class="info-val" style="max-width:360px;word-break:break-word">${w.goal}</span></div>
+    <div class="info-row"><span class="info-key">Mode</span><span class="info-val">${w.autonomous ? 'AUTONOMOUS' : 'MANUAL'}</span></div>
+    <div class="info-row"><span class="info-key">Created</span><span class="info-val">${fmtDate(w.created_at)}</span></div>
+    <div class="info-row"><span class="info-key">Completed</span><span class="info-val">${fmtDate(w.completed_at)}</span></div>
+    ${w.error ? `<div class="error-msg">${w.error}</div>` : ''}
+    <div class="side-label" style="margin:12px 0 6px">STEP LOG</div>
+    ${logEntries}
+    ${w.output ? `<div class="side-label" style="margin:12px 0 6px">OUTPUT</div>
+    <pre style="font-size:10px;color:var(--bright);background:var(--panel);padding:10px;border:1px solid var(--border);border-radius:2px;overflow-x:auto;white-space:pre-wrap">${JSON.stringify(w.output, null, 2).slice(0,1000)}</pre>` : ''}
+  `;
+  document.getElementById('detail-overlay').classList.add('open');
+}
+
+function closeDetail() {
+  document.getElementById('detail-overlay').classList.remove('open');
 }
 
 // ── Companion ──────────────────────────────────────────────
@@ -900,15 +1277,19 @@ async function sendCompanion() {
   if (!text) return;
   input.value = '';
   addMsg('op', text);
+  const typing = document.getElementById('typing-indicator');
+  typing.classList.add('visible');
   try {
     const r = await fetch(API + '/v1/nexusmon/organism/companion', {
       method: 'POST', headers: {'Content-Type':'application/json'},
       body: JSON.stringify({text})
     });
     const data = await r.json();
-    addMsg('nx', data.ok ? data.reply : `ERROR: ${data.error}`);
+    typing.classList.remove('visible');
+    addMsg('nx', data.ok ? data.reply : `ERROR: ${data.error || data.detail}`);
     pushEvent('COMPANION', text.slice(0,40), new Date().toISOString());
   } catch(e) {
+    typing.classList.remove('visible');
     addMsg('nx', `[offline] ${e.message}`);
   }
 }
@@ -924,10 +1305,358 @@ function addMsg(src, text) {
   msgs.scrollTop = msgs.scrollHeight;
 }
 
+// ── Missions ────────────────────────────────────────────────
+async function createMission() {
+  const goal = document.getElementById('mission-goal').value.trim();
+  const rank = document.getElementById('mission-rank').value;
+  if (!goal) return;
+  const btn = document.getElementById('create-mission-btn');
+  const errEl = document.getElementById('mission-create-error');
+  errEl.style.display = 'none';
+  btn.disabled = true; btn.textContent = 'CREATING…';
+  try {
+    const r = await fetch(API + '/v1/engine/missions', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({goal, rank})
+    });
+    const data = await r.json();
+    if (data.ok) {
+      document.getElementById('mission-goal').value = '';
+      pushEvent('MISSION', `Created ${data.mission?.id} [${rank}] — ${goal.slice(0,40)}`, new Date().toISOString());
+      loadMissions();
+    } else {
+      errEl.textContent = 'Create failed: ' + (data.detail || JSON.stringify(data));
+      errEl.style.display = 'block';
+    }
+  } catch(e) {
+    errEl.textContent = 'Create error: ' + e.message;
+    errEl.style.display = 'block';
+  }
+  btn.disabled = false; btn.textContent = 'CREATE';
+}
+
+async function loadMissions() {
+  const el = document.getElementById('mission-list');
+  const statsEl = document.getElementById('missions-stats-badge');
+  el.innerHTML = '<div class="loading">loading…</div>';
+  try {
+    const [listR, statsR] = await Promise.all([
+      fetch(API + '/v1/engine/missions?limit=30'),
+      fetch(API + '/v1/engine/missions/stats')
+    ]);
+    const listData = await listR.json();
+    const statsData = await statsR.json();
+
+    const missions = listData.missions || [];
+    if (statsData.ok) {
+      statsEl.textContent = `${statsData.total || 0} total`;
+      // Update notif dot for blocked missions
+      const blocked = (statsData.by_status || {}).BLOCKED || 0;
+      updateNotifDot('notif-missions', blocked);
+    }
+
+    el.innerHTML = missions.length ? missions.map(renderMissionRow).join('') :
+      '<div class="empty">No missions yet</div>';
+  } catch(e) {
+    el.innerHTML = `<div class="error-msg">Failed to load missions: ${e.message}</div>`;
+  }
+}
+
+function renderMissionRow(m) {
+  const tasks = m.tasks || [];
+  const chips = tasks.map(t => {
+    const cls = t.status === 'COMPLETED' ? 'done' : t.status === 'FAILED' ? 'fail' : t.status === 'RUNNING' ? 'run' : '';
+    return `<span class="task-chip ${cls}">${(t.type || t.description || '').slice(0,20)}</span>`;
+  }).join('');
+
+  const isBlocked = m.status === 'BLOCKED';
+  const isPending = m.status === 'PENDING';
+  const isHighRisk = ['A','S'].includes(m.rank);
+
+  return `
+    <div class="mission-row">
+      <div class="mission-top">
+        <span class="rank-badge rank-${m.rank}">${m.rank}</span>
+        <span class="mission-goal">${m.goal}</span>
+        <span class="status-badge s-${m.status}" style="flex-shrink:0">${m.status}</span>
+      </div>
+      <div class="mission-meta">
+        <span style="font-size:9px;color:var(--dim)">${fmtDate(m.created_at)}</span>
+        ${m.xp_awarded ? `<span style="font-size:9px;color:var(--green)">+${m.xp_awarded} XP</span>` : ''}
+        <span style="font-size:9px;color:var(--dim)">${tasks.length} task${tasks.length!==1?'s':''}</span>
+      </div>
+      ${chips ? `<div class="task-dag">${chips}</div>` : ''}
+      <div class="mission-actions">
+        ${isBlocked && isHighRisk ? `<button class="btn amber" style="font-size:9px;padding:4px 10px" onclick="approveMission('${m.id}')">APPROVE [${m.rank}-RANK]</button>` : ''}
+        ${isPending ? `<button class="btn success" style="font-size:9px;padding:4px 10px" onclick="runMission('${m.id}')">RUN</button>` : ''}
+        ${['PENDING','BLOCKED'].includes(m.status) ? `<button class="btn danger" style="font-size:9px;padding:4px 10px" onclick="cancelMission('${m.id}')">CANCEL</button>` : ''}
+      </div>
+    </div>`;
+}
+
+async function approveMission(id) {
+  try {
+    const r = await fetch(API + `/v1/engine/missions/${id}/approve`, {
+      method: 'POST', headers: {'Content-Type':'application/json'}, body: '{}'
+    });
+    const data = await r.json();
+    if (data.ok) {
+      pushEvent('MISSION', `Approved mission ${id}`, new Date().toISOString());
+      loadMissions();
+    } else {
+      pushEvent('ERROR', `Approve failed: ${data.detail || JSON.stringify(data)}`, new Date().toISOString());
+    }
+  } catch(e) {
+    pushEvent('ERROR', `Approve error: ${e.message}`, new Date().toISOString());
+  }
+}
+
+async function runMission(id) {
+  try {
+    const r = await fetch(API + `/v1/engine/missions/${id}/run`, {
+      method: 'POST', headers: {'Content-Type':'application/json'}, body: '{}'
+    });
+    const data = await r.json();
+    if (data.ok) {
+      pushEvent('MISSION', `Running mission ${id}`, new Date().toISOString());
+      setTimeout(loadMissions, 800);
+    } else {
+      pushEvent('ERROR', `Run failed: ${data.detail || JSON.stringify(data)}`, new Date().toISOString());
+    }
+  } catch(e) {
+    pushEvent('ERROR', `Run error: ${e.message}`, new Date().toISOString());
+  }
+}
+
+async function cancelMission(id) {
+  try {
+    const r = await fetch(API + `/v1/engine/missions/${id}`, {method:'DELETE'});
+    const data = await r.json();
+    if (data.ok !== false) {
+      pushEvent('MISSION', `Cancelled mission ${id}`, new Date().toISOString());
+      loadMissions();
+    } else {
+      pushEvent('ERROR', `Cancel failed: ${data.detail || JSON.stringify(data)}`, new Date().toISOString());
+    }
+  } catch(e) {
+    pushEvent('ERROR', `Cancel mission error: ${e.message}`, new Date().toISOString());
+  }
+}
+
+// ── Vault ────────────────────────────────────────────────────
+async function loadVault() {
+  const el = document.getElementById('artifact-list');
+  const statsEl = document.getElementById('vault-stats');
+  const statusFilter = document.getElementById('vault-status-filter').value;
+  const typeFilter = document.getElementById('vault-type-filter').value;
+  el.innerHTML = '<div class="loading">loading…</div>';
+  try {
+    const params = new URLSearchParams({limit: '40'});
+    if (statusFilter) params.set('status', statusFilter);
+    if (typeFilter) params.set('type', typeFilter);
+
+    const [listR, statsR] = await Promise.all([
+      fetch(API + '/v1/vault/artifacts?' + params),
+      fetch(API + '/v1/vault/stats')
+    ]);
+    const listData = await listR.json();
+    const statsData = await statsR.json();
+
+    const artifacts = listData.artifacts || [];
+    if (statsData.ok) {
+      const pending = statsData.pending_review || 0;
+      statsEl.textContent = `${statsData.total || 0} total · ${pending} pending review`;
+      updateNotifDot('notif-vault', pending);
+    }
+
+    el.innerHTML = artifacts.length ? artifacts.map(renderArtifactRow).join('') :
+      '<div class="empty">No artifacts found</div>';
+  } catch(e) {
+    el.innerHTML = `<div class="error-msg">Failed to load vault: ${e.message}</div>`;
+  }
+}
+
+function renderArtifactRow(a) {
+  const contentPreview = typeof a.content === 'string'
+    ? a.content.slice(0, 120)
+    : JSON.stringify(a.content).slice(0, 120);
+  const isPending = a.status === 'PENDING_REVIEW';
+
+  return `
+    <div class="artifact-row">
+      <div class="artifact-top">
+        <span class="type-badge">${a.type}</span>
+        <span class="artifact-title">${a.title}</span>
+        <span class="status-badge s-${a.status}" style="flex-shrink:0">${a.status.replace('_',' ')}</span>
+        ${a.version > 1 ? `<span style="font-size:9px;color:var(--dim)">v${a.version}</span>` : ''}
+      </div>
+      <div class="artifact-preview">${contentPreview}</div>
+      <div style="font-size:9px;color:var(--dim);margin-top:4px">${fmtDate(a.created_at)}</div>
+      ${isPending ? `
+      <div class="artifact-actions">
+        <button class="btn success" style="font-size:9px;padding:4px 10px" onclick="approveArtifact('${a.id}')">APPROVE</button>
+        <button class="btn danger" style="font-size:9px;padding:4px 10px" onclick="rejectArtifact('${a.id}')">REJECT</button>
+      </div>` : ''}
+    </div>`;
+}
+
+async function approveArtifact(id) {
+  try {
+    const r = await fetch(API + `/v1/vault/artifacts/${id}/approve`, {
+      method: 'POST', headers: {'Content-Type':'application/json'}, body: '{}'
+    });
+    const data = await r.json();
+    if (data.ok) {
+      pushEvent('VAULT', `Approved artifact ${id.slice(0,8)}`, new Date().toISOString());
+      loadVault();
+    } else {
+      pushEvent('ERROR', `Approve failed: ${data.detail}`, new Date().toISOString());
+    }
+  } catch(e) {
+    pushEvent('ERROR', `Approve error: ${e.message}`, new Date().toISOString());
+  }
+}
+
+async function rejectArtifact(id) {
+  try {
+    const r = await fetch(API + `/v1/vault/artifacts/${id}/reject`, {
+      method: 'POST', headers: {'Content-Type':'application/json'}, body: '{}'
+    });
+    const data = await r.json();
+    if (data.ok) {
+      pushEvent('VAULT', `Rejected artifact ${id.slice(0,8)}`, new Date().toISOString());
+      loadVault();
+    } else {
+      pushEvent('ERROR', `Reject failed: ${data.detail}`, new Date().toISOString());
+    }
+  } catch(e) {
+    pushEvent('ERROR', `Reject error: ${e.message}`, new Date().toISOString());
+  }
+}
+
+// ── Cognition ────────────────────────────────────────────────
+async function loadCognition() {
+  try {
+    const r = await fetch(API + '/v1/cognition/status');
+    const data = await r.json();
+    if (!data.ok) throw new Error(data.detail || 'failed');
+
+    const preds = data.predictions || {};
+    document.getElementById('cog-predictions').textContent = preds.total || 0;
+    const brier = preds.avg_brier_score ?? preds.avg_brier ?? '—';
+    document.getElementById('cog-brier').textContent = 'Brier ' + (typeof brier === 'number' ? brier.toFixed(3) : '—');
+
+    const errs = data.errors || {};
+    document.getElementById('cog-errors').textContent = errs.total || 0;
+    document.getElementById('cog-dominant-error').textContent = 'Dominant ' + (errs.dominant_type || '—');
+
+    const decisions = data.decisions || {};
+    document.getElementById('cog-autopsies').textContent = decisions.autopsies || decisions.total_autopsies || 0;
+    document.getElementById('cog-decisions').textContent = 'Decisions ' + (decisions.total || decisions.total_classified || '—');
+  } catch(e) {
+    document.getElementById('cog-predictions').textContent = '—';
+    pushEvent('ERROR', 'Cognition load failed: ' + e.message, new Date().toISOString());
+  }
+}
+
+async function logPrediction() {
+  const claim = document.getElementById('pred-claim').value.trim();
+  const confidence = parseFloat(document.getElementById('pred-confidence').value);
+  const category = document.getElementById('pred-category').value.trim() || 'GENERAL';
+  const resultEl = document.getElementById('pred-result');
+  if (!claim || isNaN(confidence)) {
+    resultEl.textContent = 'Claim and confidence required.';
+    resultEl.style.color = 'var(--red)';
+    return;
+  }
+  try {
+    const r = await fetch(API + '/v1/cognition/predictions', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({claim, confidence, category})
+    });
+    const data = await r.json();
+    if (data.ok) {
+      resultEl.textContent = 'Logged.';
+      resultEl.style.color = 'var(--green)';
+      document.getElementById('pred-claim').value = '';
+      document.getElementById('pred-confidence').value = '';
+      pushEvent('COGNITION', `Prediction logged: ${claim.slice(0,40)}`, new Date().toISOString());
+      setTimeout(() => loadCognition(), 400);
+    } else {
+      resultEl.textContent = 'Error: ' + (data.detail || JSON.stringify(data));
+      resultEl.style.color = 'var(--red)';
+    }
+  } catch(e) {
+    resultEl.textContent = 'Error: ' + e.message;
+    resultEl.style.color = 'var(--red)';
+  }
+}
+
+async function submitAutopsy() {
+  const decision = document.getElementById('autopsy-decision').value.trim();
+  const outcome = document.getElementById('autopsy-outcome').value.trim();
+  const quality = parseFloat(document.getElementById('autopsy-quality').value);
+  const resultEl = document.getElementById('autopsy-result');
+  if (!decision || !outcome) {
+    resultEl.textContent = 'Decision and outcome required.';
+    resultEl.style.color = 'var(--red)';
+    return;
+  }
+  try {
+    const r = await fetch(API + '/v1/cognition/autopsy', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({decision, outcome, quality: isNaN(quality) ? 0.5 : quality})
+    });
+    const data = await r.json();
+    if (data.ok) {
+      resultEl.textContent = 'Autopsy submitted.';
+      resultEl.style.color = 'var(--green)';
+      document.getElementById('autopsy-decision').value = '';
+      document.getElementById('autopsy-outcome').value = '';
+      document.getElementById('autopsy-quality').value = '';
+      pushEvent('COGNITION', `Autopsy: ${decision.slice(0,40)}`, new Date().toISOString());
+      setTimeout(() => loadCognition(), 400);
+    } else {
+      resultEl.textContent = 'Error: ' + (data.detail || JSON.stringify(data));
+      resultEl.style.color = 'var(--red)';
+    }
+  } catch(e) {
+    resultEl.textContent = 'Error: ' + e.message;
+    resultEl.style.color = 'var(--red)';
+  }
+}
+
+// ── Notification dots ──────────────────────────────────────
+function updateNotifDot(id, count) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (count > 0) {
+    el.textContent = count > 99 ? '99+' : count;
+    el.classList.add('visible');
+  } else {
+    el.classList.remove('visible');
+  }
+}
+
+async function updateNotifDots() {
+  try {
+    const [mR, vR] = await Promise.all([
+      fetch(API + '/v1/engine/missions/stats'),
+      fetch(API + '/v1/vault/stats')
+    ]);
+    const mData = await mR.json();
+    const vData = await vR.json();
+    if (mData.ok) updateNotifDot('notif-missions', (mData.by_status || {}).BLOCKED || 0);
+    if (vData.ok) updateNotifDot('notif-vault', vData.pending_review || 0);
+  } catch(e) {
+    // silent — notif dots are best-effort
+  }
+}
+
 // ── Event log ──────────────────────────────────────────────
 function pushEvent(type, msg, ts) {
   eventLog.unshift({type, msg, ts});
-  if (eventLog.length > 50) eventLog.pop();
+  if (eventLog.length > 80) eventLog.pop();
   renderEventLog();
 }
 
@@ -951,6 +1680,7 @@ function fmtDate(iso) {
 loadAll();
 setInterval(loadAll, 8000);
 setInterval(loadWorkers, 5000);
+setInterval(updateNotifDots, 15000);
 </script>
 </body>
 </html>

@@ -224,13 +224,20 @@ def _load_ctx() -> Dict:
     })
 
 
-def ctx_record_mission(mission_id: str, category: str, status: str) -> None:
+def ctx_record_mission(mission_id: str, category: str, status: str,
+                        rank: str = "", outcome: str = "") -> None:
     ctx = _load_ctx()
     cats = ctx.setdefault("mission_categories", {})
     cats[category] = cats.get(category, 0) + 1
     hour = str(datetime.now(timezone.utc).hour)
     ctx.setdefault("active_hours", {})[hour] = ctx["active_hours"].get(hour, 0) + 1
     ctx["total_interactions"] = ctx.get("total_interactions", 0) + 1
+    if rank:
+        rk = ctx.setdefault("mission_ranks", {})
+        rk[rank] = rk.get(rank, 0) + 1
+    if outcome:
+        oc = ctx.setdefault("mission_outcomes", {})
+        oc[outcome] = oc.get(outcome, 0) + 1
     ctx["updated_at"] = _utc()
     _save_json(_ctx_path(), ctx)
 
@@ -264,6 +271,8 @@ def ctx_record_belief_revision(old_conf: float, new_conf: float) -> None:
 def get_fusion_block() -> str:
     """Prompt-injection block. Inject into any AI call for operator-aware responses."""
     ctx = _load_ctx()
+    if ctx.get("total_interactions", 0) < 5:
+        return f"[OPERATOR CONTEXT]\nOperator: {ctx.get('operator_id', 'operator')}. New operator. No context established yet."
     parts = [f"Operator: {ctx.get('operator_id', 'operator')}."]
 
     if ctx.get("total_interactions", 0) > 0:
@@ -497,6 +506,14 @@ async def _run(worker: Dict, autonomous: bool) -> None:
                 content=worker.get("output", {}),
                 input_snapshot={"goal": worker.get("goal"), "steps": worker.get("steps", [])}
             )
+        except Exception:
+            pass
+        try:
+            all_w = _load_jsonl(_data_dir() / "workers.jsonl")
+            total_w = len(all_w)
+            success_w = sum(1 for w in all_w if w.get("status") == "COMPLETED")
+            beliefs_count = len([b for b in _load_jsonl(_beliefs_path()) if b.get("status") == "active"])
+            evolve(total_w, success_w, beliefs_count)
         except Exception:
             pass
     except Exception as e:
