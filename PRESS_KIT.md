@@ -36,6 +36,24 @@ NEXUSMON is an open-source governed autonomy system — mission execution infras
 
 ---
 
+## BRIEF // SIGNAL MODULES (EXPANSION LANE)
+
+Language set for upcoming module families:
+
+- 🌐 All-language interaction
+- 👁️ Computational vision + feature extraction
+- ⚡ Real-time visual pattern interpretation
+- 🕶️ Augmented reality overlays
+- 🐾 Shape-shift expression modes
+- 🔊 Animal-voice sound layer
+- 🎛️ Instant LLM dials (live steer controls)
+- 🧿 Bio aura dial telemetry
+- 🌌 Particle simulation + strange attractor maps
+
+These are expansion lanes, not hand-wavy branding — each maps to a module or capability gate.
+
+---
+
 ## BRIEF // DOCTRINE
 
 **1. OPERATOR SOVEREIGNTY**

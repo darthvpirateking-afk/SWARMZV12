@@ -51,6 +51,23 @@ Local-first ownership. Plugin-ready muscle. Governance baked in.
 
 ---
 
+## SIGNAL MODULES // R&D LANGUAGE 🧬🌀
+
+Current lingo for advanced lanes:
+
+- 🌐 All-language interaction (multilingual mission I/O)
+- 👁️ Computational vision + feature extraction
+- ⚡ Real-time visual-pattern interpretation
+- 🕶️ Augmented-reality operator overlays
+- 🐾 Shape-shift modes + animal-voice sound layer
+- 🎛️ Instant LLM dials (live steering controls)
+- 🧿 Bio aura dial telemetry
+- 🌌 Particle simulation + strange attractor dynamics
+
+These are tracked as expansion modules and capability lanes.
+
+---
+
 ## CAPABILITY PROGRESSION
 
 ```
