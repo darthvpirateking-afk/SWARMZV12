@@ -1458,6 +1458,12 @@ try:
 except Exception as _organism_err:
     print(f"Warning: organism fusion failed: {_organism_err}")
 
+try:
+    from nexusmon_cognition import fuse_cognition
+    fuse_cognition(app)
+except Exception as _cognition_err:
+    print(f"Warning: cognition layer failed: {_cognition_err}")
+
 
 # --- Static file mount for HUD assets (CSS, JS) ---
 # MUST come after all explicit routes so /web/* doesn't shadow API paths.
