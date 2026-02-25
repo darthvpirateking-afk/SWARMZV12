@@ -1492,6 +1492,26 @@ except Exception as _artifact_vault_err:
     _tb2.print_exc()
 
 
+# --- Diagnostic route — shows which modules loaded ---
+@app.get("/v1/fuse-check")
+async def fuse_check():
+    engine_routes = [r.path for r in app.routes if hasattr(r, 'path') and '/engine/' in getattr(r, 'path', '')]
+    vault_routes = [r.path for r in app.routes if hasattr(r, 'path') and '/vault/' in getattr(r, 'path', '')]
+    import os
+    return {
+        "ok": True,
+        "total_routes": len(app.routes),
+        "engine_routes": engine_routes,
+        "vault_routes": vault_routes,
+        "files_exist": {
+            "nexusmon_mission_engine.py": os.path.exists("nexusmon_mission_engine.py"),
+            "nexusmon_artifact_vault.py": os.path.exists("nexusmon_artifact_vault.py"),
+            "server_legacy_overlay.py": os.path.exists("server_legacy_overlay.py"),
+        },
+        "cwd": os.getcwd(),
+        "dir_listing": [f for f in os.listdir(".") if f.startswith("nexusmon_")],
+    }
+
 # --- Static file mount for HUD assets (CSS, JS) ---
 # MUST come after all explicit routes so /web/* doesn't shadow API paths.
 try:
