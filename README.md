@@ -1,26 +1,40 @@
-﻿# NEXUSMON
+﻿# NEXUSMON ⚡🟢
 
-**MISSION EXECUTION INFRASTRUCTURE FOR OPERATORS WHO NEED OUTPUT, CONTROL, AND TRACEABILITY.**
+**BLACK-SCREEN. GREEN-GLYPH. MISSION STACK FOR CREWS THAT SHIP.**
 
-NEXUSMON is an open-source mission operations stack. It converts objectives into executable task graphs, runs worker pipelines, stores artifacts with full lineage, and enforces governance before high-risk actions.
+NEXUSMON is your operator pit: drop a goal, spawn a mission graph, run workers, lock artifacts, gate risky moves, level up capability. No fluff. Just clean signal and hard output.
 
 ```text
-OBJECTIVE -> TASK DAG -> WORKER EXECUTION -> VERSIONED ARTIFACTS -> OPERATOR REVIEW -> CAPABILITY GROWTH
+[GOAL] -> [MISSION DAG] -> [WORKER SWARM] -> [ARTIFACT VAULT] -> [OPERATOR GATE] -> [POWER UNLOCK]
+```
+
+```text
+╔══════════════════════════════════════════════════════════════╗
+║  NEXUS SIGNAL BEASTS (our lane, our lingo, our forms)       ║
+╠══════════════════════════════════════════════════════════════╣
+║  BYTEWOLF   >>   /\_/\   // code-hunter / path-finder        ║
+║                 ( o.o )                                      ║
+║                  > ^ <                                       ║
+║                                                              ║
+║  GLITCHRA   >>   <\\=//>  // anomaly seer / risk caller      ║
+║                   /_ _\                                       ║
+║                    /_\                                        ║
+║                                                              ║
+║  SIGILDRONE >>   [::]=>  // task runner / vault courier      ║
+╚══════════════════════════════════════════════════════════════╝
 ```
 
 ---
 
-## WHAT NEXUSMON DOES
+## WHAT NEXUSMON DOES 🧠⚔️
 
-A mission-native execution system for operators who need output, control, and auditability in one loop.
+You call the shot. NEXUSMON breaks it into a DAG, dispatches workers, saves every artifact, and blocks high-risk moves until the operator clears them.
 
-You provide objective → NEXUSMON decomposes it into a DAG → workers execute → artifacts are versioned → approvals gate critical actions → capability expands from proven outcomes.
+Not a toy bot. Not a fake autopilot. Not someone else’s black-box cloud panel.
 
-Not a chatbot. Not an agent wrapper. Not a thin panel over someone else's cloud.
+Local-first ownership. Plugin-ready muscle. Governance baked in.
 
-Local-first ownership. Plugin-extensible architecture. Governance-by-default execution.
-
-> Real work. Real controls. Real memory.
+> Real missions. Real receipts. Real memory.
 
 ---
 
@@ -82,11 +96,11 @@ Add workers without touching core code.
 
 ## WHY TEAMS USE IT
 
-- ⚙️ Executes work, not just chat.
-- 🧾 Keeps full artifact history and review trails.
+- 🟢 Executes work, not just chat.
+- 📜 Keeps full artifact history and review trails.
 - 🛡️ Enforces approval gates for high-risk actions.
-- 📊 Improves capability based on actual mission outcomes.
-- 👤 Stays operator-owned from development to deployment.
+- 📈 Levels capability from proven mission outcomes.
+- 👤 Stays operator-owned from local run to live deploy.
 
 ---
 
@@ -147,7 +161,7 @@ Add volume at `/app/data` — required for evolution persistence across deploys.
 - **Phase 1 — Core Engine** ✅
 - **Phase 2 — Cockpit UI** ✅
 - **Phase 3 — Evolution Layer** ✅
-- **Phase 4 — Plugin Ecosystem** 🔲
+- **Phase 4 — Plugin Ecosystem** 🟩
 
 ---
 
@@ -155,5 +169,5 @@ Add volume at `/app/data` — required for evolution persistence across deploys.
 
 MIT. Run your own. Own your data. Own your organism.
 
-`◇ NEXUSMON: abstract form, concrete execution.`
+`◇ NEXUSMON: neon intent, concrete execution. 🟢`
 
