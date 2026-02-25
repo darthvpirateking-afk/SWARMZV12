@@ -660,6 +660,31 @@ body::after {
 .timeline-event .type { font-size:8px; color:var(--bright); font-weight:bold; text-transform:uppercase; }
 .timeline-event .timestamp { font-size:7px; color:var(--dim); }
 .timeline-loading { color:var(--dim); font-size:11px; padding:8px; }
+/* ── Marketplace Styles ── */
+.marketplace-container { display:flex; flex-direction:column; gap:16px; padding:12px; }
+.marketplace-header { display:flex; flex-direction:column; gap:12px; }
+.marketplace-header h2 { margin:0; font-size:16px; color:var(--bright); }
+.marketplace-controls { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+.search-input { padding:6px 10px; background:rgba(0,0,0,0.6); border:1px solid rgba(0,255,255,0.2); color:var(--text); font-size:10px; border-radius:3px; flex:1; min-width:180px; }
+.search-input:focus { outline:none; border-color:rgba(0,255,255,0.5); box-shadow:0 0 8px rgba(0,255,255,0.1); }
+.filter-select { padding:6px 8px; background:rgba(0,0,0,0.6); border:1px solid rgba(0,255,255,0.2); color:var(--text); font-size:10px; border-radius:3px; cursor:pointer; }
+.filter-select:focus { outline:none; border-color:rgba(0,255,255,0.5); }
+.marketplace-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:12px; }
+.marketplace-card { background:rgba(20,30,50,0.6); border:1px solid rgba(0,255,255,0.15); border-radius:6px; padding:12px; cursor:pointer; transition:all 0.2s ease; display:flex; flex-direction:column; gap:8px; }
+.marketplace-card:hover { border-color:rgba(0,255,255,0.35); box-shadow:0 0 16px rgba(0,255,255,0.15); transform:translateY(-2px); }
+.marketplace-card-title { font-size:12px; font-weight:bold; color:var(--bright); margin:0; }
+.marketplace-card-type { font-size:9px; color:var(--bright); opacity:0.7; text-transform:uppercase; }
+.marketplace-card-desc { font-size:9px; color:var(--text); opacity:0.8; line-height:1.3; flex-grow:1; }
+.marketplace-card-author { font-size:8px; color:var(--dim); margin-top:4px; }
+.marketplace-card-stats { display:flex; justify-content:space-between; font-size:8px; color:var(--dim); }
+.marketplace-card-trust { display:inline-block; font-size:8px; padding:2px 4px; border-radius:3px; margin-top:6px; }
+.trust-core { background:rgba(255,200,0,0.2); color:#ffaa00; }
+.trust-verified { background:rgba(0,255,255,0.1); color:var(--bright); }
+.trust-community { background:rgba(0,255,150,0.1); color:#00ffaa; }
+.trust-unsigned { background:rgba(255,100,100,0.1); color:#ff8888; }
+.marketplace-card-action { font-size:9px; padding:4px 8px; background:rgba(0,255,255,0.2); border:1px solid rgba(0,255,255,0.3); color:var(--bright); border-radius:3px; cursor:pointer; text-align:center; transition:all 0.15s; }
+.marketplace-card-action:hover { background:rgba(0,255,255,0.35); box-shadow:0 0 8px rgba(0,255,255,0.2); }
+.marketplace-stats { display:flex; gap:20px; padding:12px; border-top:1px solid rgba(0,255,255,0.15); font-size:10px; color:var(--dim); }
 .op-rank-section { display:flex; align-items:center; gap:16px; }
 .op-rank-badge { width:62px; height:62px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:26px; font-weight:900; font-family:monospace; letter-spacing:2px; border:2px solid rgba(255,255,255,0.1); }
 .rank-E { background:#1a1a1a; color:#666; }
@@ -943,6 +968,7 @@ body {
       <button class="tab-btn" onclick="switchTab('vault')">VAULT<span class="tab-notif" id="notif-vault"></span></button>
       <button class="tab-btn" onclick="switchTab('cognition')">COGNITION</button>
       <button class="tab-btn" onclick="switchTab('plugins')">PLUGINS 🧩</button>
+      <button class="tab-btn" onclick="switchTab('marketplace')">MARKETPLACE 🌐</button>
     </nav>
 
     <!-- STATUS TAB -->
@@ -1331,6 +1357,45 @@ body {
       </div>
     </div>
 
+    <!-- MARKETPLACE TAB -->
+    <div class="tab-panel" id="tab-marketplace">
+      <div class="marketplace-container">
+        <div class="marketplace-header">
+          <h2>🌐 COMMUNITY MARKETPLACE</h2>
+          <div class="marketplace-controls">
+            <input type="text" id="mkt-search" placeholder="Search plugins..." class="search-input" onkeyup="filterMarketplace()" />
+            <select id="mkt-type-filter" class="filter-select" onchange="filterMarketplace()">
+              <option value="">All Types</option>
+              <option value="worker">Workers</option>
+              <option value="mission">Missions</option>
+              <option value="skin">Skins</option>
+              <option value="trait">Traits</option>
+            </select>
+            <select id="mkt-trust-filter" class="filter-select" onchange="filterMarketplace()">
+              <option value="">All Trust Levels</option>
+              <option value="core">Core (Official)</option>
+              <option value="verified">Verified</option>
+              <option value="community">Community</option>
+              <option value="unsigned">Unsigned</option>
+            </select>
+            <button class="btn primary" onclick="refreshMarketplace()" style="padding:6px 12px;font-size:10px;">REFRESH</button>
+          </div>
+        </div>
+
+        <!-- MARKETPLACE GRID -->
+        <div class="marketplace-grid" id="marketplace-grid">
+          <div style="grid-column:1/-1;color:var(--dim);text-align:center;padding:20px">Loading marketplace...</div>
+        </div>
+
+        <!-- MARKETPLACE STATS -->
+        <div class="marketplace-stats">
+          <span>Total Plugins: <span id="mkt-total">0</span></span>
+          <span>Filters Applied: <span id="mkt-filtered">0</span></span>
+          <span>Avg Rating: <span id="mkt-rating">--</span></span>
+        </div>
+      </div>
+    </div>
+
     <!-- EVOLUTION TIMELINE -->
     <div id="evolution-timeline" class="timeline-strip">
       <div class="timeline-loading">loading evolution history...</div>
@@ -1568,7 +1633,97 @@ function renderEvolutionTimeline(events) {
 
 setInterval(loadEvolutionTimeline, 8000);
 
-// ── Clock ──────────────────────────────────────────────────
+// ── MARKETPLACE ────────────────────────────────────────────
+
+let marketplaceData = [];
+let filteredMarketplaceData = [];
+
+async function refreshMarketplace() {
+  try {
+    const r = await fetch('/v1/plugins/community');
+    const data = await r.json();
+    marketplaceData = data.plugins || data.community || [];
+    filterMarketplace();
+    document.getElementById('mkt-total').textContent = marketplaceData.length;
+  } catch(e) {
+    console.error('Marketplace load failed:', e);
+    document.getElementById('marketplace-grid').innerHTML = '<div style="grid-column:1/-1;color:var(--red);text-align:center">Failed to load community registry</div>';
+  }
+}
+
+function filterMarketplace() {
+  const search = document.getElementById('mkt-search').value.toLowerCase();
+  const typeFilter = document.getElementById('mkt-type-filter').value;
+  const trustFilter = document.getElementById('mkt-trust-filter').value;
+  
+  filteredMarketplaceData = marketplaceData.filter(p => {
+    const matchSearch = !search || p.id.toLowerCase().includes(search) || (p.description || '').toLowerCase().includes(search) || (p.author || '').toLowerCase().includes(search);
+    const matchType = !typeFilter || p.type === typeFilter;
+    const matchTrust = !trustFilter || p.trust === trustFilter;
+    return matchSearch && matchType && matchTrust;
+  });
+  
+  renderMarketplace(filteredMarketplaceData);
+  document.getElementById('mkt-filtered').textContent = filteredMarketplaceData.length;
+  
+  if (filteredMarketplaceData.length > 0) {
+    const avgRating = (filteredMarketplaceData.reduce((s,p) => s + (p.rating || 0), 0) / filteredMarketplaceData.length).toFixed(1);
+    document.getElementById('mkt-rating').textContent = avgRating;
+  }
+}
+
+function renderMarketplace(plugins) {
+  const grid = document.getElementById('marketplace-grid');
+  if (!plugins.length) {
+    grid.innerHTML = '<div style="grid-column:1/-1;color:var(--dim);text-align:center;padding:20px">No plugins match your filters</div>';
+    return;
+  }
+  
+  const trustIcons = { core:'🔒', verified:'✓', community:'👥', unsigned:'⚠️' };
+  grid.innerHTML = plugins.map(p => {
+    const trustBadge = p.trust ? `<span class="marketplace-card-trust trust-${p.trust}">${trustIcons[p.trust]||'•'} ${p.trust}</span>` : '';
+    const rating = p.rating ? `⭐${p.rating.toFixed(1)}` : 'unrated';
+    const downloads = p.downloads ? `${p.downloads} downloads` : '—';
+    return `<div class="marketplace-card" title="${p.description}">
+      <div class="marketplace-card-title">${p.id}</div>
+      <div class="marketplace-card-type">${p.type}</div>
+      <div class="marketplace-card-desc">${p.description || 'No description'}</div>
+      <div class="marketplace-card-author">By ${p.author || 'unknown'}</div>
+      <div class="marketplace-card-stats"><span>${rating}</span><span>${downloads}</span></div>
+      ${trustBadge}
+      <button class="marketplace-card-action" onclick="installMarketplacePlugin('${p.id}', '${p.url}')">INSTALL</button>
+    </div>`;
+  }).join('');
+}
+
+async function installMarketplacePlugin(pluginId, url) {
+  if (!url) { alert('No URL for this plugin'); return; }
+  try {
+    const r = await fetch('/v1/plugins/install', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url })
+    });
+    const data = await r.json();
+    if (r.ok) {
+      alert(`✓ ${pluginId} installed!`);
+      refreshPlugins();
+      refreshMarketplace();
+    } else {
+      alert(`✗ Install failed: ${data.detail || data.message || 'unknown error'}`);
+    }
+  } catch(e) {
+    alert(`✗ Error: ${e.message}`);
+  }
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', refreshMarketplace);
+} else {
+  refreshMarketplace();
+}
+
+// ── Clock ────────────────────────────────────────────────────
 function tickClock() {
   const d = new Date();
   document.getElementById('clock').textContent =
