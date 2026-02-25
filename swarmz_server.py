@@ -103,6 +103,14 @@ except Exception as e:
     print(f"Warning: build milestones router not available: {e}")
 
 try:
+    from api.claimlab_routes import router as claimlab_router
+
+    _claimlab_router_available = True
+except Exception as e:
+    _claimlab_router_available = False
+    print(f"Warning: ClaimLab router not available: {e}")
+
+try:
     from backend.intel.vuln_db_client import search_vulnerabilities
 except Exception:
     search_vulnerabilities = None
@@ -146,6 +154,14 @@ LAN_IP = get_lan_ip()
 
 # Ensure data dir exists before anything writes to it
 Path("data").mkdir(parents=True, exist_ok=True)
+
+# Canonical SQLite DB path for this process (shared by app + subprocess tools)
+_container_db = "/app/data/nexusmon.db"
+_local_db = str((Path(__file__).resolve().parent / "data" / "nexusmon.db"))
+DB_PATH = os.environ.get("DATABASE_URL") or (
+    _container_db if Path("/app").exists() else _local_db
+)
+os.environ.setdefault("DATABASE_URL", DB_PATH)
 
 
 # API Models
@@ -277,6 +293,9 @@ if _companion_core_router_available:
 if _build_milestones_router_available:
     app.include_router(build_milestones_router)
 
+if _claimlab_router_available:
+    app.include_router(claimlab_router)
+
 # Setup logging
 logging.basicConfig(
     filename="data/server_live.log",
@@ -367,6 +386,11 @@ async def run_mission(mission_id: str = None):
     started_at = _utc_now_iso_z()
     mission["status"] = "RUNNING"
     mission["started_at"] = started_at
+    try:
+        from nexusmon_organism import ctx_record_mission
+        ctx_record_mission(mission_id, mission.get("category", "unknown"), "RUNNING")
+    except Exception:
+        pass
     missions_file.write_text("")
     for m in missions:
         write_jsonl(missions_file, m)
@@ -449,6 +473,12 @@ async def traceback_last():
 async def console_page():
     """Serve the NEXUSMON Console UI."""
     return FileResponse("web/nexusmon_console.html", media_type="text/html")
+
+
+@app.get("/claimlab")
+async def claimlab_page():
+    """Serve the ClaimLab epistemic scaffolding UI."""
+    return FileResponse("web/claimlab.html", media_type="text/html")
 
 
 # --- Home route — NEXUSMON is the face of this system ---
@@ -696,10 +726,16 @@ async def apple_touch_icon():
 
 
 # REST API Endpoints
+@app.get("/health")
+async def health():
+    """Platform health check endpoint (must stay fast and dependency-free)."""
+    return {"status": "ok"}
+
+
 @app.get("/v1/health")
 async def health_check():
     """Health check endpoint."""
-    return {"status": "healthy", "service": "SWARMZ API"}
+    return {"status": "ok", "service": "SWARMZ API"}
 
 
 @app.post("/v1/auth/login")
@@ -1328,9 +1364,37 @@ async def nexusmon_websocket(websocket: WebSocket):
     await handle_ws_chat(websocket)
 
 
+# Load legacy route overlay migrated from server.py so swarmz_server remains
+# a strict superset before server.py is removed.
+try:
+    import server_legacy_overlay as _legacy_overlay  # noqa: F401
+except Exception as _overlay_err:
+    logging.warning("Legacy overlay import failed: %s", _overlay_err)
+
+# Wire NEXUSMON organism fusion layer (evolution, operator context, workers)
+try:
+    from nexusmon_organism import fuse_into
+    fuse_into(app)
+except Exception as _organism_err:
+    print(f"Warning: organism fusion failed: {_organism_err}")
+
+
 # --- Static file mount for HUD assets (CSS, JS) ---
 # MUST come after all explicit routes so /web/* doesn't shadow API paths.
 app.mount("/web", StaticFiles(directory="web"), name="web-static")
+
+
+# Serve frontend SPA build if present (single-process deploy model)
+frontend_build = os.path.join(os.path.dirname(__file__), "frontend", "dist")
+frontend_assets = os.path.join(frontend_build, "assets")
+if os.path.exists(frontend_build) and os.path.exists(frontend_assets):
+    app.mount("/static", StaticFiles(directory=frontend_assets), name="static")
+
+    @app.get("/nexusmon")
+    @app.get("/nexusmon/{full_path:path}")
+    async def serve_frontend(full_path: str = ""):
+        index = os.path.join(frontend_build, "index.html")
+        return FileResponse(index)
 
 
 # --- Main Entry Point ---
