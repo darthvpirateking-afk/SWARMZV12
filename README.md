@@ -1,11 +1,11 @@
 # NEXUSMON
 
-**⚡ Sovereign autonomy infrastructure for a one-operator future.**
+**⚡ Autonomous command core for the operator era.**
 
 NEXUSMON is an open-source autonomy stack engineered for real execution: mission orchestration, worker operations, artifact memory, governance, evolution state, and a live operator control surface.
 
 ```text
-[ NEXUSMON // SYSTEM SIGNAL ]
+[ NEXUSMON // OPERATOR CORE ]
 NODE: OPERATOR-OWNED
 STATE: LIVE
 MODE: MISSION EXECUTION
