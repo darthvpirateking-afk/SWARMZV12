@@ -149,7 +149,7 @@ def _utc_now_iso_z() -> str:
     return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
 
 
-SERVER_PORT = int(os.environ.get("PORT", "8012"))
+SERVER_PORT = int(os.environ.get("PORT", "8000"))
 LAN_IP = get_lan_ip()
 
 # Ensure data dir exists before anything writes to it
