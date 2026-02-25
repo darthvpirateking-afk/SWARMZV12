@@ -1464,6 +1464,18 @@ try:
 except Exception as _cognition_err:
     print(f"Warning: cognition layer failed: {_cognition_err}")
 
+try:
+    from nexusmon_mission_engine import fuse_mission_engine
+    fuse_mission_engine(app)
+except Exception as _mission_engine_err:
+    print(f"Warning: mission engine failed: {_mission_engine_err}")
+
+try:
+    from nexusmon_artifact_vault import fuse_artifact_vault
+    fuse_artifact_vault(app)
+except Exception as _artifact_vault_err:
+    print(f"Warning: artifact vault failed: {_artifact_vault_err}")
+
 
 # --- Static file mount for HUD assets (CSS, JS) ---
 # MUST come after all explicit routes so /web/* doesn't shadow API paths.

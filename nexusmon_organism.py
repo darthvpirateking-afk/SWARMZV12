@@ -487,6 +487,18 @@ async def _run(worker: Dict, autonomous: bool) -> None:
                 _persist()
                 return
         worker.update({"status": "COMPLETED", "completed_at": _utc(), "output": ctx.get("last_output", {})})
+        try:
+            from nexusmon_artifact_vault import store_artifact
+            store_artifact(
+                mission_id=worker.get("id"),
+                task_id=worker.get("id"),
+                type="LOG",
+                title=f"Worker {worker['id']} output",
+                content=worker.get("output", {}),
+                input_snapshot={"goal": worker.get("goal"), "steps": worker.get("steps", [])}
+            )
+        except Exception:
+            pass
     except Exception as e:
         worker.update({"status": "FAILED", "error": str(e), "completed_at": _utc()})
     _persist()
