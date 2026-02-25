@@ -499,7 +499,52 @@ async def claimlab_page():
 @app.get("/")
 async def home_page():
     """NEXUSMON wakes up here."""
-    return FileResponse("web/nexusmon_console.html", media_type="text/html")
+    html_path = "web/nexusmon_console.html"
+
+    # Check if file exists, otherwise return a basic landing page
+    if os.path.exists(html_path):
+        return FileResponse(html_path, media_type="text/html")
+
+    # Fallback if web assets aren't available
+    return HTMLResponse(f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>SWARMZ System Online</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body {{
+                font-family: 'Courier New', monospace;
+                background: #0a0a0a;
+                color: #00ff00;
+                padding: 20px;
+                margin: 0;
+            }}
+            .container {{ max-width: 800px; margin: 0 auto; }}
+            h1 {{ color: #00ff00; text-shadow: 0 0 10px #00ff00; }}
+            a {{ color: #00aaff; text-decoration: none; }}
+            a:hover {{ text-decoration: underline; }}
+            .status {{ color: #00ff00; }}
+            .error {{ color: #ff6600; }}
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>⚡ SWARMZ System Online</h1>
+            <p class="status">● Core Services Active</p>
+            <p class="error">⚠ Web UI assets not found</p>
+            <h2>Available Endpoints:</h2>
+            <ul>
+                <li><a href="/health">Health Check</a></li>
+                <li><a href="/docs">API Documentation</a></li>
+                <li><a href="/console">Console UI</a></li>
+                <li><a href="/organism">Organism Interface</a></li>
+            </ul>
+            <p>System Time: {datetime.now(timezone.utc).isoformat()}</p>
+        </div>
+    </body>
+    </html>
+    """)
 
 
 # --- Manifest, Icons, and Other PWA Routes ---
