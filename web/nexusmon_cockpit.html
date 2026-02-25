@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NEXUSMON // ORGANISM COCKPIT</title>
+<title>NEXUSMON // ORGANISM COCKPIT ⚡🟢</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap');
 
@@ -537,6 +537,43 @@ body::after {
 .info-row { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid var(--border); }
 .info-key { color: var(--dim); font-size: 10px; letter-spacing: 0.06em; }
 .info-val { color: var(--bright); font-size: 10px; }
+/* ── Operator Rank Panel ── */
+.operator-card { display:flex; flex-direction:column; gap:18px; max-width:580px; }
+.op-rank-section { display:flex; align-items:center; gap:16px; }
+.op-rank-badge { width:62px; height:62px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:26px; font-weight:900; font-family:monospace; letter-spacing:2px; border:2px solid rgba(255,255,255,0.1); }
+.rank-E { background:#1a1a1a; color:#666; }
+.rank-D { background:#071830; color:#4a9eff; border-color:#1a3a6a; }
+.rank-C { background:#071a0f; color:#4aff7a; border-color:#1a4a2a; }
+.rank-B { background:#120730; color:#b44aff; border-color:#2a1a5a; }
+.rank-A { background:#1a1007; color:#ffb44a; border-color:#4a2a1a; }
+.rank-S { background:#1a0707; color:#ff4a4a; border-color:#4a1a1a; text-shadow:0 0 10px rgba(255,74,74,0.5); }
+.op-rank-label { font-size:15px; font-weight:700; color:var(--bright); }
+.op-tier-label { font-size:11px; color:var(--dim); margin-top:2px; }
+.op-xp-section { background:rgba(255,255,255,0.025); border-radius:8px; padding:12px 14px; }
+.op-xp-header { display:flex; justify-content:space-between; margin-bottom:8px; }
+#op-xp-text { color:var(--bright); font-size:14px; font-weight:600; }
+.op-xp-next { color:var(--dim); font-size:11px; }
+.op-xp-track { width:100%; height:9px; background:#111; border-radius:5px; overflow:hidden; }
+.op-xp-fill { height:100%; border-radius:5px; transition:width 0.6s ease, background 0.4s ease; }
+.xp-E { background:linear-gradient(90deg,#333,#555); }
+.xp-D { background:linear-gradient(90deg,#1a5aaa,#4a9eff); }
+.xp-C { background:linear-gradient(90deg,#1a8a3a,#4aff7a); }
+.xp-B { background:linear-gradient(90deg,#5a1aaa,#b44aff); }
+.xp-A { background:linear-gradient(90deg,#aa6a1a,#ffb44a); }
+.xp-S { background:linear-gradient(90deg,#aa1a1a,#ff4a4a); box-shadow:0 0 8px rgba(255,74,74,0.4); }
+.op-xp-detail { font-size:11px; color:var(--dim); margin-top:6px; text-align:center; }
+.op-section-title { font-size:10px; font-weight:700; color:var(--dim); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; }
+.op-traits-grid, .op-perms-grid { display:flex; flex-wrap:wrap; gap:5px; }
+.op-trait, .op-perm { padding:3px 9px; border-radius:4px; font-size:11px; font-weight:600; }
+.op-trait.unlocked { background:rgba(74,255,122,0.08); color:#4aff7a; border:1px solid rgba(74,255,122,0.18); }
+.op-trait.locked { background:rgba(255,255,255,0.02); color:#333; border:1px solid rgba(255,255,255,0.04); }
+.op-perm.allowed { background:rgba(74,158,255,0.08); color:#4a9eff; border:1px solid rgba(74,158,255,0.15); }
+.op-perm.denied { background:rgba(255,255,255,0.02); color:#333; border:1px solid rgba(255,255,255,0.04); }
+.op-xp-history { display:flex; flex-direction:column; gap:4px; max-height:180px; overflow-y:auto; }
+.op-xp-event { display:flex; justify-content:space-between; padding:4px 8px; font-size:11px; border-radius:3px; background:rgba(255,255,255,0.02); }
+.op-xp-event .action { color:var(--text); }
+.op-xp-event .points { color:#4aff7a; font-weight:700; }
+.op-empty { color:var(--dim); font-size:11px; font-style:italic; }
 </style>
 </head>
 <body>
@@ -544,7 +581,7 @@ body::after {
 <!-- TOPBAR -->
 <header class="topbar">
   <div style="display:flex;align-items:center;gap:8px">
-    <div class="logo">NEX<em>US</em>MON <span style="font-size:13px;color:var(--dim);font-weight:300">// ORGANISM</span></div>
+    <div class="logo">NEX<em>US</em>MON <span style="font-size:13px;color:var(--dim);font-weight:300">// GREENLINE ORGANISM</span></div>
   </div>
   <div class="topbar-right">
     <span class="last-updated" id="last-updated"></span>
@@ -559,7 +596,7 @@ body::after {
   <!-- LEFT SIDEBAR — Evolution -->
   <aside class="sidebar-left" id="sidebar-evo">
     <div class="side-section">
-      <div class="side-label">Evolution Stage</div>
+      <div class="side-label">Evolution Stage ⚡</div>
       <div class="evo-stage">
         <div class="evo-stage-name" id="stage-name">—</div>
         <div class="evo-rank-dots" id="rank-dots">
@@ -591,12 +628,12 @@ body::after {
     <div class="side-section" style="flex:1;overflow-y:auto">
       <div class="side-label">Active Traits <span id="trait-count" style="color:var(--accent)">0</span></div>
       <div class="trait-list" id="trait-list">
-        <div class="loading">loading…</div>
+        <div class="loading">syncing glyphs…</div>
       </div>
     </div>
 
     <div class="side-section" id="next-stage-wrap" style="display:none">
-      <div class="side-label">Next Stage</div>
+      <div class="side-label">Next Stage Gate</div>
       <div class="next-stage-box">
         <div class="next-stage-name" id="next-stage-name">—</div>
         <div class="next-req">
@@ -607,7 +644,7 @@ body::after {
           <span style="color:var(--dim)">success rate</span>
           <span id="next-rate" style="color:var(--text)">—</span>
         </div>
-        <button class="btn" style="margin-top:10px;width:100%;font-size:9px" onclick="syncEvolution()">SYNC NOW</button>
+        <button class="btn" style="margin-top:10px;width:100%;font-size:9px" onclick="syncEvolution()">SYNC EVOLUTION</button>
       </div>
     </div>
   </aside>
@@ -615,7 +652,7 @@ body::after {
   <!-- MAIN -->
   <main class="main">
     <nav class="tab-nav">
-      <button class="tab-btn active" onclick="switchTab('status')">STATUS</button>
+      <button class="tab-btn active" onclick="switchTab('status')">STATUS 🟢</button>
       <button class="tab-btn" onclick="switchTab('operator')">OPERATOR</button>
       <button class="tab-btn" onclick="switchTab('workers')">WORKERS</button>
       <button class="tab-btn" onclick="switchTab('companion')">COMPANION</button>
@@ -644,7 +681,7 @@ body::after {
       <div class="card">
         <div class="card-head">
           <div class="card-title">OPERATOR CONTEXT</div>
-          <button class="btn" onclick="loadFusion()" style="font-size:9px">VIEW FUSION BLOCK</button>
+          <button class="btn" onclick="loadFusion()" style="font-size:9px">VIEW FUSION GLYPH</button>
         </div>
         <div class="card-body">
           <div class="grid-2" id="operator-quick">
@@ -654,11 +691,11 @@ body::after {
             <div class="info-row"><span class="info-key">Autonomy Trust</span><span class="info-val" id="q-trust">—</span></div>
           </div>
           <div style="margin-top:12px">
-            <div class="side-label" style="margin-bottom:8px">VOCABULARY SIGNATURE</div>
+            <div class="side-label" style="margin-bottom:8px">LINGO SIGNATURE</div>
             <div class="vocab-cloud" id="q-vocab"></div>
           </div>
           <div id="fusion-wrap" style="display:none;margin-top:12px">
-            <div class="side-label" style="margin-bottom:6px">FUSION PROMPT BLOCK</div>
+            <div class="side-label" style="margin-bottom:6px">FUSION PROMPT GLYPH</div>
             <div class="fusion-block" id="fusion-content"></div>
           </div>
         </div>
@@ -670,26 +707,44 @@ body::after {
           <span id="workers-count-badge" style="font-size:10px;color:var(--dim)"></span>
         </div>
         <div class="card-body">
-          <div id="active-workers-list"><div class="empty">No active workers</div></div>
+          <div id="active-workers-list"><div class="empty">No active workers in the swarm yet</div></div>
         </div>
       </div>
     </div>
 
     <!-- OPERATOR TAB -->
     <div class="tab-panel" id="tab-operator">
-      <div class="card">
-        <div class="card-head"><div class="card-title">OPERATOR IDENTITY</div></div>
-        <div class="card-body">
-          <div id="operator-full"><div class="loading">loading…</div></div>
+      <div class="operator-card">
+        <div class="op-rank-section">
+          <div id="op-rank-badge" class="op-rank-badge rank-E">E</div>
+          <div class="op-rank-meta">
+            <div id="op-rank-label" class="op-rank-label">Rank E — New Operator</div>
+            <div id="op-tier-label" class="op-tier-label">Evolution: DORMANT</div>
+          </div>
         </div>
-      </div>
-      <div class="card">
-        <div class="card-head">
-          <div class="card-title">FUSION BLOCK</div>
-          <button class="btn primary" onclick="loadFusion(true)">REFRESH</button>
+        <div class="op-xp-section">
+          <div class="op-xp-header">
+            <span id="op-xp-text">0 XP</span>
+            <span id="op-xp-next" class="op-xp-next">Next rank: 50 XP</span>
+          </div>
+          <div class="op-xp-track">
+            <div id="op-xp-fill" class="op-xp-fill xp-E" style="width:0%"></div>
+          </div>
+          <div id="op-xp-detail" class="op-xp-detail">0 / 50 XP to Rank D</div>
         </div>
-        <div class="card-body">
-          <div class="fusion-block" id="fusion-full">loading…</div>
+        <div class="op-traits-section">
+          <div class="op-section-title">Traits</div>
+          <div id="op-traits-grid" class="op-traits-grid"></div>
+        </div>
+        <div class="op-perms-section">
+          <div class="op-section-title">Permissions</div>
+          <div id="op-perms-grid" class="op-perms-grid"></div>
+        </div>
+        <div class="op-history-section">
+          <div class="op-section-title">Recent XP</div>
+          <div id="op-xp-history" class="op-xp-history">
+            <div class="op-empty">No XP events yet. Complete missions to earn XP.</div>
+          </div>
         </div>
       </div>
     </div>
@@ -731,7 +786,7 @@ body::after {
           </div>
         </div>
         <div class="card-body">
-          <div class="worker-list" id="worker-list"><div class="loading">loading…</div></div>
+          <div class="worker-list" id="worker-list"><div class="loading">syncing worker feed…</div></div>
         </div>
       </div>
     </div>
@@ -790,7 +845,7 @@ body::after {
           </div>
         </div>
         <div class="card-body">
-          <div class="mission-list" id="mission-list"><div class="loading">loading…</div></div>
+          <div class="mission-list" id="mission-list"><div class="loading">syncing mission log…</div></div>
         </div>
       </div>
     </div>
@@ -822,7 +877,7 @@ body::after {
         </div>
         <div class="card-body">
           <div id="vault-stats" style="margin-bottom:10px;font-size:10px;color:var(--dim)"></div>
-          <div class="artifact-list" id="artifact-list"><div class="loading">loading…</div></div>
+          <div class="artifact-list" id="artifact-list"><div class="loading">syncing vault stream…</div></div>
         </div>
       </div>
     </div>
@@ -892,11 +947,11 @@ body::after {
   <!-- RIGHT SIDEBAR — Event Log -->
   <aside class="sidebar-right">
     <div class="log-head">
-      <span>EVENT LOG</span>
+      <span>EVENT LOG // LIVE FEED</span>
       <div class="log-live"><div class="live-dot"></div><span>LIVE</span></div>
     </div>
     <div class="event-list" id="event-list">
-      <div class="empty">awaiting events…</div>
+      <div class="empty">awaiting signal events…</div>
     </div>
   </aside>
 
@@ -929,7 +984,7 @@ setInterval(tickClock, 1000); tickClock();
 
 function setLastUpdated() {
   const el = document.getElementById('last-updated');
-  if (el) el.textContent = 'synced ' + new Date().toLocaleTimeString();
+  if (el) el.textContent = 'signal synced ' + new Date().toLocaleTimeString();
 }
 
 // ── Tab switching ──────────────────────────────────────────
@@ -1004,7 +1059,7 @@ async function loadAll() {
         <div class="trait-dot cat-${t.category}"></div>
         <span class="trait-name">${t.label || t.id}</span>
         <span class="trait-cat">${(t.category||'').slice(0,3)}</span>
-      </div>`).join('') : '<div class="empty">No traits yet</div>';
+      </div>`).join('') : '<div class="empty">No traits unlocked yet — run missions to awaken</div>';
 
     // Next stage
     if (evo.next_stage) {
@@ -1039,7 +1094,7 @@ async function loadAll() {
     const awl = document.getElementById('active-workers-list');
     const active = wdata.active || [];
     awl.innerHTML = active.length ? active.map(renderWorkerRow).join('') :
-      '<div class="empty">No active workers</div>';
+      '<div class="empty">No active workers in the swarm</div>';
 
     // ClaimLab
     const cl = data.claimlab || {};
@@ -1047,7 +1102,7 @@ async function loadAll() {
 
     // Check autonomous chain trait
     const hasChain = traits.some(t => t.id === 'AUTONOMOUS_CHAIN');
-    document.getElementById('auto-gate').textContent = hasChain ? '' : 'AUTONOMOUS_CHAIN not yet unlocked';
+    document.getElementById('auto-gate').textContent = hasChain ? '' : 'AUTONOMOUS_CHAIN locked — forge more XP';
 
     setLastUpdated();
     updateNotifDots();
@@ -1079,35 +1134,87 @@ async function syncEvolution() {
   } catch(e) {
     pushEvent('ERROR', 'Sync error: ' + e.message, new Date().toISOString());
   } finally {
-    if (btn) { btn.disabled = false; btn.textContent = 'SYNC NOW'; }
+    if (btn) { btn.disabled = false; btn.textContent = 'SYNC EVOLUTION'; }
   }
 }
 
 // ── Operator full ──────────────────────────────────────────
-async function loadOperator() {
-  const el = document.getElementById('operator-full');
-  el.innerHTML = '<div class="loading">loading…</div>';
-  try {
-    const r = await fetch(API + '/v1/nexusmon/organism/operator');
-    const data = await r.json();
-    if (!data.ok) throw new Error(data.detail || 'failed');
-    const op = data;
-    const topCats = (op.top_categories || op.top_mission_categories || []).map(([k,v]) =>
-      `<div class="info-row"><span class="info-key">${k}</span><span class="info-val">${v} missions</span></div>`
-    ).join('') || '<div class="info-row"><span class="info-key">—</span><span class="info-val">no missions yet</span></div>';
+const _RANK_LABELS = {E:'New Operator',D:'Initiate',C:'Controller',B:'Overseer',A:'Commander',S:'Sovereign Operator'};
+const _RANK_TO_TIER = {E:'DORMANT',D:'INITIATED',C:'ACTIVE',B:'EVOLVED',A:'ASCENDED',S:'ASCENDED'};
+const _ALL_TRAITS = ['Worker Control','Artifact Review','Evolution Sync','Mission Governance',
+  'Module Activation','Multi-Worker Coordination','Full Governance','System-Level Reasoning',
+  'Organism Override','Evolution Tier Unlock'];
+const _PERM_LABELS = {
+  run_mission_E:'Run E Missions', run_mission_D:'Run D Missions', run_mission_C:'Run C Missions',
+  run_mission_B:'Run B Missions', run_mission_A:'Run A Missions', run_mission_S:'Run S Missions',
+  approve_artifact:'Approve Artifacts', reject_artifact:'Reject Artifacts',
+  approve_mission:'Approve Missions', spawn_worker:'Spawn Workers',
+  activate_module:'Activate Modules', evolution_sync:'Evolution Sync',
+  full_organism_control:'Organism Control'
+};
 
-    el.innerHTML = `
-      <div class="info-row"><span class="info-key">Operator ID</span><span class="info-val">${op.operator_id||'—'}</span></div>
-      <div class="info-row"><span class="info-key">Total Interactions</span><span class="info-val">${op.total_interactions||0}</span></div>
-      <div class="info-row"><span class="info-key">Recent Context</span><span class="info-val">${op.recent_context_count||0} entries</span></div>
-      <div class="info-row"><span class="info-key">Belief Revisions</span><span class="info-val">${op.belief_calibration?.revisions||op.belief_calibration?.total_revisions||0}</span></div>
-      <div class="info-row"><span class="info-key">Avg Confidence Delta</span><span class="info-val">${op.belief_calibration?.avg_delta??'—'}</span></div>
-      <div style="margin-top:14px"><div class="side-label" style="margin-bottom:8px">MISSION CATEGORIES</div>${topCats}</div>
-    `;
-    loadFusion(true);
+async function loadOperator() {
+  try {
+    const [rankRes, histRes] = await Promise.all([
+      fetch(API + '/v1/operator/rank'),
+      fetch(API + '/v1/operator/xp/history')
+    ]);
+    const rankData = await rankRes.json();
+    const histData = await histRes.json();
+    _renderOperatorPanel(rankData, histData);
   } catch(e) {
-    el.innerHTML = `<div class="error-msg">Failed to load operator: ${e.message}</div>`;
+    pushEvent('ERROR', 'Operator load failed: ' + e.message, new Date().toISOString());
   }
+}
+
+function _renderOperatorPanel(data, histData) {
+  const rank = data.rank || 'E';
+  const xp = data.xp || 0;
+  const nextRank = data.next_rank;
+  const xpNeeded = data.xp_needed || 0;
+  const progress = data.progress || 0;
+  const traits = data.traits || [];
+  const perms = data.permissions || {};
+  const tier = _RANK_TO_TIER[rank] || 'DORMANT';
+
+  const badge = document.getElementById('op-rank-badge');
+  badge.textContent = rank;
+  badge.className = 'op-rank-badge rank-' + rank;
+
+  document.getElementById('op-rank-label').textContent = 'Rank ' + rank + ' — ' + (_RANK_LABELS[rank] || '');
+  document.getElementById('op-tier-label').textContent = 'Evolution: ' + tier;
+  document.getElementById('op-xp-text').textContent = xp + ' XP';
+
+  const nextEl = document.getElementById('op-xp-next');
+  nextEl.textContent = nextRank ? 'Next: Rank ' + nextRank + ' (' + xpNeeded + ' XP)' : 'MAX RANK';
+
+  const fill = document.getElementById('op-xp-fill');
+  fill.style.width = (progress * 100) + '%';
+  fill.className = 'op-xp-fill xp-' + rank;
+
+  const detailEl = document.getElementById('op-xp-detail');
+  if (nextRank) {
+    detailEl.textContent = xp + ' / ' + (xp + xpNeeded) + ' XP to Rank ' + nextRank;
+  } else {
+    detailEl.textContent = 'Sovereign Operator — Maximum Rank Achieved';
+  }
+
+  document.getElementById('op-traits-grid').innerHTML = _ALL_TRAITS.map(t => {
+    const unlocked = traits.includes(t);
+    return `<span class="op-trait ${unlocked?'unlocked':'locked'}">${unlocked?'✓ ':'✗ '}${t}</span>`;
+  }).join('');
+
+  document.getElementById('op-perms-grid').innerHTML = Object.entries(_PERM_LABELS).map(([key, label]) => {
+    const allowed = perms[key] === true;
+    return `<span class="op-perm ${allowed?'allowed':'denied'}">${allowed?'✓':'✗'} ${label}</span>`;
+  }).join('');
+
+  const history = (histData.history || []).slice(-10).reverse();
+  const histEl = document.getElementById('op-xp-history');
+  histEl.innerHTML = history.length ? history.map(e => {
+    const action = (e.action || '').replace(/_/g, ' ');
+    return `<div class="op-xp-event"><span class="action">${action}${e.detail?' — '+e.detail:''}</span><span class="points">+${e.xp} XP</span></div>`;
+  }).join('') : '<div class="op-empty">No XP events yet. Complete missions to earn XP.</div>';
 }
 
 // ── Fusion block ───────────────────────────────────────────
@@ -1145,7 +1252,7 @@ async function spawnWorker() {
   const btn = document.getElementById('spawn-btn');
   const errEl = document.getElementById('spawn-error');
   errEl.style.display = 'none';
-  btn.disabled = true; btn.textContent = 'SPAWNING…';
+  btn.disabled = true; btn.textContent = 'SPAWNING UNIT…';
   try {
     const r = await fetch(API + '/v1/nexusmon/organism/worker/spawn', {
       method: 'POST', headers: {'Content-Type':'application/json'},
@@ -1158,7 +1265,7 @@ async function spawnWorker() {
       switchTab('workers');
       setTimeout(loadWorkers, 600);
     } else {
-      errEl.textContent = 'Spawn failed: ' + (data.detail || JSON.stringify(data));
+      errEl.textContent = 'Spawn gate failed: ' + (data.detail || JSON.stringify(data));
       errEl.style.display = 'block';
     }
   } catch(e) {
@@ -1179,7 +1286,7 @@ async function loadWorkers() {
     el.innerHTML = workers.length ? workers.map(renderWorkerRow).join('') :
       '<div class="empty">No workers found</div>';
   } catch(e) {
-    el.innerHTML = `<div class="error-msg">Failed to load workers: ${e.message}</div>`;
+    el.innerHTML = `<div class="error-msg">Worker feed failed to load: ${e.message}</div>`;
   }
 }
 
@@ -1313,7 +1420,7 @@ async function createMission() {
   const btn = document.getElementById('create-mission-btn');
   const errEl = document.getElementById('mission-create-error');
   errEl.style.display = 'none';
-  btn.disabled = true; btn.textContent = 'CREATING…';
+  btn.disabled = true; btn.textContent = 'FORGING MISSION…';
   try {
     const r = await fetch(API + '/v1/engine/missions', {
       method: 'POST', headers: {'Content-Type':'application/json'},
@@ -1325,7 +1432,7 @@ async function createMission() {
       pushEvent('MISSION', `Created ${data.mission?.id} [${rank}] — ${goal.slice(0,40)}`, new Date().toISOString());
       loadMissions();
     } else {
-      errEl.textContent = 'Create failed: ' + (data.detail || JSON.stringify(data));
+      errEl.textContent = 'Mission forge failed: ' + (data.detail || JSON.stringify(data));
       errEl.style.display = 'block';
     }
   } catch(e) {
@@ -1338,7 +1445,7 @@ async function createMission() {
 async function loadMissions() {
   const el = document.getElementById('mission-list');
   const statsEl = document.getElementById('missions-stats-badge');
-  el.innerHTML = '<div class="loading">loading…</div>';
+  el.innerHTML = '<div class="loading">syncing mission log…</div>';
   try {
     const [listR, statsR] = await Promise.all([
       fetch(API + '/v1/engine/missions?limit=30'),
@@ -1356,9 +1463,9 @@ async function loadMissions() {
     }
 
     el.innerHTML = missions.length ? missions.map(renderMissionRow).join('') :
-      '<div class="empty">No missions yet</div>';
+      '<div class="empty">No missions yet — drop your first objective</div>';
   } catch(e) {
-    el.innerHTML = `<div class="error-msg">Failed to load missions: ${e.message}</div>`;
+    el.innerHTML = `<div class="error-msg">Mission log failed to load: ${e.message}</div>`;
   }
 }
 
@@ -1449,7 +1556,7 @@ async function loadVault() {
   const statsEl = document.getElementById('vault-stats');
   const statusFilter = document.getElementById('vault-status-filter').value;
   const typeFilter = document.getElementById('vault-type-filter').value;
-  el.innerHTML = '<div class="loading">loading…</div>';
+  el.innerHTML = '<div class="loading">syncing vault stream…</div>';
   try {
     const params = new URLSearchParams({limit: '40'});
     if (statusFilter) params.set('status', statusFilter);
@@ -1470,9 +1577,9 @@ async function loadVault() {
     }
 
     el.innerHTML = artifacts.length ? artifacts.map(renderArtifactRow).join('') :
-      '<div class="empty">No artifacts found</div>';
+      '<div class="empty">No artifacts in this filter lane</div>';
   } catch(e) {
-    el.innerHTML = `<div class="error-msg">Failed to load vault: ${e.message}</div>`;
+    el.innerHTML = `<div class="error-msg">Vault stream failed to load: ${e.message}</div>`;
   }
 }
 
@@ -1565,7 +1672,7 @@ async function logPrediction() {
   const category = document.getElementById('pred-category').value.trim() || 'GENERAL';
   const resultEl = document.getElementById('pred-result');
   if (!claim || isNaN(confidence)) {
-    resultEl.textContent = 'Claim and confidence required.';
+    resultEl.textContent = 'Claim and confidence are required.';
     resultEl.style.color = 'var(--red)';
     return;
   }
@@ -1576,7 +1683,7 @@ async function logPrediction() {
     });
     const data = await r.json();
     if (data.ok) {
-      resultEl.textContent = 'Logged.';
+      resultEl.textContent = 'Prediction logged ⚡';
       resultEl.style.color = 'var(--green)';
       document.getElementById('pred-claim').value = '';
       document.getElementById('pred-confidence').value = '';
@@ -1609,7 +1716,7 @@ async function submitAutopsy() {
     });
     const data = await r.json();
     if (data.ok) {
-      resultEl.textContent = 'Autopsy submitted.';
+      resultEl.textContent = 'Autopsy submitted ⚡';
       resultEl.style.color = 'var(--green)';
       document.getElementById('autopsy-decision').value = '';
       document.getElementById('autopsy-outcome').value = '';
@@ -1662,7 +1769,7 @@ function pushEvent(type, msg, ts) {
 
 function renderEventLog() {
   const el = document.getElementById('event-list');
-  if (!eventLog.length) { el.innerHTML = '<div class="empty">awaiting events…</div>'; return; }
+  if (!eventLog.length) { el.innerHTML = '<div class="empty">awaiting signal events…</div>'; return; }
   el.innerHTML = eventLog.map(e => `
     <div class="event-item">
       <div class="event-type et-${e.type}">${e.type}</div>
