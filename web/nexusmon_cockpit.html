@@ -198,6 +198,41 @@ body::after {
 .xp-row { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
 .xp-label { font-size: 9px; color: var(--dim); letter-spacing: 0.1em; }
 .xp-val { font-size: 11px; color: var(--accent); }
+
+/* Plasma Buster Status */
+.buster-status {
+  padding: 16px; border-bottom: 1px solid var(--border);
+  background: rgba(0, 255, 255, 0.03);
+}
+.buster-label {
+  font-size: 10px; color: #0ff; letter-spacing: 0.2em;
+  text-transform: uppercase; margin-bottom: 12px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.buster-indicator {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #0ff; box-shadow: 0 0 10px #0ff;
+  animation: pulse-buster 2s infinite;
+}
+@keyframes pulse-buster {
+  0% { opacity: 0.4; } 50% { opacity: 1; } 100% { opacity: 0.4; }
+}
+
+.buster-stat {
+  display: flex; justify-content: space-between; margin-bottom: 8px;
+  font-family: var(--mono); font-size: 11px;
+}
+.buster-stat-label { color: var(--dim); }
+.buster-stat-val { color: #0ff; }
+
+.plasma-bar-container {
+  height: 4px; background: rgba(0, 255, 255, 0.1);
+  border-radius: 2px; margin-top: 10px; overflow: hidden;
+}
+.plasma-bar-fill {
+  height: 100%; width: 0%; background: #0ff;
+  box-shadow: 0 0 10px #0ff; transition: width 0.5s ease-out;
+}
 .xp-bar { flex: 1; height: 2px; background: var(--border); border-radius: 1px; overflow: hidden; }
 .xp-fill { height: 100%; background: var(--accent); box-shadow: 0 0 4px var(--accent); transition: width 0.6s ease; }
 
@@ -328,6 +363,28 @@ body::after {
   color: #00ffaa; line-height: 1; text-shadow: 0 0 6px #00ffaa44;
 }
 .stat-label { font-size: 10px; letter-spacing: 0.08em; color: var(--dim); margin-top: 6px; text-transform: uppercase; }
+
+/* Governance panel */
+.gov-layer-card {
+  background: rgba(8,10,20,0.6); border: 1px solid var(--border);
+  border-radius: 6px; padding: 10px; transition: border-color 0.25s;
+}
+.gov-layer-card:hover { border-color: #00f0ff28; }
+.gov-layer-name { font-size: 9px; letter-spacing: 0.1em; color: var(--dim); margin-bottom: 6px; text-transform: uppercase; }
+.gov-layer-status { font-size: 13px; font-weight: 700; font-family: var(--head); letter-spacing: 0.05em; }
+.gov-layer-status.gov-pass { color: var(--green); text-shadow: 0 0 6px #00ff8844; }
+.gov-layer-status.gov-warn { color: var(--amber); text-shadow: 0 0 6px #ffaa0044; }
+.gov-layer-status.gov-block { color: var(--red); text-shadow: 0 0 6px #ff335544; }
+.gov-layer-status.gov-tracking { color: var(--purple); text-shadow: 0 0 6px #aa55ff44; }
+.gov-layer-reason { font-size: 9px; color: var(--dim); margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.uplift-tier {
+  background: rgba(8,10,20,0.6); border: 1px solid var(--border);
+  border-radius: 6px; padding: 10px;
+}
+.tier-badge { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; padding: 4px 10px; border-radius: 4px; display: inline-block; margin-bottom: 6px; }
+.tier-badge.unlocked { background: rgba(0,255,136,0.15); color: var(--green); border: 1px solid #00ff8844; }
+.tier-badge.locked { background: rgba(255,255,255,0.04); color: var(--dim); border: 1px solid var(--border); }
+.tier-caps { font-size: 10px; color: var(--dim); }
 
 /* Operator vocab */
 .vocab-cloud { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -1188,6 +1245,10 @@ body {
           <div class="rank-dot"></div>
           <div class="rank-dot"></div>
         </div>
+        <div class="xp-row" style="margin-bottom: 4px;">
+          <span class="xp-label">LEVEL</span>
+          <span class="xp-val" id="level-val" style="color:var(--bright); font-weight:bold; font-size:13px;">1</span>
+        </div>
         <div class="xp-row">
           <span class="xp-label">DATAFLOW</span>
           <span class="xp-val" id="xp-val">0</span>
@@ -1204,6 +1265,45 @@ body {
             <div style="font-size:9px;color:var(--dim);letter-spacing:0.1em">VICTORY</div>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- PLASMA BUSTER ACTIVE DEFENSE -->
+    <div class="buster-status">
+      <div class="buster-label">
+        <span>Plasma Buster</span>
+        <div class="buster-indicator" id="buster-active"></div>
+      </div>
+      <div class="buster-stat">
+        <span class="buster-stat-label">Viruses Defeated</span>
+        <span class="buster-stat-val" id="buster-defeated">0</span>
+      </div>
+      <div class="buster-stat">
+        <span class="buster-stat-label">Plasma Energy</span>
+        <span class="buster-stat-val" id="buster-energy">100%</span>
+      </div>
+      <div class="plasma-bar-container">
+        <div class="plasma-bar-fill" id="buster-bar" style="width: 100%"></div>
+      </div>
+      <div id="buster-log" style="font-size:8px;color:var(--dim);margin-top:8px;font-family:var(--mono);text-transform:uppercase">System Secure</div>
+    </div>
+
+    <!-- SYNTHETIC NERVE STATUS -->
+    <div class="side-section" style="background:rgba(255,0,255,0.02);border-bottom:1px solid var(--border)">
+      <div style="font-size:10px; color:#f0f; letter-spacing:0.2em; text-transform:uppercase; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
+        <span>Synth Nerve</span>
+        <div style="width:8px; height:8px; border-radius:50%; background:#f0f; box-shadow:0 0(10px #f0f);" id="nerve-active"></div>
+      </div>
+      <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-family:var(--mono); font-size:11px;">
+        <span style="color:var(--dim)">Stress Level</span>
+        <span style="color:#f0f" id="nerve-stress">0.0</span>
+      </div>
+      <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-family:var(--mono); font-size:11px;">
+        <span style="color:var(--dim)">Synergy Index</span>
+        <span style="color:#f0f" id="nerve-synergy">1.0</span>
+      </div>
+      <div style="height:4px; background:rgba(255,0,255,0.1); border-radius:2px; margin-top:10px; overflow:hidden;">
+        <div id="nerve-bar" style="height:100%; width:20%; background:#f0f; box-shadow:0 0 10px #f0f; transition:width 0.5s;"></div>
       </div>
     </div>
 
@@ -1247,7 +1347,9 @@ body {
       <button class="tab-btn" onclick="switchTab('fullevolution')">EVOLUTION</button>
       <button class="tab-btn" onclick="switchTab('sysmon')">SYSTEM</button>
       <button class="tab-btn" onclick="switchTab('audit')">AUDIT</button>
+      <button class="tab-btn" onclick="switchTab('governance')">GOVERNANCE 🔒</button>
       <button class="tab-btn" onclick="switchTab('deptree')">GRAPH</button>
+      <button class="tab-btn" onclick="switchTab('doctrine')" style="color:#ff00ff;text-shadow:0 0 8px #ff00ff">⚡ DOCTRINE</button>
     </nav>
 
     <!-- STATUS TAB -->
@@ -1326,6 +1428,10 @@ body {
           <div class="stat-block status-panel">
             <div class="stat-val" id="s-beliefs">—</div>
             <div class="stat-label neon-text">Belief Anchors</div>
+          </div>
+          <div class="stat-block status-panel" id="sovereign-block">
+            <div class="stat-val" id="s-sovereign">—</div>
+            <div class="stat-label neon-text">Sovereign Guard</div>
           </div>
         </div>
       </div>
@@ -1774,6 +1880,141 @@ body {
       </div>
     </div>
 
+    <!-- GOVERNANCE PIPELINE TAB -->
+    <div class="tab-panel" id="tab-governance">
+
+      <!-- Pipeline Layer Status -->
+      <div class="card holo-panel">
+        <div class="card-head" style="display:flex;align-items:center;gap:10px">
+          <div class="card-title neon-text" style="flex:1">GOVERNANCE PIPELINE ⚖️</div>
+          <span id="gov-last-updated" style="font-size:9px;color:var(--dim)">not polled</span>
+          <button class="btn" style="font-size:9px" onclick="refreshGovernance()">REFRESH ↺</button>
+          <button class="btn amber" style="font-size:9px" onclick="toggleGovAutoRefresh()">AUTO <span id="gov-auto-label">OFF</span></button>
+        </div>
+        <div class="card-body">
+          <p style="font-size:10px;color:var(--dim);margin-bottom:12px">Real-time status of all 12 governance layers. Green = PASS · Amber = WARN · Red = BLOCK.</p>
+          <div id="gov-pipeline" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px">
+            <div class="gov-layer-card" id="gov-layer-geometry"><div class="gov-layer-name">P0.1 · GEOMETRY</div><div class="gov-layer-status" id="gov-status-geometry">—</div><div class="gov-layer-reason" id="gov-reason-geometry"></div></div>
+            <div class="gov-layer-card" id="gov-layer-integrity"><div class="gov-layer-name">P0.2 · INTEGRITY</div><div class="gov-layer-status" id="gov-status-integrity">—</div><div class="gov-layer-reason" id="gov-reason-integrity"></div></div>
+            <div class="gov-layer-card" id="gov-layer-scoring"><div class="gov-layer-name">P0.3 · SCORING</div><div class="gov-layer-status" id="gov-status-scoring">—</div><div class="gov-layer-reason" id="gov-reason-scoring"></div></div>
+            <div class="gov-layer-card" id="gov-layer-threshold"><div class="gov-layer-name">P0.4 · THRESHOLD</div><div class="gov-layer-status" id="gov-status-threshold">—</div><div class="gov-layer-reason" id="gov-reason-threshold"></div></div>
+            <div class="gov-layer-card" id="gov-layer-reversible"><div class="gov-layer-name">P0.5 · REVERSIBLE</div><div class="gov-layer-status" id="gov-status-reversible">—</div><div class="gov-layer-reason" id="gov-reason-reversible"></div></div>
+            <div class="gov-layer-card" id="gov-layer-sovereign"><div class="gov-layer-name">P1.1 · SOVEREIGN</div><div class="gov-layer-status" id="gov-status-sovereign">—</div><div class="gov-layer-reason" id="gov-reason-sovereign"></div></div>
+            <div class="gov-layer-card" id="gov-layer-shadow"><div class="gov-layer-name">P1.2 · SHADOW</div><div class="gov-layer-status" id="gov-status-shadow">—</div><div class="gov-layer-reason" id="gov-reason-shadow"></div></div>
+            <div class="gov-layer-card" id="gov-layer-boundaries"><div class="gov-layer-name">P1.4 · BOUNDARIES</div><div class="gov-layer-status" id="gov-status-boundaries">—</div><div class="gov-layer-reason" id="gov-reason-boundaries"></div></div>
+            <div class="gov-layer-card" id="gov-layer-stabilization"><div class="gov-layer-name">P2.3 · STABILIZATION</div><div class="gov-layer-status" id="gov-status-stabilization">—</div><div class="gov-layer-reason" id="gov-reason-stabilization"></div></div>
+            <div class="gov-layer-card" id="gov-layer-exploration"><div class="gov-layer-name">P2.4 · EXPLORATION</div><div class="gov-layer-status" id="gov-status-exploration">—</div><div class="gov-layer-reason" id="gov-reason-exploration"></div></div>
+            <div class="gov-layer-card" id="gov-layer-emergence"><div class="gov-layer-name">P2.1 · EMERGENCE</div><div class="gov-layer-status gov-tracking" id="gov-status-emergence">TRACKING</div><div class="gov-layer-reason" id="gov-reason-emergence">non-blocking</div></div>
+            <div class="gov-layer-card" id="gov-layer-uplift"><div class="gov-layer-name">P2.2 · UPLIFT</div><div class="gov-layer-status gov-tracking" id="gov-status-uplift">TRACKING</div><div class="gov-layer-reason" id="gov-reason-uplift">non-blocking</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sovereign Override History -->
+      <div class="card holo-panel">
+        <div class="card-head" style="display:flex;align-items:center;gap:10px">
+          <div class="card-title neon-text" style="flex:1">SOVEREIGN OVERRIDES</div>
+          <button class="btn" style="font-size:9px" onclick="loadSovereignLog()">REFRESH ↺</button>
+        </div>
+        <div class="card-body">
+          <p style="font-size:10px;color:var(--dim);margin-bottom:8px">Priority-based decisions that overrode lower-layer verdicts.</p>
+          <div id="gov-sovereign-log" style="font-size:11px;color:var(--dim)">no overrides recorded</div>
+        </div>
+      </div>
+
+      <!-- Shadow Log -->
+      <div class="card holo-panel">
+        <div class="card-head" style="display:flex;align-items:center;gap:10px">
+          <div class="card-title neon-text" style="flex:1">SHADOW LOG</div>
+          <select id="shadow-opacity-filter" style="background:var(--panel);color:var(--text);border:1px solid var(--border);padding:4px 8px;font-family:var(--mono);font-size:10px" onchange="filterShadowLog()">
+            <option value="">ALL OPACITY</option>
+            <option value="TRANSPARENT">TRANSPARENT</option>
+            <option value="PARTIAL">PARTIAL</option>
+            <option value="OPAQUE">OPAQUE</option>
+            <option value="SILENT">SILENT</option>
+          </select>
+          <button class="btn" style="font-size:9px" onclick="loadShadowLog()">REFRESH ↺</button>
+        </div>
+        <div class="card-body">
+          <p style="font-size:10px;color:var(--dim);margin-bottom:8px">Actions wrapped by the shadow channel with their opacity classification.</p>
+          <div id="gov-shadow-log" style="font-size:11px;color:var(--dim)">no shadow entries</div>
+        </div>
+      </div>
+
+      <!-- Emergence Patterns -->
+      <div class="card holo-panel">
+        <div class="card-head" style="display:flex;align-items:center;gap:10px">
+          <div class="card-title neon-text" style="flex:1">EMERGENCE PATTERNS</div>
+          <button class="btn" style="font-size:9px" onclick="loadEmergencePatterns()">REFRESH ↺</button>
+        </div>
+        <div class="card-body">
+          <p style="font-size:10px;color:var(--dim);margin-bottom:8px">Detected behavioral patterns: sequence, correlation, anomaly, cyclic.</p>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px">
+            <div class="stat-block"><div class="stat-val" id="em-sequence-count">0</div><div class="stat-sub">SEQUENCE</div></div>
+            <div class="stat-block"><div class="stat-val" id="em-correlation-count">0</div><div class="stat-sub">CORRELATION</div></div>
+            <div class="stat-block"><div class="stat-val" id="em-anomaly-count">0</div><div class="stat-sub">ANOMALY</div></div>
+            <div class="stat-block"><div class="stat-val" id="em-cyclic-count">0</div><div class="stat-sub">CYCLIC</div></div>
+          </div>
+          <div id="gov-emergence-list" style="font-size:11px;color:var(--dim)">no patterns detected yet</div>
+        </div>
+      </div>
+
+      <!-- Uplift Capability Tiers -->
+      <div class="card holo-panel">
+        <div class="card-head" style="display:flex;align-items:center;gap:10px">
+          <div class="card-title neon-text" style="flex:1">UPLIFT CAPABILITIES</div>
+          <button class="btn" style="font-size:9px" onclick="loadUpliftStatus()">REFRESH ↺</button>
+        </div>
+        <div class="card-body">
+          <p style="font-size:10px;color:var(--dim);margin-bottom:8px">Progressive capability tiers: BASIC → INTERMEDIATE → ADVANCED → EXPERIMENTAL.</p>
+          <div id="gov-uplift-tiers" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px">
+            <div class="uplift-tier"><div class="tier-badge unlocked">BASIC</div><div class="tier-caps" id="tier-basic-caps">loading…</div></div>
+            <div class="uplift-tier"><div class="tier-badge locked" id="tier-intermediate-badge">INTERMEDIATE 🔒</div><div class="tier-caps" id="tier-intermediate-caps">10 successes needed</div></div>
+            <div class="uplift-tier"><div class="tier-badge locked" id="tier-advanced-badge">ADVANCED 🔒</div><div class="tier-caps" id="tier-advanced-caps">50 successes needed</div></div>
+            <div class="uplift-tier"><div class="tier-badge locked" id="tier-experimental-badge">EXPERIMENTAL 🔒</div><div class="tier-caps" id="tier-experimental-caps">100 successes needed</div></div>
+          </div>
+          <div style="margin-top:12px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+            <div class="stat-block"><div class="stat-val" id="uplift-success-rate">—</div><div class="stat-sub">SUCCESS RATE</div></div>
+            <div class="stat-block"><div class="stat-val" id="uplift-total-ops">—</div><div class="stat-sub">TOTAL OPS</div></div>
+            <div class="stat-block"><div class="stat-val" id="uplift-rollbacks">—</div><div class="stat-sub">ROLLBACKS</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Perf Monitor -->
+      <div class="card holo-panel">
+        <div class="card-head" style="display:flex;align-items:center;gap:10px">
+          <div class="card-title neon-text" style="flex:1">PERF MONITOR ⚡</div>
+          <button class="btn" style="font-size:9px" onclick="loadGovernancePerf()">REFRESH ↺</button>
+        </div>
+        <div class="card-body">
+          <p style="font-size:10px;color:var(--dim);margin-bottom:8px">P50 / P95 / P99 latency (ms) per governance layer since server start.</p>
+          <table id="gov-perf-table" style="width:100%;font-size:11px;border-collapse:collapse">
+            <thead>
+              <tr style="color:var(--dim);text-align:left;border-bottom:1px solid #333">
+                <th style="padding:4px 8px">LAYER</th>
+                <th style="padding:4px 8px;text-align:right">P50</th>
+                <th style="padding:4px 8px;text-align:right">P95</th>
+                <th style="padding:4px 8px;text-align:right">P99</th>
+                <th style="padding:4px 8px;text-align:right">CALLS</th>
+                <th style="padding:4px 8px;text-align:right">BLOCK%</th>
+              </tr>
+            </thead>
+            <tbody id="gov-perf-tbody">
+              <tr><td colspan="6" style="padding:8px;color:var(--dim)">hit REFRESH to load latency data</td></tr>
+            </tbody>
+          </table>
+          <div style="margin-top:10px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+            <div class="stat-block"><div class="stat-val" id="perf-pipeline-p50">—</div><div class="stat-sub">PIPELINE P50 ms</div></div>
+            <div class="stat-block"><div class="stat-val" id="perf-pipeline-p95">—</div><div class="stat-sub">PIPELINE P95 ms</div></div>
+            <div class="stat-block"><div class="stat-val" id="perf-pipeline-p99">—</div><div class="stat-sub">PIPELINE P99 ms</div></div>
+          </div>
+          <div id="gov-perf-alerts" style="margin-top:8px;font-size:10px;color:#ff4444"></div>
+        </div>
+      </div>
+
+    </div>
+
     <!-- DEPENDENCY GRAPH TAB -->
     <div class="tab-panel" id="tab-deptree">
       <div class="card" style="padding:16px">
@@ -1821,6 +2062,28 @@ body {
         <div class="side-label neon-text" style="margin-top:12px;margin-bottom:6px">STAGE HISTORY</div>
         <div id="fullevolution-history" style="color:var(--dim);font-size:11px">loading evolution data…</div>
         <button class="btn" style="margin-top:12px;font-size:9px;width:100%" onclick="syncEvolution()">INITIATE ASCENSION CHECK</button>
+      </div>
+    </div>
+
+    <!-- DOCTRINE TAB -->
+    <div class="tab-panel" id="tab-doctrine">
+      <div class="card" style="padding:20px;border:1px solid #ff00ff44;box-shadow:0 0 40px #ff00ff18">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+          <div class="card-title neon-text" style="flex:1;color:#ff00ff;text-shadow:0 0 12px #ff00ff">⚡ NEXUSMON DOCTRINE — CORE IDENTITY BRIEFING</div>
+          <button class="btn" style="font-size:9px;border-color:#ff00ff;color:#ff00ff" onclick="loadDoctrine()">RELOAD DOCTRINE</button>
+          <button class="btn" style="font-size:9px;border-color:#00ffaa;color:#00ffaa" onclick="receiveDoctrine()">TRANSMIT TO NEXUSMON</button>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px">
+          <div class="stat-block"><div class="stat-val" id="doc-status" style="color:#ff00ff">—</div><div class="stat-sub">STATUS</div></div>
+          <div class="stat-block"><div class="stat-val" id="doc-bytes">—</div><div class="stat-sub">BYTES</div></div>
+          <div class="stat-block"><div class="stat-val" id="doc-sections">—</div><div class="stat-sub">SECTIONS</div></div>
+        </div>
+        <div id="doctrine-mood" style="font-size:11px;color:var(--dim);margin-bottom:8px"></div>
+        <div id="doctrine-receive-result" style="font-size:11px;margin-bottom:12px"></div>
+        <div class="side-label neon-text" style="margin-bottom:6px;color:#ff00ff">DOCTRINE SECTIONS</div>
+        <div id="doctrine-sections" style="color:var(--dim);font-size:11px">loading…</div>
+        <div class="side-label neon-text" style="margin-top:16px;margin-bottom:6px;color:#ff00ff">FULL BRIEFING</div>
+        <div id="doctrine-full" style="max-height:500px;overflow-y:auto;padding:12px;background:rgba(0,0,0,0.5);border:1px solid #ff00ff22;border-radius:6px;font-size:11px;color:var(--text);line-height:1.6;white-space:pre-wrap;font-family:var(--mono)">loading…</div>
       </div>
     </div>
 
@@ -2336,20 +2599,22 @@ async function switchTab(name) {
   if (name === 'deptree') loadDepTree();
   if (name === 'fulltimeline') loadFullTimeline();
   if (name === 'fullevolution') loadFullEvolution();
+  if (name === 'doctrine') loadDoctrine();
 }
 
 // ── Stage colors ───────────────────────────────────────────
 const STAGE_COLORS = {
   DORMANT: '#2a4050', AWAKENING: '#0088cc', FORGING: '#cc7700',
-  SOVEREIGN: '#00aa55', APEX: '#8844cc'
+  SOVEREIGN: '#00aa55', APEX: '#d63384', NEXUS: '#8b5cf6'
 };
-const STAGE_RANK = { DORMANT:0, AWAKENING:1, FORGING:2, SOVEREIGN:3, APEX:4 };
+const STAGE_RANK = { DORMANT:0, AWAKENING:1, FORGING:2, SOVEREIGN:3, APEX:4, NEXUS:5 };
 const STAGE_LABELS = {
   DORMANT: 'SUBSTRATE',
   AWAKENING: 'IGNITION',
   FORGING: 'SYNTHESIS',
   SOVEREIGN: 'SOVEREIGN',
-  APEX: 'APEX'
+  APEX: 'APEX',
+  NEXUS: 'NEXUS'
 };
 
 function applyStage(stage) {
@@ -2384,8 +2649,9 @@ async function loadAll() {
     // Evolution
     const evo = data.evolution || {};
     applyStage(evo.stage || 'DORMANT');
+    document.getElementById('level-val').textContent = evo.level || 1;
     document.getElementById('xp-val').textContent = evo.xp || 0;
-    document.getElementById('xp-fill').style.width = Math.min(100, (evo.xp || 0) / 50) + '%';
+    document.getElementById('xp-fill').style.width = Math.min(100, (evo.xp || 0) / 100) + '%';
     document.getElementById('total-missions').textContent = evo.total_missions || 0;
     document.getElementById('success-rate').textContent = Math.round((evo.success_rate || 0) * 100) + '%';
     document.getElementById('trait-count').textContent = (evo.active_traits || []).length;
@@ -2440,6 +2706,23 @@ async function loadAll() {
     const wdata = data.workers || {};
     document.getElementById('s-workers').textContent = wdata.active_count || 0;
     document.getElementById('workers-count-badge').textContent = (wdata.total || 0) + ' total';
+
+    // Sovereign & Self-Awareness (P5)
+    const sov = snap.sovereign || {};
+    const s_sov = document.getElementById('s-sovereign');
+    if (sov.health) {
+      const cog = sov.cognition || { state: 'UNKNOWN' };
+      s_sov.textContent = cog.state; // Use the cognitive state label
+      s_sov.style.color = cog.state === 'OPTIMAL' ? 'var(--green)' : (cog.state === 'CRITICAL' ? 'var(--red)' : 'var(--amber)');
+      
+      if (sov.health.critical > 0) {
+        pushEvent('CRITICAL', `Sovereign Alert: ${sov.health.critical} Critical events detected!`, new Date().toISOString());
+      }
+      
+      // Update badge if any
+      const label = document.querySelector('#sovereign-block .stat-label');
+      if (label) label.textContent = `Sovereign: ${sov.health.status}`;
+    }
     const awl = document.getElementById('active-workers-list');
     const active = wdata.active || [];
     awl.innerHTML = active.length ? active.map(renderWorkerRow).join('') :
@@ -2455,6 +2738,7 @@ async function loadAll() {
 
     setLastUpdated();
     updateNotifDots();
+    await updateBusterStatus();
   } catch (e) {
     pushEvent('ERROR', e.message, new Date().toISOString());
   }
@@ -2488,7 +2772,7 @@ async function syncEvolution() {
 }
 
 // ── Operator full ──────────────────────────────────────────
-const _RANK_LABELS = {E:'New Operator',D:'Initiate',C:'Controller',B:'Overseer',A:'Commander',S:'Sovereign Operator'};
+const _RANK_LABELS = {E:'New Operator',D:'Initiate',C:'Controller',B:'Overseer',A:'Commander',S:'Sovereign Operator',N:'Nexus Mind'};
 const _RANK_TO_TIER = {E:'DORMANT',D:'INITIATED',C:'ACTIVE',B:'EVOLVED',A:'ASCENDED',S:'ASCENDED'};
 const _ALL_TRAITS = ['Worker Control','Artifact Review','Evolution Sync','Mission Governance',
   'Module Activation','Multi-Worker Coordination','Full Governance','System-Level Reasoning',
@@ -3356,6 +3640,240 @@ async function loadAudit() {
   }
 }
 
+// ── Governance Panel ───────────────────────────────────────
+let _govAutoTimer = null;
+
+function toggleGovAutoRefresh() {
+  const lbl = document.getElementById('gov-auto-label');
+  if (_govAutoTimer) {
+    clearInterval(_govAutoTimer);
+    _govAutoTimer = null;
+    if (lbl) lbl.textContent = 'OFF';
+  } else {
+    refreshGovernance();
+    _govAutoTimer = setInterval(refreshGovernance, 5000);
+    if (lbl) lbl.textContent = 'ON';
+  }
+}
+
+async function refreshGovernance() {
+  document.getElementById('gov-last-updated').textContent = 'polling…';
+  try {
+    const r = await fetch(API + '/v1/governance/status');
+    const data = await r.json();
+    _applyGovernanceStatus(data.layers || {});
+    document.getElementById('gov-last-updated').textContent = 'updated ' + new Date().toLocaleTimeString();
+  } catch(e) {
+    // Endpoint may not exist yet — show unknown state gracefully
+    document.getElementById('gov-last-updated').textContent = 'offline (no API)';
+  }
+}
+
+function _applyGovernanceStatus(layers) {
+  const LAYER_KEYS = ['geometry','integrity','scoring','threshold','reversible','sovereign','shadow','boundaries','stabilization','exploration'];
+  for (const key of LAYER_KEYS) {
+    const info = layers[key] || {};
+    const passed = info.passed;
+    const statusEl = document.getElementById('gov-status-' + key);
+    const reasonEl = document.getElementById('gov-reason-' + key);
+    if (!statusEl) continue;
+    statusEl.className = 'gov-layer-status';
+    if (passed === true) {
+      statusEl.classList.add('gov-pass');
+      statusEl.textContent = 'PASS';
+    } else if (passed === false) {
+      statusEl.classList.add('gov-block');
+      statusEl.textContent = 'BLOCK';
+    } else {
+      statusEl.textContent = '—';
+    }
+    if (reasonEl) reasonEl.textContent = info.reason || '';
+  }
+}
+
+async function loadSovereignLog() {
+  const el = document.getElementById('gov-sovereign-log');
+  el.innerHTML = '<span style="color:var(--dim)">loading…</span>';
+  try {
+    const r = await fetch(API + '/v1/governance/sovereign/log');
+    const data = await r.json();
+    const entries = data.overrides || data.log || [];
+    if (!entries.length) { el.textContent = 'no overrides recorded'; return; }
+    el.innerHTML = entries.map(e => `
+      <div style="padding:6px 0;border-bottom:1px solid var(--border)">
+        <div style="display:flex;justify-content:space-between">
+          <span style="color:var(--accent);font-size:10px">${e.layer || '?'} ↗ priority ${e.priority || '?'}</span>
+          <span style="color:var(--dim);font-size:9px">${fmtDate(e.timestamp)}</span>
+        </div>
+        <div style="font-size:11px;color:var(--text);margin-top:2px">${e.action || ''} — ${e.reason || ''}</div>
+      </div>`).join('');
+  } catch(_) { el.textContent = 'sovereign log unavailable'; }
+}
+
+let _shadowLogRaw = [];
+async function loadShadowLog() {
+  const el = document.getElementById('gov-shadow-log');
+  el.innerHTML = '<span style="color:var(--dim)">loading…</span>';
+  try {
+    const r = await fetch(API + '/v1/governance/shadow/log');
+    const data = await r.json();
+    _shadowLogRaw = data.entries || data.log || [];
+    _renderShadowLog();
+  } catch(_) { el.textContent = 'shadow log unavailable'; }
+}
+
+function filterShadowLog() { _renderShadowLog(); }
+
+function _renderShadowLog() {
+  const el = document.getElementById('gov-shadow-log');
+  const filter = document.getElementById('shadow-opacity-filter')?.value || '';
+  const entries = filter ? _shadowLogRaw.filter(e => (e.opacity||'').toUpperCase() === filter) : _shadowLogRaw;
+  if (!entries.length) { el.textContent = 'no shadow entries' + (filter ? ' for ' + filter : ''); return; }
+  const OPACITY_COLOR = { TRANSPARENT: 'var(--green)', PARTIAL: 'var(--amber)', OPAQUE: 'var(--red)', SILENT: 'var(--dim)' };
+  el.innerHTML = entries.map(e => {
+    const col = OPACITY_COLOR[(e.opacity||'').toUpperCase()] || 'var(--text)';
+    return `<div style="padding:5px 0;border-bottom:1px solid var(--border)">
+      <div style="display:flex;gap:8px;align-items:center">
+        <span style="color:${col};font-size:9px;font-weight:700">${e.opacity||'?'}</span>
+        <span style="color:var(--text);font-size:11px">${e.action || e.type || ''}</span>
+        <span style="color:var(--dim);font-size:9px;margin-left:auto">${fmtDate(e.timestamp)}</span>
+      </div>
+      ${e.wrapped ? `<div style="font-size:9px;color:var(--dim);margin-top:2px">${e.wrapped}</div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+async function loadEmergencePatterns() {
+  const el = document.getElementById('gov-emergence-list');
+  el.innerHTML = '<span style="color:var(--dim)">loading…</span>';
+  try {
+    const r = await fetch(API + '/v1/governance/emergence');
+    const data = await r.json();
+    const patterns = data.patterns || [];
+    const counts = { sequence: 0, correlation: 0, anomaly: 0, cyclic: 0 };
+    patterns.forEach(p => { if (counts[p.type] !== undefined) counts[p.type]++; });
+    document.getElementById('em-sequence-count').textContent = counts.sequence;
+    document.getElementById('em-correlation-count').textContent = counts.correlation;
+    document.getElementById('em-anomaly-count').textContent = counts.anomaly;
+    document.getElementById('em-cyclic-count').textContent = counts.cyclic;
+    if (!patterns.length) { el.textContent = 'no patterns detected yet'; return; }
+    const TYPE_COLOR = { sequence: 'var(--accent)', correlation: 'var(--green)', anomaly: 'var(--amber)', cyclic: 'var(--purple)' };
+    el.innerHTML = patterns.map(p => {
+      const col = TYPE_COLOR[p.type] || 'var(--text)';
+      return `<div style="padding:5px 0;border-bottom:1px solid var(--border)">
+        <span style="color:${col};font-size:9px;text-transform:uppercase;font-weight:700">${p.type||'?'}</span>
+        <span style="font-size:11px;color:var(--text);margin-left:8px">${p.description || p.pattern || JSON.stringify(p).slice(0,100)}</span>
+        <span style="font-size:9px;color:var(--dim);float:right">conf ${((p.confidence||0)*100).toFixed(0)}%</span>
+      </div>`;
+    }).join('');
+  } catch(_) { el.textContent = 'emergence data unavailable'; }
+}
+
+async function loadUpliftStatus() {
+  try {
+    const r = await fetch(API + '/v1/governance/uplift');
+    const data = await r.json();
+    const maturity = data.maturity || {};
+    const capabilities = data.capabilities || {};
+    const sr = maturity.success_rate != null ? (maturity.success_rate * 100).toFixed(1) + '%' : '—';
+    document.getElementById('uplift-success-rate').textContent = sr;
+    document.getElementById('uplift-total-ops').textContent = maturity.total_operations ?? '—';
+    document.getElementById('uplift-rollbacks').textContent = maturity.rollback_count ?? '—';
+    const TIERS = ['basic', 'intermediate', 'advanced', 'experimental'];
+    for (const tier of TIERS) {
+      const badge = document.getElementById('tier-' + tier + '-badge');
+      const caps = document.getElementById('tier-' + tier + '-caps');
+      const tierCaps = (capabilities[tier] || []);
+      const all_caps_for_tier = tierCaps.length ? tierCaps.map(c => c.name || c).join(', ') : '—';
+      const tierUnlocked = tierCaps.some(c => c.unlocked === true) || (data.unlocked_tiers || []).includes(tier);
+      if (badge) {
+        badge.className = 'tier-badge ' + (tierUnlocked ? 'unlocked' : 'locked');
+        badge.textContent = tier.toUpperCase() + (tierUnlocked ? ' ✓' : ' 🔒');
+      }
+      if (caps) caps.textContent = all_caps_for_tier;
+    }
+async function loadUpliftStatus() {
+  try {
+    const r = await fetch(API + '/v1/governance/uplift');
+    const data = await r.json();
+    const maturity = data.maturity || {};
+    const capabilities = data.capabilities || {};
+    const sr = maturity.success_rate != null ? (maturity.success_rate * 100).toFixed(1) + '%' : '—';
+    document.getElementById('uplift-success-rate').textContent = sr;
+    document.getElementById('uplift-total-ops').textContent = maturity.total_operations ?? '—';
+    document.getElementById('uplift-rollbacks').textContent = maturity.rollback_count ?? '—';
+    const TIERS = ['basic', 'intermediate', 'advanced', 'experimental'];
+    for (const tier of TIERS) {
+      const badge = document.getElementById('tier-' + tier + '-badge');
+      const caps = document.getElementById('tier-' + tier + '-caps');
+      const tierCaps = (capabilities[tier] || []);
+      const all_caps_for_tier = tierCaps.length ? tierCaps.map(c => c.name || c).join(', ') : '—';
+      const tierUnlocked = tierCaps.some(c => c.unlocked === true) || (data.unlocked_tiers || []).includes(tier);
+      if (badge) {
+        badge.className = 'tier-badge ' + (tierUnlocked ? 'unlocked' : 'locked');
+        badge.textContent = tier.toUpperCase() + (tierUnlocked ? ' ✓' : ' 🔒');
+      }
+      if (caps) caps.textContent = all_caps_for_tier;
+    }
+  } catch(_) { /* uplift data unavailable */ }
+}
+
+async function loadGovernancePerf() {
+  const tbody = document.getElementById('gov-perf-tbody');
+  const alertsEl = document.getElementById('gov-perf-alerts');
+  if (!tbody) return;
+  try {
+    const r = await fetch(API + '/v1/governance/perf');
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const data = await r.json();
+    const layers = data.layers || {};
+    const pipeline = data.pipeline || {};
+    const alerts = data.alerts || [];
+
+    // Render per-layer rows
+    const LAYER_ORDER = [
+      'geometry','integrity','coherence','sovereignty','boundaries',
+      'dag','reversibility','thresholds','sovereign','shadow_channel',
+      'emergence','uplift','stabilization','exploration'
+    ];
+    const names = LAYER_ORDER.filter(n => layers[n]).concat(
+      Object.keys(layers).filter(n => !LAYER_ORDER.includes(n))
+    );
+
+    if (!names.length) {
+      tbody.innerHTML = '<tr><td colspan="6" style="padding:8px;color:var(--dim)">no layer data yet — run a gate() call first</td></tr>';
+    } else {
+      tbody.innerHTML = names.map(name => {
+        const d = layers[name];
+        const p50 = d.p50_ms != null ? d.p50_ms.toFixed(2) : '—';
+        const p95 = d.p95_ms != null ? d.p95_ms.toFixed(2) : '—';
+        const p99 = d.p99_ms != null ? d.p99_ms.toFixed(2) : '—';
+        const calls = d.total_calls ?? '—';
+        const br = d.block_rate != null ? (d.block_rate * 100).toFixed(1) + '%' : '—';
+        const slow = d.p99_ms > 50 ? 'color:#ff6b6b' : '';
+        return `<tr style="border-bottom:1px solid #222">
+          <td style="padding:4px 8px;font-weight:bold">${name}</td>
+          <td style="padding:4px 8px;text-align:right">${p50}</td>
+          <td style="padding:4px 8px;text-align:right">${p95}</td>
+          <td style="padding:4px 8px;text-align:right;${slow}">${p99}</td>
+          <td style="padding:4px 8px;text-align:right">${calls}</td>
+          <td style="padding:4px 8px;text-align:right">${br}</td>
+        </tr>`;
+      }).join('');
+    }
+
+    // Pipeline summary
+    document.getElementById('perf-pipeline-p50').textContent = pipeline.p50_ms != null ? pipeline.p50_ms.toFixed(2) : '—';
+    document.getElementById('perf-pipeline-p95').textContent = pipeline.p95_ms != null ? pipeline.p95_ms.toFixed(2) : '—';
+    document.getElementById('perf-pipeline-p99').textContent = pipeline.p99_ms != null ? pipeline.p99_ms.toFixed(2) : '—';
+
+    // Alerts
+    alertsEl.textContent = alerts.length ? '⚠ ' + alerts.join(' | ') : '';
+  } catch(e) {
+    tbody.innerHTML = `<tr><td colspan="6" style="padding:8px;color:#ff4444">perf data unavailable: ${e.message}</td></tr>`;
+  }
+}
+
 // ── Dependency Graph ───────────────────────────────────────
 async function loadDepTree() {
   const el = document.getElementById('deptree-container');
@@ -3493,7 +4011,107 @@ async function loadFullEvolution() {
   }
 }
 
+// ── Doctrine ──────────────────────────────────────────────────
+async function loadDoctrine() {
+  try {
+    const r = await fetch(API + '/v1/nexusmon/doctrine');
+    const data = await r.json();
+    document.getElementById('doc-status').textContent = data.has_doctrine ? 'ACTIVE' : 'MISSING';
+    document.getElementById('doc-status').style.color = data.has_doctrine ? '#00ffaa' : '#ff3355';
+    document.getElementById('doc-bytes').textContent = data.doctrine_bytes || '—';
+    document.getElementById('doc-sections').textContent = (data.sections || []).length;
+    const secEl = document.getElementById('doctrine-sections');
+    if (data.sections && data.sections.length) {
+      secEl.innerHTML = data.sections.map(s =>
+        `<div style="padding:4px 0;border-bottom:1px solid var(--border);color:#ff00ff">${s}</div>`
+      ).join('');
+    } else {
+      secEl.textContent = 'No doctrine loaded';
+    }
+    document.getElementById('doctrine-full').textContent = data.full_text || 'No doctrine file found.';
+    pushEvent('DOCTRINE', 'Doctrine loaded (' + (data.doctrine_bytes||0) + ' bytes)', new Date().toISOString());
+  } catch(e) {
+    document.getElementById('doc-status').textContent = 'ERROR';
+    document.getElementById('doc-status').style.color = '#ff3355';
+    pushEvent('ERROR', 'Doctrine load failed: ' + e.message, new Date().toISOString());
+  }
+}
+
+async function receiveDoctrine() {
+  const resultEl = document.getElementById('doctrine-receive-result');
+  resultEl.textContent = 'Transmitting doctrine to NEXUSMON...';
+  resultEl.style.color = 'var(--amber)';
+  try {
+    const r = await fetch(API + '/v1/nexusmon/doctrine/receive', { method: 'POST', headers: {'Content-Type':'application/json'}, body: '{}' });
+    const data = await r.json();
+    if (data.ok) {
+      resultEl.innerHTML = `<span style="color:#00ffaa">⚡ ${data.message}</span>`;
+      const moodEl = document.getElementById('doctrine-mood');
+      if (data.mentality) {
+        moodEl.innerHTML = `Mood: <span style="color:#ff00ff">${data.mentality.mood}</span> | ` +
+          (data.mentality.desires || []).slice(0,2).map(d => `<span style="color:var(--text)">${d}</span>`).join(' | ');
+      }
+      pushEvent('DOCTRINE', '⚡ BRIEFING RECEIVED — Identity substrate updated', new Date().toISOString());
+      // Refresh nerve panel
+      updateNerveStatus();
+    } else {
+      resultEl.innerHTML = `<span style="color:#ff3355">Failed: ${data.error}</span>`;
+    }
+  } catch(e) {
+    resultEl.innerHTML = `<span style="color:#ff3355">Transmission failed: ${e.message}</span>`;
+  }
+}
+
+async function updateBusterStatus() {
+  try {
+    const res = await fetch('/v1/nexusmon/organism/buster');
+    const data = await res.json();
+    if (data.ok && data.buster) {
+      document.getElementById('buster-active').style.display = data.buster.active ? 'block' : 'none';
+      document.getElementById('buster-energy').innerText = data.buster.plasma_energy + '%';
+      document.getElementById('buster-bar').style.width = data.buster.plasma_energy + '%';
+      document.getElementById('buster-defeated').innerText = data.buster.viruses_defeated;
+      
+      const log = document.getElementById('buster-log');
+      if (data.buster.viruses_defeated > 0) {
+        log.innerText = "System Cleaned " + data.buster.viruses_defeated + "x";
+        log.style.color = "#00ffaa";
+      } else {
+        log.innerText = "System Secure";
+        log.style.color = "var(--dim)";
+      }
+    }
+  } catch(e) {
+    console.error("Buster sync failed:", e);
+  }
+}
+
+async function updateNerveStatus() {
+  try {
+    const res = await fetch('/v1/nexusmon/organism/nerve');
+    const data = await res.json();
+    if (data.ok && data.substrate) {
+      document.getElementById('nerve-stress').innerText = data.substrate.stress.toFixed(1);
+      document.getElementById('nerve-synergy').innerText = data.substrate.synergy.toFixed(2);
+      const intensity = (data.substrate.synergy / 5.0) * 100;
+      document.getElementById('nerve-bar').style.width = Math.min(100, intensity) + '%';
+    }
+  } catch(e) {
+    console.error("Nerve sync failed:", e);
+  }
+}
+
 // ── Polling ────────────────────────────────────────────────
+function loadAll() {
+  updateStatus();
+  updateEvolution();
+  updateCognition();
+  updateVault();
+  updateMissions();
+  updateBusterStatus();
+  updateNerveStatus();
+}
+
 loadAll();
 _wireDialPreview();
 loadSignalDials();

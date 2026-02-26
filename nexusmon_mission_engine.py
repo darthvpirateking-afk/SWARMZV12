@@ -211,8 +211,62 @@ def _build_tasks(raw_tasks: List[Dict], mission_id: str) -> tuple[List[Dict], Li
     return tasks, dag_edges
 
 
+def _detect_cycles(tasks: List[Dict]) -> List[List[str]]:
+    """
+    Detect cycles in task dependency graph using Tarjan's SCC algorithm.
+    
+    Returns list of strongly connected components (SCCs) with size > 1.
+    Each SCC represents a cycle.
+    """
+    graph: Dict[str, List[str]] = {t["id"]: t.get("dependencies", []) for t in tasks}
+    
+    index_counter = [0]
+    stack: List[str] = []
+    indices: Dict[str, int] = {}
+    lowlinks: Dict[str, int] = {}
+    on_stack: Dict[str, bool] = {}
+    sccs: List[List[str]] = []
+    
+    def strongconnect(node: str):
+        indices[node] = index_counter[0]
+        lowlinks[node] = index_counter[0]
+        index_counter[0] += 1
+        stack.append(node)
+        on_stack[node] = True
+        
+        for dep in graph.get(node, []):
+            if dep not in graph:
+                continue  # Skip external dependencies
+            if dep not in indices:
+                strongconnect(dep)
+                lowlinks[node] = min(lowlinks[node], lowlinks[dep])
+            elif on_stack.get(dep, False):
+                lowlinks[node] = min(lowlinks[node], indices[dep])
+        
+        if lowlinks[node] == indices[node]:
+            component: List[str] = []
+            while True:
+                w = stack.pop()
+                on_stack[w] = False
+                component.append(w)
+                if w == node:
+                    break
+            if len(component) > 1:
+                sccs.append(component)
+    
+    for node in graph:
+        if node not in indices:
+            strongconnect(node)
+    
+    return sccs
+
+
 def _topo_order(tasks: List[Dict]) -> List[str]:
-    """Return task IDs in topological execution order (Kahn's algorithm)."""
+    """
+    Return task IDs in topological execution order (Kahn's algorithm).
+    
+    Raises ValueError if cyclic dependencies detected.
+    """
     id_to_task = {t["id"]: t for t in tasks}
     in_degree: Dict[str, int] = {t["id"]: 0 for t in tasks}
     children: Dict[str, List[str]] = {t["id"]: [] for t in tasks}
@@ -233,9 +287,13 @@ def _topo_order(tasks: List[Dict]) -> List[str]:
             if in_degree[child] == 0:
                 queue.append(child)
 
-    # If not all tasks included (cycle), append remaining in original order
-    remaining = [t["id"] for t in tasks if t["id"] not in order]
-    return order + remaining
+    # Detect cycles: if not all tasks processed, there's a cycle
+    if len(order) != len(tasks):
+        cycles = _detect_cycles(tasks)
+        cycle_desc = "; ".join([" → ".join(c) for c in cycles])
+        raise ValueError(f"Cyclic dependencies detected in mission DAG: {cycle_desc}")
+    
+    return order
 
 
 # ══════════════════════════════════════════════════════════════

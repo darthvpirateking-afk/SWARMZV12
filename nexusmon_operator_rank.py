@@ -18,7 +18,7 @@ from pydantic import BaseModel
 DATA_DIR = os.environ.get("DATA_DIR", "data")
 RANK_FILE = os.path.join(DATA_DIR, "operator_rank.json")
 
-RANKS = ["E", "D", "C", "B", "A", "S"]
+RANKS = ["E", "D", "C", "B", "A", "S", "N"]
 
 RANK_THRESHOLDS = {
     "E": 0,
@@ -27,6 +27,7 @@ RANK_THRESHOLDS = {
     "B": 400,
     "A": 800,
     "S": 1500,
+    "N": 3000, # NEXUS
 }
 
 # XP awarded per action (called internally by other subsystems)
@@ -37,6 +38,7 @@ XP_TABLE = {
     "complete_mission_B": 100,
     "complete_mission_A": 200,
     "complete_mission_S": 500,
+    "complete_mission_N": 1000, # NEXUS XP
     "approve_artifact": 5,
     "reject_artifact": 5,
     "log_prediction": 5,
@@ -55,6 +57,7 @@ RANK_TRAITS = {
     "B": ["Module Activation", "Multi-Worker Coordination"],
     "A": ["Full Governance", "System-Level Reasoning"],
     "S": ["Organism Override", "Evolution Tier Unlock"],
+    "N": ["Singularity Logic", "Omnipresence", "Self-Healing"], # Rank N traits
 }
 
 # Permission matrix: minimum rank required for each action
@@ -65,6 +68,7 @@ PERMISSION_MATRIX = {
     "run_mission_B": "B",
     "run_mission_A": "A",
     "run_mission_S": "S",
+    "run_mission_N": "N",
     "approve_artifact": "D",
     "reject_artifact": "D",
     "approve_mission": "C",
@@ -72,6 +76,7 @@ PERMISSION_MATRIX = {
     "activate_module": "B",
     "evolution_sync": "C",
     "full_organism_control": "S",
+    "singularity_override": "N", # NEXUS command
 }
 
 
@@ -189,6 +194,10 @@ def award_xp(action: str, detail: str = "") -> dict:
         result["new_traits"] = RANK_TRAITS.get(new_rank, [])
     return result
 
+def get_current_rank() -> str:
+    """Quick helper to get just the rank code (E, D, C, B, A, S, N)."""
+    state = _load_state()
+    return rank_from_xp(state.get("xp", 0))
 
 def get_operator_rank_state() -> dict:
     """Full operator rank state for API responses."""

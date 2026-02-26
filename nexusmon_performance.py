@@ -117,6 +117,37 @@ async def cockpit_snapshot():
     except Exception as e:
         result["cognition"] = {"error": str(e)}
 
+    # Sovereign Telemetry & Self-Awareness (P4.2 + P5)
+    try:
+        from core.telemetry import telemetry
+        from core.capability_flags import registry
+        from core.reflection import reflector
+        
+        logs = telemetry.get_recent_logs()
+        critical_count = len([l for l in logs if l.get("level") == "CRITICAL"])
+        error_count = len([l for l in logs if l.get("level") == "ERROR"])
+        
+        # Trigger self-reflection
+        cog_state = reflector.reflect()
+        cog_summary = reflector.get_cognition_summary()
+        
+        result["sovereign"] = {
+            "ok": True,
+            "recent_logs": logs[-15:],  # Last 15 for dashboard
+            "health": {
+                "critical": critical_count,
+                "errors": error_count,
+                "status": "HARDENED" if critical_count == 0 else "WARNING"
+            },
+            "cognition": cog_summary, # SELF-AWARENESS (P5)
+            "capabilities": {
+                "enabled": [cid for cid, cap in registry._capabilities.items() if registry.check(cid)],
+                "disabled": [cid for cid, cap in registry._capabilities.items() if not registry.check(cid)]
+            }
+        }
+    except Exception as e:
+        result["sovereign"] = {"error": str(e)}
+
     return result
 
 

@@ -1,0 +1,22 @@
+{
+  "_comment": "Integrity Layer (P0.2) — Architectural constraint rules. Edit to tune what is forbidden.",
+  "allow_cyclic_dependencies": false,
+  "allow_cross_domain_mutation": false,
+  "allow_stub_exposure": false,
+  "max_dependency_depth": 10,
+  "forbidden_patterns": [
+    "pass  # TODO",
+    "NotImplementedError",
+    "stub implementation"
+  ],
+  "trusted_interface_domains": [
+    "api",
+    "control_plane",
+    "core"
+  ],
+  "mutation_types_blocked_without_interface": [
+    "write",
+    "mutate",
+    "delete"
+  ]
+}

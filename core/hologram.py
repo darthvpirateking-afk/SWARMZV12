@@ -1,23 +1,20 @@
-# Reverting commit abfe8993bb8353c7ec5a015e0fd299957cceb2c3
+"""Hologram evolution ladder logic.
 
-# This commit undoes the changes made in the specified commit. Adjusting the file to its previous state.
-XP = count(verified trials). Evolutions unlock at XP thresholds +
-minimum survival-data quality. Unlocks are deterministic (no vibes).
+XP = count(verified trials). Evolutions unlock at XP thresholds plus
+minimum survival-data quality. Unlocks are deterministic.
 
 Levels:
-  LV0 EGG        0â€“4 verified trials
-  LV1 ROOKIE     â‰¥5 verified trials
-  LV2 CHAMPION   â‰¥20 verified trials, â‰¥5 per metric
-  LV3 ULTIMATE   â‰¥60 verified trials, â‰¥20 in same context_tag
-  LV4 MEGA       â‰¥150 verified trials, â‰¥10 drift events
-  LV5 BURST      manual toggle; requires rollback available
+    LV0 EGG        0-4 verified trials
+    LV1 ROOKIE     >=5 verified trials
+    LV2 CHAMPION   >=20 verified trials, >=5 per metric
+    LV3 ULTIMATE   >=60 verified trials, >=20 in same context_tag
+    LV4 MEGA       >=150 verified trials, >=10 drift events
+    LV5 BURST      manual toggle; requires rollback available
 
-Power Currencies (all computed, never manual):
-  STABILITY     % survived in last 30 days
-  NOVELTY       % novel action_templates in last 30 days
-  REVERSIBILITY % trials with valid rollback path
-
-Add-only module.  No existing files modified.
+Power currencies (all computed, never manual):
+    STABILITY     % survived in last 30 days
+    NOVELTY       % novel action_templates in last 30 days
+    REVERSIBILITY % trials with valid rollback path
 """
 
 import json

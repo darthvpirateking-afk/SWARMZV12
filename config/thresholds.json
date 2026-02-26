@@ -1,0 +1,57 @@
+{
+  "quarantine": {
+    "metric": "success_rate",
+    "operator": "lt",
+    "value": 0.3,
+    "min_samples": 10,
+    "description": "QUARANTINE triggered when success rate < 30% (10+ missions)"
+  },
+  "rank_e_to_d": {
+    "metric": "missions_completed",
+    "operator": "gte",
+    "value": 1,
+    "description": "Rank E \u2192 D after 1 mission"
+  },
+  "rank_d_to_c": {
+    "metric": "missions_completed",
+    "operator": "gte",
+    "value": 10,
+    "description": "Rank D \u2192 C after 10 missions"
+  },
+  "rank_c_to_b": {
+    "metric": "missions_completed",
+    "operator": "gte",
+    "value": 50,
+    "description": "Rank C \u2192 B after 50 missions"
+  },
+  "rank_b_to_a": {
+    "metric": "missions_completed",
+    "operator": "gte",
+    "value": 100,
+    "description": "Rank B \u2192 A after 100 missions"
+  },
+  "rank_a_to_s": {
+    "metric": "missions_completed",
+    "operator": "gte",
+    "value": 200,
+    "description": "Rank A \u2192 S after 200 missions"
+  },
+  "trial_required": {
+    "metric": "trial_count",
+    "operator": "eq",
+    "value": 0,
+    "description": "Trial gate check"
+  },
+  "budget_cap": {
+    "metric": "budget_remaining",
+    "operator": "gt",
+    "value": 0,
+    "description": "Budget must remain positive"
+  },
+  "rate_limit": {
+    "metric": "requests_per_minute",
+    "operator": "lte",
+    "value": 120,
+    "description": "Rate limit 120 req/min"
+  }
+}

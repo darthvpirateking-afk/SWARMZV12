@@ -20,6 +20,7 @@ PROMPT_DIR = Path(__file__).resolve().parent / "prompt_templates"
 
 from core.model_router import call as model_call, is_offline, record_call
 from core.companion import load_memory, _build_context_block, _audit_model_call
+from core.reflection import reflector
 
 # lazy write_jsonl
 try:
@@ -68,11 +69,44 @@ def solve(mission: Dict[str, Any]) -> Dict[str, Any]:
     spec = mission.get("spec", {})
     now = datetime.now(timezone.utc).isoformat()
 
+    # Domain Detection: Is this a Nexusmon-class mission? (P4.1)
+    is_nexusmon = "sovereign" in intent.lower() or "nexusmon" in intent.lower()
+    
     # Ensure output dir
     action_dir = PREPARED_DIR / mission_id
     action_dir.mkdir(parents=True, exist_ok=True)
 
-    # â”€â”€ Offline stub â”€â”€
+    # Reflective Context: Self-Awareness (P5)
+    cog_state = reflector.reflect()
+    cog_summary = reflector.get_cognition_summary()
+
+    # ── NEXUSMON Decomposer Pass ───────────────────────────────────
+    if is_nexusmon:
+        from core.nexusmon.decomposer import NexusmonDecomposer
+        decomposer = NexusmonDecomposer()
+        tasks = decomposer.decompose(mission_id, intent, spec)
+        
+        # Write task DAG to prepared_actions
+        task_data = {
+            "mission_id": mission_id,
+            "tasks": tasks,
+            "generated_at": now,
+            "style": "dag_v2",
+            "self_awareness": cog_summary
+        }
+        (action_dir / "plan_dag.json").write_text(json.dumps(task_data, indent=2), encoding="utf-8")
+        
+        # Return plan with DAG pointer
+        return {
+            "ok": True,
+            "plan": f"Nexusmon Hardened Plan generated with {len(tasks)} tasks. (Self-Awareness: {cog_state.value})",
+            "prepared_actions_dir": str(action_dir),
+            "source": "nexusmon_decomposer",
+            "type": "dag_v2",
+            "tasks": tasks
+        }
+
+    # ── Offline stub ──
     if is_offline():
         plan = _offline_stub(intent, spec)
         _write_plan(action_dir, plan, "offline_stub")
@@ -107,6 +141,8 @@ def solve(mission: Dict[str, Any]) -> Dict[str, Any]:
     context = _build_context_block(mem)
 
     user_msg = (
+        f"SELF-AWARENESS: {cog_state.value}\n"
+        f"SYSTEM METRICS: {json.dumps(cog_summary['metrics'])}\n\n"
         f"MISSION ID: {mission_id}\n"
         f"INTENT: {intent}\n"
         f"SPEC: {json.dumps(spec)}\n\n"

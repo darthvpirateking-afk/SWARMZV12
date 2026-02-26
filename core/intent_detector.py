@@ -19,10 +19,7 @@ class IntentDetector:
                 "intent": "unknown",
                 "confidence": 0,
                 "rationale": "Error occurred",
-            }  # Fail-open
-            return {"intent": "unknown", "confidence": 0, "rationale": "Default fail-open"}
-        except Exception:
-            return {"intent": "unknown", "confidence": 0, "rationale": "Error occurred"}  # Fail-open
+            }
 
     def summarize_intent(self):
         return {

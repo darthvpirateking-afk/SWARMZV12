@@ -19,6 +19,11 @@
       "endpoint": "http://localhost:11434",
       "apiKeyEnv": ""
     },
+    "gemini": {
+      "model": "gemini-2.0-flash",
+      "apiKeyEnv": "GEMINI_API_KEY",
+      "endpoint": "https://generativelanguage.googleapis.com/v1beta"
+    },
     "timeoutMs": 120000,
     "maxTokens": 150
   },

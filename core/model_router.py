@@ -303,6 +303,137 @@ def _call_ollama(
 # â”€â”€ Public interface â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 
+
+# -- Google Gemini (generateContent REST API) --
+# Add-ons: Google Search grounding, function/tool calling, long context
+
+
+def _call_gemini(
+    messages: list,
+    system: str,
+    model: str,
+    api_key: str,
+    endpoint: str,
+    timeout_ms: int,
+    max_tokens: int,
+    tools: Optional[List[Dict]] = None,
+    grounding: bool = False,
+) -> dict:
+    """
+    Call Gemini generateContent.
+
+    Add-ons:
+      grounding=True   -- enables Google Search grounding (live web results)
+      tools=[...]      -- function declarations for tool/function calling
+                          e.g. [{"name":"get_weather","description":"...","parameters":{...}}]
+    """
+    with trace_llm_call(
+        provider="gemini",
+        model=model,
+        operation="generateContent",
+        max_tokens=max_tokens,
+        message_count=len(messages) + (1 if system else 0),
+        has_system_prompt=bool(system),
+    ) as span:
+        url = f"{endpoint}/models/{model}:generateContent?key={api_key}"
+
+        # Convert messages: Gemini uses "model" instead of "assistant"
+        contents = []
+        for m in messages:
+            role = "model" if m.get("role") == "assistant" else "user"
+            contents.append({"role": role, "parts": [{"text": m.get("content", "")}]})
+
+        body_dict: Dict[str, Any] = {
+            "contents": contents,
+            "generationConfig": {
+                "maxOutputTokens": max_tokens,
+                "temperature": 1.0,
+            },
+        }
+        if system:
+            body_dict["systemInstruction"] = {"parts": [{"text": system}]}
+
+        # -- Add-on: Google Search grounding --
+        # Injects live web search results as context before generating
+        gemini_tools = []
+        if grounding:
+            gemini_tools.append({"google_search": {}})
+
+        # -- Add-on: Function/tool calling --
+        # Allows Gemini to call back into your code with structured args
+        if tools:
+            gemini_tools.append({"function_declarations": tools})
+
+        if gemini_tools:
+            body_dict["tools"] = gemini_tools
+
+        body = json.dumps(body_dict).encode("utf-8")
+        req = urllib.request.Request(url, data=body, method="POST")
+        req.add_header("Content-Type", "application/json")
+
+        t0 = time.monotonic()
+        try:
+            timeout_s = max(timeout_ms / 1000, 5)
+            resp = urllib.request.urlopen(req, timeout=timeout_s)
+            data = json.loads(resp.read().decode("utf-8"))
+            latency = int((time.monotonic() - t0) * 1000)
+
+            text = ""
+            tool_calls = []
+            candidates = data.get("candidates", [])
+            if candidates:
+                parts = candidates[0].get("content", {}).get("parts", [])
+                for p in parts:
+                    if "text" in p:
+                        text += p["text"]
+                    # Capture function call responses
+                    if "functionCall" in p:
+                        tool_calls.append(p["functionCall"])
+
+            # Append grounding sources to text if present
+            grounding_meta = data.get("groundingMetadata", {})
+            sources = grounding_meta.get("groundingChunks", [])
+            if sources:
+                refs = []
+                for s in sources:
+                    web = s.get("web", {})
+                    if web.get("uri"):
+                        refs.append(f"[{web.get('title', web['uri'])}]({web['uri']})")
+                if refs:
+                    text += "\n\n**Sources:** " + " | ".join(refs)
+
+            usage_meta = data.get("usageMetadata", {})
+            usage = {
+                "input": usage_meta.get("promptTokenCount", 0),
+                "output": usage_meta.get("candidatesTokenCount", 0),
+            }
+
+            if span:
+                span.set_attribute("llm.usage.input_tokens", usage["input"])
+                span.set_attribute("llm.usage.output_tokens", usage["output"])
+                span.set_attribute("llm.latency_ms", latency)
+                if grounding:
+                    span.set_attribute("gemini.grounding", True)
+                if tool_calls:
+                    span.set_attribute("gemini.tool_calls", len(tool_calls))
+
+            result = _ok_response(text, usage, "gemini", model, latency)
+            if tool_calls:
+                result["tool_calls"] = tool_calls
+            return result
+
+        except urllib.error.HTTPError as e:
+            latency = int((time.monotonic() - t0) * 1000)
+            detail = ""
+            try:
+                detail = e.read().decode("utf-8")[:500]
+            except Exception:
+                pass
+            return _err_response(f"Gemini HTTP {e.code}: {detail}", "gemini", model, latency)
+        except Exception as e:
+            latency = int((time.monotonic() - t0) * 1000)
+            return _err_response(f"Gemini error: {str(e)}", "gemini", model, latency)
+
 def call(
     messages: List[Dict[str, str]],
     system: str = "",
@@ -310,20 +441,25 @@ def call(
     model: Optional[str] = None,
     max_tokens: Optional[int] = None,
     timeout_ms: Optional[int] = None,
+    tools: Optional[List[Dict]] = None,
+    grounding: Optional[bool] = None,
 ) -> Dict[str, Any]:
     """
     Route a chat request to the configured provider.
 
     Args:
-        messages: List of {"role":"user"|"assistant", "content":"..."}.
-        system:   System prompt text.
-        provider: Override provider ("anthropic"|"openai"); else from config.
-        model:    Override model name; else from config.
+        messages:   List of {"role":"user"|"assistant", "content":"..."}.
+        system:     System prompt text.
+        provider:   Override provider; else from config.
+        model:      Override model name; else from config.
         max_tokens: Override; else from config (default 1500).
         timeout_ms: Override; else from config (default 60000).
+        tools:      [Gemini] List of function declarations for tool calling.
+        grounding:  [Gemini] Enable Google Search grounding (True/False).
 
     Returns:
         Normalised dict: {ok, text, usage, provider, model, latencyMs, error}
+        For Gemini tool calls: also includes "tool_calls" list.
     """
     if is_offline():
         return _err_response("OFFLINE_MODE active â€” model calls disabled")
@@ -356,6 +492,12 @@ def call(
     elif prov == "ollama":
         endpoint = prov_cfg.get("endpoint", "http://localhost:11434")
         return _call_ollama(messages, system, mdl, endpoint, tout, mtok)
+    elif prov == "gemini":
+        endpoint = prov_cfg.get("endpoint", "https://generativelanguage.googleapis.com/v1beta")
+        use_grounding = grounding if grounding is not None else prov_cfg.get("grounding", False)
+        fn_tools = tools if tools is not None else prov_cfg.get("tools", None)
+        return _call_gemini(messages, system, mdl, api_key, endpoint, tout, mtok,
+                            tools=fn_tools, grounding=use_grounding)
     else:
         return _err_response(f"Unknown provider: {prov}", prov, mdl, 0)
 
