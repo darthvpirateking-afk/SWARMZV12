@@ -220,12 +220,12 @@ jobs:
           import os
           from pathlib import Path
 
-            required_result_files = [
-              Path("artifacts/autofind_agent_result.json"),
-            ]
-            optional_result_files = [
-              Path("artifacts/security_detector_result.json"),
-            ]
+          required_result_files = [
+            Path("artifacts/autofind_agent_result.json"),
+          ]
+          optional_result_files = [
+            Path("artifacts/security_detector_result.json"),
+          ]
 
           failures = []
           statuses = {}
@@ -373,9 +373,8 @@ jobs:
 
       - name: Run ruff
         run: |
-          ruff check core swarmz_runtime addons api server.py swarmz_server.py run_server.py tools/find_import_cycles.py test_galileo.py
+          ruff check core swarmz_runtime addons api server_legacy_overlay.py swarmz_server.py run_server.py tools/find_import_cycles.py test_galileo.py
 
-      - name: Run mypy
       - name: Run mypy (non-blocking)
         continue-on-error: true
         run: |
@@ -580,7 +579,6 @@ jobs:
           fi
 
           echo "Commit/PR subject: $MSG"
-          if ! echo "$MSG" | grep -Eq '^(feat|fix|build|chore|docs|perf|refactor|test|ci)(\(.+\))?: .+'; then
           if ! echo "$MSG" | grep -Eq '^(feat|fix|build|chore|docs|refactor|test|ci|perf|style|revert)(\([[:alnum:]_.-]+\))?: .+$|^Merge (pull request|branch) .+$'; then
             echo "Commit message policy failed."
             echo "Expected Conventional Commit style, e.g. 'fix(api): handle null value'."

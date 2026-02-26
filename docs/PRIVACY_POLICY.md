@@ -1,9 +1,9 @@
-# Privacy Policy
+﻿# Privacy Policy
 
 Last updated: 2026-02-20
 
 ## Overview
-SWARMZ provides operator-facing runtime controls. This policy describes what data may be processed by the app wrapper and connected services.
+NEXUSMON provides operator-facing runtime controls. This policy describes what data may be processed by the app wrapper and connected services.
 
 ## Data We Process
 - Runtime interaction data (commands, status requests, action responses)
@@ -12,7 +12,7 @@ SWARMZ provides operator-facing runtime controls. This policy describes what dat
 
 ## Data Sources
 - Data entered by the operator in app screens
-- Data returned from SWARMZ backend APIs
+- Data returned from NEXUSMON backend APIs
 - Device/platform diagnostics from Android/iOS runtime
 
 ## How Data Is Used
@@ -36,4 +36,5 @@ You may request deletion or correction of your personal data where applicable.
 The app is not intended for children under 13.
 
 ## Contact
-For privacy requests, contact: support@swarmz.local
+For privacy requests, contact: support@nexusmon.local
+

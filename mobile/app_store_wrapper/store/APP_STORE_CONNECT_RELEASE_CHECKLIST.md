@@ -1,8 +1,8 @@
-# Apple App Store Release Checklist (SWARMZ)
+﻿# Apple App Store Release Checklist (NEXUSMON)
 
 ## 1) App identity
-- [ ] Final bundle identifier confirmed (example: `com.swarmz.app`)
-- [ ] App name finalized: `SWARMZ`
+- [ ] Final bundle identifier confirmed (example: `com.nexusmon.app`)
+- [ ] App name finalized: `NEXUSMON`
 - [ ] Version/build numbers set in Xcode
 
 ## 2) Legal + policy
@@ -26,3 +26,4 @@
 - [ ] App Review notes added (pairing flow, account details if needed)
 - [ ] Submit for review
 - [ ] Post-release crash monitoring enabled
+

@@ -1,6 +1,6 @@
-# SWARMZ Runtime Guide
+﻿# NEXUSMON Runtime Guide
 
-A practical reference for running, configuring, and extending the SWARMZ runtime.
+A practical reference for running, configuring, and extending the NEXUSMON runtime.
 
 ## Quick Start
 
@@ -9,7 +9,7 @@ A practical reference for running, configuring, and extending the SWARMZ runtime
 pip install -r requirements.txt
 
 # Start the server
-python run_swarmz.py
+python run_nexusmon.py
 ```
 
 Server listens on `http://127.0.0.1:8012` by default.
@@ -31,16 +31,16 @@ python tools/runtime_check.py --json
 
 ## Core Modules
 
-### Engine (`swarmz_runtime/core/engine.py`)
+### Engine (`nexusmon_runtime/core/engine.py`)
 
 Central execution engine. Provides:
-- `SwarmzEngine` — mission lifecycle management, sovereign decision API.
+- `NexusmonEngine` — mission lifecycle management, sovereign decision API.
 
 ### Orchestrator (`kernel_runtime/orchestrator.py`)
 
 Coordinates missions across the engine, emitting telemetry and audit events.
 
-### Session (`swarmz_runtime/session/`)
+### Session (`nexusmon_runtime/session/`)
 
 Manages per-operator sessions:
 
@@ -52,7 +52,7 @@ Manages per-operator sessions:
 
 `SessionStore` is lazy-initialized on first use to avoid import-time file I/O.
 
-### Bootstrap (`swarmz/backend/runtime/bootstrap.py`)
+### Bootstrap (`nexusmon/backend/runtime/bootstrap.py`)
 
 Initializes the database and runtime prerequisites. Run once before starting the server:
 
@@ -167,3 +167,5 @@ The runtime tracks repeated event patterns:
 - **Plugins**: Add new capabilities in `plugins/`.
 - **Addons**: Extend guardrails and observables in `addons/`.
 - **Custom metrics**: Register via `tests/test_trials.py::test_register_custom_metric` pattern.
+
+

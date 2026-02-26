@@ -1,6 +1,6 @@
-# SWARMZ Safety Architecture
+﻿# NEXUSMON Safety Architecture
 
-This document describes the layered safety system built into the SWARMZ runtime. Each layer addresses a distinct class of risk, and together they form a defense-in-depth architecture.
+This document describes the layered safety system built into the NEXUSMON runtime. Each layer addresses a distinct class of risk, and together they form a defense-in-depth architecture.
 
 ## Overview
 
@@ -20,7 +20,7 @@ This document describes the layered safety system built into the SWARMZ runtime.
 
 ## Layer 1 — Operator Charter
 
-**Location**: `swarmz_runtime/core/operator_charter.py`
+**Location**: `nexusmon_runtime/core/operator_charter.py`
 
 The Operator Charter is the top-level governance contract. It defines:
 
@@ -74,7 +74,7 @@ Lightweight JSON schema validation with no external dependencies. All incoming A
 
 ## Layer 4 — System Primitives
 
-**Location**: `swarmz_runtime/core/system_primitives.py`
+**Location**: `nexusmon_runtime/core/system_primitives.py`
 
 Provides two key safety utilities:
 
@@ -100,13 +100,13 @@ Classification is performed by `classify_error(code, message, details)`. Every c
 
 ## Layer 5 — Audit / Decision Ledger
 
-**Location**: `swarmz_runtime/decision_ledger/decision_ledger.py`
+**Location**: `nexusmon_runtime/decision_ledger/decision_ledger.py`
 
 An append-only, thread-safe ledger that records every significant decision. Key properties:
 
 - Uses `threading.Lock` for concurrent write safety.
 - Persists entries as JSONL to `data/audit_decisions.jsonl`.
-- Provides `read_jsonl` / `append_jsonl` helpers (`swarmz_runtime/storage/jsonl_utils.py`).
+- Provides `read_jsonl` / `append_jsonl` helpers (`nexusmon_runtime/storage/jsonl_utils.py`).
 - Entries are never modified or deleted — only appended.
 
 **Threat addressed**: Audit gaps, non-repudiation failures, inability to replay history.
@@ -149,6 +149,7 @@ Incoming request
 ## Extending the Safety System
 
 - Add new guardrails in `addons/guardrails.py` by implementing a check function and registering it in the guardrails configuration.
-- Extend the error taxonomy in `swarmz_runtime/core/system_primitives.py` by adding entries to `ERROR_TAXONOMY`.
-- Add new charter sections in `swarmz_runtime/core/operator_charter.py` following the existing section pattern.
+- Extend the error taxonomy in `nexusmon_runtime/core/system_primitives.py` by adding entries to `ERROR_TAXONOMY`.
+- Add new charter sections in `nexusmon_runtime/core/operator_charter.py` following the existing section pattern.
 - All extensions should have corresponding test coverage in `tests/`.
+

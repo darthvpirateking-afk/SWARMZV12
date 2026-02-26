@@ -1,407 +1,810 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-  <meta name="theme-color" content="#030508">
-  <title>MASTER SWARMZ — Avatar</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-  <style>
-    /* ====== RESET & GLOBALS ====== */
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    :root{
-      --bg:#030508;--surface:#0a0e18;--border:#1a2040;
-      --cyan:#00e5ff;--purple:#b388ff;--magenta:#ff40ff;
-      --gold:#ffd740;--green:#69f0ae;--red:#ff5252;
-      --text:#e0e6f0;--text-dim:#6a7a9a;
-      --glow-cyan:0 0 30px rgba(0,229,255,.4);
-      --glow-purple:0 0 30px rgba(179,136,255,.4);
-    }
-    html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:14px}
-
-    /* ====== STARFIELD ====== */
-    .starfield{position:fixed;inset:0;z-index:0;overflow:hidden}
-    .star{position:absolute;border-radius:50%;background:#fff;animation:twinkle var(--dur) ease-in-out infinite alternate}
-    @keyframes twinkle{0%{opacity:.1;transform:scale(.5)}100%{opacity:.8;transform:scale(1.2)}}
-
-    /* ====== SCANLINES ====== */
-    .scanlines{position:fixed;inset:0;z-index:1;pointer-events:none;
-      background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,229,255,.02) 2px,rgba(0,229,255,.02) 4px)}
-
-    /* ====== LAYOUT ====== */
-    .app{position:relative;z-index:2;display:flex;flex-direction:column;height:100vh}
-    header{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-bottom:1px solid var(--border);backdrop-filter:blur(12px);background:rgba(10,14,24,.8)}
-    .logo{font-family:'Orbitron',sans-serif;font-size:16px;font-weight:800;letter-spacing:3px;color:var(--cyan);text-shadow:var(--glow-cyan)}
-    .phase-badge{font-family:'Orbitron',sans-serif;font-size:11px;padding:4px 12px;border-radius:20px;background:rgba(0,229,255,.1);border:1px solid var(--cyan);color:var(--cyan);letter-spacing:2px}
-
-    .main{flex:1;display:flex;overflow:hidden}
-
-    /* ====== LEFT: AVATAR SCENE ====== */
-    .avatar-scene{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;min-width:0}
-
-    /* Holographic figure */
-    .holo-figure{position:relative;width:280px;height:420px;display:flex;align-items:center;justify-content:center}
-
-    /* Base glow platform */
-    .holo-platform{position:absolute;bottom:0;width:200px;height:12px;border-radius:50%;
-      background:radial-gradient(ellipse,var(--cyan),transparent 70%);
-      box-shadow:0 0 60px 20px rgba(0,229,255,.15);animation:platform-pulse 3s ease-in-out infinite}
-    @keyframes platform-pulse{0%,100%{opacity:.6;transform:scaleX(1)}50%{opacity:1;transform:scaleX(1.1)}}
-
-    /* Body silhouette */
-    .holo-body{position:relative;width:160px;height:380px;display:flex;flex-direction:column;align-items:center}
-
-    /* Head */
-    .holo-head{width:80px;height:80px;border-radius:50%;position:relative;
-      background:radial-gradient(circle at 40% 35%,rgba(0,229,255,.25),rgba(179,136,255,.15),transparent);
-      border:2px solid rgba(0,229,255,.3);
-      box-shadow:var(--glow-cyan),inset 0 0 20px rgba(0,229,255,.1);
-      animation:head-float 4s ease-in-out infinite}
-    @keyframes head-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-
-    /* Eyes */
-    .holo-eyes{position:absolute;top:28px;left:50%;transform:translateX(-50%);display:flex;gap:18px}
-    .holo-eye{width:12px;height:12px;border-radius:50%;background:var(--cyan);
-      box-shadow:0 0 12px var(--cyan),0 0 30px rgba(0,229,255,.5);animation:eye-glow 3s ease-in-out infinite}
-    .holo-eye.right{animation-delay:.15s}
-    @keyframes eye-glow{0%,100%{opacity:.7;transform:scale(1)}50%{opacity:1;transform:scale(1.15)}}
-    /* Blink */
-    .holo-eye.blink{animation:blink .2s ease-in-out}
-    @keyframes blink{0%,100%{transform:scaleY(1)}50%{transform:scaleY(.1)}}
-
-    /* Expression mouth */
-    .holo-mouth{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);width:20px;height:3px;
-      border-radius:2px;background:rgba(0,229,255,.4);transition:all .3s}
-    .holo-mouth.speaking{animation:speak .4s ease-in-out infinite;background:var(--cyan)}
-    @keyframes speak{0%,100%{height:3px;width:20px;border-radius:2px}50%{height:10px;width:24px;border-radius:50%}}
-    .holo-mouth.happy{width:24px;height:12px;border-radius:0 0 12px 12px;background:rgba(0,229,255,.5)}
-
-    /* Neck */
-    .holo-neck{width:20px;height:16px;background:linear-gradient(180deg,rgba(0,229,255,.2),rgba(179,136,255,.1))}
-
-    /* Torso */
-    .holo-torso{width:100px;height:120px;position:relative;
-      background:linear-gradient(180deg,rgba(0,229,255,.12),rgba(179,136,255,.08));
-      clip-path:polygon(20% 0%,80% 0%,95% 100%,5% 100%);
-      border:1px solid rgba(0,229,255,.15)}
-    .holo-torso::before{content:'';position:absolute;top:20px;left:50%;transform:translateX(-50%);
-      width:40px;height:40px;border-radius:50%;
-      background:radial-gradient(circle,rgba(0,229,255,.3),transparent);
-      box-shadow:0 0 20px rgba(0,229,255,.2);animation:core-pulse 2s ease-in-out infinite}
-    @keyframes core-pulse{0%,100%{opacity:.5;transform:translateX(-50%) scale(.9)}50%{opacity:1;transform:translateX(-50%) scale(1.1)}}
-
-    /* Arms */
-    .holo-arms{position:absolute;top:100px;width:160px;height:100px;display:flex;justify-content:space-between}
-    .holo-arm{width:18px;height:90px;
-      background:linear-gradient(180deg,rgba(0,229,255,.15),rgba(179,136,255,.05));
-      border:1px solid rgba(0,229,255,.1);border-radius:8px}
-    .holo-arm.left{transform:rotate(8deg);transform-origin:top center}
-    .holo-arm.right{transform:rotate(-8deg);transform-origin:top center}
-
-    /* Legs */
-    .holo-legs{display:flex;gap:16px;margin-top:4px}
-    .holo-leg{width:22px;height:80px;
-      background:linear-gradient(180deg,rgba(179,136,255,.1),rgba(0,229,255,.05));
-      border:1px solid rgba(0,229,255,.08);border-radius:0 0 6px 6px}
-
-    /* Holographic noise overlay */
-    .holo-noise{position:absolute;inset:0;pointer-events:none;
-      background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,229,255,.015) 3px,rgba(0,229,255,.015) 4px);
-      animation:noise-scroll 8s linear infinite}
-    @keyframes noise-scroll{from{background-position:0 0}to{background-position:0 400px}}
-
-    /* Floating particles around figure */
-    .holo-particles{position:absolute;inset:-40px;pointer-events:none}
-    .particle{position:absolute;width:3px;height:3px;border-radius:50%;background:var(--cyan);opacity:0;animation:particle-drift var(--dur) var(--delay) ease-in-out infinite}
-    @keyframes particle-drift{0%{opacity:0;transform:translateY(0) scale(.5)}30%{opacity:.7}70%{opacity:.5}100%{opacity:0;transform:translateY(-80px) scale(0)}}
-
-    /* Status bar under avatar */
-    .avatar-status{margin-top:24px;text-align:center}
-    .avatar-name{font-family:'Orbitron',sans-serif;font-size:20px;font-weight:800;letter-spacing:4px;color:var(--cyan);text-shadow:var(--glow-cyan)}
-    .avatar-title{font-size:11px;color:var(--text-dim);letter-spacing:2px;margin-top:4px}
-    .status-chips{display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap}
-    .s-chip{font-size:10px;padding:3px 10px;border-radius:12px;border:1px solid var(--border);color:var(--text-dim);letter-spacing:1px}
-    .s-chip.online{border-color:var(--green);color:var(--green)}
-    .s-chip.sovereign{border-color:var(--gold);color:var(--gold)}
-
-    /* ====== RIGHT: CHAT ====== */
-    .chat-panel{width:380px;display:flex;flex-direction:column;border-left:1px solid var(--border);background:rgba(10,14,24,.6);backdrop-filter:blur(8px)}
-    .chat-header{padding:16px;border-bottom:1px solid var(--border);font-family:'Orbitron',sans-serif;font-size:12px;letter-spacing:2px;color:var(--purple)}
-    .chat-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;scroll-behavior:smooth}
-    .chat-messages::-webkit-scrollbar{width:4px}
-    .chat-messages::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
-
-    .msg{max-width:90%;padding:10px 14px;border-radius:12px;font-size:13px;line-height:1.5;animation:msg-in .3s ease-out}
-    @keyframes msg-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-    .msg.ai{align-self:flex-start;background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.15);color:var(--text)}
-    .msg.user{align-self:flex-end;background:rgba(179,136,255,.1);border:1px solid rgba(179,136,255,.2);color:var(--text)}
-    .msg .sender{font-size:10px;font-weight:600;letter-spacing:1px;margin-bottom:4px;opacity:.6}
-    .msg.ai .sender{color:var(--cyan)}
-    .msg.user .sender{color:var(--purple)}
-    .msg .text{white-space:pre-wrap;word-break:break-word}
-    
-    /* SWARMZ Custom Text Styling */
-    .msg.ai .text{font-family:'Orbitron',monospace;font-weight:500;letter-spacing:0.5px;color:var(--cyan);text-shadow:0 0 2px rgba(0,229,255,0.3)}
-    .msg.ai .text .typing-cursor{color:var(--cyan);animation:cursor-blink 1s infinite;font-weight:300}
-
-    .typing-indicator{align-self:flex-start;display:flex;gap:4px;padding:12px 16px}
-    .typing-indicator span{width:6px;height:6px;border-radius:50%;background:var(--cyan);opacity:.3;animation:typing-bounce 1.2s ease-in-out infinite}
-    .typing-indicator span:nth-child(2){animation-delay:.2s}
-    .typing-indicator span:nth-child(3){animation-delay:.4s}
-    @keyframes typing-bounce{0%,100%{opacity:.3;transform:translateY(0)}50%{opacity:1;transform:translateY(-6px)}}
-    @keyframes cursor-blink{0%,50%{opacity:1}51%,100%{opacity:0}}
-
-    .chat-input-area{padding:12px;border-top:1px solid var(--border);display:flex;gap:8px}
-    .chat-input{flex:1;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-family:inherit;font-size:13px;outline:none;transition:border-color .2s}
-    .chat-input:focus{border-color:var(--cyan)}
-    .chat-input::placeholder{color:var(--text-dim)}
-    .send-btn{background:rgba(0,229,255,.15);border:1px solid var(--cyan);border-radius:8px;padding:10px 16px;color:var(--cyan);font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:1px;cursor:pointer;transition:all .2s}
-    .send-btn:hover{background:rgba(0,229,255,.25);box-shadow:var(--glow-cyan)}
-    .send-btn:disabled{opacity:.3;cursor:not-allowed}
-
-    /* ====== MOBILE ====== */
-    @media(max-width:768px){
-      .main{flex-direction:column}
-      .avatar-scene{flex:0 0 50vh}
-      .chat-panel{width:100%;flex:1;border-left:none;border-top:1px solid var(--border)}
-      .holo-figure{transform:scale(.7)}
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>NEXUSMON</title>
+<script src="https://cdn.jsdelivr.net/npm/elevenlabs@latest/elevenlabs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+<script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: linear-gradient(135deg, #0a0015 0%, #050510 50%, #0a0015 100%);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  min-height: 100vh; font-family: 'Courier New', monospace; color: #00f0ff;
+  overflow: hidden; position: relative;
+}
+canvas { position: fixed; top: 0; left: 0; z-index: 0; }
+.container {
+  position: relative; z-index: 2; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; min-height: 100vh; width: 100%;
+  transition: all 1.8s cubic-bezier(0.23, 1, 0.32, 1);
+}
+.mech-stage {
+  position: relative; width: 380px; height: 480px; perspective: 1200px;
+  transition: transform 1.8s;
+}
+.robot-svg {
+  position: relative; z-index: 3; width: 100%; height: 100%;
+  filter: drop-shadow(0 0 40px var(--glow));
+  transform: scale(var(--scale));
+  transform-box: fill-box; transform-origin: 50% 55%; transform-style: preserve-3d;
+  transition: transform 1.8s cubic-bezier(0.23, 1, 0.32, 1), filter 1.8s;
+}
+.digivolve {
+  animation: digiEvolve 2.0s forwards;
+}
+@keyframes digiEvolve {
+  0% { opacity: 1; transform: scale(var(--scale)) rotateX(0deg); }
+  15% { opacity: 0.3; transform: scale(calc(var(--scale) * 1.4)) rotateX(20deg); }
+  35% { opacity: 0.7; transform: scale(calc(var(--scale) * 1.1)) rotateX(-15deg); }
+  55% { opacity: 0.5; transform: scale(calc(var(--scale) * 1.3)) rotateX(12deg); }
+  100% { opacity: 1; transform: scale(var(--scale)) rotateX(0deg); }
+}
+.scanlines {
+  position: fixed; inset: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0, 240, 255, 0.02) 3px, rgba(0, 240, 255, 0.02) 6px);
+  pointer-events: none; z-index: 20; animation: scanRoll 12s linear infinite; opacity: 0.2;
+}
+@keyframes scanRoll { 0% { transform: translateY(0); } 100% { transform: translateY(-6px); } }
+.matrix {
+  position: fixed; inset: 0; pointer-events: none; z-index: 5;
+  overflow: hidden; opacity: 0.08;
+}
+.matrix-col {
+  position: absolute; top: -100%; font-size: 12px; font-family: monospace;
+  color: var(--glow); white-space: pre; animation: matrixFall linear infinite;
+}
+@keyframes matrixFall { 0% { transform: translateY(-100vh); } 100% { transform: translateY(200vh); } }
+.particles {
+  position: absolute; inset: 0; pointer-events: none; z-index: 4; overflow: hidden;
+}
+.particle {
+  position: absolute; width: 3px; height: 3px; background: var(--glow);
+  border-radius: 50%; opacity: 0; animation: particleRise 4s linear infinite;
+}
+@keyframes particleRise {
+  0% { opacity: 0; transform: translateY(0) scale(0.3); }
+  25% { opacity: 0.8; }
+  100% { opacity: 0; transform: translateY(-200px) scale(1.2); }
+}
+.status-bar {
+  margin-top: 20px; text-align: center; padding: 0 20px;
+}
+#nexus-reply {
+  margin-top: 12px; padding: 12px 16px;
+  background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(0, 240, 255, 0.2);
+  border-radius: 6px; min-height: 40px; max-width: 520px; width: 90vw;
+  color: #00ffaa; font-size: 13px; letter-spacing: 0.3px; line-height: 1.5;
+  text-shadow: 0 0 6px #00ffaa44; word-break: break-word;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+#nexus-reply:not(:empty) {
+  border-color: rgba(0, 240, 255, 0.4);
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.15);
+}
+.name {
+  font-size: 28px; font-weight: 900; letter-spacing: 6px;
+  text-shadow: 0 0 20px var(--glow);
+}
+.tier {
+  font-size: 11px; letter-spacing: 6px; opacity: 0.7;
+  margin: 6px 0 10px; text-transform: uppercase; font-weight: 600;
+}
+.rank-badge {
+  display: inline-flex; align-items: center; gap: 12px;
+  background: rgba(0, 240, 255, 0.08); border: 1px solid rgba(0, 240, 255, 0.15);
+  padding: 10px 24px; border-radius: 6px; transition: box-shadow 0.3s;
+}
+.rank-badge:hover {
+  border-color: rgba(0, 240, 255, 0.3);
+  box-shadow: 0 0 16px rgba(0, 240, 255, 0.1);
+}
+.rank-letter {
+  font-size: 32px; font-weight: 900; text-shadow: 0 0 16px var(--glow);
+  color: var(--glow);
+}
+.xp {
+  font-size: 12px; color: #7aaac0; letter-spacing: 0.5px;
+}
+#mission-status {
+  margin-top: 12px; font-size: 12px; opacity: 0.8;
+  text-shadow: 0 0 8px rgba(0, 240, 255, 0.2);
+  display: flex; align-items: center; gap: 10px;
+  flex-wrap: wrap; justify-content: center;
+}
+#progress-container {
+  width: 180px; height: 6px; background: rgba(255, 255, 255, 0.06);
+  border-radius: 3px; overflow: hidden; transition: box-shadow 0.3s;
+}
+#progress-bar {
+  height: 100%; width: 0%; background: linear-gradient(90deg, #00ffaa, #00cc88);
+  transition: width 1.0s ease; box-shadow: 0 0 8px #00ffaa;
+}
+#mission-flash {
+  color: #ffcc33; opacity: 0; transition: opacity 0.6s;
+  font-weight: 600; letter-spacing: 1px;
+}
+/* tier CSS vars */
+.tier-DORMANT   { --glow: #445566; --eye: #667788; --scale: 0.6; --wings: 0; --hood: 0; }
+.tier-INITIATED { --glow: #00ccff; --eye: #00eeff; --scale: 1; --wings: 0; --hood: 0; }
+.tier-ACTIVE    { --glow: #00ffaa; --eye: #00ffcc; --scale: 1.15; --wings: 0.4; --hood: 0; }
+.tier-EVOLVED   { --glow: #aa44ff; --eye: #cc77ff; --scale: 1.35; --wings: 0.8; --hood: 0.25; }
+.tier-ASCENDED  { --glow: #ffcc33; --eye: #ffee66; --scale: 1.6; --wings: 1; --hood: 1; }
+#wings { transition: opacity 1.8s; opacity: var(--wings); }
+#hood { transition: opacity 1.8s; opacity: var(--hood); }
+.audio-panel {
+  position: fixed; bottom: 20px; left: 20px; z-index: 101;
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 12px; border-radius: 6px;
+  background: rgba(0, 0, 0, 0.7); border: 1px solid rgba(0, 240, 255, 0.2);
+  font-size: 11px; letter-spacing: 0.6px;
+}
+.audio-panel input[type="range"] {
+  width: 100px; accent-color: #00ccff;
+}
+.audio-panel button {
+  padding: 5px 8px; background: #1a1a25; color: #00ccff;
+  border: 1px solid rgba(0, 204, 255, 0.25); border-radius: 4px;
+  cursor: pointer; font-family: 'Courier New', monospace; font-size: 10px;
+  transition: border-color 0.2s, background 0.2s;
+}
+.audio-panel button:hover {
+  border-color: rgba(0, 204, 255, 0.5);
+  background: rgba(0, 240, 255, 0.08);
+}
+/* Button styling */
+#ar-toggle, #mic-toggle {
+  font-family: 'Courier New', monospace; font-weight: 600;
+  letter-spacing: 1px; transition: all 0.2s;
+  border-radius: 6px; cursor: pointer; z-index: 100;
+}
+#ar-toggle {
+  position: fixed; bottom: 80px; right: 20px; padding: 10px 16px;
+  background: rgba(170, 68, 255, 0.15); color: #aa44ff;
+  border: 1px solid rgba(170, 68, 255, 0.3);
+}
+#ar-toggle:hover {
+  background: rgba(170, 68, 255, 0.25);
+  border-color: rgba(170, 68, 255, 0.6);
+}
+#mic-toggle {
+  position: fixed; bottom: 20px; right: 20px; padding: 10px 16px;
+  background: rgba(0, 0, 0, 0.6); color: #ff8888;
+  border: 1px solid rgba(255, 68, 68, 0.3);
+}
+#mic-toggle:hover {
+  border-color: rgba(255, 68, 68, 0.6);
+  background: rgba(255, 68, 68, 0.08);
+}
+</style>
 </head>
 <body>
+<canvas id="bg"></canvas>
+<div class="matrix" id="matrix"></div>
+<div class="particles" id="particles"></div>
+<div id="root" class="container tier-INITIATED">
+  <div class="mech-stage">
+    <svg class="robot-svg" id="svg" viewBox="0 0 380 480" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="bodyG" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#1a1a25"/>
+          <stop offset="100%" stop-color="#0a0a14"/>
+        </linearGradient>
+        <linearGradient id="eyeG" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#00eeff"/>
+          <stop offset="100%" stop-color="#0066ff"/>
+        </linearGradient>
+        <filter id="glowF">
+          <feGaussianBlur stdDeviation="16" result="b"/>
+          <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
 
-<div class="starfield" id="starfield"></div>
-<div class="scanlines"></div>
+      <!-- Robot body centred in viewBox (scale handled by CSS on .robot-svg) -->
+      <g id="body" transform="translate(190 240)">
+        <!-- Helmet -->
+        <path d="M-90 -140 Q-90 -170 -40 -180 Q10 -170 10 -140 L15 -80 Q15 -60 -10 -45 L-90 -45 Q-115 -60 -115 -80 Z" fill="url(#bodyG)" stroke="#2a2a3a" stroke-width="10"/>
+        <!-- Ear horns -->
+        <polygon points="-100,-120 -120,-160 -95,-130" fill="#1a1a25" stroke="#2a2a3a" stroke-width="6"/>
+        <polygon points="20,-120 40,-160 15,-130" fill="#1a1a25" stroke="#2a2a3a" stroke-width="6"/>
+        <!-- Eyes -->
+        <circle cx="-60" cy="-120" r="22" fill="#0a0a14"/>
+        <circle cx="20"  cy="-120" r="22" fill="#0a0a14"/>
+        <circle cx="-60" cy="-120" r="14" fill="url(#eyeG)" filter="url(#glowF)" id="eyeL"/>
+        <circle cx="20"  cy="-120" r="14" fill="url(#eyeG)" filter="url(#glowF)" id="eyeR"/>
+        <circle cx="-60" cy="-120" r="6"  fill="#fff"/>
+        <circle cx="20"  cy="-120" r="6"  fill="#fff"/>
+        <!-- Chest plate -->
+        <path d="M-85 -40 Q-85 20 -60 50 L60 50 Q85 20 85 -40 Q85 -70 0 -80 Q-85 -70 -85 -40" fill="url(#bodyG)" stroke="#2a2a3a" stroke-width="12"/>
+        <!-- Core orb -->
+        <circle cx="0" cy="0" r="32" fill="#0a0a14"/>
+        <circle cx="0" cy="0" r="22" fill="#00ddff" filter="url(#glowF)" id="core"/>
+        <circle cx="0" cy="0" r="8"  fill="#fff"/>
+        <!-- Arms -->
+        <rect x="-110" y="-50" width="30" height="130" rx="10" fill="url(#bodyG)" stroke="#2a2a3a" stroke-width="8"/>
+        <rect x="80"   y="-50" width="30" height="130" rx="10" fill="url(#bodyG)" stroke="#2a2a3a" stroke-width="8"/>
+        <!-- Legs -->
+        <rect x="-60" y="60" width="50" height="110" rx="8" fill="url(#bodyG)" stroke="#2a2a3a" stroke-width="8"/>
+        <rect x="10"  y="60" width="50" height="110" rx="8" fill="url(#bodyG)" stroke="#2a2a3a" stroke-width="8"/>
+      </g>
 
-<div class="app">
-  <header>
-    <div class="logo">MASTER SWARMZ</div>
-    <div style="display:flex;gap:8px;align-items:center">
-      <span class="phase-badge" id="phaseBadge">LOADING</span>
-      <a href="/hologram" style="font-size:11px;color:var(--text-dim);text-decoration:none;letter-spacing:1px" title="Evolution Orb">ORB ↗</a>
-      <a href="/ui" style="font-size:11px;color:var(--text-dim);text-decoration:none;letter-spacing:1px" title="Control Console">CONSOLE ↗</a>
+      <!-- Energy wings — opacity via CSS #wings rule above -->
+      <g id="wings" filter="url(#glowF)" transform="translate(190 240)">
+        <path d="M-100 -20 Q-180 -100 -220 -180 Q-140 -80 -90 -30" fill="none" stroke="#00ddff" stroke-width="24" opacity="0.75"/>
+        <path d="M100  -20 Q180  -100 220  -180 Q140  -80 90  -30"  fill="none" stroke="#00ddff" stroke-width="24" opacity="0.75"/>
+      </g>
+
+      <!-- Mega hood overlay — opacity via CSS #hood rule above -->
+      <path id="hood" transform="translate(100 100)"
+        d="M-90 -140 Q-90 -170 -40 -180 Q10 -170 10 -140 L15 -80 Q15 -60 -10 -45 L-90 -45 Q-115 -60 -115 -80 Z"
+        fill="#0a0a14" stroke="#2a2a3a" stroke-width="10"/>
+    </svg>
+  </div>
+
+  <div class="status-bar">
+    <div class="name" id="name">NEXUSMON</div>
+    <div class="tier" id="tier">INITIATED</div>
+    <div class="rank-badge">
+      <span class="rank-letter" id="rank">E</span>
+      <span class="xp" id="xp">0 XP</span>
     </div>
-  </header>
-
-  <div class="main">
-    <!-- AVATAR -->
-    <div class="avatar-scene">
-      <div class="holo-figure">
-        <div class="holo-particles" id="particles"></div>
-        <div class="holo-noise"></div>
-        <div class="holo-body">
-          <div class="holo-head" id="head">
-            <div class="holo-eyes">
-              <div class="holo-eye left" id="eyeL"></div>
-              <div class="holo-eye right" id="eyeR"></div>
-            </div>
-            <div class="holo-mouth" id="mouth"></div>
-          </div>
-          <div class="holo-neck"></div>
-          <div class="holo-torso">
-            <div class="holo-arms">
-              <div class="holo-arm left"></div>
-              <div class="holo-arm right"></div>
-            </div>
-          </div>
-          <div class="holo-legs">
-            <div class="holo-leg left"></div>
-            <div class="holo-leg right"></div>
-          </div>
-        </div>
-        <div class="holo-platform"></div>
+    <div id="mission-status">
+      <span id="active-missions">0 active missions</span>
+      <div id="progress-container">
+        <div id="progress-bar"></div>
       </div>
-
-      <div class="avatar-status">
-        <div class="avatar-name">MASTER SWARMZ</div>
-        <div class="avatar-title" id="avatarTitle">OPERATOR-SOVEREIGN AI COMPANION</div>
-        <div class="status-chips">
-          <span class="s-chip online" id="chipOnline">● ONLINE</span>
-          <span class="s-chip sovereign" id="chipPhase">SOVEREIGN</span>
-          <span class="s-chip" id="chipMissions">81 MISSIONS</span>
-          <span class="s-chip" id="chipPolicy">ACTIVE</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- CHAT -->
-    <div class="chat-panel">
-      <div class="chat-header">COMPANION CHANNEL</div>
-      <div class="chat-messages" id="messages">
-        <!-- Initial greeting will be added via JavaScript with typewriter effect -->
-      </div>
-      <div class="chat-input-area">
-        <input class="chat-input" id="chatInput" type="text" placeholder="Talk to SWARMZ..." autocomplete="off">
-        <button class="send-btn" id="sendBtn">SEND</button>
-      </div>
+      <span id="mission-flash"></span>
     </div>
   </div>
+  <div id="nexus-reply"></div>
 </div>
+<a-scene id="ar-scene" embedded arjs="trackingMethod: best;" style="display:none;position:fixed;inset:0;z-index:9999">
+  <a-marker preset="hiro">
+    <a-box position="0 0.5 0" material="color:#00ccff;opacity:0.8"></a-box>
+  </a-marker>
+  <a-entity camera></a-entity>
+</a-scene>
+<button id="ar-toggle" style="position:fixed;bottom:80px;right:20px;padding:12px 20px;background:#aa44ff;color:#fff;border:none;border-radius:8px;cursor:pointer;z-index:100;font-family:'Courier New',monospace;font-weight:bold;letter-spacing:1px">
+  AR: OFF
+</button>
+<button id="mic-toggle" style="position:fixed;bottom:20px;right:20px;padding:12px 20px;background:#330000;border:1px solid #ff4444;color:#ff8888;border-radius:8px;cursor:pointer;z-index:100;font-family:'Courier New',monospace;font-weight:bold;letter-spacing:1px">
+  MIC: OFF
+</button>
+<div class="audio-panel" aria-label="Audio controls">
+  <label for="audio-master">VOL</label>
+  <input id="audio-master" type="range" min="0" max="1" step="0.01" value="0.35">
+  <button id="audio-mute" type="button">MUTE</button>
+</div>
+<div class="scanlines"></div>
 
 <script>
-/* ====== STARFIELD ====== */
-(function(){
-  const sf = document.getElementById('starfield');
-  for(let i=0;i<80;i++){
-    const s = document.createElement('div');
-    s.className = 'star';
-    s.style.cssText = `left:${Math.random()*100}%;top:${Math.random()*100}%;width:${1+Math.random()*2}px;height:${1+Math.random()*2}px;--dur:${2+Math.random()*4}s;animation-delay:${Math.random()*4}s`;
-    sf.appendChild(s);
+// ── Ultimate Web Audio Manager (additive only) ───────────
+const NEXUS_AUDIO = (() => {
+  const Ctx = window.AudioContext || window.webkitAudioContext;
+  const ctx = Ctx ? new Ctx() : null;
+  const sounds = {};
+  let masterGain = null;
+  let unlocked = false;
+  let coreHumSource = null;
+  let coreHumGain = null;
+
+  const urls = {
+    coreHum: 'https://assets.codepen.io/605876/low-hum.mp3',
+    metallicClick: 'https://assets.codepen.io/605876/metallic-click.mp3',
+    energySurge: 'https://assets.codepen.io/605876/energy-surge.mp3',
+    glitchStutter: 'https://assets.codepen.io/605876/glitch-stutter.mp3',
+    rankUpChime: 'https://assets.codepen.io/605876/rank-up-chime.mp3'
+  };
+
+  if (ctx) {
+    masterGain = ctx.createGain();
+    masterGain.gain.value = 0.35;
+    masterGain.connect(ctx.destination);
   }
-})();
 
-/* ====== PARTICLES ====== */
-(function(){
-  const pc = document.getElementById('particles');
-  for(let i=0;i<20;i++){
-    const p = document.createElement('div');
-    p.className = 'particle';
-    p.style.cssText = `left:${10+Math.random()*80}%;bottom:${Math.random()*60}%;--dur:${3+Math.random()*5}s;--delay:${Math.random()*4}s`;
-    pc.appendChild(p);
+  function randomize(base, spread) {
+    return base + ((Math.random() * 2 - 1) * spread);
   }
-})();
 
-/* ====== EYE BLINK ====== */
-(function(){
-  const eyeL = document.getElementById('eyeL');
-  const eyeR = document.getElementById('eyeR');
-  function blink(){
-    eyeL.classList.add('blink'); eyeR.classList.add('blink');
-    setTimeout(()=>{ eyeL.classList.remove('blink'); eyeR.classList.remove('blink'); }, 200);
-  }
-  setInterval(()=>{ if(Math.random()<.3) blink(); }, 3000);
-})();
-
-/* ====== STATUS POLLING ====== */
-async function fetchStatus(){
-  try{
-    const r = await fetch('/v1/runtime/status');
-    const d = await r.json();
-    document.getElementById('phaseBadge').textContent = d.phase||'UNKNOWN';
-    document.getElementById('chipPhase').textContent = d.phase||'?';
-    document.getElementById('chipMissions').textContent = (d.total_missions||0)+' MISSIONS';
-    document.getElementById('chipPolicy').textContent = (d.policy||'active').toUpperCase();
-  }catch(e){
-    document.getElementById('phaseBadge').textContent = 'OFFLINE';
-    document.getElementById('chipOnline').textContent = '○ OFFLINE';
-    document.getElementById('chipOnline').classList.remove('online');
-  }
-}
-fetchStatus(); setInterval(fetchStatus, 10000);
-
-/* ====== CHAT ====== */
-const messagesEl = document.getElementById('messages');
-const chatInput = document.getElementById('chatInput');
-const sendBtn = document.getElementById('sendBtn');
-const mouth = document.getElementById('mouth');
-
-function addMsg(text, sender, useTypewriter = false){
-  const div = document.createElement('div');
-  div.className = 'msg '+(sender==='ai'?'ai':'user');
-  div.innerHTML = `<div class="sender">${sender==='ai'?'MASTER SWARMZ':'YOU'}</div><div class="text"></div>`;
-  const textEl = div.querySelector('.text');
-  
-  messagesEl.appendChild(div);
-  messagesEl.scrollTop = messagesEl.scrollHeight;
-  
-  if(useTypewriter && sender === 'ai'){
-    typewriterEffect(textEl, text);
-  } else {
-    textEl.textContent = text;
-  }
-}
-
-function typewriterEffect(element, text, speed = 45){
-  element.innerHTML = '';
-  let i = 0;
-  
-  // Start mouth speaking animation
-  mouth.classList.add('speaking');
-  
-  function typeChar(){
-    if(i < text.length){
-      if(text.charAt(i) === '\n'){
-        element.appendChild(document.createElement('br'));
-      } else {
-        element.appendChild(document.createTextNode(text.charAt(i)));
+  async function preloadSounds() {
+    if (!ctx) return;
+    await Promise.all(Object.entries(urls).map(async ([name, url]) => {
+      try {
+        const res = await fetch(url);
+        const arr = await res.arrayBuffer();
+        sounds[name] = await ctx.decodeAudioData(arr);
+      } catch (e) {
+        console.warn(`[NEXUS_AUDIO] Failed to load ${name}`, e);
       }
-      i++;
-      messagesEl.scrollTop = messagesEl.scrollHeight;
-      
-      // Variable speed: slower for punctuation, faster for regular chars
-      let nextDelay = speed;
-      if(text.charAt(i-1) === '.' || text.charAt(i-1) === '!' || text.charAt(i-1) === '?'){
-        nextDelay = speed * 4; // Pause after sentences
-      } else if(text.charAt(i-1) === ',' || text.charAt(i-1) === ';'){
-        nextDelay = speed * 2; // Pause after commas
-      } else if(text.charAt(i-1) === ' '){
-        nextDelay = speed * 0.7; // Slightly faster for spaces
-      }
-      
-      setTimeout(typeChar, nextDelay);
-    } else {
-      // Typing finished
-      mouth.classList.remove('speaking');
-      mouth.classList.add('happy');
-      setTimeout(() => mouth.classList.remove('happy'), 2000);
+    }));
+  }
+
+  function play(name, volume = 0.6, rate = 1.0, when = 0) {
+    if (!ctx || !sounds[name] || !masterGain) return;
+    const src = ctx.createBufferSource();
+    src.buffer = sounds[name];
+    src.playbackRate.value = Math.max(0.25, randomize(rate, 0.06));
+    const gain = ctx.createGain();
+    gain.gain.value = Math.max(0, Math.min(1, randomize(volume, 0.04)));
+    src.connect(gain);
+    gain.connect(masterGain);
+    src.start(ctx.currentTime + Math.max(0, when));
+    return src;
+  }
+
+  async function unlockAndStart() {
+    if (!ctx) return;
+    if (ctx.state !== 'running') {
+      try { await ctx.resume(); } catch (_) {}
+    }
+    unlocked = true;
+    startCorePulseLoop();
+  }
+
+  function startCorePulseLoop() {
+    if (!ctx || !sounds.coreHum || coreHumSource || !masterGain) return;
+    coreHumSource = ctx.createBufferSource();
+    coreHumSource.buffer = sounds.coreHum;
+    coreHumSource.loop = true;
+    coreHumGain = ctx.createGain();
+    coreHumGain.gain.value = 0.09;
+    coreHumSource.playbackRate.value = 0.92;
+    coreHumSource.connect(coreHumGain);
+    coreHumGain.connect(masterGain);
+    coreHumSource.start(0);
+  }
+
+  function setCorePulse(coreRadius) {
+    if (!coreHumGain || !coreHumSource) return;
+    const normalized = Math.max(0, Math.min(1, (coreRadius - 18) / 10));
+    coreHumGain.gain.value = 0.08 + (normalized * 0.05);
+    coreHumSource.playbackRate.value = 0.9 + (normalized * 0.2);
+  }
+
+  function onReplyStart() {
+    play('glitchStutter', 0.26, 1.08, 0);
+    play('metallicClick', 0.2, 0.96, 0.03);
+    play('metallicClick', 0.18, 1.08, 0.11);
+  }
+
+  function onTierUp(tier) {
+    play('energySurge', 0.42, 0.92);
+    play('rankUpChime', 0.5, 1.0, 0.04);
+    if (tier === 'ACTIVE' || tier === 'EVOLVED') {
+      play('energySurge', 0.3, 1.08, 0.16);
     }
   }
-  
-  typeChar();
-}
 
-function showTyping(){
-  const t = document.createElement('div');
-  t.className = 'typing-indicator'; t.id = 'typing';
-  t.innerHTML = '<span></span><span></span><span></span>';
-  messagesEl.appendChild(t);
-  messagesEl.scrollTop = messagesEl.scrollHeight;
-  mouth.classList.add('speaking');
-}
-function hideTyping(){
-  const t = document.getElementById('typing');
-  if(t) t.remove();
-  mouth.classList.remove('speaking');
-  mouth.classList.add('happy');
-  setTimeout(()=> mouth.classList.remove('happy'), 2000);
-}
-
-async function sendMessage(){
-  const text = chatInput.value.trim();
-  if(!text) return;
-  chatInput.value = '';
-  sendBtn.disabled = true;
-  addMsg(text, 'user');
-
-  showTyping();
-  try{
-    const r = await fetch('/v1/companion/message', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({text})
-    });
-    const d = await r.json();
-    hideTyping();
-    addMsg(d.reply || d.error || 'No response.', 'ai', true);
-  }catch(e){
-    hideTyping();
-    addMsg('Connection lost. Please try again.', 'ai');
+  function onShadowSummon() {
+    play('energySurge', 0.35, 0.85);
+    play('glitchStutter', 0.25, 1.12, 0.05);
+    play('metallicClick', 0.22, 0.92, 0.16);
   }
-  sendBtn.disabled = false;
-  chatInput.focus();
+
+  function onKeypress() {
+    play('metallicClick', 0.12, randomize(1.0, 0.22));
+  }
+
+  function setMasterVolume(v) {
+    if (!masterGain) return;
+    masterGain.gain.value = Math.max(0, Math.min(1, v));
+  }
+
+  function bindControls() {
+    const slider = document.getElementById('audio-master');
+    const muteBtn = document.getElementById('audio-mute');
+    if (slider) {
+      slider.addEventListener('input', () => setMasterVolume(parseFloat(slider.value)));
+      setMasterVolume(parseFloat(slider.value));
+    }
+    if (muteBtn && slider) {
+      muteBtn.addEventListener('click', () => {
+        if (parseFloat(slider.value) > 0) {
+          slider.dataset.prev = slider.value;
+          slider.value = '0';
+          muteBtn.textContent = 'UNMUTE';
+        } else {
+          slider.value = slider.dataset.prev || '0.35';
+          muteBtn.textContent = 'MUTE';
+        }
+        setMasterVolume(parseFloat(slider.value));
+      });
+    }
+  }
+
+  function init() {
+    bindControls();
+    preloadSounds().then(() => {
+      if (unlocked) startCorePulseLoop();
+      console.log('[NEXUS_AUDIO] Sounds ready');
+    });
+    const unlock = () => {
+      unlockAndStart();
+      window.removeEventListener('pointerdown', unlock);
+      window.removeEventListener('keydown', unlock);
+    };
+    window.addEventListener('pointerdown', unlock, { once: true });
+    window.addEventListener('keydown', unlock, { once: true });
+  }
+
+  return {
+    init,
+    unlockAndStart,
+    setCorePulse,
+    onReplyStart,
+    onTierUp,
+    onShadowSummon,
+    onKeypress,
+    setMasterVolume
+  };
+})();
+
+NEXUS_AUDIO.init();
+
+// ── Starfield ─────────────────────────────────────────────
+const c = document.getElementById('bg'), ctx = c.getContext('2d');
+let stars = [];
+function initStars(){
+  c.width = innerWidth; c.height = innerHeight; stars = [];
+  for(let i = 0; i < 350; i++){
+    stars.push({ x: Math.random()*c.width, y: Math.random()*c.height,
+                 z: Math.random()*2.5+0.5, speed: Math.random()*0.4+0.1 });
+  }
+}
+function drawStars(){
+  ctx.fillStyle = '#05050f'; ctx.fillRect(0, 0, c.width, c.height);
+  stars.forEach(s => {
+    s.y += s.speed * s.z;
+    if(s.y > c.height) s.y = 0;
+    const sz = s.z * 1.4;
+    ctx.fillStyle = `rgba(180,220,255,${0.4 + s.z * 0.35})`;
+    ctx.fillRect(s.x, s.y, sz, sz);
+  });
+  requestAnimationFrame(drawStars);
+}
+initStars(); drawStars(); window.addEventListener('resize', initStars);
+
+// ── Matrix rain ───────────────────────────────────────────
+(function(){
+  const m = document.getElementById('matrix');
+  const chars = '01アイウエオカキクケコ∇∆◊◆';
+  for(let i = 0; i < 30; i++){
+    const col = document.createElement('div');
+    col.className = 'matrix-col';
+    col.style.left = (Math.random() * 100) + '%';
+    col.style.animationDuration = (8 + Math.random() * 12) + 's';
+    col.style.animationDelay = -(Math.random() * 10) + 's';
+    let txt = '';
+    for(let j = 0; j < 40; j++) txt += chars[Math.floor(Math.random() * chars.length)] + '\n';
+    col.textContent = txt;
+    m.appendChild(col);
+  }
+})();
+
+// ── Rising particles ──────────────────────────────────────
+(function(){
+  const p = document.getElementById('particles');
+  for(let i = 0; i < 15; i++){
+    const el = document.createElement('div');
+    el.className = 'particle';
+    el.style.left = (Math.random() * 100) + '%';
+    el.style.bottom = '0';
+    el.style.animationDelay = (Math.random() * 5) + 's';
+    el.style.animationDuration = (4 + Math.random() * 4) + 's';
+    p.appendChild(el);
+  }
+})();
+
+// ── Idle: core breathing + eye blink ─────────────────────
+(function(){
+  const core = document.getElementById('core');
+  const eyes = [document.getElementById('eyeL'), document.getElementById('eyeR')];
+  setInterval(() => {
+    const r = 22 + Math.sin(Date.now() * 0.0012) * 4;
+    core.setAttribute('r', r);
+    NEXUS_AUDIO.setCorePulse(r);
+    if(Math.random() < 0.025){
+      eyes.forEach(e => e.style.opacity = '0.25');
+      setTimeout(() => eyes.forEach(e => e.style.opacity = '1'), 140);
+    }
+  }, 120);
+})();
+
+// ── Rank + mission polling ────────────────────────────────
+const tierMap = { E:'DORMANT', D:'INITIATED', C:'ACTIVE', B:'EVOLVED', A:'ASCENDED', S:'ASCENDED' };
+let lastTier = 'INITIATED';
+let lastXP = 0;
+let lastProgress = 0;
+
+async function load(){
+  try{
+    const r = await fetch('/v1/operator/rank');
+    const d = await r.json();
+    const rank = d.rank || 'E';
+    const t = tierMap[rank] || 'INITIATED';
+    const xp = d.xp || 0;
+    const missions = d.missions || {};
+    const active = missions.active_missions || 0;
+    const progress = missions.progress_pct || 0;
+
+    const root = document.getElementById('root');
+    if(t !== lastTier){
+      const svg = document.getElementById('svg');
+      svg.classList.add('digivolve');
+      setTimeout(() => svg.classList.remove('digivolve'), 2400);
+      playMorph(t);
+      lastTier = t;
+    }
+    root.className = `container tier-${t}`;
+    document.getElementById('rank').textContent = rank;
+    document.getElementById('tier').textContent = t;
+    document.getElementById('xp').textContent = xp + ' XP';
+    document.getElementById('active-missions').textContent = active + ' active missions';
+    document.getElementById('progress-bar').style.width = progress + '%';
+
+    // XP gain flash
+    if(xp > lastXP){
+      const flash = document.getElementById('mission-flash');
+      flash.textContent = `+${xp - lastXP} XP! Mission complete`;
+      flash.style.opacity = '1';
+      setTimeout(() => { flash.style.opacity = '0'; flash.textContent = ''; }, 5000);
+    }
+    lastXP = xp;
+
+    // Progress bar pulse on change
+    if(Math.abs(progress - lastProgress) > 1){
+      const pc = document.getElementById('progress-container');
+      pc.style.boxShadow = '0 0 16px #00ffaa';
+      setTimeout(() => { pc.style.boxShadow = 'none'; }, 1200);
+    }
+    lastProgress = progress;
+
+  } catch(e){ console.error('Poll failed:', e); }
+}
+load();
+setInterval(load, 7000);
+
+// ── Config ────────────────────────────────────────────────
+const ELEVENLABS_KEY = ''; // elevenlabs.io free key — leave blank for browser TTS
+const VOICE_ID = '21m00Tcm4TlvDq8ikWAM'; // Rachel — swap for any ElevenLabs voice ID
+
+// ── Voice Input ───────────────────────────────────────────
+let recognition = null;
+let micActive = false;
+const voiceBtn = document.getElementById('mic-toggle');
+
+if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
+  recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+  recognition.continuous = true;
+  recognition.interimResults = false;
+  recognition.lang = 'en-US';
+
+  recognition.onresult = async (e) => {
+    const text = e.results[e.results.length - 1][0].transcript.trim();
+    if (text) {
+      console.log('Voice:', text);
+      // Send to companion endpoint or type into input bar
+      const inputEl = document.querySelector('input[placeholder*="mind"]') || document.getElementById('companion-input');
+      if (inputEl) {
+          inputEl.value = text;
+      }
+      // Optional: auto-send
+      // document.querySelector('button[type="submit"]').click();
+    }
+  };
+
+  recognition.onerror = e => console.error('Voice error:', e.error);
+  recognition.onend = () => { if (recognition.running) recognition.start(); };
 }
 
-sendBtn.addEventListener('click', sendMessage);
-chatInput.addEventListener('keydown', e=>{ if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();} });
+voiceBtn?.addEventListener('click', () => {
+  if (!recognition) return alert('Voice not supported in this browser');
+  recognition.running = !recognition.running;
+  if (recognition.running) {
+    recognition.start();
+    voiceBtn.textContent = 'MIC: ON';
+    voiceBtn.style.background = '#003300';
+    voiceBtn.style.borderColor = '#00cc00';
+  } else {
+    recognition.stop();
+    voiceBtn.textContent = 'MIC: OFF';
+    voiceBtn.style.background = '#330000';
+    voiceBtn.style.borderColor = '#ff4444';
+  }
+});
+  recognition.continuous = true;
+  recognition.interimResults = false;
+  recognition.lang = 'en-US';
+  recognition.onresult = async (ev) => {
+    const text = ev.results[ev.results.length - 1][0].transcript.trim();
+    if (text) await handleVoiceCommand(text);
+  };
+  recognition.onerror = (e) => console.error('Voice error:', e.error);
+  recognition.onend = () => { if (micActive) recognition.start(); };
+}
 
-// Initial greeting with typewriter effect
-setTimeout(() => {
-  addMsg("Hello. I am MASTER SWARMZ — your AI companion.\nI am here, alive and ready to serve.\nHow can I help you today?", 'ai', true);
-}, 1000);
+function toggleMic() {
+  if (!recognition) return;
+  micActive = !micActive;
+  if (micActive) {
+    NEXUS_AUDIO.unlockAndStart();
+    recognition.start();
+    if (voiceBtn) {
+      voiceBtn.textContent = 'MIC: ON';
+      voiceBtn.style.background = '#003300';
+      voiceBtn.style.borderColor = '#00cc00';
+    }
+  } else {
+    recognition.stop();
+    if (voiceBtn) {
+      voiceBtn.textContent = 'MIC: OFF';
+      voiceBtn.style.background = '#330000';
+      voiceBtn.style.borderColor = '#ff4444';
+    }
+  }
+}
 
-chatInput.focus();
+async function handleVoiceCommand(text) {
+  const lower = text.toLowerCase();
+  if (lower.includes('summon scouts') || lower.includes('summon shadows')) {
+    await summonShadows(3, text.split('for')[1]?.trim() || '');
+    return;
+  }
+  if (lower.includes('ar mode') || lower.includes('augmented reality')) {
+    toggleAR(); return;
+  }
+  await sendToCompanion(text);
+}
+
+function typeWriter(elementId, text, speed) {
+  speed = speed || 28;
+  const el = document.getElementById(elementId);
+  if (!el) return;
+  el.textContent = '';
+  let i = 0;
+  function type() {
+    if (i < text.length) {
+      el.textContent += text.charAt(i);
+      i++;
+      setTimeout(type, speed);
+    }
+  }
+  type();
+}
+
+async function sendToCompanion(text) {
+  try {
+    NEXUS_AUDIO.onReplyStart();
+    const res = await fetch('/v1/companion/message', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text, source: 'voice' })
+    });
+    if (!res.ok) throw new Error('Companion failed');
+    const data = await res.json();
+    const reply = data.reply || 'Acknowledged, Operator.';
+    // Hook note: if #response is added later, it is preferred; fallback is existing #nexus-reply.
+    const responseEl = document.getElementById('response') || document.getElementById('nexus-reply');
+    if (responseEl?.id) {
+      typeWriter(responseEl.id, reply, 22);
+    }
+    if (ELEVENLABS_KEY) {
+      try { new Audio(await elevenLabsAudio(reply)).play(); }
+      catch { fallbackSpeak(reply); }
+    } else {
+      fallbackSpeak(reply);
+    }
+    await saveMemory(text, reply);
+  } catch(e) {
+    console.error('Companion error:', e);
+    fallbackSpeak('Connection to core failed.');
+  }
+}
+
+async function elevenLabsAudio(text) {
+  const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${VOICE_ID}`, {
+    method: 'POST',
+    headers: { 'Accept': 'audio/mpeg', 'xi-api-key': ELEVENLABS_KEY, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text, model_id: 'eleven_monolingual_v1',
+      voice_settings: { stability: 0.5, similarity_boost: 0.8 } })
+  });
+  if (!res.ok) throw new Error('ElevenLabs error');
+  return URL.createObjectURL(await res.blob());
+}
+
+function fallbackSpeak(text) {
+  const u = new SpeechSynthesisUtterance(text);
+  u.rate = 1.0; u.pitch = 0.9;
+  speechSynthesis.speak(u);
+}
+
+// ── Persistent Memory ─────────────────────────────────────
+async function saveMemory(userText, aiText) {
+  try {
+    await fetch('/v1/companion/memory/save', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user: userText, ai: aiText, timestamp: new Date().toISOString() })
+    });
+  } catch(e) {}
+}
+
+async function loadMemory() {
+  try {
+    const res = await fetch('/v1/companion/memory?limit=10');
+    const data = await res.json();
+    console.log('[NEXUSMON] Memory loaded:', data.history?.length || 0, 'entries');
+  } catch(e) {}
+}
+loadMemory();
+
+// ── Shadow Summons ────────────────────────────────────────
+async function summonShadows(count = 3, goalSuffix = '') {
+  const goal = goalSuffix ? `Scout intel on: ${goalSuffix}` : 'Gather situational intel';
+  NEXUS_AUDIO.onShadowSummon();
+  fallbackSpeak(`Summoning ${count} shadow scouts.`);
+  const reports = [];
+  for (let i = 0; i < count; i++) {
+    try {
+      const cr = await fetch('/v1/engine/missions', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ goal: `${goal} #${i+1}`, rank: 'E' })
+      });
+      const m = await cr.json();
+      const mid = m.mission?.id;
+      if (mid) {
+        await fetch(`/v1/engine/missions/${mid}/run`, { method: 'POST',
+          headers: { 'Content-Type': 'application/json' }, body: '{}' });
+        reports.push(`Shadow ${i+1}: mission dispatched.`);
+      }
+    } catch(e) { reports.push(`Shadow ${i+1}: connection lost.`); }
+  }
+  fallbackSpeak('Shadow scouts deployed. ' + reports.join(' '));
+}
+
+// ── AR Toggle ─────────────────────────────────────────────
+function toggleAR() {
+  const ar = document.getElementById('ar-scene');
+  const btn = document.getElementById('ar-toggle');
+  const root = document.getElementById('root');
+  const on = ar.style.display !== 'none';
+  if (!on) NEXUS_AUDIO.onShadowSummon();
+  ar.style.display = on ? 'none' : 'block';
+  root.style.display = on ? 'flex' : 'none';
+  btn.textContent = on ? 'AR: OFF' : 'AR: ON';
+  btn.style.background = on ? '#aa44ff' : '#ffcc33';
+}
+document.getElementById('ar-toggle')?.addEventListener('click', toggleAR);
+
+// ── GSAP Morph on Tier Change ─────────────────────────────
+let morphTl = null;
+function playMorph(tier) {
+  if (typeof gsap === 'undefined') return;
+  if (morphTl) morphTl.kill();
+  NEXUS_AUDIO.onTierUp(tier);
+  morphTl = gsap.timeline({ defaults: { ease: 'power3.inOut' } });
+  // Screen shake
+  gsap.to('#root', { scale: 1.08, rotationX: 8, duration: 0.3, yoyo: true, repeat: 1 });
+  if (tier === 'ACTIVE') {
+    morphTl.to('#wings', { opacity: 0.5, duration: 2 }, 0);
+  }
+  if (tier === 'EVOLVED') {
+    morphTl.to('#wings', { opacity: 0.85, scale: 1.2, duration: 2.5 }, 0);
+  }
+  if (tier === 'ASCENDED') {
+    morphTl.to('#hood', { opacity: 1, duration: 1.8 }, 0);
+    morphTl.to('#wings', { opacity: 1, scale: 1.5, duration: 3 }, 0.3);
+    morphTl.to('#core', { attr: { r: 30 }, duration: 1.5, yoyo: true, repeat: -1 }, 0);
+  }
+}
+
+document.addEventListener('keydown', (ev) => {
+  if (ev.repeat) return;
+  NEXUS_AUDIO.onKeypress();
+});
 </script>
 </body>
 </html>

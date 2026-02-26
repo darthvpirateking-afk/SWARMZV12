@@ -24,6 +24,7 @@ Core Principles:
 """
 
 import sys
+import os
 import json
 import importlib
 from typing import Any, Dict, List, Optional, Callable
@@ -204,11 +205,23 @@ class SwarmzCore:
             self.config = json.load(f)
 
 
-# Note: OpenTelemetry tracing for AI Toolkit can be configured here when available
-# configure_otel_providers(
-#     vs_code_extension_port=4317,  # AI Toolkit gRPC port
-#     enable_sensitive_data=True  # Enable capturing prompts and completions
-# )
+# Configure OpenTelemetry tracing for AI Toolkit (optional)
+# This enables distributed tracing of LLM calls and agent operations
+try:
+    from core.otel_tracing import configure_otel_providers
+
+    # Enable tracing if not explicitly disabled
+    if not os.getenv("OTEL_DISABLED"):
+        configure_otel_providers(
+            vs_code_extension_port=4317,  # AI Toolkit gRPC port
+            enable_sensitive_data=False,  # Set to True to capture prompts/completions
+            console_export=False,  # Set to True for debugging
+        )
+except ImportError:
+    # OpenTelemetry not installed - tracing will be disabled
+    pass
+except Exception as e:
+    print(f"[SWARMZ] Warning: Could not configure tracing: {e}")
 
 
 def main():

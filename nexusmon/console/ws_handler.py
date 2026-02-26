@@ -277,7 +277,7 @@ def _handle_chat(
 
     xp_result = entity.award_xp()
     evolved = xp_result.get("evolved", False)
-    new_form = xp_result.get("new_form", entity_state.get("form", "Rookie"))
+    new_form = xp_result.get("new_form", entity_state.get("current_form", "ROOKIE"))
 
     fresh_state = entity.get_state()
     fresh_traits = entity.get_traits()
@@ -304,15 +304,17 @@ def _handle_chat(
         "operator": operator_profile.to_context_dict(),
         "xp_event": {
             "xp_awarded": xp_result.get("xp_awarded", 0),
-            "xp_total": fresh_state.get("xp", 0),
-            "xp_to_next": fresh_state.get("xp_to_next", 100),
+            "xp_total": float(fresh_state.get("evolution_xp") or 0),
+            "xp_to_next": _XP_THRESHOLDS.get(
+                str(fresh_state.get("current_form", "ROOKIE")).upper(), 100.0
+            ),
             "evolved": evolved,
         },
     }
 
     evolution_frame = None
     if evolved:
-        old_form = entity_state.get("form", "Rookie")
+        old_form = entity_state.get("current_form", "ROOKIE").capitalize()
         evolution_frame = {
             "type": "evolution",
             "from": old_form,
@@ -331,8 +333,9 @@ def _handle_chat(
 
 def _entity_payload(state: dict) -> dict:
     """Serialise entity state for wire transport (JSON-safe)."""
-    xp = state.get("xp", 0.0)
-    xp_to_next = state.get("xp_to_next", 100.0)
+    xp = float(state.get("evolution_xp") or state.get("xp") or 0.0)
+    form_raw = str(state.get("current_form") or state.get("form") or "ROOKIE").upper()
+    xp_to_next = _XP_THRESHOLDS.get(form_raw, 100.0)
     if xp_to_next is None or xp_to_next == float("inf"):
         xp_to_next = None
         xp_pct = 100
@@ -341,12 +344,14 @@ def _entity_payload(state: dict) -> dict:
 
     return {
         "name": state.get("name", "NEXUSMON"),
-        "form": state.get("form", "Rookie"),
-        "mood": state.get("mood", "calm"),
+        "form": form_raw.capitalize(),
+        "mood": str(state.get("mood", "CALM")).lower(),
         "traits": state.get("traits", {}),
         "xp": round(xp, 1),
         "xp_to_next": xp_to_next,
         "xp_pct": xp_pct,
         "boot_count": state.get("boot_count", 1),
+        "interaction_count": state.get("interaction_count", 0),
+        "operator_name": state.get("operator_name", ""),
         "time_alive_seconds": state.get("time_alive_seconds", 0),
     }

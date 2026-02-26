@@ -1,5 +1,5 @@
-/* ═══════════════════════════════════════════════════
-   SWARMZ HOLOGRAM — hologram.css
+﻿/* ═══════════════════════════════════════════════════
+   NEXUSMON HOLOGRAM — hologram.css
    Evolution Ladder visual effects, level-specific
    styling, orb rendering, power currencies.
    ═══════════════════════════════════════════════════ */
@@ -762,3 +762,4 @@
   .currency-cards { grid-template-columns: 1fr; }
   .ladder-track { flex-direction: column; }
 }
+

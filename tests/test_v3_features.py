@@ -288,7 +288,7 @@ def test_avatar_matrix_singleton():
 
 @pytest.fixture(scope="module")
 def client():
-    from server import app
+    from swarmz_server import app
 
     return TestClient(app)
 

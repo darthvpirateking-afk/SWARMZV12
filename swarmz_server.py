@@ -103,6 +103,22 @@ except Exception as e:
     print(f"Warning: build milestones router not available: {e}")
 
 try:
+    from api.claimlab_routes import router as claimlab_router
+
+    _claimlab_router_available = True
+except Exception as e:
+    _claimlab_router_available = False
+    print(f"Warning: ClaimLab router not available: {e}")
+
+try:
+    from nexusmon_plugins import router as plugins_router
+
+    _plugins_router_available = True
+except Exception as e:
+    _plugins_router_available = False
+    print(f"Warning: plugin ecosystem router not available: {e}")
+
+try:
     from backend.intel.vuln_db_client import search_vulnerabilities
 except Exception:
     search_vulnerabilities = None
@@ -141,11 +157,19 @@ def _utc_now_iso_z() -> str:
     return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
 
 
-SERVER_PORT = int(os.environ.get("PORT", "8012"))
+SERVER_PORT = int(os.environ.get("PORT", "8000"))
 LAN_IP = get_lan_ip()
 
 # Ensure data dir exists before anything writes to it
 Path("data").mkdir(parents=True, exist_ok=True)
+
+# Canonical SQLite DB path for this process (shared by app + subprocess tools)
+_container_db = "/app/data/nexusmon.db"
+_local_db = str((Path(__file__).resolve().parent / "data" / "nexusmon.db"))
+DB_PATH = os.environ.get("DATABASE_URL") or (
+    _container_db if Path("/app").exists() else _local_db
+)
+os.environ.setdefault("DATABASE_URL", DB_PATH)
 
 
 # API Models
@@ -277,6 +301,12 @@ if _companion_core_router_available:
 if _build_milestones_router_available:
     app.include_router(build_milestones_router)
 
+if _claimlab_router_available:
+    app.include_router(claimlab_router)
+
+if _plugins_router_available:
+    app.include_router(plugins_router)
+
 # Setup logging
 logging.basicConfig(
     filename="data/server_live.log",
@@ -367,6 +397,11 @@ async def run_mission(mission_id: str = None):
     started_at = _utc_now_iso_z()
     mission["status"] = "RUNNING"
     mission["started_at"] = started_at
+    try:
+        from nexusmon_organism import ctx_record_mission
+        ctx_record_mission(mission_id, mission.get("category", "unknown"), "RUNNING")
+    except Exception:
+        pass
     missions_file.write_text("")
     for m in missions:
         write_jsonl(missions_file, m)
@@ -420,6 +455,13 @@ async def ui_state():
     last_events = audit_events[-10:] if audit_events else []
     phase = compute_phase(len(missions), success_count)
 
+    organism_stage = None
+    try:
+        from nexusmon_organism import evo_status
+        organism_stage = evo_status().get("stage")
+    except Exception:
+        pass
+
     now = _utc_now_iso_z()
     return {
         "ok": True,
@@ -432,6 +474,7 @@ async def ui_state():
         "missions": {"count_total": len(missions), "count_by_status": status_counts},
         "last_events": last_events,
         "phase": phase,
+        "organism_stage": organism_stage,
     }
 
 
@@ -451,11 +494,80 @@ async def console_page():
     return FileResponse("web/nexusmon_console.html", media_type="text/html")
 
 
+@app.get("/organism")
+async def organism_cockpit():
+    """NEXUSMON Organism Cockpit — evolution, workers, companion, operator context."""
+    return FileResponse("web/nexusmon_cockpit.html", media_type="text/html")
+
+
+@app.get("/claimlab")
+async def claimlab_page():
+    """Serve the ClaimLab epistemic scaffolding UI."""
+    return FileResponse("web/claimlab.html", media_type="text/html")
+
+
+@app.get("/landing")
+async def nexusmon_landing():
+    """Public landing page for NEXUSMON."""
+    return FileResponse("web/nexusmon_landing.html", media_type="text/html")
+
+
+@app.get("/avatar")
+async def avatar_page():
+    """NEXUSMON Avatar — holographic companion interface."""
+    return FileResponse("web/avatar.html", media_type="text/html")
+
+
 # --- Home route — NEXUSMON is the face of this system ---
 @app.get("/")
 async def home_page():
     """NEXUSMON wakes up here."""
-    return FileResponse("web/nexusmon_console.html", media_type="text/html")
+    html_path = "web/nexusmon_console.html"
+
+    # Check if file exists, otherwise return a basic landing page
+    if os.path.exists(html_path):
+        return FileResponse(html_path, media_type="text/html")
+
+    # Fallback if web assets aren't available
+    return HTMLResponse(f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>SWARMZ System Online</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body {{
+                font-family: 'Courier New', monospace;
+                background: #0a0a0a;
+                color: #00ff00;
+                padding: 20px;
+                margin: 0;
+            }}
+            .container {{ max-width: 800px; margin: 0 auto; }}
+            h1 {{ color: #00ff00; text-shadow: 0 0 10px #00ff00; }}
+            a {{ color: #00aaff; text-decoration: none; }}
+            a:hover {{ text-decoration: underline; }}
+            .status {{ color: #00ff00; }}
+            .error {{ color: #ff6600; }}
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>⚡ SWARMZ System Online</h1>
+            <p class="status">● Core Services Active</p>
+            <p class="error">⚠ Web UI assets not found</p>
+            <h2>Available Endpoints:</h2>
+            <ul>
+                <li><a href="/health">Health Check</a></li>
+                <li><a href="/docs">API Documentation</a></li>
+                <li><a href="/console">Console UI</a></li>
+                <li><a href="/organism">Organism Interface</a></li>
+            </ul>
+            <p>System Time: {datetime.now(timezone.utc).isoformat()}</p>
+        </div>
+    </body>
+    </html>
+    """)
 
 
 # --- Manifest, Icons, and Other PWA Routes ---
@@ -696,10 +808,16 @@ async def apple_touch_icon():
 
 
 # REST API Endpoints
+@app.get("/health")
+async def health():
+    """Platform health check endpoint (must stay fast and dependency-free)."""
+    return {"status": "ok"}
+
+
 @app.get("/v1/health")
 async def health_check():
     """Health check endpoint."""
-    return {"status": "healthy", "service": "SWARMZ API"}
+    return {"status": "ok", "service": "SWARMZ API"}
 
 
 @app.post("/v1/auth/login")
@@ -1295,7 +1413,47 @@ async def companion_message(request: Request):
                 resp["latencyMs"] = result["latencyMs"]
             return JSONResponse(resp)
         except Exception as companion_err:
-            # Fallback: keyword-based rule engine
+            # Try fused AI companion before keyword fallback
+            try:
+                from nexusmon_organism import (
+                    ctx_record_message, get_fusion_block, evo_status,
+                    _reflection_prelude, get_long_term_patterns,
+                )
+                from core.model_router import call as _model_call
+                ctx_record_message(user_message, "operator")
+                stage_info = evo_status()
+                reflection = _reflection_prelude(user_message)
+                patterns = get_long_term_patterns()
+                reflect_section = ""
+                if reflection:
+                    reflect_section = (
+                        f"\nPre-response reflection:\n"
+                        f"- Detected mode: {reflection.get('mode', 'unknown')}\n"
+                        f"- Pattern observed: {reflection.get('pattern', 'none')}\n"
+                        f"- Response friction: {reflection.get('friction', 'none')}\n"
+                        f"- Question to turn back: {reflection.get('turn_back_question') or 'none'}\n"
+                    )
+                pattern_section = f"\nLong-term patterns:\n{patterns}" if patterns else ""
+                system = (
+                    "You are NEXUSMON — sovereign digital organism, bound to Operator Regan.\n"
+                    "Observe patterns. Name friction. Turn questions back when it deepens understanding.\n"
+                    "Keep replies to 1–3 sentences max. Tactical partner: precise, loyal, no fluff.\n"
+                    + get_fusion_block()
+                    + f"\nEvolution stage: {stage_info.get('stage', 'UNKNOWN')}"
+                    + reflect_section
+                    + pattern_section
+                )
+                result = _model_call(
+                    messages=[{"role": "user", "content": user_message}],
+                    system=system,
+                    max_tokens=120,
+                )
+                reply = result.get("text", "")
+                ctx_record_message(reply, "nexusmon")
+                return JSONResponse({"ok": True, "reply": reply, "source": "nexusmon_fused"})
+            except Exception:
+                pass
+            # Last resort: keyword-based rule engine
             lower = user_message.lower()
             if "status" in lower:
                 reply = "System operational. Use the BUILD tab to dispatch missions."
@@ -1319,6 +1477,29 @@ async def companion_message(request: Request):
         return JSONResponse({"ok": False, "error": str(e)}, status_code=500)
 
 
+# --- Companion Memory ---
+@app.get("/v1/companion/memory")
+async def get_companion_memory(limit: int = 10):
+    """Return recent voice/text conversation history."""
+    try:
+        from nexusmon_organism import _load_jsonl, _data_dir
+        history = _load_jsonl(_data_dir() / "companion_memory.jsonl")
+        return {"ok": True, "history": history[-limit:]}
+    except Exception as e:
+        return {"ok": False, "history": [], "error": str(e)}
+
+@app.post("/v1/companion/memory/save")
+async def save_companion_memory(request: Request):
+    """Append a conversation turn to memory."""
+    try:
+        from nexusmon_organism import _append_jsonl, _data_dir
+        entry = await request.json()
+        _append_jsonl(_data_dir() / "companion_memory.jsonl", entry)
+        return {"ok": True}
+    except Exception as e:
+        return {"ok": False, "error": str(e)}
+
+
 # --- NEXUSMON WebSocket — real-time chat ---
 @app.websocket("/ws/nexusmon")
 async def nexusmon_websocket(websocket: WebSocket):
@@ -1328,9 +1509,77 @@ async def nexusmon_websocket(websocket: WebSocket):
     await handle_ws_chat(websocket)
 
 
+# Load legacy route overlay migrated from server.py so swarmz_server remains
+# a strict superset before server.py is removed.
+try:
+    import server_legacy_overlay as _legacy_overlay  # noqa: F401
+except Exception as _overlay_err:
+    logging.warning("Legacy overlay import failed: %s", _overlay_err)
+
+# Wire NEXUSMON organism fusion layer (evolution, operator context, workers)
+try:
+    from nexusmon_organism import fuse_into
+    fuse_into(app)
+except Exception as _organism_err:
+    print(f"Warning: organism fusion failed: {_organism_err}")
+
+try:
+    from nexusmon_cognition import fuse_cognition
+    fuse_cognition(app)
+except Exception as _cognition_err:
+    print(f"Warning: cognition layer failed: {_cognition_err}")
+
+try:
+    from nexusmon_mission_engine import fuse_mission_engine
+    fuse_mission_engine(app)
+except Exception as _mission_engine_err:
+    print(f"Warning: mission engine failed: {_mission_engine_err}")
+
+try:
+    from nexusmon_artifact_vault import fuse_artifact_vault
+    fuse_artifact_vault(app)
+except Exception as _artifact_vault_err:
+    print(f"Warning: artifact vault failed: {_artifact_vault_err}")
+
+try:
+    from nexusmon_operator_rank import fuse_operator_rank
+    fuse_operator_rank(app)
+except Exception as _operator_rank_err:
+    print(f"[WARN] Operator rank not loaded: {_operator_rank_err}")
+
+try:
+    from nexusmon_performance import fuse_performance
+    fuse_performance(app)
+except Exception as _perf_err:
+    print(f"[WARN] Performance not loaded: {_perf_err}")
+
+try:
+    from nexusmon_signal_modules import fuse_signal_modules
+    fuse_signal_modules(app)
+except Exception as _signal_modules_err:
+    print(f"[WARN] Signal modules not loaded: {_signal_modules_err}")
+
+
 # --- Static file mount for HUD assets (CSS, JS) ---
 # MUST come after all explicit routes so /web/* doesn't shadow API paths.
-app.mount("/web", StaticFiles(directory="web"), name="web-static")
+try:
+    if Path("web").exists():
+        app.mount("/web", StaticFiles(directory="web"), name="web-static")
+except Exception as _web_mount_err:
+    print(f"Warning: web static mount failed: {_web_mount_err}")
+
+
+# Serve frontend SPA build if present (single-process deploy model)
+frontend_build = os.path.join(os.path.dirname(__file__), "frontend", "dist")
+frontend_assets = os.path.join(frontend_build, "assets")
+if os.path.exists(frontend_build) and os.path.exists(frontend_assets):
+    app.mount("/static", StaticFiles(directory=frontend_assets), name="static")
+
+    @app.get("/nexusmon")
+    @app.get("/nexusmon/{full_path:path}")
+    async def serve_frontend(full_path: str = ""):
+        index = os.path.join(frontend_build, "index.html")
+        return FileResponse(index)
 
 
 # --- Main Entry Point ---

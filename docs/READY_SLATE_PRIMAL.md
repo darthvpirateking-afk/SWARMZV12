@@ -1,7 +1,7 @@
-# READY_SLATE
+﻿# READY_SLATE
 
 ## Doctrine
-- Loaded: `SWARMZ//GATELINK_PRIMAL_DOCTRINE`
+- Loaded: `NEXUSMON//GATELINK_PRIMAL_DOCTRINE`
 - Load Command: `LOAD_DOCTRINE: PRIMAL_BLOCK`
 - State: `READY`
 
@@ -46,3 +46,4 @@
 - Finish: run `UMBRA_FOLD`, persist DATAVEIN logs/artifacts, emit `FINAL_SLATE`, await next `PRIME_WAKE`.
 
 Awaiting next operator directive.
+

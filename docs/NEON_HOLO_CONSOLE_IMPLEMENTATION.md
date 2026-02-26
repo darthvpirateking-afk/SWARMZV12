@@ -1,6 +1,6 @@
-# SWARMZ Neon Holo Console Implementation
+﻿# NEXUSMON Neon Holo Console Implementation
 
-This document maps the neon + hologram UI spec into the current SWARMZ web control surface.
+This document maps the neon + hologram UI spec into the current NEXUSMON web control surface.
 
 ## Visual Language (Neon-on-Dark-Glass)
 
@@ -95,3 +95,4 @@ Primary stack:
 ### Prompt C (Mission Ops Wall)
 
 "Advanced mission operations dashboard, hologram data cards, neon token syntax console, audit log panel, futuristic but usable enterprise UI, blue-black glass aesthetic, crisp sans typography"
+

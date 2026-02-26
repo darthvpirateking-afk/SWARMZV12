@@ -174,3 +174,20 @@ def get_proactive_engine() -> ProactiveEngine:
     if _proactive is None:
         _proactive = ProactiveEngine()
     return _proactive
+
+
+# ── Module-level convenience wrappers (imported by ws_handler) ─────────────────
+
+def run_boot_scan(entity_state: dict) -> dict:
+    """Module-level wrapper around ProactiveEngine.run_boot_scan().
+
+    Used by nexusmon.console.ws_handler so it can do:
+        from nexusmon.proactive import run_boot_scan
+        _scan = run_boot_scan(entity_state)
+    """
+    return get_proactive_engine().run_boot_scan(entity_state)
+
+
+def check_trait_events(entity_state: dict, events: list) -> dict:
+    """Module-level wrapper around ProactiveEngine.check_trait_events()."""
+    return get_proactive_engine().check_trait_events(entity_state, events)

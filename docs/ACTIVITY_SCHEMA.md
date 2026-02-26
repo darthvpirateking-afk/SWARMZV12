@@ -1,4 +1,4 @@
-# SWARMZ Activity Schema
+﻿# NEXUSMON Activity Schema
 
 ## Schema Version: 1.0
 

@@ -1,4 +1,4 @@
-# SWARMZ — Upgrade Contract
+﻿# NEXUSMON — Upgrade Contract
 
 > Invariants that every future change MUST respect.  
 > Breaking these rules degrades operator trust and system reliability.
@@ -92,3 +92,4 @@ Code must handle missing keys gracefully (use `.get()` with defaults).
 - Do not write code that only works on Linux/Mac
 - Do not overwrite or truncate JSONL log files
 - Do not remove existing API endpoints
+

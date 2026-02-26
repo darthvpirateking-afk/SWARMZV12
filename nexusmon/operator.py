@@ -204,7 +204,7 @@ try:
 except (ImportError, AttributeError):
     _get_db = None
 
-_ENGINE_DB_PATH = "data/nexusmon.db"
+_ENGINE_DB_PATH = os.environ.get("DATABASE_URL", "data/nexusmon.db")
 
 _RANK_THRESHOLDS = [
     ("SOVEREIGN_OPERATOR", 200),

@@ -1,4 +1,4 @@
-# SWARMZ User Guide
+﻿# NEXUSMON User Guide
 
 ## Table of Contents
 
@@ -11,9 +11,9 @@
 
 ## Introduction
 
-SWARMZ is an Operator-Sovereign "Do Anything" System that gives you complete control over system operations through a flexible, extensible architecture.
+NEXUSMON is an Operator-Sovereign "Do Anything" System that gives you complete control over system operations through a flexible, extensible architecture.
 
-### What Makes SWARMZ Different?
+### What Makes NEXUSMON Different?
 
 - **Operator Sovereignty**: You're always in control
 - **No Artificial Limits**: "Do anything" philosophy
@@ -24,21 +24,21 @@ SWARMZ is an Operator-Sovereign "Do Anything" System that gives you complete con
 
 ### Operator Sovereignty
 
-Every action in SWARMZ goes through the operator sovereignty system:
+Every action in NEXUSMON goes through the operator sovereignty system:
 - Actions are logged in an audit trail
 - Operator can override any restriction
 - Complete transparency of operations
 
 ### Task Execution
 
-Tasks are the fundamental units of work in SWARMZ:
+Tasks are the fundamental units of work in NEXUSMON:
 - Registered with the system
 - Executed on demand
 - Can be built-in or from plugins
 
 ### Plugin System
 
-Plugins extend SWARMZ capabilities:
+Plugins extend NEXUSMON capabilities:
 - Python modules with a `register()` function
 - Can add any number of tasks
 - Loaded dynamically at runtime
@@ -49,21 +49,21 @@ Plugins extend SWARMZ capabilities:
 
 **Command Line:**
 ```bash
-python3 swarmz_cli.py --task echo --params '{"message": "Hello"}'
+python3 nexusmon_cli.py --task echo --params '{"message": "Hello"}'
 ```
 
 **Python API:**
 ```python
-from swarmz import SwarmzCore
+from nexusmon import NexusmonCore
 
-swarmz = SwarmzCore()
-result = swarmz.execute("echo", message="Hello")
+nexusmon = NexusmonCore()
+result = nexusmon.execute("echo", message="Hello")
 ```
 
 ### Interactive Mode
 
 ```bash
-python3 swarmz_cli.py --interactive
+python3 nexusmon_cli.py --interactive
 ```
 
 Commands:
@@ -77,22 +77,22 @@ Commands:
 
 **Command Line:**
 ```bash
-python3 swarmz_cli.py --load-plugin plugins/filesystem.py --list
+python3 nexusmon_cli.py --load-plugin plugins/filesystem.py --list
 ```
 
 **Python API:**
 ```python
-swarmz.load_plugin("plugins/filesystem.py")
+nexusmon.load_plugin("plugins/filesystem.py")
 ```
 
 ## Advanced Features
 
 ### Arbitrary Code Execution
 
-SWARMZ allows trusted operators to execute arbitrary Python code:
+NEXUSMON allows trusted operators to execute arbitrary Python code:
 
 ```bash
-python3 swarmz_cli.py --task execute_python --params '{"code": "result = 10 * 5"}'
+python3 nexusmon_cli.py --task execute_python --params '{"code": "result = 10 * 5"}'
 ```
 
 This demonstrates true operator sovereignty.
@@ -102,12 +102,12 @@ This demonstrates true operator sovereignty.
 View all operations:
 
 ```bash
-python3 swarmz_cli.py --audit
+python3 nexusmon_cli.py --audit
 ```
 
 Or in Python:
 ```python
-audit_log = swarmz.get_audit_log()
+audit_log = nexusmon.get_audit_log()
 for entry in audit_log:
     print(f"{entry['action']}: {entry['approved']}")
 ```
@@ -117,7 +117,7 @@ for entry in audit_log:
 Create `config.json`:
 ```json
 {
-  "system_name": "SWARMZ",
+  "system_name": "NEXUSMON",
   "operator_sovereignty": {
     "enabled": true,
     "auto_approve": true,
@@ -131,7 +131,7 @@ Create `config.json`:
 
 Load it:
 ```bash
-python3 swarmz_cli.py --config config.json
+python3 nexusmon_cli.py --config config.json
 ```
 
 ## Plugin Development
@@ -213,7 +213,7 @@ def register(executor):
 
 ### Security
 
-1. **Trust**: SWARMZ is designed for trusted operators
+1. **Trust**: NEXUSMON is designed for trusted operators
 2. **Code Execution**: Use `execute_python` carefully
 3. **Plugin Sources**: Only load plugins from trusted sources
 4. **Audit**: Regularly review audit logs
@@ -256,15 +256,17 @@ python3 examples.py
 ### Import Errors
 
 - Ensure you're in the correct directory
-- Check Python path includes SWARMZ directory
+- Check Python path includes NEXUSMON directory
 
 ## Support
 
 For issues and questions:
 - Check the examples in `examples.py`
-- Review the test suite in `test_swarmz.py`
+- Review the test suite in `test_nexusmon.py`
 - Read the source code (it's well documented)
 
 ## Philosophy
 
-Remember: SWARMZ embodies operator sovereignty. You have complete control. The system trusts you to make the right decisions. Use this power responsibly.
+Remember: NEXUSMON embodies operator sovereignty. You have complete control. The system trusts you to make the right decisions. Use this power responsibly.
+
+

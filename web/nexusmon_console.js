@@ -1,7 +1,7 @@
-/**
- * NEXUSMON Console - Conversational Interface for SWARMZ
+﻿/**
+ * NEXUSMON Console - Conversational Interface for NEXUSMON
  *
- * Web component for chat-based interaction with the SWARMZ system.
+ * Web component for chat-based interaction with the NEXUSMON system.
  * Integrates persona, evolution state, and system health into conversation.
  */
 
@@ -907,3 +907,4 @@ const NexusmonConsole = (() => {
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = NexusmonConsole;
 }
+

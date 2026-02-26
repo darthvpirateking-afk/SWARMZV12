@@ -80,12 +80,12 @@ if exist "%~dp0run_server.py" (
   "%PY%" run_server.py --host %HOSTBIND% --port %PORT%
   exit /b %ERRORLEVEL%
 )
-if exist "%~dp0server.py" (
-  echo Starting uvicorn server:app on %HOSTBIND%:%PORT%
-  "%PY%" -m uvicorn server:app --host %HOSTBIND% --port %PORT%
+if exist "%~dp0swarmz_server.py" (
+  echo Starting uvicorn swarmz_server:app on %HOSTBIND%:%PORT%
+  "%PY%" -m uvicorn swarmz_server:app --host %HOSTBIND% --port %PORT%
   exit /b %ERRORLEVEL%
 )
-echo [ERROR] No server.py or run_server.py found.
+echo [ERROR] No swarmz_server.py or run_server.py found.
 exit /b 1
 
 :lanip

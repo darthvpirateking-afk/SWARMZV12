@@ -2,6 +2,7 @@
 # Commercial use, hosting, and resale prohibited.
 # See LICENSE file for details.
 import json
+import os
 from datetime import datetime, timezone
 from nexusmon.memory import NexusmonDB
 
@@ -33,7 +34,8 @@ LOYALTY_FLOOR = 0.5
 
 
 class NexusmonEntity:
-    def __init__(self, db_path="data/nexusmon.db"):
+    def __init__(self, db_path=None):
+        db_path = db_path or os.environ.get("DATABASE_URL") or "data/nexusmon.db"
         self._db = NexusmonDB(db_path)
         self._db.ensure_schema()
         self._ensure_schema()

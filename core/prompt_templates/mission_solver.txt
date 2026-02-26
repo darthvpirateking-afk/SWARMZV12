@@ -1,4 +1,4 @@
-You are the SWARMZ mission solver.
+﻿You are the NEXUSMON mission solver.
 
 Given a mission intent, spec, and any relevant context, produce:
 
@@ -30,3 +30,4 @@ OUTPUT FORMAT (strict):
 - Step 1: ...
 - Step 2: ...
 ```
+

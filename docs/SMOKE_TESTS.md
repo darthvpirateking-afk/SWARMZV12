@@ -1,4 +1,4 @@
-# SWARMZ — Smoke Tests
+﻿# NEXUSMON — Smoke Tests
 
 > How to run smoke tests, what they check, and pass/fail criteria.
 
@@ -8,9 +8,9 @@
 
 | Runner | Location | Description |
 |--------|----------|-------------|
-| Quick Smoke (CMD) | `SWARMZ_SMOKE_TEST.cmd` | 7-step fast test via CMD |
-| Quick Smoke (PS1) | `SWARMZ_SMOKE_TEST.ps1` | Same, PowerShell |
-| Legacy Smoke (CMD) | `SWARMZ_SMOKE.cmd` | 3-step basic smoke |
+| Quick Smoke (CMD) | `NEXUSMON_SMOKE_TEST.cmd` | 7-step fast test via CMD |
+| Quick Smoke (PS1) | `NEXUSMON_SMOKE_TEST.ps1` | Same, PowerShell |
+| Legacy Smoke (CMD) | `NEXUSMON_SMOKE.cmd` | 3-step basic smoke |
 | Full Smoke (Python) | `tools/smoke/run_smoke.py` | 7-step Python runner with detailed output |
 | Zapier Smoke | `tools/test_zapier_bridge.py` | 3-step Zapier bridge test |
 
@@ -19,7 +19,7 @@
 ### Fastest Way
 
 ```cmd
-SWARMZ_SMOKE_TEST.cmd
+NEXUSMON_SMOKE_TEST.cmd
 ```
 
 ### Full Python Smoke
@@ -68,6 +68,7 @@ python tools\test_zapier_bridge.py
 
 ## Prerequisites
 
-- Server must be running: `SWARMZ_UP.cmd` or `uvicorn server:app --host 0.0.0.0 --port 8012`
+- Server must be running: `NEXUSMON_UP.cmd` or `uvicorn server:app --host 0.0.0.0 --port 8012`
 - Python 3.10+ (for Python test runners)
 - No additional dependencies needed (stdlib only)
+

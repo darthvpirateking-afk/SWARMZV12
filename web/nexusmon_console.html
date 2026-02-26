@@ -4,7 +4,96 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NEXUSMON Cockpit</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <style>
+        /* ============================================================
+           JARVIS NEON HOLOGRAM OVERRIDES
+           ============================================================ */
+        body {
+            background: #0a0015 radial-gradient(circle at center, #0a0015 0%, #000000 100%) !important;
+            text-shadow: 0 0 4px rgba(0, 204, 255, 0.3);
+        }
+
+        .side-panel {
+            background: rgba(10, 20, 30, 0.6) !important;
+            border: 1px solid #00f0ff33 !important;
+            box-shadow: 0 0 30px #00f0ff22, inset 0 0 20px #aa44ff11 !important;
+            backdrop-filter: blur(8px) !important;
+            transition: all 0.4s !important;
+        }
+        .side-panel:hover {
+            box-shadow: 0 0 50px #00f0ff44, 0 0 80px #aa44ff22 !important;
+        }
+
+        .ps-title {
+            color: #00f0ff !important;
+            text-shadow: 0 0 10px #00f0ff, 0 0 20px #00f0ff88 !important;
+            animation: neon-flicker 4s infinite alternate;
+        }
+
+        @keyframes neon-flicker { 0%,100% { opacity:1; } 50% { opacity:0.92; } }
+
+        .trait-track {
+            background: rgba(0, 240, 255, 0.1) !important;
+            box-shadow: inset 0 0 5px rgba(0, 240, 255, 0.2) !important;
+        }
+        .trait-fill {
+            background: linear-gradient(90deg, #aa44ff, #00f0ff) !important;
+            box-shadow: 0 0 15px #00f0ff44 !important;
+        }
+
+        .nx-title {
+            color: #00f0ff !important;
+            text-shadow: 0 0 10px #00f0ff, 0 0 20px #00f0ff88 !important;
+        }
+
+        /* Override nexusmon_console.js styles */
+        .nexusmon-console {
+            background: transparent !important;
+            box-shadow: none !important;
+            border: none !important;
+        }
+        .nexusmon-header, .nexusmon-footer, .nexusmon-actions {
+            background: transparent !important;
+            border-color: rgba(0, 240, 255, 0.2) !important;
+        }
+        .nexusmon-input {
+            background: rgba(0,0,0,0.6) !important;
+            border: 1px solid #00f0ff44 !important;
+            border-radius: 12px !important;
+            box-shadow: 0 0 30px #00f0ff22 !important;
+            margin: 12px !important;
+        }
+        #chat-input {
+            background: transparent !important;
+            border: none !important;
+            color: #00f0ff !important;
+            box-shadow: none !important;
+        }
+        #chat-input::placeholder { color: rgba(0, 240, 255, 0.5) !important; }
+        #send-btn {
+            background: rgba(0, 240, 255, 0.1) !important;
+            border: 1px solid #00f0ff !important;
+            color: #00f0ff !important;
+            border-radius: 8px !important;
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.2) !important;
+        }
+        #send-btn:hover:not(:disabled) {
+            background: rgba(0, 240, 255, 0.3) !important;
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.5) !important;
+        }
+        .message-bubble {
+            background: rgba(10, 20, 30, 0.8) !important;
+            border: 1px solid rgba(0, 240, 255, 0.3) !important;
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.1) !important;
+            backdrop-filter: blur(4px) !important;
+            color: #e0f8ff !important;
+        }
+        .message.user .message-bubble {
+            border-color: rgba(170, 68, 255, 0.5) !important;
+            box-shadow: 0 0 15px rgba(170, 68, 255, 0.2) !important;
+        }
+
         /* ============================================================
            CSS Reset & Variables — V2.0 Spec
            ============================================================ */
@@ -735,8 +824,14 @@
         <!-- END LEFT PANEL -->
 
         <!-- ===================== CENTER PANEL — NAVI CHANNEL ======= -->
-        <div id="panel-center">
-            <div id="nexusmon-console"></div>
+        <div id="panel-center" style="position:relative;">
+            <div class="jarvis-center" style="position:absolute; inset:0; z-index:0; display:flex; align-items:center; justify-content:center; pointer-events:none;">
+                <div class="holo-center" style="width:100%; height:70vh; position:relative; pointer-events:auto;">
+                  <iframe src="/avatar" style="width:100%; height:100%; border:none; background:transparent; filter:drop-shadow(0 0 60px #00f0ff) brightness(1.2);"></iframe>
+                  <div class="holo-glow" style="position:absolute; inset:0; pointer-events:none; background:radial-gradient(circle at center, rgba(0,240,255,0.15) 0%, transparent 70%);"></div>
+                </div>
+            </div>
+            <div id="nexusmon-console" style="position:relative; z-index:1;"></div>
         </div>
         <!-- END CENTER PANEL -->
 
@@ -805,25 +900,25 @@
     <!-- END PANELS -->
 
     <!-- ═══════════════════════════════════ BOTTOM CHIP BAR ════════ -->
-    <div id="bottom-bar">
-        <span class="bar-label">Quick</span>
+    <div id="bottom-bar" style="position:relative; z-index:10; background:rgba(10,20,30,0.8); border-top:1px solid #00f0ff33; box-shadow:0 -10px 30px #00f0ff22; backdrop-filter:blur(8px);">
+        <span class="bar-label" style="color:#00f0ff; text-shadow:0 0 8px #00f0ff;">Quick</span>
 
-        <button class="chip" data-preset="Research">
+        <button class="chip" data-preset="Research" style="background:rgba(0,240,255,0.1); border:1px solid #00f0ff; color:#00f0ff; box-shadow:0 0 10px rgba(0,240,255,0.2);">
             <span class="chip-icon">&#128269;</span> Research
         </button>
-        <button class="chip" data-preset="Build">
+        <button class="chip" data-preset="Build" style="background:rgba(0,240,255,0.1); border:1px solid #00f0ff; color:#00f0ff; box-shadow:0 0 10px rgba(0,240,255,0.2);">
             <span class="chip-icon">&#9881;</span> Build
         </button>
-        <button class="chip" data-preset="Analyze">
+        <button class="chip" data-preset="Analyze" style="background:rgba(0,240,255,0.1); border:1px solid #00f0ff; color:#00f0ff; box-shadow:0 0 10px rgba(0,240,255,0.2);">
             <span class="chip-icon">&#128202;</span> Analyze
         </button>
-        <button class="chip orange" data-preset="Status">
+        <button class="chip orange" data-preset="Status" style="background:rgba(255,153,0,0.1); border:1px solid #ff9900; color:#ff9900; box-shadow:0 0 10px rgba(255,153,0,0.2);">
             <span class="chip-icon">&#126;</span> Status
         </button>
-        <button class="chip" data-preset="Swarm">
+        <button class="chip" data-preset="Swarm" style="background:rgba(0,240,255,0.1); border:1px solid #00f0ff; color:#00f0ff; box-shadow:0 0 10px rgba(0,240,255,0.2);">
             <span class="chip-icon">&#64;</span> Swarm
         </button>
-        <button class="chip orange" data-preset="Chronicle">
+        <button class="chip orange" data-preset="Chronicle" style="background:rgba(255,153,0,0.1); border:1px solid #ff9900; color:#ff9900; box-shadow:0 0 10px rgba(255,153,0,0.2);">
             <span class="chip-icon">&#33;</span> Chronicle
         </button>
     </div>
@@ -831,12 +926,66 @@
 </div>
 <!-- END COCKPIT -->
 
+<canvas id="particle-bg" style="position:fixed; inset:0; z-index:-1; pointer-events:none;"></canvas>
+
 <!-- NEXUSMON Console Module — owns all chat logic -->
 <script src="/web/nexusmon_console.js"></script>
 
 <script>
 (function () {
     'use strict';
+
+    // JARVIS Particles
+    const pCanvas = document.getElementById('particle-bg');
+    const pCtx = pCanvas.getContext('2d');
+
+    function resize() {
+        pCanvas.width = window.innerWidth;
+        pCanvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    let particles = [];
+    for (let i = 0; i < 80; i++) {
+        particles.push({
+            x: Math.random() * window.innerWidth,
+            y: Math.random() * window.innerHeight,
+            size: Math.random() * 2 + 1,
+            speed: Math.random() * 0.5 + 0.1,
+            hue: Math.random() * 60 + 180 // cyan-purple range
+        });
+    }
+
+    function animateParticles() {
+        pCtx.fillStyle = 'rgba(10,0,30,0.05)';
+        pCtx.fillRect(0,0,pCanvas.width,pCanvas.height);
+        particles.forEach(p => {
+            p.y += p.speed;
+            if (p.y > pCanvas.height) p.y = 0;
+            pCtx.fillStyle = `hsla(${p.hue}, 80%, 60%, 0.6)`;
+            pCtx.beginPath();
+            pCtx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+            pCtx.fill();
+        });
+        requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+
+    // GSAP Floating Panels
+    if (typeof gsap !== 'undefined') {
+        gsap.utils.toArray(".side-panel").forEach((panel, i) => {
+            gsap.to(panel, {
+                y: "random(-8,8)",
+                rotation: "random(-1,1)",
+                duration: "random(6,12)",
+                repeat: -1,
+                yoyo: true,
+                ease: "sine.inOut",
+                delay: i * 0.5
+            });
+        });
+    }
 
     /* ================================================================
        CONSTANTS

@@ -1,7 +1,7 @@
-# SWARMZ World Bible
+﻿# NEXUSMON World Bible
 
 ## Core Premise
-SWARMZ is a sovereign operator runtime where missions flow through governed autonomy, partner evolution, and auditable execution.
+NEXUSMON is a sovereign operator runtime where missions flow through governed autonomy, partner evolution, and auditable execution.
 
 ## Canon
 - Operator sovereignty is absolute.
