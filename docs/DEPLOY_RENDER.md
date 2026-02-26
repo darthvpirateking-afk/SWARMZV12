@@ -1,64 +1,90 @@
 # Deploying NEXUSMON on Render
 
-This guide explains how to deploy NEXUSMON on [Render](https://render.com) using the included Blueprint file (`render.yaml`).
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy)
 
-## Services
+The `render.yaml` Blueprint at the repo root provisions two Render services in one click:
 
-The `render.yaml` Blueprint defines two services:
-
-| Service | Type | Description |
+| Service | Type | What it does |
 |---|---|---|
-| `nexusmon-api` | Python web service | FastAPI backend (uvicorn) |
-| `nexusmon-web` | Static site | Frontend UI from `web/` |
+| `nexusmon-api` | Python web service | FastAPI backend served by uvicorn |
+| `nexusmon-web` | Static site | Standalone HTML/JS/CSS frontend from `web/` |
 
-## Quick Deploy
+---
 
-1. Fork or push this repository to GitHub.
-2. In the [Render Dashboard](https://dashboard.render.com), click **New → Blueprint**.
-3. Connect your GitHub repository.
-4. Render will detect `render.yaml` and create both services automatically.
+## Quick deploy (Blueprint)
 
-## Manual Service Setup
+1. Push this repo to GitHub (or fork it).
+2. Open the [Render Dashboard](https://dashboard.render.com) → **New → Blueprint**.
+3. Connect the repository — Render detects `render.yaml` and previews both services.
+4. Click **Apply**. Render builds and deploys everything automatically.
 
-If you prefer to create the web service manually:
+---
 
-- **Runtime**: Python 3
-- **Build Command**: `pip install -r requirements.txt`
-- **Start Command**: `uvicorn swarmz_server:app --host 0.0.0.0 --port $PORT`
-- **Health Check Path**: `/health`
+## Manual web-service setup
 
-## Persistent Disk for `data/`
+If you prefer to configure the API service by hand in the dashboard:
 
-NEXUSMON stores runtime state as JSONL files under the `data/` directory. The Blueprint attaches a **1 GB persistent disk** mounted at `/opt/render/project/src/data` (the `data/` subdirectory of the service's working directory). This ensures that conversation history, trial records, and other runtime artifacts survive service restarts and re-deploys.
+| Setting | Value |
+|---|---|
+| **Runtime** | Python 3 |
+| **Build command** | `pip install -r requirements.txt` |
+| **Start command** | `uvicorn swarmz_server:app --host 0.0.0.0 --port $PORT` |
+| **Health check path** | `/health` |
 
-> **Note**: Render's free tier does not support persistent disks. Upgrade to a paid plan (Starter or above) to use this feature.
+---
 
-## Environment Variables
+## Environment variables
 
-| Variable | Default | Description |
+The Blueprint sets these automatically. Review and override them in **Dashboard → nexusmon-api → Environment**.
+
+| Variable | How it's set | Description |
 |---|---|---|
-| `PYTHON_VERSION` | `3.11` | Python version for the build environment |
-| `PORT` | `10000` | Port Render injects automatically at runtime |
+| `PYTHON_VERSION` | `3.11` | Python version used during the build |
+| `ALLOWED_ORIGINS` | `https://nexusmon-web.onrender.com` | Comma-separated CORS origins; update after first deploy if URLs differ |
+| `OPERATOR_KEY` | Auto-generated | API key required for operator-gated endpoints — copy from dashboard |
+| `JWT_SECRET` | Auto-generated | HS256 secret for signing/verifying JWT tokens |
 
-You may also set optional variables such as `ALLOWED_ORIGINS` (comma-separated CORS origins) depending on your configuration.
+> `OPERATOR_KEY` and `JWT_SECRET` are generated once by Render and stored as encrypted secrets. You can rotate them in the dashboard at any time.
 
-## Verifying the Deployment
+---
 
-Once the service is live, confirm it is running by visiting the interactive API docs:
+## Persistent disk for `data/`
+
+NEXUSMON writes conversation history, trial records, and other runtime state as JSONL files under `data/`. The Blueprint attaches a **1 GB persistent disk** mounted at `/opt/render/project/src/data` so this state survives deploys and restarts.
+
+> **Paid plan required.** Render's free tier does not support persistent disks. You need the **Starter** plan or above to use this feature.
+
+---
+
+## Verifying the deployment
+
+Once the deploy turns green, hit the auto-generated API docs:
 
 ```
-https://<your-service-name>.onrender.com/docs
+https://nexusmon-api.onrender.com/docs
 ```
 
-You can also hit the health endpoint directly:
+Or check the health endpoint:
 
 ```bash
-curl https://<your-service-name>.onrender.com/health
-# Expected: {"ok": true, "status": "ok"}
+curl https://nexusmon-api.onrender.com/health
+# → {"ok": true, "status": "ok"}
 ```
 
-## Static Frontend (`nexusmon-web`)
+---
 
-The `web/` directory contains a standalone HTML/JS/CSS frontend. The Blueprint publishes it as a Render Static Site with a catch-all rewrite to `index.html` for client-side routing.
+## Connecting the frontend to the API
 
-Point the frontend at the API by setting the backend URL in your environment or by updating `web/app.js` to use the deployed API URL.
+After both services are live, update `ALLOWED_ORIGINS` in `nexusmon-api` to include the exact URL of `nexusmon-web` (shown in the Static Site dashboard), then redeploy. In `web/app.js` set the base URL constant to your `nexusmon-api` Render URL.
+
+---
+
+## Troubleshooting
+
+| Symptom | Fix |
+|---|---|
+| Build fails with `ModuleNotFoundError` | Ensure all imports are covered in `requirements.txt` and redeploy |
+| `/health` returns 502 | Service may still be starting; wait 60 s then retry. Check **Logs** tab |
+| CORS errors in browser | Add the frontend origin to `ALLOWED_ORIGINS` and redeploy the API service |
+| Data lost after redeploy | Persistent disk not attached — upgrade to a paid plan and verify the disk is mounted |
+| `JWT_SECRET` errors | Set `JWT_SECRET` to a random string ≥ 32 chars in the environment dashboard |
