@@ -349,13 +349,13 @@ async def chat(payload: ChatRequest, request: Request) -> ChatReply:
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.get("/health")
+@router.get("/health", operation_id="nexusmon_health")
 async def nexusmon_health():
     """Health check for NEXUSMON service."""
     return {"ok": True, "service": "NEXUSMON Console", "status": "operational"}
 
 
-@router.get("/entity/state")
+@router.get("/entity/state", operation_id="get_entity_state_v1")
 async def get_entity_state():
     """Get NEXUSMON entity state for cockpit display."""
     try:

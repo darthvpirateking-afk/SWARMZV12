@@ -10,7 +10,7 @@ router = APIRouter()
 get_engine: Callable[[], SwarmzEngine] = lambda: SwarmzEngine()
 
 
-@router.get("/health")
+@router.get("/health", operation_id="system_health")
 def get_health():
     return get_engine().get_health()
 

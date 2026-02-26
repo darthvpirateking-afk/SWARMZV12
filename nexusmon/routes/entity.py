@@ -29,7 +29,7 @@ def _entity():
 # ── State ─────────────────────────────────────────────────────────────
 
 
-@router.get("/state")
+@router.get("/state", operation_id="get_nexusmon_entity_state")
 def get_entity_state():
     """Full entity state — form, mood, traits, XP, evolution log."""
     state = _entity().get_state()

@@ -462,7 +462,7 @@ def companion_state():
     }
 
 
-@app.get("/health")
+@app.get("/health", operation_id="runtime_health")
 def health():
     return {"ok": True, "status": "ok"}
 
