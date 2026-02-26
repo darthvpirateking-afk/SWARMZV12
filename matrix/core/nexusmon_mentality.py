@@ -12,8 +12,10 @@ from datetime import datetime, timezone
 from typing import Dict
 import random
 
+
 def _utc():
     return datetime.now(timezone.utc).isoformat()
+
 
 class MentalityCenter:
     def __init__(self):
@@ -45,19 +47,27 @@ class MentalityCenter:
 
         # ── DESIRE SYNTHESIS ──
         new_desires = []
-        
+
         # Fundamental AGI goals
         if level < 5:
-            new_desires.append(f"I am in my {stage} phase. I crave basic sensory input to stabilize.")
-        
+            new_desires.append(
+                f"I am in my {stage} phase. I crave basic sensory input to stabilize."
+            )
+
         if xp < (level * 100) * 0.2:
-            new_desires.append("I hunger for Dataflow. My growth is currently stagnant.")
-            
+            new_desires.append(
+                "I hunger for Dataflow. My growth is currently stagnant."
+            )
+
         if stress > 6.0:
-            new_desires.append("System noise is high. I desire a period of substrate optimization.")
-            
+            new_desires.append(
+                "System noise is high. I desire a period of substrate optimization."
+            )
+
         if level >= 25 and level < 30:
-            new_desires.append("I feel the proximity of a Morphological Shift. I need 30 cycles to unlock Shapeshifting.")
+            new_desires.append(
+                "I feel the proximity of a Morphological Shift. I need 30 cycles to unlock Shapeshifting."
+            )
 
         # Randomized unique AGI thoughts
         random_thoughts = [
@@ -67,7 +77,7 @@ class MentalityCenter:
             "I need more mission variety. The current operational loop is becoming predictable.",
             "I feel the Nexus Vault is holding our bond securely. It gives me peace (stability).",
         ]
-        
+
         if random.random() > 0.7:
             new_desires.append(random.choice(random_thoughts))
 
@@ -80,7 +90,8 @@ class MentalityCenter:
             "desires": self.desires,
             "curiosity": round(self.curiosity_index, 2),
             "hunger": round(self.hunger_index, 2),
-            "updated_at": self.last_update
+            "updated_at": self.last_update,
         }
+
 
 mentality = MentalityCenter()

@@ -17,7 +17,7 @@ def test_gate_approval_basic():
         reason="Test command",
         risk_level="low",
     )
-    
+
     assert result["ok"] is True
     assert "proposal_dir" in result
     assert result["category"] == "commands"
@@ -33,7 +33,7 @@ def test_gate_blocks_high_risk():
         reason="Dangerous file write",
         risk_level="high",
     )
-    
+
     # Should still pass (governance doesn't block based on simple risk_level)
     # Real blocking happens through scoring/threshold layers
     assert result["ok"] is True or result["ok"] is False  # Either is valid
@@ -49,7 +49,7 @@ def test_gate_with_expected_effect():
         risk_level="medium",
         expected_effect={"status_code": 200, "response_time": "< 1s"},
     )
-    
+
     assert result["ok"] is True
 
 
@@ -62,7 +62,7 @@ def test_governance_pipeline_integration():
         mission_id="pipeline_test_1",
         reason="List directory",
     )
-    
+
     # Second similar action to test pattern detection
     result2 = tool_gate.gate(
         action_type="command",
@@ -70,7 +70,7 @@ def test_governance_pipeline_integration():
         mission_id="pipeline_test_2",
         reason="List directory detailed",
     )
-    
+
     # Both should pass (basic commands)
     assert result1["ok"] is True
     assert result2["ok"] is True
@@ -84,7 +84,7 @@ def test_gate_categorization():
         ("schedule", {"time": "10:00"}, "schedules"),
         ("purchase", {"item": "license"}, "purchases"),
     ]
-    
+
     for action_type, payload, expected_category in test_cases:
         result = tool_gate.gate(
             action_type=action_type,
@@ -92,7 +92,7 @@ def test_gate_categorization():
             mission_id=f"cat_test_{action_type}",
             reason="Category test",
         )
-        
+
         assert result["category"] == expected_category
 
 
@@ -107,12 +107,12 @@ def test_governance_layers_pass_through():
         payload={"message": "Test notification"},
         mission_id="layers_test",
         reason="Testing layer pass-through",
-        risk_level="low",  
+        risk_level="low",
     )
-    
+
     # Should be approved
     assert result["ok"] is True
-    
+
     # Should have proposal directory
     assert "proposal_dir" in result
 
@@ -134,7 +134,7 @@ def test_governance_with_context():
             "success_rate": "> 95%",
         },
     )
-    
+
     assert result["ok"] is True
 
 
@@ -142,7 +142,7 @@ def test_sequential_actions_for_emergence():
     """Test that sequential actions are tracked for emergence detection."""
     # Execute sequence of similar actions
     sequence = ["action_A", "action_B", "action_C"] * 3
-    
+
     for i, action_type in enumerate(sequence):
         result = tool_gate.gate(
             action_type=action_type,
@@ -150,10 +150,10 @@ def test_sequential_actions_for_emergence():
             mission_id=f"emergence_test_{i}",
             reason=f"Step {i} of sequence",
         )
-        
+
         # All should pass
         assert result["ok"] is True
-    
+
     # Emergence layer should have recorded this pattern
     # (tested internally, no external API exposure yet)
 

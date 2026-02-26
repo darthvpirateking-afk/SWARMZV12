@@ -40,9 +40,19 @@ class WorkflowForecaster:
                 "predicted_files": [],
                 "confidence": 0,
             }  # Fail-open
-            return {"predicted_actions": [], "predicted_tasks": [], "predicted_files": [], "confidence": 0}
+            return {
+                "predicted_actions": [],
+                "predicted_tasks": [],
+                "predicted_files": [],
+                "confidence": 0,
+            }
         except Exception:
-            return {"predicted_actions": [], "predicted_tasks": [], "predicted_files": [], "confidence": 0}  # Fail-open
+            return {
+                "predicted_actions": [],
+                "predicted_tasks": [],
+                "predicted_files": [],
+                "confidence": 0,
+            }  # Fail-open
 
     def get_forecast_summary(self):
         return {

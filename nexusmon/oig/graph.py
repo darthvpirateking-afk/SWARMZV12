@@ -163,7 +163,11 @@ class TemporalGraph:
         return d
 
     def get_or_create_node(
-        self, entity_type: str, entity_id: str, label: str, properties: dict | None = None
+        self,
+        entity_type: str,
+        entity_id: str,
+        label: str,
+        properties: dict | None = None,
     ) -> str:
         """Return existing node id or create a new one."""
         existing = self.get_node(entity_type, entity_id)
@@ -229,7 +233,18 @@ class TemporalGraph:
             "(id, subject_id, predicate, object_id, t_valid_from, t_valid_to, t_ingested, "
             " confidence, source, fact_type, metadata) "
             "VALUES (?, ?, ?, ?, ?, NULL, ?, ?, ?, ?, ?)",
-            (edge_id, subject_id, predicate, object_id, now, now, confidence, source, fact_type, meta_json),
+            (
+                edge_id,
+                subject_id,
+                predicate,
+                object_id,
+                now,
+                now,
+                confidence,
+                source,
+                fact_type,
+                meta_json,
+            ),
         )
         self.conn.commit()
         return edge_id
@@ -349,12 +364,14 @@ class TemporalGraph:
             return {}
         subject_id = node["id"]
 
-        kwargs: dict = dict(subject_id=subject_id, at_time=at_time, active_only=(at_time is None))
+        kwargs: dict = dict(
+            subject_id=subject_id, at_time=at_time, active_only=(at_time is None)
+        )
 
         return {
             "identity": self.get_facts(predicate="is_named", **kwargs)
-                        + self.get_facts(predicate="communicates_as", **kwargs)
-                        + self.get_facts(predicate="thinks_as", **kwargs),
+            + self.get_facts(predicate="communicates_as", **kwargs)
+            + self.get_facts(predicate="thinks_as", **kwargs),
             "values": self.get_facts(fact_type="value", **kwargs),
             "emotions": self.get_facts(fact_type="emotion", **kwargs),
             "expertise": self.get_facts(fact_type="expertise", **kwargs),
@@ -366,9 +383,7 @@ class TemporalGraph:
             "current_epoch": self._get_current_epoch(operator_id),
         }
 
-    def get_evolution_between(
-        self, operator_id: str, t_start: str, t_end: str
-    ) -> dict:
+    def get_evolution_between(self, operator_id: str, t_start: str, t_end: str) -> dict:
         """Return all facts that changed between t_start and t_end.
 
         Returns: { added: [...], invalidated: [...] }
@@ -460,7 +475,9 @@ class TemporalGraph:
             merged = list(dict.fromkeys(existing_ev + evidence))[-20:]
             # Average confidence toward new value (weighted by occurrence)
             old_conf = row["confidence"]
-            new_conf = min(1.0, (old_conf * row["occurrence_count"] + confidence) / new_count)
+            new_conf = min(
+                1.0, (old_conf * row["occurrence_count"] + confidence) / new_count
+            )
             self.conn.execute(
                 "UPDATE oig_patterns SET occurrence_count = ?, last_seen = ?, "
                 "evidence = ?, confidence = ? WHERE id = ?",
@@ -662,9 +679,7 @@ class TemporalGraph:
         bond_age_days = 0
         try:
             cur = self.conn.cursor()
-            cur.execute(
-                "SELECT bond_established_at FROM entity_state LIMIT 1"
-            )
+            cur.execute("SELECT bond_established_at FROM entity_state LIMIT 1")
             row = cur.fetchone()
             if row and row["bond_established_at"]:
                 bond_start = datetime.fromisoformat(row["bond_established_at"])
@@ -684,9 +699,7 @@ class TemporalGraph:
             )
             row = cur.fetchone()
             shared_victories = row["cnt"] if row else 0
-            cur.execute(
-                "SELECT COUNT(*) as cnt FROM missions WHERE status = 'FAILED'"
-            )
+            cur.execute("SELECT COUNT(*) as cnt FROM missions WHERE status = 'FAILED'")
             row = cur.fetchone()
             shared_failures = row["cnt"] if row else 0
         except Exception:
@@ -739,9 +752,7 @@ class TemporalGraph:
         try:
             patterns = self.get_patterns(operator_id, pattern_type="conversational")
             inside_refs = [
-                p["description"]
-                for p in patterns
-                if p.get("occurrence_count", 0) >= 3
+                p["description"] for p in patterns if p.get("occurrence_count", 0) >= 3
             ][:10]
         except Exception:
             pass
@@ -755,7 +766,11 @@ class TemporalGraph:
         conflict_component = (resolutions / max(disagreements, 1)) * 0.15
         trust_level = min(
             1.0,
-            0.1 + time_component + experience_component + correction_component + conflict_component,
+            0.1
+            + time_component
+            + experience_component
+            + correction_component
+            + conflict_component,
         )
 
         return {

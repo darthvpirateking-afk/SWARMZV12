@@ -29,9 +29,7 @@ def load_timeline() -> List[Dict[str, Any]]:
 
 
 def append_event(
-    event_type: str,
-    payload: Dict[str, Any],
-    plugin_id: Optional[str] = None
+    event_type: str, payload: Dict[str, Any], plugin_id: Optional[str] = None
 ) -> Dict[str, Any]:
     """
     Append a new timeline event.
@@ -66,9 +64,7 @@ def append_event(
 
 
 def get_timeline_slice(
-    limit: int = 100,
-    offset: int = 0,
-    event_type: Optional[str] = None
+    limit: int = 100, offset: int = 0, event_type: Optional[str] = None
 ) -> List[Dict[str, Any]]:
     """
     Retrieve a slice of timeline (for pagination + filtering).
@@ -110,10 +106,16 @@ def get_stats() -> Dict[str, Any]:
 
     stats = {
         "total_events": len(timeline),
-        "plugins_installed": len([e for e in timeline if e.get("type") == "plugin_installed"]),
-        "plugins_unlocked": len([e for e in timeline if e.get("type") == "plugin_unlocked"]),
+        "plugins_installed": len(
+            [e for e in timeline if e.get("type") == "plugin_installed"]
+        ),
+        "plugins_unlocked": len(
+            [e for e in timeline if e.get("type") == "plugin_unlocked"]
+        ),
         "rank_ups": len([e for e in timeline if e.get("type") == "rank_up"]),
-        "missions_completed": len([e for e in timeline if e.get("type") == "mission_complete"]),
+        "missions_completed": len(
+            [e for e in timeline if e.get("type") == "mission_complete"]
+        ),
         "evolutions": len([e for e in timeline if e.get("type") == "evolution"]),
     }
 

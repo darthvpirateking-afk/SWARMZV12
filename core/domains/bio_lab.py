@@ -12,23 +12,24 @@ from core.reversible import LayerResult
 
 logger = logging.getLogger(__name__)
 
+
 class BioLabGateway:
     """Gateway for NEXUSMON Bio-Lab interactions."""
-    
+
     def __init__(self, endpoint: str = "https://biolab.sim.nexusmon.com"):
         self.endpoint = endpoint
 
     def execute_action(self, action: str, params: Dict[str, Any]) -> LayerResult:
         """Execute a biology operation with deterministic telemetry."""
         logger.info(f"BioLab: Executing {action} with {params}")
-        
+
         # Simulation logic for specific bio-ops
         telemetry = {
             "sample_integrity": 0.99,
             "reagent_count": 42,
-            "containment_level": "BSL-3"
+            "containment_level": "BSL-3",
         }
-        
+
         if action == "CRISPR_SEQUENCE_VERIFY":
             telemetry["match_confidence"] = 0.9998
             telemetry["off_target_risk"] = 0.0001
@@ -37,13 +38,13 @@ class BioLabGateway:
             telemetry["collision_count"] = 0
         elif action == "SYNTHETIC_SEQUENCE_LOAD":
             telemetry["vial_id"] = f"BS-{params.get('sequence_id', 'UNK')}"
-        
+
         success = True
         reason = f"Bio-action '{action}' completed on NEXUSMON sim-lab."
-        
+
         # Artificial latency
         time.sleep(0.05)
-        
+
         return LayerResult(
             layer="bio_lab_api",
             passed=success,
@@ -52,7 +53,7 @@ class BioLabGateway:
                 "action": action,
                 "endpoint": self.endpoint,
                 "telemetry": telemetry,
-                **params
+                **params,
             },
-            timestamp=time.time()
+            timestamp=time.time(),
         )

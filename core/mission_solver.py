@@ -71,7 +71,7 @@ def solve(mission: Dict[str, Any]) -> Dict[str, Any]:
 
     # Domain Detection: Is this a Nexusmon-class mission? (P4.1)
     is_nexusmon = "sovereign" in intent.lower() or "nexusmon" in intent.lower()
-    
+
     # Ensure output dir
     action_dir = PREPARED_DIR / mission_id
     action_dir.mkdir(parents=True, exist_ok=True)
@@ -83,19 +83,22 @@ def solve(mission: Dict[str, Any]) -> Dict[str, Any]:
     # ── NEXUSMON Decomposer Pass ───────────────────────────────────
     if is_nexusmon:
         from core.nexusmon.decomposer import NexusmonDecomposer
+
         decomposer = NexusmonDecomposer()
         tasks = decomposer.decompose(mission_id, intent, spec)
-        
+
         # Write task DAG to prepared_actions
         task_data = {
             "mission_id": mission_id,
             "tasks": tasks,
             "generated_at": now,
             "style": "dag_v2",
-            "self_awareness": cog_summary
+            "self_awareness": cog_summary,
         }
-        (action_dir / "plan_dag.json").write_text(json.dumps(task_data, indent=2), encoding="utf-8")
-        
+        (action_dir / "plan_dag.json").write_text(
+            json.dumps(task_data, indent=2), encoding="utf-8"
+        )
+
         # Return plan with DAG pointer
         return {
             "ok": True,
@@ -103,7 +106,7 @@ def solve(mission: Dict[str, Any]) -> Dict[str, Any]:
             "prepared_actions_dir": str(action_dir),
             "source": "nexusmon_decomposer",
             "type": "dag_v2",
-            "tasks": tasks
+            "tasks": tasks,
         }
 
     # ── Offline stub ──

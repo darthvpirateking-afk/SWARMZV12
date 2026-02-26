@@ -178,6 +178,7 @@ def get_proactive_engine() -> ProactiveEngine:
 
 # ── Module-level convenience wrappers (imported by ws_handler) ─────────────────
 
+
 def run_boot_scan(entity_state: dict) -> dict:
     """Module-level wrapper around ProactiveEngine.run_boot_scan().
 

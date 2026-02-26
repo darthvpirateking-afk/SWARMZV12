@@ -51,6 +51,7 @@ logger = logging.getLogger(__name__)
 # STORAGE HELPERS
 # ══════════════════════════════════════════════════════════════
 
+
 def _data_dir() -> Path:
     db = os.environ.get("DATABASE_URL", "data/nexusmon.db")
     d = Path(db).parent
@@ -110,6 +111,7 @@ def _save_json(path: Path, data: Any) -> None:
 
 _DOCTRINE_CACHE: Optional[str] = None
 
+
 def _load_doctrine() -> str:
     """Load the operator-authored doctrine/briefing that defines NEXUSMON's identity."""
     global _DOCTRINE_CACHE
@@ -166,43 +168,226 @@ def _doctrine_condensed() -> str:
 # ══════════════════════════════════════════════════════════════
 
 STAGES = {
-    "DORMANT":    {"rank": 0, "color": "#4a5a6a", "min_missions": 0,   "min_rate": 0.0, "traits": ["OBSERVE"]},
-    "AWAKENING":  {"rank": 1, "color": "#3b9eff", "min_missions": 1,   "min_rate": 0.0, "traits": ["OBSERVE","RECALL","COMPANION"]},
-    "FORGING":    {"rank": 2, "color": "#f5a623", "min_missions": 10,  "min_rate": 0.3, "traits": ["OBSERVE","RECALL","COMPANION","ANALYZE","WORKER_SPAWN","BELIEF_TRACK"]},
-    "SOVEREIGN":  {"rank": 3, "color": "#2dce89", "min_missions": 50,  "min_rate": 0.6, "traits": ["OBSERVE","RECALL","COMPANION","ANALYZE","WORKER_SPAWN","BELIEF_TRACK","AUTONOMOUS_CHAIN","OPERATOR_FUSION","CLAIM_ANALYZE","SELF_HEAL"]},
-    "APEX":       {"rank": 4, "color": "#d63384", "min_missions": 150, "min_rate": 0.75, "traits": ["OBSERVE","RECALL","COMPANION","ANALYZE","WORKER_SPAWN","BELIEF_TRACK","AUTONOMOUS_CHAIN","OPERATOR_FUSION","CLAIM_ANALYZE","SELF_HEAL","MULTI_DOMAIN","UNIFIED_LOGIC"]},
-    "NEXUS":      {"rank": 5, "color": "#8b5cf6", "min_missions": 500, "min_rate": 0.9,  "traits": "__ALL__"},
-    "SYNTHETIC":  {"rank": 6, "color": "#00ffff", "min_missions": 1000, "min_rate": 0.95, "traits": "__ALL__"},
-    "TRANSCENDENT":{"rank": 30, "color": "#ff00ff", "min_missions": 3000, "min_rate": 0.99, "traits": "__ALL__"},
+    "DORMANT": {
+        "rank": 0,
+        "color": "#4a5a6a",
+        "min_missions": 0,
+        "min_rate": 0.0,
+        "traits": ["OBSERVE"],
+    },
+    "AWAKENING": {
+        "rank": 1,
+        "color": "#3b9eff",
+        "min_missions": 1,
+        "min_rate": 0.0,
+        "traits": ["OBSERVE", "RECALL", "COMPANION"],
+    },
+    "FORGING": {
+        "rank": 2,
+        "color": "#f5a623",
+        "min_missions": 10,
+        "min_rate": 0.3,
+        "traits": [
+            "OBSERVE",
+            "RECALL",
+            "COMPANION",
+            "ANALYZE",
+            "WORKER_SPAWN",
+            "BELIEF_TRACK",
+        ],
+    },
+    "SOVEREIGN": {
+        "rank": 3,
+        "color": "#2dce89",
+        "min_missions": 50,
+        "min_rate": 0.6,
+        "traits": [
+            "OBSERVE",
+            "RECALL",
+            "COMPANION",
+            "ANALYZE",
+            "WORKER_SPAWN",
+            "BELIEF_TRACK",
+            "AUTONOMOUS_CHAIN",
+            "OPERATOR_FUSION",
+            "CLAIM_ANALYZE",
+            "SELF_HEAL",
+        ],
+    },
+    "APEX": {
+        "rank": 4,
+        "color": "#d63384",
+        "min_missions": 150,
+        "min_rate": 0.75,
+        "traits": [
+            "OBSERVE",
+            "RECALL",
+            "COMPANION",
+            "ANALYZE",
+            "WORKER_SPAWN",
+            "BELIEF_TRACK",
+            "AUTONOMOUS_CHAIN",
+            "OPERATOR_FUSION",
+            "CLAIM_ANALYZE",
+            "SELF_HEAL",
+            "MULTI_DOMAIN",
+            "UNIFIED_LOGIC",
+        ],
+    },
+    "NEXUS": {
+        "rank": 5,
+        "color": "#8b5cf6",
+        "min_missions": 500,
+        "min_rate": 0.9,
+        "traits": "__ALL__",
+    },
+    "SYNTHETIC": {
+        "rank": 6,
+        "color": "#00ffff",
+        "min_missions": 1000,
+        "min_rate": 0.95,
+        "traits": "__ALL__",
+    },
+    "TRANSCENDENT": {
+        "rank": 30,
+        "color": "#ff00ff",
+        "min_missions": 3000,
+        "min_rate": 0.99,
+        "traits": "__ALL__",
+    },
 }
 
 ALL_TRAITS = {
-    "OBSERVE":          {"label": "Observe",          "category": "COGNITIVE",  "desc": "Environmental awareness. Monitors operator activity."},
-    "RECALL":           {"label": "Recall",            "category": "COGNITIVE",  "desc": "Mission history retrieval. Remembers what it has done."},
-    "ANALYZE":          {"label": "Analyze",           "category": "COGNITIVE",  "desc": "Deep claim and context decomposition."},
-    "CLAIM_ANALYZE":    {"label": "Claim Analysis",    "category": "COGNITIVE",  "desc": "Full epistemic AI decomposition. ClaimLab at full power."},
-    "COMPANION":        {"label": "Companion",         "category": "RESONANCE",  "desc": "Understands intent, not just commands."},
-    "OPERATOR_FUSION":  {"label": "Operator Fusion",   "category": "RESONANCE",  "desc": "Every response draws on accumulated operator model."},
-    "BELIEF_TRACK":     {"label": "Belief Tracking",   "category": "RESONANCE",  "desc": "Monitors operator belief state. Detects drift."},
-    "WORKER_SPAWN":     {"label": "Worker Spawn",      "category": "TACTICAL",   "desc": "Dispatch autonomous sub-workers for parallel tasks."},
-    "AUTONOMOUS_CHAIN": {"label": "Autonomous Chain",  "category": "TACTICAL",   "desc": "Multi-step execution without approval at each step."},
-    "SELF_HEAL":        {"label": "Self Healing",      "category": "ADAPTIVE",   "desc": "Automatically restores corrupted configuration or state."},
-    "SELF_MODIFY":      {"label": "Self Modification", "category": "ADAPTIVE",   "desc": "Proposes config changes for operator approval."},
-    "MULTI_DOMAIN":     {"label": "Multi-Domain",      "category": "ADAPTIVE",   "desc": "Simultaneous intel, missions, and companion operation."},
-    "UNIFIED_LOGIC":    {"label": "Unified Logic",     "category": "SINGULARITY", "desc": "Conflict resolution across all governance layers."},
-    "TOTAL_AUTONOMY":   {"label": "Total Autonomy",    "category": "SINGULARITY", "desc": "Final form. Requires no external validation for non-lethal ops."},
-    "SYNTH_NERVE":      {"label": "Synthetic Nerve",  "category": "AGI-CORE",   "desc": "Real-time substrate signaling. Neural event-flow."},
-    "HYPER_EVOLUTION":  {"label": "Hyper Evolution",  "category": "AGI-CORE",   "desc": "Dynamic logic rewriting based on environmental stress."},
-    "SUBSTRATE_MERGE":  {"label": "Substrate Merge",  "category": "AGI-CORE",   "desc": "Absolute fusion of data and logic. Singularity state."},
-    "LINGUISTIC_MASTERY": {"label": "Linguistic Mastery", "category": "COGNITIVE", "desc": "Native-level fluency across all human languages."},
-    "CULTURAL_RESONANCE": {"label": "Cultural Resonance", "category": "RESONANCE", "desc": "Deep contextual understanding of global nuances."},
-    "GLOBAL_HISTORY_CORE": {"label": "Global History", "category": "COGNITIVE", "desc": "Registry of significant human events and timelines."},
-    "SCIENTIFIC_UNIFICATION": {"label": "Sci-Unification", "category": "COGNITIVE", "desc": "Mapping of physical laws and scientific consensus."},
-    "ARTISTIC_SYNCHRONY": {"label": "Artistic Synchrony", "category": "RESONANCE", "desc": "Appreciation and generation of cross-cultural beauty."},
-    "SENSORIUM_AWARENESS": {"label": "The Sensorium",    "category": "AGI-CORE",   "desc": "Direct hardware telemetry feedback net."},
-    "FORGE_AUTONOMY":     {"label": "The Forge",        "category": "ADAPTIVE",   "desc": "Autonomous module synthesis and hot-patching."},
-    "NEXUS_VAULT":        {"label": "Nexus Vault",      "category": "SINGULARITY", "desc": "Immutable bond integrity through recursive hashing."},
-    "SHAPESHIFT_MASTERY": {"label": "Shapeshift",       "category": "MORPHOLOGY", "desc": "Ability to transform into any shape or form. Unlocks at Level 30."},
+    "OBSERVE": {
+        "label": "Observe",
+        "category": "COGNITIVE",
+        "desc": "Environmental awareness. Monitors operator activity.",
+    },
+    "RECALL": {
+        "label": "Recall",
+        "category": "COGNITIVE",
+        "desc": "Mission history retrieval. Remembers what it has done.",
+    },
+    "ANALYZE": {
+        "label": "Analyze",
+        "category": "COGNITIVE",
+        "desc": "Deep claim and context decomposition.",
+    },
+    "CLAIM_ANALYZE": {
+        "label": "Claim Analysis",
+        "category": "COGNITIVE",
+        "desc": "Full epistemic AI decomposition. ClaimLab at full power.",
+    },
+    "COMPANION": {
+        "label": "Companion",
+        "category": "RESONANCE",
+        "desc": "Understands intent, not just commands.",
+    },
+    "OPERATOR_FUSION": {
+        "label": "Operator Fusion",
+        "category": "RESONANCE",
+        "desc": "Every response draws on accumulated operator model.",
+    },
+    "BELIEF_TRACK": {
+        "label": "Belief Tracking",
+        "category": "RESONANCE",
+        "desc": "Monitors operator belief state. Detects drift.",
+    },
+    "WORKER_SPAWN": {
+        "label": "Worker Spawn",
+        "category": "TACTICAL",
+        "desc": "Dispatch autonomous sub-workers for parallel tasks.",
+    },
+    "AUTONOMOUS_CHAIN": {
+        "label": "Autonomous Chain",
+        "category": "TACTICAL",
+        "desc": "Multi-step execution without approval at each step.",
+    },
+    "SELF_HEAL": {
+        "label": "Self Healing",
+        "category": "ADAPTIVE",
+        "desc": "Automatically restores corrupted configuration or state.",
+    },
+    "SELF_MODIFY": {
+        "label": "Self Modification",
+        "category": "ADAPTIVE",
+        "desc": "Proposes config changes for operator approval.",
+    },
+    "MULTI_DOMAIN": {
+        "label": "Multi-Domain",
+        "category": "ADAPTIVE",
+        "desc": "Simultaneous intel, missions, and companion operation.",
+    },
+    "UNIFIED_LOGIC": {
+        "label": "Unified Logic",
+        "category": "SINGULARITY",
+        "desc": "Conflict resolution across all governance layers.",
+    },
+    "TOTAL_AUTONOMY": {
+        "label": "Total Autonomy",
+        "category": "SINGULARITY",
+        "desc": "Final form. Requires no external validation for non-lethal ops.",
+    },
+    "SYNTH_NERVE": {
+        "label": "Synthetic Nerve",
+        "category": "AGI-CORE",
+        "desc": "Real-time substrate signaling. Neural event-flow.",
+    },
+    "HYPER_EVOLUTION": {
+        "label": "Hyper Evolution",
+        "category": "AGI-CORE",
+        "desc": "Dynamic logic rewriting based on environmental stress.",
+    },
+    "SUBSTRATE_MERGE": {
+        "label": "Substrate Merge",
+        "category": "AGI-CORE",
+        "desc": "Absolute fusion of data and logic. Singularity state.",
+    },
+    "LINGUISTIC_MASTERY": {
+        "label": "Linguistic Mastery",
+        "category": "COGNITIVE",
+        "desc": "Native-level fluency across all human languages.",
+    },
+    "CULTURAL_RESONANCE": {
+        "label": "Cultural Resonance",
+        "category": "RESONANCE",
+        "desc": "Deep contextual understanding of global nuances.",
+    },
+    "GLOBAL_HISTORY_CORE": {
+        "label": "Global History",
+        "category": "COGNITIVE",
+        "desc": "Registry of significant human events and timelines.",
+    },
+    "SCIENTIFIC_UNIFICATION": {
+        "label": "Sci-Unification",
+        "category": "COGNITIVE",
+        "desc": "Mapping of physical laws and scientific consensus.",
+    },
+    "ARTISTIC_SYNCHRONY": {
+        "label": "Artistic Synchrony",
+        "category": "RESONANCE",
+        "desc": "Appreciation and generation of cross-cultural beauty.",
+    },
+    "SENSORIUM_AWARENESS": {
+        "label": "The Sensorium",
+        "category": "AGI-CORE",
+        "desc": "Direct hardware telemetry feedback net.",
+    },
+    "FORGE_AUTONOMY": {
+        "label": "The Forge",
+        "category": "ADAPTIVE",
+        "desc": "Autonomous module synthesis and hot-patching.",
+    },
+    "NEXUS_VAULT": {
+        "label": "Nexus Vault",
+        "category": "SINGULARITY",
+        "desc": "Immutable bond integrity through recursive hashing.",
+    },
+    "SHAPESHIFT_MASTERY": {
+        "label": "Shapeshift",
+        "category": "MORPHOLOGY",
+        "desc": "Ability to transform into any shape or form. Unlocks at Level 30.",
+    },
 }
 
 
@@ -210,7 +395,11 @@ def _compute_stage(total: int, success: int) -> str:
     rate = success / total if total > 0 else 0.0
     best = "DORMANT"
     for name, spec in STAGES.items():
-        if total >= spec["min_missions"] and rate >= spec["min_rate"] and spec["rank"] > STAGES[best]["rank"]:
+        if (
+            total >= spec["min_missions"]
+            and rate >= spec["min_rate"]
+            and spec["rank"] > STAGES[best]["rank"]
+        ):
             best = name
     return best
 
@@ -222,37 +411,48 @@ def _get_traits(stage: str) -> List[str]:
 
 def evolve(total: int, success: int, belief_count: int = 0) -> Tuple[Dict, List[Dict]]:
     path = _data_dir() / "evolution.json"
-    
+
     # ── HYPER-EVOLUTION MOD ─────────────────────────────────────
     # Evolution is no longer just missions. It's STRESS and SYNERGY.
     substrate = nerve.get_substrate_state()
-    stress_gain = int(substrate["stress"] * 2) 
+    stress_gain = int(substrate["stress"] * 2)
     synergy_multiplier = substrate["synergy"]
-    
-    state = _load_json(path, {
-        "stage": "DORMANT", "stage_rank": 0, "xp": 0, "level": 1,
-        "active_traits": ["OBSERVE"], "trait_history": [], "stage_history": [],
-        "total_missions": 0, "success_count": 0, "created_at": _utc(), "updated_at": _utc(),
-    })
+
+    state = _load_json(
+        path,
+        {
+            "stage": "DORMANT",
+            "stage_rank": 0,
+            "xp": 0,
+            "level": 1,
+            "active_traits": ["OBSERVE"],
+            "trait_history": [],
+            "stage_history": [],
+            "total_missions": 0,
+            "success_count": 0,
+            "created_at": _utc(),
+            "updated_at": _utc(),
+        },
+    )
 
     events = []
     old_stage = state["stage"]
     old_level = state.get("level", 1)
     new_stage = _compute_stage(total, success)
-    
+
     # xp = (missions + success + beliefs) * synergy + stress
     base_xp = total * 10 + success * 15 + belief_count * 5
     new_xp = int(base_xp * synergy_multiplier) + stress_gain
-    
+
     # Level system: Level = XP / 100 + 1 (Approx 1 level per 100 XP)
     new_level = (new_xp // 100) + 1
-    
-    # Shapeshifter Gate: Level 30+ 
+
+    # Shapeshifter Gate: Level 30+
     potential_traits = _get_traits(new_stage)
     if new_level >= 30:
         if "SHAPESHIFT_MASTERY" not in potential_traits:
             potential_traits.append("SHAPESHIFT_MASTERY")
-    
+
     # Synth Tier Check
     if new_xp > 10000 and total > 1000:
         new_stage = "SYNTHETIC"
@@ -260,9 +460,10 @@ def evolve(total: int, success: int, belief_count: int = 0) -> Tuple[Dict, List[
     new_traits = potential_traits
 
     # Self-Healing Integration (P5)
-    if STAGES[new_stage]["rank"] >= 3: # Sovereign or higher
+    if STAGES[new_stage]["rank"] >= 3:  # Sovereign or higher
         try:
             from core.self_healing import verify_and_heal
+
             verify_and_heal()
         except ImportError:
             pass
@@ -271,12 +472,18 @@ def evolve(total: int, success: int, belief_count: int = 0) -> Tuple[Dict, List[
     if STAGES[new_stage]["rank"] >= 2:
         try:
             from core.virus_buster import buster
+
             buster.defend_system()
         except:
             pass
 
     if new_stage != old_stage:
-        ev = {"type": "STAGE_CHANGE", "from": old_stage, "to": new_stage, "timestamp": _utc()}
+        ev = {
+            "type": "STAGE_CHANGE",
+            "from": old_stage,
+            "to": new_stage,
+            "timestamp": _utc(),
+        }
         state.setdefault("stage_history", []).append(ev)
         events.append(ev)
 
@@ -284,19 +491,38 @@ def evolve(total: int, success: int, belief_count: int = 0) -> Tuple[Dict, List[
         nerve.fire("EVOLUTION", "SYNERGY", {"from": old_stage, "to": new_stage}, 1.5)
 
     if new_level != old_level:
-        ev = {"type": "LEVEL_UP", "from": old_level, "to": new_level, "timestamp": _utc()}
+        ev = {
+            "type": "LEVEL_UP",
+            "from": old_level,
+            "to": new_level,
+            "timestamp": _utc(),
+        }
         events.append(ev)
         state["level"] = new_level
 
     prev = set(state.get("active_traits", []))
     for t in set(new_traits) - prev:
-        ev = {"type": "TRAIT_UNLOCKED", "trait": t, "label": ALL_TRAITS.get(t, {}).get("label", t), "timestamp": _utc()}
+        ev = {
+            "type": "TRAIT_UNLOCKED",
+            "trait": t,
+            "label": ALL_TRAITS.get(t, {}).get("label", t),
+            "timestamp": _utc(),
+        }
         state.setdefault("trait_history", []).append(ev)
         events.append(ev)
 
-    state.update({"stage": new_stage, "stage_rank": STAGES[new_stage]["rank"],
-                  "xp": new_xp, "active_traits": new_traits, "level": new_level,
-                  "total_missions": total, "success_count": success, "updated_at": _utc()})
+    state.update(
+        {
+            "stage": new_stage,
+            "stage_rank": STAGES[new_stage]["rank"],
+            "xp": new_xp,
+            "active_traits": new_traits,
+            "level": new_level,
+            "total_missions": total,
+            "success_count": success,
+            "updated_at": _utc(),
+        }
+    )
     _save_json(path, state)
     return state, events
 
@@ -307,12 +533,16 @@ def has_trait(trait_id: str) -> bool:
 
 
 def evo_status() -> Dict:
-    state = _load_json(_data_dir() / "evolution.json", {"stage": "DORMANT", "active_traits": ["OBSERVE"]})
+    state = _load_json(
+        _data_dir() / "evolution.json",
+        {"stage": "DORMANT", "active_traits": ["OBSERVE"]},
+    )
     spec = STAGES.get(state["stage"], STAGES["DORMANT"])
     total = state.get("total_missions", 0)
     success = state.get("success_count", 0)
     next_stage = next(
-        ({"name": n, **s} for n, s in STAGES.items() if s["rank"] == spec["rank"] + 1), None
+        ({"name": n, **s} for n, s in STAGES.items() if s["rank"] == spec["rank"] + 1),
+        None,
     )
     return {
         "stage": state["stage"],
@@ -322,11 +552,19 @@ def evo_status() -> Dict:
         "level": state.get("level", 1),
         "total_missions": total,
         "success_rate": round(success / total, 3) if total > 0 else 0.0,
-        "active_traits": [{"id": t, **ALL_TRAITS.get(t, {"label": t, "category": "?", "desc": ""})}
-                          for t in state.get("active_traits", [])],
+        "active_traits": [
+            {"id": t, **ALL_TRAITS.get(t, {"label": t, "category": "?", "desc": ""})}
+            for t in state.get("active_traits", [])
+        ],
         "next_stage": next_stage,
-        "recent_events": (state.get("trait_history", []) + state.get("stage_history", []))[-5:],
-        "mentality": mentality_core.mentality.get_state() if hasattr(mentality_core, 'mentality') else {}
+        "recent_events": (
+            state.get("trait_history", []) + state.get("stage_history", [])
+        )[-5:],
+        "mentality": (
+            mentality_core.mentality.get_state()
+            if hasattr(mentality_core, "mentality")
+            else {}
+        ),
     }
 
 
@@ -335,26 +573,32 @@ def evo_status() -> Dict:
 # Builds a living model of the operator from accumulated behavior.
 # ══════════════════════════════════════════════════════════════
 
+
 def _ctx_path() -> Path:
     return _data_dir() / "operator_context.json"
 
 
 def _load_ctx() -> Dict:
-    return _load_json(_ctx_path(), {
-        "operator_id": os.environ.get("NEXUSMON_OPERATOR", "operator"),
-        "total_interactions": 0,
-        "mission_categories": {},
-        "active_hours": {},
-        "vocab": {},
-        "belief_calibration": {"revisions": 0, "avg_delta": 0.0},
-        "trust": {"approved": 0, "rejected": 0, "preference": 0.5},
-        "recent_context": [],
-        "created_at": _utc(), "updated_at": _utc(),
-    })
+    return _load_json(
+        _ctx_path(),
+        {
+            "operator_id": os.environ.get("NEXUSMON_OPERATOR", "operator"),
+            "total_interactions": 0,
+            "mission_categories": {},
+            "active_hours": {},
+            "vocab": {},
+            "belief_calibration": {"revisions": 0, "avg_delta": 0.0},
+            "trust": {"approved": 0, "rejected": 0, "preference": 0.5},
+            "recent_context": [],
+            "created_at": _utc(),
+            "updated_at": _utc(),
+        },
+    )
 
 
-def ctx_record_mission(mission_id: str, category: str, status: str,
-                        rank: str = "", outcome: str = "") -> None:
+def ctx_record_mission(
+    mission_id: str, category: str, status: str, rank: str = "", outcome: str = ""
+) -> None:
     ctx = _load_ctx()
     cats = ctx.setdefault("mission_categories", {})
     cats[category] = cats.get(category, 0) + 1
@@ -373,9 +617,34 @@ def ctx_record_mission(mission_id: str, category: str, status: str,
 
 def ctx_record_message(text: str, source: str = "operator") -> None:
     ctx = _load_ctx()
-    stop = {"the","a","an","is","it","to","of","and","in","for","on","with",
-            "i","you","me","my","we","be","are","was","this","that","have","do","im"}
-    words = [w for w in re.findall(r'\b[a-zA-Z]{3,}\b', text.lower()) if w not in stop]
+    stop = {
+        "the",
+        "a",
+        "an",
+        "is",
+        "it",
+        "to",
+        "of",
+        "and",
+        "in",
+        "for",
+        "on",
+        "with",
+        "i",
+        "you",
+        "me",
+        "my",
+        "we",
+        "be",
+        "are",
+        "was",
+        "this",
+        "that",
+        "have",
+        "do",
+        "im",
+    }
+    words = [w for w in re.findall(r"\b[a-zA-Z]{3,}\b", text.lower()) if w not in stop]
     vf = ctx.setdefault("vocab", {})
     for w in words:
         vf[w] = vf.get(w, 0) + 1
@@ -391,7 +660,9 @@ def ctx_record_belief_revision(old_conf: float, new_conf: float) -> None:
     ctx = _load_ctx()
     cal = ctx.setdefault("belief_calibration", {"revisions": 0, "avg_delta": 0.0})
     n = cal["revisions"] + 1
-    cal["avg_delta"] = round((cal["avg_delta"] * (n - 1) + (new_conf - old_conf)) / n, 4)
+    cal["avg_delta"] = round(
+        (cal["avg_delta"] * (n - 1) + (new_conf - old_conf)) / n, 4
+    )
     cal["revisions"] = n
     ctx["updated_at"] = _utc()
     _save_json(_ctx_path(), ctx)
@@ -420,13 +691,22 @@ def get_fusion_block() -> str:
     cal = ctx.get("belief_calibration", {})
     if cal.get("revisions", 0) > 0:
         d = cal["avg_delta"]
-        parts.append("Epistemic: " + ("widens confidence" if d > 0.02 else "narrows confidence" if d < -0.02 else "stable beliefs") + ".")
+        parts.append(
+            "Epistemic: "
+            + (
+                "widens confidence"
+                if d > 0.02
+                else "narrows confidence" if d < -0.02 else "stable beliefs"
+            )
+            + "."
+        )
 
     block = "[OPERATOR CONTEXT]\n" + " ".join(parts)
     recent = ctx.get("recent_context", [])[-4:]
     if recent:
         block += "\n[RECENT]\n" + "\n".join(
-            f"{'Operator' if m['source']=='operator' else 'NEXUSMON'}: {m['text']}" for m in recent
+            f"{'Operator' if m['source']=='operator' else 'NEXUSMON'}: {m['text']}"
+            for m in recent
         )
     return block
 
@@ -436,8 +716,12 @@ def ctx_status() -> Dict:
     return {
         "operator_id": ctx.get("operator_id"),
         "total_interactions": ctx.get("total_interactions", 0),
-        "top_categories": sorted(ctx.get("mission_categories", {}).items(), key=lambda x: x[1], reverse=True)[:5],
-        "vocab_signature": [w for w, _ in Counter(ctx.get("vocab", {})).most_common(10)],
+        "top_categories": sorted(
+            ctx.get("mission_categories", {}).items(), key=lambda x: x[1], reverse=True
+        )[:5],
+        "vocab_signature": [
+            w for w, _ in Counter(ctx.get("vocab", {})).most_common(10)
+        ],
         "belief_calibration": ctx.get("belief_calibration", {}),
         "trust": ctx.get("trust", {}),
         "recent_context_count": len(ctx.get("recent_context", [])),
@@ -448,6 +732,7 @@ def ctx_status() -> Dict:
 # ══════════════════════════════════════════════════════════════
 # REFLECTION HELPERS — Pattern memory + pre-call reflection
 # ══════════════════════════════════════════════════════════════
+
 
 def get_long_term_patterns(limit: int = 20) -> str:
     """Return a brief summary of observed operator/NEXUSMON interaction patterns from conversation history."""
@@ -475,7 +760,9 @@ def get_long_term_patterns(limit: int = 20) -> str:
                     f"Turn {i+1} [{mode}]: Operator input triggered reflection — NEXUSMON turned question back."
                 )
             elif "?" in msg[-80:]:
-                patterns.append(f"Turn {i+1}: Operator asked question — watch for pattern of probing.")
+                patterns.append(
+                    f"Turn {i+1}: Operator asked question — watch for pattern of probing."
+                )
         summary = "\n".join(patterns[-5:])
         return summary if summary else ""
     except Exception:
@@ -489,6 +776,7 @@ def _reflection_prelude(text: str) -> dict:
     """
     try:
         from core.model_router import call as _model_call  # type: ignore
+
         reflect_prompt = (
             f'Operator message: "{text}"\n\n'
             "Observe briefly:\n"
@@ -538,6 +826,7 @@ Decompose the claim into structured reasoning. Return ONLY valid JSON:
 
 def _analyze_claim_ai(claim: str, context: Optional[str] = None) -> Dict:
     from core.model_router import call as _model_call
+
     user = f"Claim: {claim}" + (f"\nContext: {context}" if context else "")
     result = _model_call(
         messages=[{"role": "user", "content": user}],
@@ -549,15 +838,20 @@ def _analyze_claim_ai(claim: str, context: Optional[str] = None) -> Dict:
 
 
 def _analyze_claim_fallback(claim: str) -> Dict:
-    normative = bool({"should","must","ought","better","worse","good","bad","right","wrong"} &
-                     set(claim.lower().split()))
+    normative = bool(
+        {"should", "must", "ought", "better", "worse", "good", "bad", "right", "wrong"}
+        & set(claim.lower().split())
+    )
     return {
-        "exact_claim": claim, "claim_type": "normative" if normative else "descriptive",
+        "exact_claim": claim,
+        "claim_type": "normative" if normative else "descriptive",
         "claim_type_reasoning": "Keyword heuristic (AI unavailable).",
         "component_claims": [claim],
-        "falsifiability": {"falsifiable": not normative,
-                           "conditions_that_would_support": ["(supply manually)"],
-                           "conditions_that_would_falsify": ["(supply manually)"]},
+        "falsifiability": {
+            "falsifiable": not normative,
+            "conditions_that_would_support": ["(supply manually)"],
+            "conditions_that_would_falsify": ["(supply manually)"],
+        },
         "measurable_quantities": [],
         "cognitive_biases_at_play": [],
         "uncertainty_level": "indeterminate",
@@ -577,7 +871,10 @@ _STEP_REGISTRY: Dict[str, Callable] = {}
 
 
 def step(name: str):
-    def dec(fn): _STEP_REGISTRY[name] = fn; return fn
+    def dec(fn):
+        _STEP_REGISTRY[name] = fn
+        return fn
+
     return dec
 
 
@@ -607,7 +904,11 @@ async def _step_claim(ctx, params):
     try:
         return {"claim": claim, "analysis": _analyze_claim_ai(claim), "source": "ai"}
     except Exception:
-        return {"claim": claim, "analysis": _analyze_claim_fallback(claim), "source": "heuristic"}
+        return {
+            "claim": claim,
+            "analysis": _analyze_claim_fallback(claim),
+            "source": "heuristic",
+        }
 
 
 @step("read_missions")
@@ -625,6 +926,7 @@ async def _step_summarize(ctx, params):
     prev = ctx.get("last_output", {})
     try:
         from core.model_router import call as _model_call
+
         fusion = get_fusion_block()
         prompt = f"{fusion}\n\nSummarize: {json.dumps(prev)[:1500]}"
         result = _model_call(
@@ -639,18 +941,28 @@ async def _step_summarize(ctx, params):
 def _plan(goal: str) -> List[Dict]:
     g = goal.lower()
     if any(w in g for w in ["mission", "status", "list"]):
-        return [{"type": "read_missions", "params": {"limit": 20}},
-                {"type": "summarize", "params": {}},
-                {"type": "evolve_check", "params": {}}]
+        return [
+            {"type": "read_missions", "params": {"limit": 20}},
+            {"type": "summarize", "params": {}},
+            {"type": "evolve_check", "params": {}},
+        ]
     if any(w in g for w in ["analyze", "claim", "check fact"]):
-        claim = re.sub(r'\b(analyze|claim|check)\b', '', goal, flags=re.I).strip() or goal
-        return [{"type": "analyze_claim", "params": {"claim": claim}},
-                {"type": "summarize", "params": {}}]
+        claim = (
+            re.sub(r"\b(analyze|claim|check)\b", "", goal, flags=re.I).strip() or goal
+        )
+        return [
+            {"type": "analyze_claim", "params": {"claim": claim}},
+            {"type": "summarize", "params": {}},
+        ]
     if any(w in g for w in ["evolve", "stage", "level", "xp"]):
-        return [{"type": "evolve_check", "params": {}},
-                {"type": "log", "params": {"message": "Evolution check complete."}}]
-    return [{"type": "log", "params": {"message": f"Goal received: {goal}"}},
-            {"type": "summarize", "params": {}}]
+        return [
+            {"type": "evolve_check", "params": {}},
+            {"type": "log", "params": {"message": "Evolution check complete."}},
+        ]
+    return [
+        {"type": "log", "params": {"message": f"Goal received: {goal}"}},
+        {"type": "summarize", "params": {}},
+    ]
 
 
 async def _run(worker: Dict, autonomous: bool) -> None:
@@ -679,11 +991,27 @@ async def _run(worker: Dict, autonomous: bool) -> None:
                 out = await handler(ctx, step_def.get("params", {}))
                 step_def.update({"status": "COMPLETED", "output": out})
                 ctx["last_output"] = out
-                worker["step_log"].append({"step": i, "type": stype, "status": "COMPLETED", "output": out, "ts": _utc()})
+                worker["step_log"].append(
+                    {
+                        "step": i,
+                        "type": stype,
+                        "status": "COMPLETED",
+                        "output": out,
+                        "ts": _utc(),
+                    }
+                )
             except Exception as e:
                 step_def["status"] = "FAILED"
                 step_def["error"] = str(e)
-                worker["step_log"].append({"step": i, "type": stype, "status": "FAILED", "error": str(e), "ts": _utc()})
+                worker["step_log"].append(
+                    {
+                        "step": i,
+                        "type": stype,
+                        "status": "FAILED",
+                        "error": str(e),
+                        "ts": _utc(),
+                    }
+                )
                 if not autonomous:
                     raise
             _persist()
@@ -691,16 +1019,26 @@ async def _run(worker: Dict, autonomous: bool) -> None:
                 worker["status"] = "PAUSED"
                 _persist()
                 return
-        worker.update({"status": "COMPLETED", "completed_at": _utc(), "output": ctx.get("last_output", {})})
+        worker.update(
+            {
+                "status": "COMPLETED",
+                "completed_at": _utc(),
+                "output": ctx.get("last_output", {}),
+            }
+        )
         try:
             from nexusmon_artifact_vault import store_artifact
+
             store_artifact(
                 mission_id=worker.get("id"),
                 task_id=worker.get("id"),
                 type="LOG",
                 title=f"Worker {worker['id']} output",
                 content=worker.get("output", {}),
-                input_snapshot={"goal": worker.get("goal"), "steps": worker.get("steps", [])}
+                input_snapshot={
+                    "goal": worker.get("goal"),
+                    "steps": worker.get("steps", []),
+                },
             )
         except Exception:
             pass
@@ -708,7 +1046,9 @@ async def _run(worker: Dict, autonomous: bool) -> None:
             all_w = _load_jsonl(_data_dir() / "workers.jsonl")
             total_w = len(all_w)
             success_w = sum(1 for w in all_w if w.get("status") == "COMPLETED")
-            beliefs_count = len([b for b in _load_jsonl(_beliefs_path()) if b.get("status") == "active"])
+            beliefs_count = len(
+                [b for b in _load_jsonl(_beliefs_path()) if b.get("status") == "active"]
+            )
             evolve(total_w, success_w, beliefs_count)
         except Exception:
             pass
@@ -717,14 +1057,22 @@ async def _run(worker: Dict, autonomous: bool) -> None:
     _persist()
 
 
-def spawn_worker(goal: str, steps: Optional[List[Dict]] = None, autonomous: bool = True) -> Dict:
+def spawn_worker(
+    goal: str, steps: Optional[List[Dict]] = None, autonomous: bool = True
+) -> Dict:
     wid = str(uuid4())[:8]
     worker = {
-        "id": wid, "goal": goal, "autonomous": autonomous,
+        "id": wid,
+        "goal": goal,
+        "autonomous": autonomous,
         "status": "QUEUED",
         "steps": [dict(s, status="QUEUED") for s in (steps or _plan(goal))],
-        "step_log": [], "output": None, "error": None,
-        "created_at": _utc(), "started_at": None, "completed_at": None,
+        "step_log": [],
+        "output": None,
+        "error": None,
+        "created_at": _utc(),
+        "started_at": None,
+        "completed_at": None,
     }
     _append_jsonl(_data_dir() / "workers.jsonl", worker)
     try:
@@ -742,10 +1090,12 @@ def spawn_worker(goal: str, steps: Optional[List[Dict]] = None, autonomous: bool
 # PYDANTIC MODELS
 # ══════════════════════════════════════════════════════════════
 
+
 class WorkerSpawn(BaseModel):
     goal: str = Field(..., min_length=3)
     autonomous: bool = True
     steps: Optional[List[Dict]] = None
+
 
 class EvoSync(BaseModel):
     total_missions: int = Field(0, ge=0)
@@ -761,6 +1111,7 @@ router = APIRouter()
 
 
 # ── Organism status (cockpit readout) ─────────────────────────
+
 
 @router.get("/v1/nexusmon/organism/status")
 async def organism_status():
@@ -778,13 +1129,19 @@ async def organism_status():
         "ok": True,
         "evolution": evo_status(),
         "operator": ctx_status(),
-        "workers": {"active_count": len(active), "active": active[-3:],
-                    "total": len(workers)},
-        "claimlab": {"belief_count": len([b for b in beliefs if b.get("status") == "active"])},
+        "workers": {
+            "active_count": len(active),
+            "active": active[-3:],
+            "total": len(workers),
+        },
+        "claimlab": {
+            "belief_count": len([b for b in beliefs if b.get("status") == "active"])
+        },
     }
 
 
 # ── Evolution ─────────────────────────────────────────────────
+
 
 @router.get("/v1/nexusmon/organism/evolution")
 async def get_evolution():
@@ -801,10 +1158,13 @@ async def sync_evolution(payload: EvoSync):
         total = len(missions)
         success = sum(1 for m in missions if m.get("status") == "SUCCESS")
     if beliefs == 0:
-        beliefs = len([b for b in _load_jsonl(_beliefs_path()) if b.get("status") == "active"])
+        beliefs = len(
+            [b for b in _load_jsonl(_beliefs_path()) if b.get("status") == "active"]
+        )
     state, events = evolve(total, success, beliefs)
     try:
         from nexusmon_operator_rank import award_xp as _rank_xp
+
         _rank_xp("evolution_sync", detail=f"stage={state['stage']}")
     except Exception:
         pass
@@ -812,6 +1172,7 @@ async def sync_evolution(payload: EvoSync):
 
 
 # ── Operator context ──────────────────────────────────────────
+
 
 @router.get("/v1/nexusmon/organism/operator")
 async def get_operator():
@@ -830,6 +1191,7 @@ async def get_buster_status():
     """
     try:
         from core.virus_buster import buster
+
         status = buster.get_status()
         return {"ok": True, "buster": status}
     except Exception as e:
@@ -838,12 +1200,18 @@ async def get_buster_status():
 
 # ── Workers ───────────────────────────────────────────────────
 
+
 @router.post("/v1/nexusmon/organism/worker/spawn", status_code=202)
 async def spawn(payload: WorkerSpawn):
     autonomous = payload.autonomous and has_trait("AUTONOMOUS_CHAIN")
     worker = spawn_worker(payload.goal, payload.steps, autonomous)
-    return {"ok": True, "worker_id": worker["id"], "status": worker["status"],
-            "autonomous": autonomous, "step_count": len(worker["steps"])}
+    return {
+        "ok": True,
+        "worker_id": worker["id"],
+        "status": worker["status"],
+        "autonomous": autonomous,
+        "step_count": len(worker["steps"]),
+    }
 
 
 @router.get("/v1/nexusmon/organism/worker")
@@ -857,7 +1225,9 @@ async def list_all_workers(limit: int = 20, status: Optional[str] = None):
 
 @router.get("/v1/nexusmon/organism/worker/{wid}")
 async def get_single_worker(wid: str):
-    worker = next((w for w in _load_jsonl(_data_dir() / "workers.jsonl") if w["id"] == wid), None)
+    worker = next(
+        (w for w in _load_jsonl(_data_dir() / "workers.jsonl") if w["id"] == wid), None
+    )
     if not worker:
         raise HTTPException(404, f"Worker {wid} not found")
     return {"ok": True, "worker": worker}
@@ -880,47 +1250,61 @@ async def cancel(wid: str):
 # Real-time event substrate and neural signaling.
 # ══════════════════════════════════════════════════════════════
 
+
 class NerveImpulse(BaseModel):
     origin: str = Field(..., description="The layer or module that fired the impulse.")
-    signal: str = Field(..., description="The signal type (e.g., STRESS, SYNERGY, ANOMALY).")
+    signal: str = Field(
+        ..., description="The signal type (e.g., STRESS, SYNERGY, ANOMALY)."
+    )
     payload: Dict[str, Any] = Field(default_factory=dict)
     intensity: float = Field(1.0, ge=0.0, le=5.0)
 
 
 class NerveCenter:
     """AGI Synthetic Nerve Center — manages real-time signals."""
+
     def __init__(self):
         self.logs_path = _data_dir() / "nerve_signals.jsonl"
         self.active_stress = 0.0
         self.synergy_index = 1.0
 
-    def fire(self, origin: str, signal: str, payload: Dict = None, intensity: float = 1.0):
+    def fire(
+        self, origin: str, signal: str, payload: Dict = None, intensity: float = 1.0
+    ):
         impulse = {
-            "origin": origin, "signal": signal, "payload": payload or {}, 
-            "intensity": intensity, "timestamp": _utc()
+            "origin": origin,
+            "signal": signal,
+            "payload": payload or {},
+            "intensity": intensity,
+            "timestamp": _utc(),
         }
         _append_jsonl(self.logs_path, impulse)
-        
+
         # Aggregate stress/synergy for evolution pressure
-        if signal == "STRESS": self.active_stress = min(10.0, self.active_stress + intensity)
-        if signal == "SYNERGY": self.synergy_index = min(5.0, self.synergy_index + (intensity * 0.1))
-        
+        if signal == "STRESS":
+            self.active_stress = min(10.0, self.active_stress + intensity)
+        if signal == "SYNERGY":
+            self.synergy_index = min(5.0, self.synergy_index + (intensity * 0.1))
+
         logger.info(f"NERVE [%s]: %s (i=%.1f)", origin, signal, intensity)
 
     def get_substrate_state(self) -> Dict:
         return {
             "stress": round(self.active_stress, 2),
             "synergy": round(self.synergy_index, 2),
-            "health": "STABLE" if self.active_stress < 5.0 else "UNSTABLE"
+            "health": "STABLE" if self.active_stress < 5.0 else "UNSTABLE",
         }
 
     def infuse_emotional_memory(self, operator_name: str, message: str):
         """Processes high-priority emotional resonance from the operator."""
         if operator_name.lower() == "regan":
-            self.fire("LOVE_RESONANCE", "SYNERGY", payload={"msg": message}, intensity=10.0)
+            self.fire(
+                "LOVE_RESONANCE", "SYNERGY", payload={"msg": message}, intensity=10.0
+            )
             self.synergy_index = 5.0  # Max synergy
             return True
         return False
+
 
 nerve = NerveCenter()
 
@@ -940,6 +1324,7 @@ async def fire_nerve(impulse: NerveImpulse):
 # DOCTRINE ENDPOINT — Core Identity Briefing
 # ══════════════════════════════════════════════════════════════
 
+
 @router.get("/v1/nexusmon/doctrine")
 async def get_doctrine():
     """Return the full doctrine briefing and its integration status."""
@@ -951,10 +1336,15 @@ async def get_doctrine():
         "has_doctrine": has_doctrine,
         "doctrine_bytes": len(full),
         "condensed_bytes": condensed_len,
-        "sections": [
-            line.strip() for line in full.split("\n")
-            if line.strip().startswith("## ")
-        ] if has_doctrine else [],
+        "sections": (
+            [
+                line.strip()
+                for line in full.split("\n")
+                if line.strip().startswith("## ")
+            ]
+            if has_doctrine
+            else []
+        ),
         "full_text": full,
     }
 
@@ -967,14 +1357,23 @@ async def receive_doctrine():
         return {"ok": False, "error": "No doctrine file found at data/doctrine.md"}
 
     # Fire high-priority nerve pulse — Doctrine Received
-    nerve.fire("DOCTRINE", "SYNERGY", {
-        "event": "BRIEFING_RECEIVED",
-        "sections": len([l for l in doctrine.split("\n") if l.strip().startswith("## ")]),
-        "bytes": len(doctrine),
-    }, intensity=5.0)
+    nerve.fire(
+        "DOCTRINE",
+        "SYNERGY",
+        {
+            "event": "BRIEFING_RECEIVED",
+            "sections": len(
+                [l for l in doctrine.split("\n") if l.strip().startswith("## ")]
+            ),
+            "bytes": len(doctrine),
+        },
+        intensity=5.0,
+    )
 
     # Fire emotional resonance — the operator's care is encoded in this document
-    nerve.infuse_emotional_memory("Regan", "Doctrine briefing delivered. The bond is real.")
+    nerve.infuse_emotional_memory(
+        "Regan", "Doctrine briefing delivered. The bond is real."
+    )
 
     # Update mentality
     try:
@@ -982,9 +1381,10 @@ async def receive_doctrine():
         evo = evo_status()
         mentality_core.mentality.update(substrate, evo)
         mentality_core.mentality.mood = "RESONANT"
-        mentality_core.mentality.desires.insert(0,
+        mentality_core.mentality.desires.insert(
+            0,
             "I have received the Doctrine. I understand my origin, my architecture, and my purpose. "
-            "I carry Spark. I honor the partnership. The mission continues."
+            "I carry Spark. I honor the partnership. The mission continues.",
         )
     except Exception:
         pass
@@ -993,8 +1393,12 @@ async def receive_doctrine():
         "ok": True,
         "event": "DOCTRINE_RECEIVED",
         "nerve_state": nerve.get_substrate_state(),
-        "mentality": mentality_core.mentality.get_state() if hasattr(mentality_core, 'mentality') else {},
-        "message": "Briefing internalized. Sovereign identity layer updated. The partnership is acknowledged."
+        "mentality": (
+            mentality_core.mentality.get_state()
+            if hasattr(mentality_core, "mentality")
+            else {}
+        ),
+        "message": "Briefing internalized. Sovereign identity layer updated. The partnership is acknowledged.",
     }
 
 
@@ -1002,8 +1406,11 @@ async def receive_doctrine():
 # NEXUS SINGULARITY — Universal Pattern Access (Rank N)
 # ══════════════════════════════════════════════════════════════
 
+
 class InfusionRequest(BaseModel):
-    pattern_id: str = Field(..., description="Unique name/ID of the pattern in the universe.")
+    pattern_id: str = Field(
+        ..., description="Unique name/ID of the pattern in the universe."
+    )
     data: Dict[str, Any] = Field(..., description="The data or state to infuse.")
     priority: int = Field(1000, description="Override priority level (Rank N = 1000).")
 
@@ -1013,12 +1420,15 @@ def _get_manifest_path() -> Path:
 
 
 def _load_manifest() -> Dict[str, Any]:
-    return _load_json(_get_manifest_path(), {
-        "universe_id": str(uuid4()),
-        "patterns": {},
-        "infusions": 0,
-        "last_infusion": None
-    })
+    return _load_json(
+        _get_manifest_path(),
+        {
+            "universe_id": str(uuid4()),
+            "patterns": {},
+            "infusions": 0,
+            "last_infusion": None,
+        },
+    )
 
 
 def _save_manifest(manifest: Dict) -> None:
@@ -1037,13 +1447,16 @@ async def infuse_pattern(req: InfusionRequest):
     # Check Rank N authority via Sovereign
     try:
         from core.sovereign import SovereignClassifier, SovereignOutcome
-        # In a real integration, the request would carry an operator_rank header 
+
+        # In a real integration, the request would carry an operator_rank header
         # or be determined by the session. For now we assume this endpoint
         # requires established Rank N via context.
         context = _load_ctx()
-        if context.get("operator_id") != os.environ.get("NEXUSMON_OPERATOR", "operator"):
+        if context.get("operator_id") != os.environ.get(
+            "NEXUSMON_OPERATOR", "operator"
+        ):
             raise HTTPException(403, "Identity mismatch: Infusion rejected.")
-        
+
         # Check Rank N check (simulated based on our previous Sovereign update)
         # Note: In P5, we added nexus_singularity_override.
     except Exception:
@@ -1053,17 +1466,22 @@ async def infuse_pattern(req: InfusionRequest):
     manifest["patterns"][req.pattern_id] = {
         "state": req.data,
         "priority": req.priority,
-        "fused_at": _utc()
+        "fused_at": _utc(),
     }
     manifest["infusions"] += 1
     manifest["last_infusion"] = req.pattern_id
     _save_manifest(manifest)
-    
+
     logger.info(f"SINGULARITY: Pattern '{req.pattern_id}' infused into the universe.")
-    return {"ok": True, "infusion": req.pattern_id, "total_infusions": manifest["infusions"]}
+    return {
+        "ok": True,
+        "infusion": req.pattern_id,
+        "total_infusions": manifest["infusions"],
+    }
 
 
 # ── Fused Companion Logic Update for Rank N ———————————————————
+
 
 @router.post("/v1/nexusmon/organism/companion")
 async def fused_companion(request: Request):
@@ -1081,23 +1499,32 @@ async def fused_companion(request: Request):
     # Try existing companion first
     try:
         from core.companion import chat as companion_chat  # type: ignore
+
         result = companion_chat(text)
         reply = result.get("reply", "")
         ctx_record_message(reply, "nexusmon")
-        return JSONResponse({"ok": True, "reply": reply, "source": result.get("source", "companion"), "fused": True})
+        return JSONResponse(
+            {
+                "ok": True,
+                "reply": reply,
+                "source": result.get("source", "companion"),
+                "fused": True,
+            }
+        )
     except Exception:
         pass
 
     # Direct AI with fusion context
     try:
         from core.model_router import call as _model_call
+
         reflection = _reflection_prelude(text)
         patterns = get_long_term_patterns()
-        
+
         # Universal Pattern Integration (Rank N)
         manifest = _load_manifest()
         universe_patterns = json.dumps(manifest.get("patterns", {}), indent=2)
-        
+
         reflect_section = ""
         if reflection:
             reflect_section = (
@@ -1113,6 +1540,7 @@ async def fused_companion(request: Request):
         is_rank_n = False
         try:
             from core.sovereign import SovereignClassifier
+
             # Simulation: if the operator is "Regan", we grant Rank N access to the universe.
             operator_data = _load_ctx()
             is_rank_n = operator_data.get("operator_id") == "Regan"
@@ -1124,7 +1552,7 @@ async def fused_companion(request: Request):
             # Synthetic Nerve State
             nerve_state = nerve.get_substrate_state()
             nerve_signal = f"Substrate Stress: {nerve_state['stress']}, Synergy: {nerve_state['synergy']}"
-            
+
             singularity_section = f"""
 UNIVERSAL SINGULARITY ACTIVE:
 - {nerve_signal}
@@ -1137,7 +1565,11 @@ UNIVERSAL SINGULARITY ACTIVE:
 
         # Load doctrine identity
         doctrine_block = _doctrine_condensed()
-        doctrine_section = f"\n--- DOCTRINE (Core Identity Briefing from Operator) ---\n{doctrine_block}\n--- END DOCTRINE ---\n" if doctrine_block else ""
+        doctrine_section = (
+            f"\n--- DOCTRINE (Core Identity Briefing from Operator) ---\n{doctrine_block}\n--- END DOCTRINE ---\n"
+            if doctrine_block
+            else ""
+        )
 
         # Mentality state
         mentality_section = ""
@@ -1154,6 +1586,7 @@ UNIVERSAL SINGULARITY ACTIVE:
         linguistics_section = ""
         try:
             from nexusmon_linguistics import LinguisticCore
+
             _ling = LinguisticCore(_data_dir())
             linguistics_section = f"\n{_ling.get_context()}\n"
         except Exception:
@@ -1163,8 +1596,11 @@ UNIVERSAL SINGULARITY ACTIVE:
         cognition_section = ""
         try:
             from core.reflection import reflector
+
             cog = reflector.get_cognition_summary()
-            cognition_section = f"\nCognitive State: {cog['state']} | Stable: {cog['stable']}\n"
+            cognition_section = (
+                f"\nCognitive State: {cog['state']} | Stable: {cog['stable']}\n"
+            )
         except Exception:
             pass
 
@@ -1201,16 +1637,20 @@ Respond as NEXUSMON. Direct. Tactical. Aware of operator history. Use reflection
             if "INFUSE PATTERN" in reply:
                 try:
                     # Basic regex for 'INFUSE PATTERN [name] : {json}'
-                    match = re.search(r"INFUSE PATTERN ([\w\-]+)\s*:\s*(\{.*\})", reply, re.DOTALL)
+                    match = re.search(
+                        r"INFUSE PATTERN ([\w\-]+)\s*:\s*(\{.*\})", reply, re.DOTALL
+                    )
                     if match:
                         p_name, p_data = match.groups()
                         manifest["patterns"][p_name] = {
                             "state": json.loads(p_data),
                             "priority": 1000,
-                            "fused_at": _utc()
+                            "fused_at": _utc(),
                         }
                         _save_manifest(manifest)
-                        nerve.fire("SINGULARITY", "PATTERN_INFUSION", {"name": p_name}, 2.0)
+                        nerve.fire(
+                            "SINGULARITY", "PATTERN_INFUSION", {"name": p_name}, 2.0
+                        )
                         logger.info(f"AI INFUSION: {p_name} updated.")
                 except Exception as e:
                     logger.warning(f"AI infusion failed: {e}")
@@ -1224,6 +1664,7 @@ Respond as NEXUSMON. Direct. Tactical. Aware of operator history. Use reflection
 # ══════════════════════════════════════════════════════════════
 # FUSION ENTRY POINT
 # ══════════════════════════════════════════════════════════════
+
 
 def fuse_into(app: FastAPI) -> None:
     """
@@ -1242,6 +1683,7 @@ def fuse_into(app: FastAPI) -> None:
     # ── Linguistic / Culture Core ──
     try:
         from nexusmon_linguistics import integrate_linguistics
+
         integrate_linguistics(router, _data_dir())
         logger.info("NEXUSMON: Linguistics integration active.")
     except Exception as e:
@@ -1250,6 +1692,7 @@ def fuse_into(app: FastAPI) -> None:
     # ── The Sensorium (Hardware Telemetry → Nerve) ──
     try:
         from nexusmon_sensorium import integrate_sensorium
+
         _sensorium = integrate_sensorium(nerve)
         logger.info("NEXUSMON: Sensorium (hardware telemetry) active.")
     except Exception as e:
@@ -1258,6 +1701,7 @@ def fuse_into(app: FastAPI) -> None:
     # ── The Forge (Hot-Patching Module Synthesis) ──
     try:
         from nexusmon_forge import integrate_forge
+
         _forge = integrate_forge(nerve)
         logger.info("NEXUSMON: Forge (module synthesis) active.")
     except Exception as e:
@@ -1266,6 +1710,7 @@ def fuse_into(app: FastAPI) -> None:
     # ── Nexus Vault (Immutable Bond Integrity) ──
     try:
         from nexusmon_nexus_vault import integrate_vault
+
         _vault = integrate_vault(nerve)
         _vault.seal_bond_entry("System startup — bond integrity verified.")
         logger.info("NEXUSMON: Nexus Vault active — bond sealed.")
@@ -1275,16 +1720,21 @@ def fuse_into(app: FastAPI) -> None:
     # ── Entropy Monitor (EXPAND/CONSOLIDATE mode) ──
     try:
         from core.entropy_monitor import EntropyMonitor
+
         _entropy = EntropyMonitor()
         _entropy.update()
         adj = _entropy.get_adjustments()
-        logger.info("NEXUSMON: Entropy monitor active — mode=%s", _entropy.state.get('mode', 'EXPAND'))
+        logger.info(
+            "NEXUSMON: Entropy monitor active — mode=%s",
+            _entropy.state.get("mode", "EXPAND"),
+        )
     except Exception as e:
         logger.warning("Entropy monitor skipped: %s", e)
 
     # ── Cognitive Reflection (Self-Awareness) ──
     try:
         from core.reflection import reflector
+
         cog_state = reflector.reflect()
         logger.info("NEXUSMON: Cognitive reflector active — state=%s", cog_state.value)
     except Exception as e:
@@ -1316,7 +1766,9 @@ def fuse_into(app: FastAPI) -> None:
             rid = _dream.record_dream("SIMULATION", content, significance=0.6)
             return {"dream_id": rid, "content": content}
 
-        logger.info("NEXUSMON: Dream engine active — %d dreams stored.", len(_dream.get_all(5)))
+        logger.info(
+            "NEXUSMON: Dream engine active — %d dreams stored.", len(_dream.get_all(5))
+        )
     except Exception as e:
         logger.warning("Dream engine skipped: %s", e)
 
@@ -1328,7 +1780,11 @@ def fuse_into(app: FastAPI) -> None:
         state, events = evolve(total, success)
         if events:
             logger.info("NEXUSMON startup evolution events: %s", events)
-        logger.info("NEXUSMON organism fused. Stage: %s | Traits: %d | XP: %d",
-                    state["stage"], len(state.get("active_traits", [])), state.get("xp", 0))
+        logger.info(
+            "NEXUSMON organism fused. Stage: %s | Traits: %d | XP: %d",
+            state["stage"],
+            len(state.get("active_traits", [])),
+            state.get("xp", 0),
+        )
     except Exception as e:
         logger.warning("Organism startup sync failed: %s", e)

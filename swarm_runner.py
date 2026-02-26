@@ -16,7 +16,7 @@ Designed to run in a daemon thread or standalone process.
 import json
 import time
 import traceback
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, Any
 
@@ -52,7 +52,7 @@ def _rewrite_missions(missions):
 
 
 def _audit(event: str, **kwargs):
-    now = datetime.now(datetime.UTC).isoformat()
+    now = datetime.now(timezone.utc).isoformat()
     entry = {"timestamp": now, "event": event}
     entry.update(kwargs)
     write_jsonl(AUDIT_FILE, entry)
@@ -120,10 +120,10 @@ def _worker_nexusmon_mission(mission: Dict[str, Any]) -> Dict[str, Any]:
         mission_id = mission.get("mission_id", "unknown")
         intent = mission.get("intent", mission.get("goal", "unknown"))
         spec = mission.get("spec", {})
-        
+
         # Decompose the high-level intent into a DAG of tasks
         mission["tasks"] = nexusmon_decomposer.decompose(mission_id, intent, spec)
-    
+
     result = mission_engine_v2.execute(mission)
     return result
 
@@ -150,8 +150,12 @@ def _process_one():
     # --- Governor: Concurrency Check ---
     running_missions = sum(1 for m in missions if m.get("status") == "RUNNING")
     if not governor.check_concurrency(running_missions):
-        _audit("governor_concurrency_blocked", running_count=running_missions, limit=governor.concurrency_limit)
-        return # Block execution if concurrency limit is reached
+        _audit(
+            "governor_concurrency_blocked",
+            running_count=running_missions,
+            limit=governor.concurrency_limit,
+        )
+        return  # Block execution if concurrency limit is reached
 
     # Check QUARANTINE â€” if active, block execution and log
     success_count = sum(1 for m in missions if m.get("status") == "SUCCESS")
@@ -181,11 +185,15 @@ def _process_one():
     # --- Governor: Rate Limit Check ---
     action_type = target.get("intent", "default")
     if not governor.admit_action({"type": action_type}):
-        _audit("governor_rate_limit_blocked", mission_id=target.get("mission_id"), intent=action_type)
+        _audit(
+            "governor_rate_limit_blocked",
+            mission_id=target.get("mission_id"),
+            intent=action_type,
+        )
         # Optional: Mark as HELD instead of just skipping, to avoid re-picking immediately
         # target["status"] = "HELD"
         # _rewrite_missions(missions)
-        return # Skip this tick if rate limited
+        return  # Skip this tick if rate limited
 
     mission_id = target.get("mission_id", "unknown")
     intent = target.get("intent", target.get("goal", "unknown"))
@@ -205,7 +213,7 @@ def _process_one():
     candidates = pre_ctx.get("candidates", [])
 
     # Mark RUNNING
-    started_at = datetime.now(datetime.UTC).isoformat()
+    started_at = datetime.now(timezone.utc).isoformat()
     target["status"] = "RUNNING"
     target["started_at"] = started_at
     _rewrite_missions(missions)
@@ -215,10 +223,14 @@ def _process_one():
     t0 = time.monotonic()
     try:
         worker_fn = WORKERS.get(intent, None)
-        
+
         # Route certain triggers/categories to Nexusmon Engine (P2.3 Legacy Retrieval)
         if worker_fn is None:
-            if "sovereign" in intent.lower() or "nexusmon" in intent.lower() or target.get("v2") is True:
+            if (
+                "sovereign" in intent.lower()
+                or "nexusmon" in intent.lower()
+                or target.get("v2") is True
+            ):
                 worker_fn = _worker_nexusmon_mission
 
         # Route AI-eligible missions through ai_solve if no explicit worker
@@ -264,14 +276,23 @@ def _process_one():
                             plan_data = json.loads(plan_file.read_text())
                             # Assuming the plan is a list of nodes under a 'nodes' key
                             if "nodes" in plan_data and not is_dag(plan_data["nodes"]):
-                                _audit("dag_validation_failed", mission_id=mission_id, plan_file=str(plan_file))
+                                _audit(
+                                    "dag_validation_failed",
+                                    mission_id=mission_id,
+                                    plan_file=str(plan_file),
+                                )
                                 # Optionally, mark the mission as failed due to invalid plan
                                 target["status"] = "FAILURE"
-                                target["error_details"] = "Generated plan contains a cycle."
+                                target["error_details"] = (
+                                    "Generated plan contains a cycle."
+                                )
                                 _rewrite_missions(missions)
                         except (json.JSONDecodeError, KeyError) as e:
-                            _audit("plan_validation_error", mission_id=mission_id, error=str(e))
-
+                            _audit(
+                                "plan_validation_error",
+                                mission_id=mission_id,
+                                error=str(e),
+                            )
 
             from core.context_pack import after_mission
 
@@ -297,7 +318,7 @@ def _process_one():
         )
 
         target["status"] = "FAILURE"
-        target["finished_at"] = datetime.now(datetime.UTC).isoformat()
+        target["finished_at"] = datetime.now(timezone.utc).isoformat()
         target["duration_ms"] = duration_ms
         _rewrite_missions(missions)
         _audit(

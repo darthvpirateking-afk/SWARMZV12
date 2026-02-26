@@ -25,7 +25,6 @@ from typing import Any, Dict, Optional
 from fastapi import APIRouter, FastAPI, HTTPException
 from pydantic import BaseModel, Field
 
-
 _STATE_FILE = "signal_modules_state.json"
 
 
@@ -95,7 +94,11 @@ def _default_modules() -> Dict[str, Dict[str, Any]]:
         "instant_llm_dials": {
             "title": "Instant LLM Dials",
             "description": "Live steering controls for response style, aggression, and reasoning depth.",
-            "capabilities": ["live_model_steer", "response_style_dial", "reasoning_depth_dial"],
+            "capabilities": [
+                "live_model_steer",
+                "response_style_dial",
+                "reasoning_depth_dial",
+            ],
             "status": "scaffolded",
         },
         "bio_aura_dial": {
@@ -186,7 +189,9 @@ def get_signal_module(module_id: str) -> Dict[str, Any]:
     modules = _with_flags(state.get("modules", {}))
     module = modules.get(module_id)
     if not module:
-        raise HTTPException(status_code=404, detail=f"Unknown signal module: {module_id}")
+        raise HTTPException(
+            status_code=404, detail=f"Unknown signal module: {module_id}"
+        )
     return {
         "ok": True,
         "module": module,

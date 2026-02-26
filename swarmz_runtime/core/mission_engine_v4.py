@@ -30,11 +30,13 @@ class DSLParser:
                 graph["goal"] = line.split(":", 1)[1].strip()
             elif lower.startswith("step:"):
                 step_text = line.split(":", 1)[1].strip()
-                graph["steps"].append({
-                    "id": len(graph["steps"]) + 1,
-                    "description": step_text,
-                    "status": "PENDING",
-                })
+                graph["steps"].append(
+                    {
+                        "id": len(graph["steps"]) + 1,
+                        "description": step_text,
+                        "status": "PENDING",
+                    }
+                )
 
         if not graph["goal"] and not graph["steps"]:
             graph["goal"] = dsl.strip()
@@ -109,9 +111,12 @@ class DSLReporter:
             },
             "steps": steps,
             "status": (
-                "COMPLETED" if completed == total and total > 0
-                else "FAILED" if failed > 0
-                else "IN_PROGRESS" if completed > 0
-                else "PENDING"
+                "COMPLETED"
+                if completed == total and total > 0
+                else (
+                    "FAILED"
+                    if failed > 0
+                    else "IN_PROGRESS" if completed > 0 else "PENDING"
+                )
             ),
         }

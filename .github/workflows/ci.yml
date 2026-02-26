@@ -373,7 +373,7 @@ jobs:
 
       - name: Run ruff
         run: |
-          ruff check core swarmz_runtime addons api server_legacy_overlay.py swarmz_server.py run_server.py tools/find_import_cycles.py test_galileo.py
+          ruff check core swarmz_runtime addons api server_legacy_overlay.py swarmz_server.py run_server.py tools/find_import_cycles.py tests/test_galileo.py
 
       - name: Run mypy (non-blocking)
         continue-on-error: true

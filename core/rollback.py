@@ -27,16 +27,20 @@ from typing import Any, Dict, List, NamedTuple, Optional
 import logging
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
 
 # --------------------------------------------------------------------------
 # Data Models
 # --------------------------------------------------------------------------
 
+
 class Snapshot(NamedTuple):
     """Represents a snapshot of a single resource (file or data)."""
+
     resource_type: str  # 'file' or 'data'
-    resource_id: str    # File path or a unique identifier for data
+    resource_id: str  # File path or a unique identifier for data
     snapshot_path: str  # Path to the stored snapshot in the vault
 
 
@@ -71,22 +75,28 @@ class Transaction:
 
         snapshot_id = f"file_{file_path.name}_{datetime.now(timezone.utc).timestamp()}"
         snapshot_target_path = self.transaction_dir / snapshot_id
-        
+
         shutil.copy2(file_path, snapshot_target_path)
-        
+
         snapshot = Snapshot(
-            resource_type='file',
+            resource_type="file",
             resource_id=str(file_path.resolve()),
-            snapshot_path=str(snapshot_target_path.resolve())
+            snapshot_path=str(snapshot_target_path.resolve()),
         )
         self.snapshots.append(snapshot)
-        self._write_log("snapshot_file", {"resource_id": str(file_path.resolve()), "snapshot_path": str(snapshot_target_path.resolve())})
+        self._write_log(
+            "snapshot_file",
+            {
+                "resource_id": str(file_path.resolve()),
+                "snapshot_path": str(snapshot_target_path.resolve()),
+            },
+        )
 
     def commit(self) -> None:
         """Mark the transaction as successful and clean up snapshots."""
         if self.committed or self.rolled_back:
             raise RuntimeError("Transaction has already been finalized.")
-        
+
         self._write_log("commit")
         # In a real system, you might have a retention policy, but for now, we clean up.
         shutil.rmtree(self.transaction_dir)
@@ -101,26 +111,34 @@ class Transaction:
         self._write_log("rollback_started")
         logging.info(f"Rolling back transaction {self.transaction_id}...")
 
-        for snapshot in reversed(self.snapshots): # Rollback in reverse order
+        for snapshot in reversed(self.snapshots):  # Rollback in reverse order
             try:
-                if snapshot.resource_type == 'file':
+                if snapshot.resource_type == "file":
                     original_path = Path(snapshot.resource_id)
                     snapshot_path = Path(snapshot.snapshot_path)
-                    
+
                     # Restore the file from the snapshot
                     shutil.copy2(snapshot_path, original_path)
-                    
-                    self._write_log("restore_file", {"snapshot": str(snapshot_path), "target": str(original_path)})
+
+                    self._write_log(
+                        "restore_file",
+                        {"snapshot": str(snapshot_path), "target": str(original_path)},
+                    )
                     logging.info(f"Restored file {original_path} from snapshot.")
                 # Add other resource types (like 'data') here in a real implementation
             except Exception as e:
-                logging.error(f"Failed to restore snapshot for {snapshot.resource_id}: {e}")
-                self._write_log("restore_failed", {"resource_id": snapshot.resource_id, "error": str(e)})
+                logging.error(
+                    f"Failed to restore snapshot for {snapshot.resource_id}: {e}"
+                )
+                self._write_log(
+                    "restore_failed",
+                    {"resource_id": snapshot.resource_id, "error": str(e)},
+                )
                 # Depending on policy, you might want to stop or continue.
                 # For now, we continue to attempt to restore other snapshots.
 
         self._write_log("rollback_finished")
-        
+
         # Store log content before deleting the directory for testing purposes
         log_file = self.transaction_dir / "transaction.log"
         if log_file.exists():
@@ -147,6 +165,7 @@ class RollbackEngine:
         """
         transaction_id = f"txn_{datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S%f')}"
         return Transaction(transaction_id, self.vault_path)
+
 
 # Global instance for easy access
 rollback_engine = RollbackEngine()
