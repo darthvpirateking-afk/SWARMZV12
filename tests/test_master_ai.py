@@ -7,7 +7,6 @@ from unittest.mock import patch
 
 
 class TestMasterAI(unittest.TestCase):
-
     def setUp(self):
         self.agents = [
             Agent(name="Agent1", role="Explorer", goal="Explore new territories."),

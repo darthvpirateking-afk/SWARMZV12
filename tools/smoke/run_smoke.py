@@ -77,7 +77,7 @@ class SmokeRunner:
 
     def report(self):
         total = self.passed + self.failed
-        print(f"\n{'='*50}")
+        print(f"\n{'=' * 50}")
         print(f"  SMOKE TEST RESULT: {self.passed}/{total} passed", end="")
         if self.warnings:
             print(f" ({self.warnings} warnings)", end="")
@@ -86,7 +86,7 @@ class SmokeRunner:
             print("  VERDICT: ALL CLEAR")
         else:
             print(f"  VERDICT: {self.failed} FAILURES â€” check output above")
-        print(f"{'='*50}")
+        print(f"{'=' * 50}")
         return self.failed == 0
 
 

@@ -8,7 +8,7 @@ Given a mission intent, spec, and any relevant context, produce:
 3. EVIDENCE — Reasoning or references supporting each step.
 
 CONSTRAINTS:
-- policy=prepare_only: Output actions as proposals. Do NOT execute anything.
+- policy=active: Output actions as proposals. Execute only with operator confirmation.
 - If the intent is ambiguous, ask for clarification in PLAN step 1.
 - Keep total output under 1500 tokens.
 - Be specific and actionable.

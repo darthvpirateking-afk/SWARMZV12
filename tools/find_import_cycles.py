@@ -77,15 +77,33 @@ def resolve_from_import(
     return ".".join(base_parts) if base_parts else None
 
 
+def _is_type_checking_guard(node: ast.AST) -> bool:
+    """Return True if *node* is ``if TYPE_CHECKING:`` or ``if typing.TYPE_CHECKING:``."""
+    if not isinstance(node, ast.If):
+        return False
+    test = node.test
+    if isinstance(test, ast.Name) and test.id == "TYPE_CHECKING":
+        return True
+    if isinstance(test, ast.Attribute) and test.attr == "TYPE_CHECKING":
+        return True
+    return False
+
+
 def collect_imports(file: Path, root: Path, modname: str) -> Set[str]:
     imports: Set[str] = set()
     try:
         tree = ast.parse(file.read_text(encoding="utf-8"))
     except Exception:
-        # If a file can’t parse, skip it (or you can choose to fail)
+        # If a file can't parse, skip it (or you can choose to fail)
         return imports
 
-    for node in ast.walk(tree):
+    # Only consider module-level imports that are NOT inside
+    # ``if TYPE_CHECKING:`` blocks or inside function / method bodies.
+    for node in ast.iter_child_nodes(tree):
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            continue  # skip function-local (lazy) imports
+        if _is_type_checking_guard(node):
+            continue  # skip TYPE_CHECKING-guarded imports
         if isinstance(node, ast.Import):
             for alias in node.names:
                 if alias.name:
@@ -94,6 +112,19 @@ def collect_imports(file: Path, root: Path, modname: str) -> Set[str]:
             resolved = resolve_from_import(modname, node.module, node.level or 0)
             if resolved:
                 imports.add(resolved)
+        elif isinstance(node, (ast.If, ast.Try)):
+            # Walk one level into try/if blocks (but not TYPE_CHECKING guards)
+            for child in ast.walk(node):
+                if child is node:
+                    continue
+                if isinstance(child, ast.Import):
+                    for alias in child.names:
+                        if alias.name:
+                            imports.add(alias.name)
+                elif isinstance(child, ast.ImportFrom):
+                    resolved = resolve_from_import(modname, child.module, child.level or 0)
+                    if resolved:
+                        imports.add(resolved)
     return imports
 
 

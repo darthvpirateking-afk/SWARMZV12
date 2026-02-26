@@ -4,7 +4,6 @@ from kernel_runtime.orchestrator import SwarmzOrchestrator
 
 
 class TestSwarmzOrchestrator(unittest.TestCase):
-
     def setUp(self):
         self.orchestrator = SwarmzOrchestrator()
 

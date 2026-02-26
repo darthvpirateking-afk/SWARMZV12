@@ -12,7 +12,6 @@ from .base import BaseLayer
 
 
 class HealthLayer(BaseLayer):
-
     name = "Health"
     variables = ["sleep_hours_avg", "fatigue_score", "resting_hr"]
 

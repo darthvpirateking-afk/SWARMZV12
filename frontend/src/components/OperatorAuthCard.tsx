@@ -1,5 +1,8 @@
 import { useState, type CSSProperties } from "react";
-import type { OperatorAuthStatus, OperatorAuthVerifyResponse } from "../types/operatorAuth";
+import type {
+  OperatorAuthStatus,
+  OperatorAuthVerifyResponse,
+} from "../types/operatorAuth";
 
 interface OperatorAuthCardProps {
   status: OperatorAuthStatus | null;
@@ -24,14 +27,20 @@ export function OperatorAuthCard({
     <section style={styles.card}>
       <header style={styles.header}>
         <h2 style={styles.title}>Operator Auth</h2>
-        <button style={styles.button} onClick={onRefresh} disabled={loading} type="button">
+        <button
+          style={styles.button}
+          onClick={onRefresh}
+          disabled={loading}
+          type="button"
+        >
           {loading ? "Refreshing..." : "Refresh"}
         </button>
       </header>
 
       {status ? (
         <p style={styles.meta}>
-          Mode: {status.auth_mode} · configured: {status.key_configured ? "yes" : "no"}
+          Mode: {status.auth_mode} · configured:{" "}
+          {status.key_configured ? "yes" : "no"}
         </p>
       ) : null}
 
@@ -54,7 +63,9 @@ export function OperatorAuthCard({
       </div>
 
       {verifyResult ? (
-        <p style={verifyResult.authenticated ? styles.ok : styles.error}>{verifyResult.message}</p>
+        <p style={verifyResult.authenticated ? styles.ok : styles.error}>
+          {verifyResult.message}
+        </p>
       ) : null}
 
       {error ? <p style={styles.error}>{error}</p> : null}
@@ -84,14 +95,16 @@ const styles: Record<string, CSSProperties> = {
     display: "flex",
     gap: "8px",
     alignItems: "center",
+    flexWrap: "wrap",
   },
   input: {
-    flex: 1,
+    flex: "1 1 180px",
     borderRadius: "8px",
     border: "1px solid #3a4f64",
     background: "#111922",
     color: "#e9edf3",
-    padding: "8px",
+    padding: "10px",
+    minHeight: "44px",
     font: "inherit",
   },
   button: {
@@ -99,9 +112,11 @@ const styles: Record<string, CSSProperties> = {
     background: "#24527a",
     color: "#f3f8ff",
     borderRadius: "8px",
-    padding: "6px 10px",
+    padding: "10px 14px",
+    minHeight: "44px",
     cursor: "pointer",
     font: "inherit",
+    flexShrink: 0,
   },
   meta: {
     margin: 0,

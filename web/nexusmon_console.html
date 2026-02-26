@@ -3,255 +3,1435 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEXUSMON Console - SWARMZ Conversational Interface</title>
+    <title>NEXUSMON Cockpit</title>
     <style>
-        * {
+        /* ============================================================
+           CSS Reset & Variables — V2.0 Spec
+           ============================================================ */
+        *, *::before, *::after {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        body {
-            background: #0d1117;
-            color: #c9d1d9;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            height: 100vh;
+        :root {
+            --void:            #050510;
+            --void-mid:        #080818;
+            --electric:        #00AAFF;
+            --electric-dim:    rgba(0, 170, 255, 0.15);
+            --electric-glow:   rgba(0, 170, 255, 0.35);
+            --text-primary:    #D8E8F4;
+            --text-secondary:  #5A7090;
+            --border:          rgba(0, 170, 255, 0.2);
+            --border-subtle:   rgba(0, 170, 255, 0.1);
+            --panel-bg:        rgba(255, 255, 255, 0.03);
+            --success:         #00FF88;
+            --danger:          #FF2200;
+            --warning:         #FFAA00;
+            --sidebar-w:       260px;
+        }
+
+        /* ============================================================
+           Body & Root Shell
+           ============================================================ */
+        html, body {
+            height: 100%;
             overflow: hidden;
         }
 
-        #app {
-            display: flex;
-            height: 100vh;
-            gap: 16px;
-            padding: 16px;
-            background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
-        }
-
-        #sidebar {
-            width: 250px;
-            background: #161b22;
-            border: 1px solid #30363d;
-            border-radius: 8px;
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            overflow-y: auto;
-        }
-
-        .sidebar-section {
-            border-bottom: 1px solid #30363d;
-            padding-bottom: 12px;
-        }
-
-        .sidebar-section:last-child {
-            border-bottom: none;
-        }
-
-        .sidebar-section h3 {
-            font-size: 12px;
-            text-transform: uppercase;
-            color: #8b949e;
-            margin-bottom: 8px;
-            font-weight: 600;
-        }
-
-        .sidebar-item {
-            padding: 8px 12px;
-            background: #0d1117;
-            border: 1px solid #30363d;
-            border-radius: 4px;
-            cursor: pointer;
+        body {
+            background: var(--void);
+            color: var(--text-primary);
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
             font-size: 13px;
-            transition: all 0.2s;
+            line-height: 1.5;
         }
 
-        .sidebar-item:hover {
-            background: #161b22;
-            border-color: #58a6ff;
-            color: #58a6ff;
-        }
-
-        .sidebar-item.active {
-            background: #238636;
-            border-color: #238636;
-            color: white;
-        }
-
-        #main-console {
-            flex: 1;
+        #cockpit {
             display: flex;
             flex-direction: column;
+            height: 100vh;
+            background:
+                radial-gradient(ellipse 60% 50% at 15% 50%, rgba(0,170,255,0.04) 0%, transparent 100%),
+                radial-gradient(ellipse 40% 40% at 85% 50%, rgba(123,47,255,0.03) 0%, transparent 100%),
+                linear-gradient(180deg, #050510 0%, #07071a 100%);
+        }
+
+        /* === Three-column layout === */
+        #panels {
+            display: flex;
+            flex: 1;
             min-height: 0;
+        }
+
+        /* ============================================================
+           Shared Panel scaffolding
+           ============================================================ */
+        .side-panel {
+            width: var(--sidebar-w);
+            min-width: var(--sidebar-w);
+            background: var(--panel-bg);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            overflow-x: hidden;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(0,170,255,0.18) transparent;
+        }
+
+        .side-panel::-webkit-scrollbar { width: 3px; }
+        .side-panel::-webkit-scrollbar-thumb { background: rgba(0,170,255,0.18); border-radius: 2px; }
+
+        #panel-left  { border-right: 1px solid var(--border); }
+        #panel-right { border-left:  1px solid var(--border); }
+
+        /* ---- sections ---- */
+        .ps {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .ps:last-child { border-bottom: none; }
+
+        .ps-title {
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+        }
+
+        /* ============================================================
+           LEFT PANEL — NEXUSMON Identity
+           ============================================================ */
+
+        /* --- Logo Badge --- */
+        .nx-badge {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            background: linear-gradient(135deg, rgba(0,170,255,0.07), rgba(0,170,255,0.02));
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nx-badge::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 10px;
+            background: linear-gradient(135deg, rgba(0,170,255,0.12), rgba(123,47,255,0.06));
+            opacity: 0;
+            animation: badge-breathe 4s ease-in-out infinite;
+        }
+
+        @keyframes badge-breathe {
+            0%, 100% { opacity: 0; }
+            50%       { opacity: 1; }
+        }
+
+        .nx-orb {
+            position: relative;
+            z-index: 1;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00AAFF 0%, #0055CC 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 17px;
+            font-weight: 900;
+            color: #fff;
+            flex-shrink: 0;
+            animation: orb-glow 3s ease-in-out infinite;
+        }
+
+        @keyframes orb-glow {
+            0%, 100% { box-shadow: 0 0 10px rgba(0,170,255,0.45); }
+            50%       { box-shadow: 0 0 22px rgba(0,170,255,0.75), 0 0 40px rgba(0,170,255,0.25); }
+        }
+
+        .nx-badge-text {
+            position: relative;
+            z-index: 1;
+            min-width: 0;
+        }
+
+        .nx-title {
+            font-size: 15px;
+            font-weight: 800;
+            color: var(--electric);
+            letter-spacing: 2px;
+            text-shadow: 0 0 12px rgba(0,170,255,0.5);
+            animation: title-pulse 5s ease-in-out infinite;
+        }
+
+        @keyframes title-pulse {
+            0%, 100% { text-shadow: 0 0 10px rgba(0,170,255,0.45); }
+            50%       { text-shadow: 0 0 20px rgba(0,170,255,0.85), 0 0 40px rgba(0,170,255,0.3); }
+        }
+
+        .nx-subtitle {
+            font-size: 10px;
+            color: var(--text-secondary);
+            margin-top: 1px;
+            letter-spacing: 0.5px;
+        }
+
+        /* --- Form Badge --- */
+        .form-badge {
+            display: inline-block;
+            padding: 2px 9px;
+            border-radius: 10px;
+            font-size: 9px;
+            font-weight: 900;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            border: 1px solid rgba(0,170,255,0.3);
+            background: rgba(0,170,255,0.07);
+            color: var(--electric);
+            transition: all 0.5s ease;
+        }
+
+        /* --- XP Bar --- */
+        .xp-wrap { margin-top: 10px; }
+
+        .xp-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            margin-bottom: 4px;
+        }
+
+        .xp-lbl  { color: var(--text-secondary); font-weight: 700; letter-spacing: 0.5px; }
+        .xp-val  { color: var(--electric); font-weight: 700; }
+
+        .xp-track {
+            width: 100%;
+            height: 5px;
+            background: rgba(0,170,255,0.06);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .xp-fill {
+            height: 100%;
+            border-radius: 3px;
+            background: linear-gradient(90deg, #00AAFF, #7DF9FF);
+            box-shadow: 0 0 6px rgba(0,170,255,0.55);
+            transition: width 1s ease;
+        }
+
+        /* --- Mood Pill --- */
+        .mood-pill {
+            display: inline-block;
+            padding: 2px 9px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            border: 1px solid rgba(0,170,255,0.2);
+            background: rgba(0,170,255,0.06);
+            color: var(--electric);
+            transition: all 0.4s ease;
+        }
+
+        /* --- Info rows --- */
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.025);
+        }
+
+        .info-row:last-child { border-bottom: none; }
+
+        .info-lbl { color: var(--text-secondary); font-size: 11px; }
+
+        .info-val {
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 11px;
+            text-align: right;
+            max-width: 140px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .info-val.electric { color: var(--electric); }
+
+        /* --- 7 Trait Bars --- */
+        #section-traits { display: none; }  /* hidden until entity data arrives */
+
+        .trait-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .trait-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .trait-name {
+            width: 82px;
+            flex-shrink: 0;
+            font-size: 10px;
+            color: var(--text-secondary);
+            text-transform: capitalize;
+        }
+
+        .trait-track {
+            flex: 1;
+            height: 3px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .trait-fill {
+            height: 100%;
+            border-radius: 2px;
+            background: var(--electric);
+            transition: width 0.8s ease;
+        }
+
+        .trait-fill.hi  { background: #00AAFF; }
+        .trait-fill.mid { background: #FFAA00; }
+        .trait-fill.lo  { background: #5A7090; }
+
+        .trait-num {
+            width: 26px;
+            text-align: right;
+            font-size: 10px;
+            color: var(--text-primary);
+            flex-shrink: 0;
+        }
+
+        /* ============================================================
+           CENTER — Chat console
+           ============================================================ */
+        #panel-center {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            background: transparent;
         }
 
         #nexusmon-console {
             flex: 1;
             display: flex;
             flex-direction: column;
+            min-height: 0;
+            height: 100%;
         }
 
-        .info-panel {
-            background: #161b22;
-            border: 1px solid #30363d;
-            border-radius: 8px;
-            padding: 12px;
-            font-size: 12px;
-            margin-top: auto;
+        /* ============================================================
+           RIGHT PANEL — Swarm / Factory / Missions
+           ============================================================ */
+
+        /* Status indicator row */
+        .status-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 10px;
+            background: rgba(0,0,0,0.15);
+            border: 1px solid var(--border-subtle);
+            border-radius: 6px;
+            margin-bottom: 8px;
         }
 
-        .info-item {
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .status-dot.online  { background: var(--success); box-shadow: 0 0 6px rgba(0,255,136,0.55); }
+        .status-dot.offline { background: var(--danger);  box-shadow: 0 0 6px rgba(255,34,0,0.55);  }
+        .status-dot.unknown { background: var(--text-secondary); }
+
+        .status-txt { font-size: 11px; font-weight: 700; }
+        .status-txt.online  { color: var(--success); }
+        .status-txt.offline { color: var(--danger); }
+        .status-txt.unknown { color: var(--text-secondary); }
+
+        /* Mission stat grid */
+        .m-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5px;
+        }
+
+        .m-stat {
+            padding: 7px 6px;
+            background: rgba(0,0,0,0.15);
+            border: 1px solid var(--border-subtle);
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .m-num {
+            font-size: 17px;
+            font-weight: 800;
+            line-height: 1.2;
+        }
+
+        .m-num.pending  { color: var(--warning); }
+        .m-num.running  { color: var(--electric); }
+        .m-num.success  { color: var(--success); }
+        .m-num.failure  { color: var(--danger); }
+
+        .m-lbl {
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        /* Factory / Entity mini rows */
+        .fact-row {
             display: flex;
             justify-content: space-between;
-            margin: 4px 0;
-            color: #8b949e;
+            align-items: center;
+            padding: 4px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.025);
+            font-size: 11px;
         }
 
-        .info-value {
-            color: #c9d1d9;
-            font-weight: 500;
+        .fact-row:last-child { border-bottom: none; }
+        .fact-lbl { color: var(--text-secondary); }
+        .fact-val { color: var(--text-primary); font-weight: 600; }
+
+        /* Recent mission cards */
+        .mission-card {
+            padding: 7px 9px;
+            background: rgba(0,0,0,0.15);
+            border: 1px solid var(--border-subtle);
+            border-radius: 6px;
+            margin-bottom: 5px;
+            font-size: 11px;
         }
 
-        .loading-spinner {
+        .mission-card:last-child { margin-bottom: 0; }
+
+        .mission-key {
+            color: var(--text-secondary);
+            font-size: 10px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .mission-val {
+            color: var(--electric);
+            font-weight: 600;
+            margin-top: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Muted info text */
+        .panel-note {
+            font-size: 10px;
+            color: var(--text-secondary);
+            font-style: italic;
+            padding: 2px 0;
+        }
+
+        .last-tick {
+            font-size: 9px;
+            color: var(--text-secondary);
+            margin-top: 6px;
+            text-align: right;
+        }
+
+        /* ============================================================
+           BOTTOM BAR — Quick Chips
+           ============================================================ */
+        #bottom-bar {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            padding: 8px 16px;
+            background: var(--panel-bg);
+            border-top: 1px solid var(--border);
+            overflow-x: auto;
+            scrollbar-width: none;
+            flex-shrink: 0;
+        }
+
+        #bottom-bar::-webkit-scrollbar { display: none; }
+
+        .bar-label {
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            flex-shrink: 0;
+            margin-right: 2px;
+        }
+
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 13px;
+            background: rgba(0,170,255,0.05);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            color: var(--electric);
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+            letter-spacing: 0.5px;
+            transition: all 0.18s ease;
+            flex-shrink: 0;
+            user-select: none;
+        }
+
+        .chip:hover {
+            background: rgba(0,170,255,0.12);
+            border-color: var(--electric-glow);
+            box-shadow: 0 0 14px rgba(0,170,255,0.18), inset 0 0 6px rgba(0,170,255,0.04);
+            transform: translateY(-1px);
+        }
+
+        .chip:active {
+            transform: translateY(0);
+            box-shadow: none;
+        }
+
+        .chip.orange {
+            background: rgba(255,107,0,0.05);
+            border-color: rgba(255,107,0,0.2);
+            color: #FF6B00;
+        }
+
+        .chip.orange:hover {
+            background: rgba(255,107,0,0.12);
+            border-color: rgba(255,107,0,0.4);
+            box-shadow: 0 0 14px rgba(255,107,0,0.18);
+        }
+
+        .chip-icon { font-size: 12px; line-height: 1; }
+
+        /* ============================================================
+           Responsive
+           ============================================================ */
+        @media (max-width: 980px) {
+            #panel-right { display: none; }
+            :root { --sidebar-w: 230px; }
+        }
+
+        @media (max-width: 700px) {
+            #panel-left { display: none; }
+            .bar-label  { display: none; }
+            #bottom-bar { padding: 6px 10px; gap: 5px; }
+        }
+
+        /* ============================================================
+           Spinner
+           ============================================================ */
+        .spin {
             display: inline-block;
-            width: 12px;
-            height: 12px;
-            border: 2px solid #30363d;
-            border-top-color: #58a6ff;
+            width: 9px;
+            height: 9px;
+            border: 1.5px solid rgba(0,170,255,0.2);
+            border-top-color: var(--electric);
             border-radius: 50%;
-            animation: spin 0.8s linear infinite;
+            animation: do-spin 0.65s linear infinite;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        @keyframes do-spin { to { transform: rotate(360deg); } }
+
+        /* ============================================================
+           Right panel — Unit List
+           ============================================================ */
+        .unit-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.025);
+            font-size: 11px;
+        }
+
+        .unit-row:last-child { border-bottom: none; }
+
+        .unit-status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .unit-name {
+            flex: 1;
+            color: var(--text-primary);
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .unit-meta {
+            color: var(--text-secondary);
+            font-size: 10px;
+            white-space: nowrap;
+        }
+
+        /* ============================================================
+           Right panel — Factory status badge
+           ============================================================ */
+        .factory-badge {
+            display: inline-block;
+            padding: 2px 9px;
+            border-radius: 10px;
+            font-size: 9px;
+            font-weight: 900;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .factory-badge.idle     { color:#00FF88; border:1px solid rgba(0,255,136,0.3); background:rgba(0,255,136,0.06); }
+        .factory-badge.running  { color:#00AAFF; border:1px solid rgba(0,170,255,0.3); background:rgba(0,170,255,0.06); }
+        .factory-badge.queued   { color:#FFAA00; border:1px solid rgba(255,170,0,0.3); background:rgba(255,170,0,0.06); }
+
+        /* ============================================================
+           Right panel — Missions mini card
+           ============================================================ */
+        .mission-status-pill {
+            display: inline-block;
+            padding: 1px 6px;
+            border-radius: 8px;
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+        }
+
+        /* ============================================================
+           Right panel — Chronicle
+           ============================================================ */
+        .chron-entry {
+            padding: 6px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.025);
+        }
+
+        .chron-entry:last-child { border-bottom: none; }
+
+        .chron-title {
+            font-size: 11px;
+            color: var(--text-primary);
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 4px;
+        }
+
+        .sig-track {
+            width: 100%;
+            height: 3px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .sig-fill {
+            height: 100%;
+            border-radius: 2px;
+            background: linear-gradient(90deg, #7B2FFF, #00AAFF);
+            transition: width 0.7s ease;
         }
     </style>
 </head>
 <body>
-    <div id="app">
-        <!-- Sidebar with navigation and info -->
-        <div id="sidebar">
-            <div class="sidebar-section">
-                <h3>📊 Navigation</h3>
-                <div class="sidebar-item active" data-screen="Console">NEXUSMON Console</div>
-                <div class="sidebar-item" data-screen="Missions">Missions</div>
-                <div class="sidebar-item" data-screen="Audit">Audit Log</div>
-                <div class="sidebar-item" data-screen="Metrics">Metrics</div>
-            </div>
+<div id="cockpit">
 
-            <div class="sidebar-section">
-                <h3>⚡ Quick Actions</h3>
-                <div class="sidebar-item" onclick="quickAction('create_mission')">+ Create Mission</div>
-                <div class="sidebar-item" onclick="quickAction('view_recent')">📜 Recent Events</div>
-                <div class="sidebar-item" onclick="quickAction('system_status')">🔍 System Status</div>
-            </div>
+    <!-- ═══════════════════════════════════ THREE-COLUMN PANELS ════ -->
+    <div id="panels">
 
-            <div class="sidebar-section">
-                <h3>👤 Operator</h3>
-                <div id="operator-info" class="info-panel">
-                    <div class="info-item">
-                        <span>ID</span>
-                        <span class="info-value" id="op-id">op-001</span>
+        <!-- ===================== LEFT PANEL — NEXUSMON STATUS ====== -->
+        <div id="panel-left" class="side-panel">
+
+            <!-- Identity Badge -->
+            <div class="ps">
+                <div class="nx-badge">
+                    <div class="nx-orb">N</div>
+                    <div class="nx-badge-text">
+                        <div class="nx-title" id="entity-name">NEXUSMON</div>
+                        <div class="nx-subtitle">Evolutionary Companion</div>
                     </div>
-                    <div class="info-item">
-                        <span>Form</span>
-                        <span class="info-value" id="op-form">Operator</span>
+                </div>
+
+                <!-- Form Badge -->
+                <div style="margin-top:10px; display:flex; align-items:center; gap:8px;">
+                    <span class="form-badge" id="form-badge">ROOKIE</span>
+                    <span style="font-size:10px; color:var(--text-secondary);" id="form-label">Rookie Form</span>
+                </div>
+
+                <!-- XP Bar -->
+                <div class="xp-wrap">
+                    <div class="xp-header">
+                        <span class="xp-lbl">XP</span>
+                        <span class="xp-val" id="xp-val">0 XP</span>
                     </div>
-                    <div class="info-item">
-                        <span>Drift</span>
-                        <span class="info-value" id="op-drift">0.0%</span>
+                    <div class="xp-track">
+                        <div class="xp-fill" id="xp-bar" style="width:0%"></div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Main console area -->
-        <div id="main-console">
+            <!-- Entity State -->
+            <div class="ps">
+                <div class="ps-title">Entity State</div>
+
+                <div class="info-row">
+                    <span class="info-lbl">Mood</span>
+                    <span class="mood-pill" id="mood-pill">--</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-lbl">Boot #</span>
+                    <span class="info-val electric" id="boot-count">--</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-lbl">Interactions</span>
+                    <span class="info-val" id="interaction-count">--</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-lbl">Operator</span>
+                    <span class="info-val electric" id="operator-name">Regan Stewart Harris</span>
+                </div>
+            </div>
+
+            <!-- Traits — hidden until nexusmon:entity fires with trait data -->
+            <div class="ps" id="section-traits" style="display:none;">
+                <div class="ps-title">Traits</div>
+                <div class="trait-list" id="trait-list"></div>
+            </div>
+
+        </div>
+        <!-- END LEFT PANEL -->
+
+        <!-- ===================== CENTER PANEL — NAVI CHANNEL ======= -->
+        <div id="panel-center">
             <div id="nexusmon-console"></div>
         </div>
+        <!-- END CENTER PANEL -->
+
+        <!-- ===================== RIGHT PANEL — SWARM STATUS ======== -->
+        <div id="panel-right" class="side-panel">
+
+            <!-- Swarm Status -->
+            <div class="ps" id="section-swarm">
+                <div class="ps-title">Swarm Status</div>
+
+                <div class="status-row" id="runner-row">
+                    <div class="status-dot unknown" id="runner-dot"></div>
+                    <span class="status-txt unknown" id="runner-txt">Checking...</span>
+                </div>
+
+                <div class="m-grid">
+                    <div class="m-stat">
+                        <div class="m-num running" id="sw-pending">-</div>
+                        <div class="m-lbl">Units</div>
+                    </div>
+                    <div class="m-stat">
+                        <div class="m-num success" id="sw-running">-</div>
+                        <div class="m-lbl">Idle</div>
+                    </div>
+                </div>
+
+                <div id="sw-unit-list" style="margin-top:8px;"></div>
+
+                <div class="last-tick" id="sw-tick"></div>
+            </div>
+
+            <!-- Factory / Entity State -->
+            <div class="ps" id="section-factory">
+                <div class="ps-title">Factory Status</div>
+                <div id="factory-body">
+                    <div class="panel-note">Loading...</div>
+                </div>
+            </div>
+
+            <!-- Active Missions -->
+            <div class="ps" id="section-missions">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+                    <div class="ps-title" style="margin-bottom:0;">Active Missions</div>
+                    <button id="btn-new-mission" style="background:rgba(0,170,255,0.07);border:1px solid rgba(0,170,255,0.25);border-radius:10px;color:#00AAFF;font-size:9px;font-weight:800;letter-spacing:1px;padding:2px 8px;cursor:pointer;text-transform:uppercase;" title="New Mission">+ Mission</button>
+                </div>
+                <div id="missions-body">
+                    <div class="panel-note">Loading...</div>
+                </div>
+            </div>
+
+            <!-- Chronicle mini-panel -->
+            <div class="ps" id="section-chronicle">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+                    <div class="ps-title" style="margin-bottom:0;">Chronicle</div>
+                    <button id="btn-chronicle-all" style="background:none;border:none;color:var(--text-secondary);font-size:10px;cursor:pointer;padding:0;text-decoration:underline;" title="View All">View All</button>
+                </div>
+                <div id="chronicle-body">
+                    <div class="panel-note">Loading...</div>
+                </div>
+            </div>
+
+        </div>
+        <!-- END RIGHT PANEL -->
+
+    </div>
+    <!-- END PANELS -->
+
+    <!-- ═══════════════════════════════════ BOTTOM CHIP BAR ════════ -->
+    <div id="bottom-bar">
+        <span class="bar-label">Quick</span>
+
+        <button class="chip" data-preset="Research">
+            <span class="chip-icon">&#128269;</span> Research
+        </button>
+        <button class="chip" data-preset="Build">
+            <span class="chip-icon">&#9881;</span> Build
+        </button>
+        <button class="chip" data-preset="Analyze">
+            <span class="chip-icon">&#128202;</span> Analyze
+        </button>
+        <button class="chip orange" data-preset="Status">
+            <span class="chip-icon">&#126;</span> Status
+        </button>
+        <button class="chip" data-preset="Swarm">
+            <span class="chip-icon">&#64;</span> Swarm
+        </button>
+        <button class="chip orange" data-preset="Chronicle">
+            <span class="chip-icon">&#33;</span> Chronicle
+        </button>
     </div>
 
-    <script src="/nexusmon_console.js"></script>
-    <script>
-        // Initialize NEXUSMON Console
-        const operatorId = localStorage.getItem('operatorId') || 'op-001';
-        localStorage.setItem('operatorId', operatorId);
+</div>
+<!-- END COCKPIT -->
 
-        document.getElementById('op-id').textContent = operatorId;
+<!-- NEXUSMON Console Module — owns all chat logic -->
+<script src="/web/nexusmon_console.js"></script>
 
-        NexusmonConsole.init(operatorId, {
-            apiBase: '/v1/nexusmon',
-            screen: 'Console',
-            missionId: null
-        });
+<script>
+(function () {
+    'use strict';
 
-        // Handle sidebar navigation
-        document.querySelectorAll('[data-screen]').forEach(item => {
-            item.addEventListener('click', () => {
-                document.querySelectorAll('[data-screen]').forEach(i => i.classList.remove('active'));
-                item.classList.add('active');
-                console.log('Switched to screen:', item.dataset.screen);
-            });
-        });
+    /* ================================================================
+       CONSTANTS
+    ================================================================ */
+    var REFRESH_MS = 30000;   // 30-second polling interval (spec §4)
 
-        // Handle quick actions
-        function quickAction(action) {
-            const messages = {
-                'create_mission': 'Help me create a new mission.',
-                'view_recent': 'Show me recent events.',
-                'system_status': 'What is the system status right now?'
-            };
-            
-            if (messages[action]) {
-                // Insert message into input and send
-                const input = document.getElementById('chat-input');
-                input.value = messages[action];
-                input.focus();
-                NexusmonConsole.sendMessage();
+    var FORM_COLORS = {
+        'ROOKIE':     '#00AAFF',
+        'CHAMPION':   '#0066FF',
+        'ULTIMATE':   '#7B2FFF',
+        'MEGA':       '#FFB300',
+        'SOVEREIGN':  '#FFFFFF',
+        // lower-case aliases
+        'rookie':     '#00AAFF',
+        'champion':   '#0066FF',
+        'ultimate':   '#7B2FFF',
+        'mega':       '#FFB300',
+        'sovereign':  '#FFFFFF'
+    };
+
+    var MOOD_COLORS = {
+        'calm':           '#00AAFF',
+        'focused':        '#00FFCC',
+        'protective':     '#FF6B00',
+        'alert':          '#FF2200',
+        'triumphant':     '#00FF88',
+        'restless':       '#FFAA00',
+        'curious':        '#AA44FF',
+        'dormant':        '#445566',
+        'charged':        '#FF44AA',
+        'contemplative':  '#8899AA'
+    };
+
+    var MOOD_BORDER_ALPHA = 0.3;
+
+    var STATUS_COLORS = {
+        'IDLE':       '#00FF88',
+        'ON_MISSION': '#00AAFF',
+        'RECOVERING': '#FFAA00',
+        'RETIRED':    '#445566',
+        'EVOLVING':   '#7B2FFF'
+    };
+
+    /* Chip presets — spec §5 */
+    var CHIP_PRESETS = {
+        'Research':   'Run a research mission on: ',
+        'Build':      'Build: ',
+        'Analyze':    'Analyze: ',
+        'Status':     'NEXUSMON, give me a full system status report.',
+        'Swarm':      'NEXUSMON, show me my swarm status.',
+        'Chronicle':  'NEXUSMON, show me a recent Chronicle entry.'
+    };
+
+    /* The 7 canonical trait keys (spec §3) */
+    var CANONICAL_TRAITS = [
+        'curiosity',
+        'loyalty',
+        'aggression',
+        'creativity',
+        'autonomy',
+        'patience',
+        'protectiveness'
+    ];
+
+    /* ================================================================
+       DOM REFERENCES — Left Panel
+    ================================================================ */
+    var $entityName       = document.getElementById('entity-name');
+    var $formBadge        = document.getElementById('form-badge');
+    var $formLabel        = document.getElementById('form-label');
+    var $xpVal            = document.getElementById('xp-val');
+    var $xpBar            = document.getElementById('xp-bar');
+    var $moodPill         = document.getElementById('mood-pill');
+    var $bootCount        = document.getElementById('boot-count');
+    var $interactionCount = document.getElementById('interaction-count');
+    var $operatorName     = document.getElementById('operator-name');
+    var $traitSection     = document.getElementById('section-traits');
+    var $traitList        = document.getElementById('trait-list');
+
+    /* DOM References — Right Panel */
+    var $runnerDot    = document.getElementById('runner-dot');
+    var $runnerTxt    = document.getElementById('runner-txt');
+    var $swUnits      = document.getElementById('sw-pending');   // repurposed: total units
+    var $swIdle       = document.getElementById('sw-running');   // repurposed: idle units
+    var $swUnitList   = document.getElementById('sw-unit-list');
+    var $swTick       = document.getElementById('sw-tick');
+    var $factBody     = document.getElementById('factory-body');
+    var $missBody     = document.getElementById('missions-body');
+    var $chronBody    = document.getElementById('chronicle-body');
+
+    /* ================================================================
+       INIT — NEXUSMON Console (spec §2)
+       Exact call per spec:
+         NexusmonConsole.init('op-001', { apiBase: '/v1/nexusmon',
+                                          screen: 'Console',
+                                          missionId: null })
+    ================================================================ */
+    NexusmonConsole.init('op-001', {
+        apiBase: '/v1/nexusmon',
+        screen: 'Console',
+        missionId: null
+    });
+
+    /* Wire real-time WebSocket — falls back to HTTP automatically */
+    NexusmonConsole.connectWebSocket();
+
+    /* ================================================================
+       UTILITY
+    ================================================================ */
+    function escHtml(s) {
+        var d = document.createElement('div');
+        d.appendChild(document.createTextNode(String(s)));
+        return d.innerHTML;
+    }
+
+    function fmtTime(iso) {
+        if (!iso) return '--';
+        try {
+            var d = new Date(iso);
+            if (isNaN(d.getTime())) return '--';
+            return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        } catch (e) { return '--'; }
+    }
+
+    function fmtDate(iso) {
+        if (!iso) return '--';
+        try {
+            var d = new Date(iso);
+            if (isNaN(d.getTime())) return '--';
+            return d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        } catch (e) { return '--'; }
+    }
+
+    function truncate(s, n) {
+        s = String(s);
+        return s.length > n ? s.slice(0, n - 1) + '\u2026' : s;
+    }
+
+    function capitalize(s) {
+        return s ? s.charAt(0).toUpperCase() + s.slice(1) : '';
+    }
+
+    async function safeFetch(url) {
+        try {
+            var res = await fetch(url);
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            return await res.json();
+        } catch (e) {
+            return null;
+        }
+    }
+
+    /* ================================================================
+       LEFT PANEL — Entity display
+       Called by the nexusmon:entity event listener (spec §3)
+    ================================================================ */
+    function applyEntityData(entity) {
+        if (!entity) return;
+
+        /* Name */
+        if (entity.name && $entityName) {
+            $entityName.textContent = entity.name;
+        }
+
+        /* Form Badge */
+        if (entity.form) {
+            var formUp  = entity.form.toUpperCase();
+            var fColor  = FORM_COLORS[formUp] || FORM_COLORS[entity.form] || '#00AAFF';
+
+            if ($formBadge) {
+                $formBadge.textContent = formUp;
+                $formBadge.style.color       = fColor;
+                $formBadge.style.borderColor = hexToRgba(fColor, 0.35);
+                $formBadge.style.background  = hexToRgba(fColor, 0.07);
+            }
+
+            if ($formLabel) {
+                $formLabel.textContent = capitalize(entity.form) + ' Form';
+                $formLabel.style.color = fColor;
             }
         }
 
-        // Listen for NEXUSMON actions
-        document.getElementById('nexusmon-console').addEventListener('nexusmon:action', (e) => {
-            console.log('NEXUSMON action:', e.detail);
-            const action = e.detail;
-            
-            switch (action.type) {
-                case 'CreateMission':
-                    console.log('Create mission:', action.payload);
-                    break;
-                case 'OpenMission':
-                    console.log('Open mission:', action.payload);
-                    break;
-                case 'ViewMetrics':
-                    document.querySelector('[data-screen="Metrics"]').click();
-                    break;
-                case 'ViewAudit':
-                    document.querySelector('[data-screen="Audit"]').click();
-                    break;
-                default:
-                    console.log('Unknown action');
+        /* Mood */
+        if (entity.mood && $moodPill) {
+            var moodKey  = entity.mood.toLowerCase();
+            var mColor   = MOOD_COLORS[moodKey] || '#00AAFF';
+
+            $moodPill.textContent       = entity.mood.toUpperCase();
+            $moodPill.style.color       = mColor;
+            $moodPill.style.borderColor = hexToRgba(mColor, MOOD_BORDER_ALPHA);
+            $moodPill.style.background  = hexToRgba(mColor, 0.07);
+        }
+
+        /* XP Bar */
+        if ($xpVal && $xpBar) {
+            var xp    = entity.xp || 0;
+            var pct   = entity.xp_pct != null ? entity.xp_pct : 0;
+            $xpVal.textContent    = Math.round(xp) + ' XP';
+            $xpBar.style.width    = Math.min(100, Math.max(0, pct)) + '%';
+        }
+
+        /* Boot count */
+        if ($bootCount && entity.boot_count != null) {
+            $bootCount.textContent = entity.boot_count;
+        }
+
+        /* Interaction count */
+        if ($interactionCount && entity.interaction_count != null) {
+            $interactionCount.textContent = entity.interaction_count;
+        }
+
+        /* Operator name */
+        if ($operatorName && entity.operator_name) {
+            $operatorName.textContent = entity.operator_name;
+        }
+
+        /* 7 Trait bars */
+        if ($traitList && entity.traits && typeof entity.traits === 'object') {
+            var hasTraits = false;
+            var rows = CANONICAL_TRAITS.map(function (key) {
+                if (!(key in entity.traits)) return null;
+                hasTraits = true;
+                var v   = entity.traits[key];
+                var pct = Math.round(Math.min(1, Math.max(0, v)) * 100);
+                var cls = pct >= 65 ? 'hi' : pct >= 35 ? 'mid' : 'lo';
+                return '<div class="trait-row">' +
+                    '<span class="trait-name">' + escHtml(key) + '</span>' +
+                    '<div class="trait-track"><div class="trait-fill ' + cls + '" style="width:' + pct + '%"></div></div>' +
+                    '<span class="trait-num">' + pct + '</span>' +
+                    '</div>';
+            }).filter(Boolean);
+
+            if (hasTraits && rows.length > 0) {
+                $traitList.innerHTML = rows.join('');
+                $traitSection.style.display = 'block';
+            }
+        }
+    }
+
+    /* ----------------------------------------------------------------
+       hexToRgba — convert #RRGGBB to rgba(..., alpha)
+    ---------------------------------------------------------------- */
+    function hexToRgba(hex, alpha) {
+        if (!hex || !hex.startsWith('#')) return 'rgba(0,170,255,' + alpha + ')';
+        var r = parseInt(hex.slice(1,3), 16);
+        var g = parseInt(hex.slice(3,5), 16);
+        var b = parseInt(hex.slice(5,7), 16);
+        return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+
+    /* ================================================================
+       RIGHT PANEL — Swarm Status
+       Source: GET /v1/nexusmon/swarm/units
+    ================================================================ */
+    async function refreshSwarm() {
+        var data;
+        try {
+            var res = await fetch('/v1/nexusmon/swarm/units');
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            data = await res.json();
+        } catch (e) {
+            setRunner('offline', 'Swarm unavailable');
+            $swUnits.textContent    = '-';
+            $swIdle.textContent     = '-';
+            $swUnitList.innerHTML   = '<div class="panel-note">Data unavailable</div>';
+            $swTick.textContent     = '';
+            return;
+        }
+
+        /* Accept envelope shape { ok, units: [...] } or flat array */
+        var units = Array.isArray(data) ? data
+                  : (data.units && Array.isArray(data.units)) ? data.units
+                  : [];
+
+        var totalCount = units.length;
+        var idleCount  = units.filter(function (u) {
+            return (u.status || '').toUpperCase() === 'IDLE';
+        }).length;
+
+        var hasUnits = totalCount > 0;
+        setRunner(hasUnits ? 'online' : 'unknown',
+                  hasUnits ? 'Swarm Online' : 'No units found');
+
+        $swUnits.textContent = totalCount;
+        $swIdle.textContent  = idleCount;
+
+        if (units.length === 0) {
+            $swUnitList.innerHTML = '<div class="panel-note">No units deployed</div>';
+        } else {
+            /* Show all units (scroll if many) */
+            $swUnitList.innerHTML = units.map(function (u) {
+                var statusKey  = (u.status || 'IDLE').toUpperCase();
+                var dotColor   = STATUS_COLORS[statusKey] || '#445566';
+                var levelStr   = u.level != null ? 'Lv' + u.level : '';
+                var typeStr    = u.type  ? escHtml(u.type) : '';
+                var meta       = [typeStr, levelStr].filter(Boolean).join(' · ');
+                return '<div class="unit-row">' +
+                    '<div class="unit-status-dot" style="background:' + dotColor + ';box-shadow:0 0 5px ' + dotColor + '88;"></div>' +
+                    '<span class="unit-name">' + escHtml(u.name || u.id || 'Unit') + '</span>' +
+                    '<span class="unit-meta">' + meta + '</span>' +
+                    '</div>';
+            }).join('');
+        }
+
+        $swTick.textContent = 'Updated ' + fmtTime(new Date().toISOString());
+    }
+
+    function setRunner(state, label) {
+        $runnerDot.className = 'status-dot ' + state;
+        $runnerTxt.className = 'status-txt ' + state;
+        $runnerTxt.textContent = label;
+    }
+
+    /* ================================================================
+       RIGHT PANEL — Factory Status
+       Source: GET /v1/nexusmon/factory/status
+    ================================================================ */
+    async function refreshFactory() {
+        var data;
+        try {
+            var res = await fetch('/v1/nexusmon/factory/status');
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            data = await res.json();
+        } catch (e) {
+            $factBody.innerHTML = '<div class="panel-note">Factory data unavailable</div>';
+            return;
+        }
+
+        /* Accept envelope { ok, factory } or flat */
+        var f = (data.ok && data.factory) ? data.factory : data;
+
+        var statusRaw   = (f.status || f.state || 'IDLE').toUpperCase();
+        var badgeCls    = statusRaw === 'RUNNING' ? 'running'
+                        : statusRaw === 'QUEUED'  ? 'queued'
+                        : 'idle';
+
+        var queuedCount  = f.queued_count  != null ? f.queued_count  : (f.queue_length != null ? f.queue_length : '--');
+        var totalProduced= f.total_produced != null ? f.total_produced : (f.produced_count != null ? f.produced_count : '--');
+
+        var rows = [];
+        if (queuedCount  !== '--') rows.push({ lbl: 'Queued',   val: queuedCount });
+        if (totalProduced !== '--') rows.push({ lbl: 'Produced', val: totalProduced });
+        if (f.active_job) rows.push({ lbl: 'Active Job', val: truncate(String(f.active_job), 22) });
+
+        $factBody.innerHTML =
+            '<span class="factory-badge ' + badgeCls + '">' + escHtml(statusRaw) + '</span>' +
+            (rows.length ? rows.map(function (r) {
+                return '<div class="fact-row">' +
+                    '<span class="fact-lbl">' + escHtml(r.lbl) + '</span>' +
+                    '<span class="fact-val">' + escHtml(String(r.val)) + '</span>' +
+                    '</div>';
+            }).join('') : '<div class="panel-note">No factory details</div>');
+    }
+
+    /* ================================================================
+       RIGHT PANEL — Active Missions
+       Source: GET /v1/nexusmon/missions?status=active
+    ================================================================ */
+    async function refreshMissions() {
+        var data;
+        try {
+            var res = await fetch('/v1/nexusmon/missions?status=active');
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            data = await res.json();
+        } catch (e) {
+            $missBody.innerHTML = '<div class="panel-note">Missions data unavailable</div>';
+            return;
+        }
+
+        /* Accept shapes: { missions: [...] } / { items: [...] } / array */
+        var missions = Array.isArray(data) ? data
+                     : (data.missions && Array.isArray(data.missions)) ? data.missions
+                     : (data.items    && Array.isArray(data.items))    ? data.items
+                     : [];
+
+        var count = data.total != null ? data.total
+                  : data.count != null ? data.count
+                  : missions.length;
+
+        var recent = missions.slice(0, 3);
+
+        if (missions.length === 0) {
+            $missBody.innerHTML =
+                '<div class="panel-note">No active missions</div>';
+            return;
+        }
+
+        /* Active count badge + mission cards */
+        var countHtml = '<div style="font-size:11px;color:var(--text-secondary);margin-bottom:8px;">' +
+            '<span style="color:#00AAFF;font-weight:800;font-size:15px;">' + escHtml(String(count)) + '</span>' +
+            '&nbsp;active</div>';
+
+        var cardsHtml = recent.map(function (m) {
+            var title     = m.title || m.name || m.id || 'Untitled';
+            var mStatus   = (m.status || 'ACTIVE').toUpperCase();
+            var pillColor = mStatus === 'COMPLETE' || mStatus === 'COMPLETED' ? '#00FF88'
+                          : mStatus === 'FAILED'                              ? '#FF2200'
+                          : mStatus === 'PAUSED'                              ? '#FFAA00'
+                          :                                                     '#00AAFF';
+            return '<div class="mission-card">' +
+                '<div style="display:flex;align-items:center;justify-content:space-between;gap:4px;">' +
+                '<div class="mission-val">' + escHtml(truncate(title, 24)) + '</div>' +
+                '<span class="mission-status-pill" style="color:' + pillColor + ';border:1px solid ' + pillColor + '44;background:' + pillColor + '11;">' + escHtml(mStatus) + '</span>' +
+                '</div>' +
+                (m.description ? '<div class="mission-key" style="margin-top:2px;">' + escHtml(truncate(m.description, 36)) + '</div>' : '') +
+                '</div>';
+        }).join('');
+
+        $missBody.innerHTML = countHtml + cardsHtml;
+    }
+
+    /* ================================================================
+       RIGHT PANEL — Chronicle mini-panel
+       Source: GET /v1/nexusmon/chronicle?limit=3
+    ================================================================ */
+    async function refreshChronicle() {
+        var data;
+        try {
+            var res = await fetch('/v1/nexusmon/chronicle?limit=3');
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            data = await res.json();
+        } catch (e) {
+            $chronBody.innerHTML = '<div class="panel-note">Chronicle unavailable</div>';
+            return;
+        }
+
+        /* Accept shapes: { entries: [...] } / { items: [...] } / array */
+        var entries = Array.isArray(data) ? data
+                    : (data.entries && Array.isArray(data.entries)) ? data.entries
+                    : (data.items   && Array.isArray(data.items))   ? data.items
+                    : [];
+
+        if (entries.length === 0) {
+            $chronBody.innerHTML = '<div class="panel-note">No chronicle entries yet</div>';
+            return;
+        }
+
+        $chronBody.innerHTML = entries.slice(0, 3).map(function (e) {
+            var title = e.title || e.name || e.summary || 'Entry';
+            /* significance is 0-1 or 0-100 — normalise to 0-100 */
+            var sig = e.significance != null ? e.significance : (e.importance != null ? e.importance : null);
+            var sigPct = sig != null ? (sig <= 1 ? Math.round(sig * 100) : Math.min(100, Math.round(sig))) : null;
+
+            return '<div class="chron-entry">' +
+                '<div class="chron-title">' + escHtml(truncate(title, 32)) + '</div>' +
+                (sigPct != null
+                    ? '<div class="sig-track"><div class="sig-fill" style="width:' + sigPct + '%"></div></div>'
+                    : '') +
+                '</div>';
+        }).join('');
+    }
+
+    function fmtKey(k) {
+        return k.replace(/_/g, ' ').replace(/\b\w/g, function (c) { return c.toUpperCase(); });
+    }
+
+    /* ================================================================
+       RIGHT PANEL — Combined refresh  (all 4 panels in parallel)
+    ================================================================ */
+    function refreshRight() {
+        refreshSwarm();
+        refreshFactory();
+        refreshMissions();
+        refreshChronicle();
+    }
+
+    /* ================================================================
+       RIGHT PANEL BUTTONS
+    ================================================================ */
+    /* "New Mission" button — pre-fills chat with research mission prompt */
+    var $btnNewMission = document.getElementById('btn-new-mission');
+    if ($btnNewMission) {
+        $btnNewMission.addEventListener('click', function () {
+            var input = document.getElementById('chat-input');
+            if (input) {
+                var text = 'Create a research mission: ';
+                input.value = text;
+                input.focus();
+                input.setSelectionRange(text.length, text.length);
             }
         });
+    }
 
-        // Update operator form indicator from NEXUSMON updates
-        const originalInit = NexusmonConsole.init;
-        NexusmonConsole.loadForm = async function() {
-            try {
-                const res = await fetch(`/v1/nexusmon/operators/${operatorId}/nexus-form`);
-                const form = await res.json();
-                document.getElementById('op-form').textContent = form.current_form || 'Operator';
-            } catch (err) {
-                console.error('Error loading form:', err);
+    /* "View All" chronicle link — sends prompt to chat */
+    var $btnChronicleAll = document.getElementById('btn-chronicle-all');
+    if ($btnChronicleAll) {
+        $btnChronicleAll.addEventListener('click', function () {
+            var input = document.getElementById('chat-input');
+            if (input) {
+                var text = 'NEXUSMON, show me my Chronicle.';
+                input.value = text;
+                input.focus();
+                /* Optionally auto-submit if the console exposes a send method */
+                if (typeof NexusmonConsole !== 'undefined' && typeof NexusmonConsole.send === 'function') {
+                    NexusmonConsole.send(text);
+                    input.value = '';
+                } else {
+                    input.setSelectionRange(text.length, text.length);
+                }
             }
-        };
+        });
+    }
 
-        NexusmonConsole.loadForm();
+    /* ================================================================
+       LEFT PANEL — Eager entity state fetch
+       Populates the left panel before the WebSocket greeting arrives.
+       Source: GET /v1/nexusmon/entity/state
+    ================================================================ */
+    async function fetchEntityState() {
+        var data;
+        try {
+            var res = await fetch('/v1/nexusmon/entity/state');
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            data = await res.json();
+        } catch (e) {
+            return;  /* Silent — WS greeting will provide data later */
+        }
 
-        // Periodically update operator info
-        setInterval(() => {
-            NexusmonConsole.loadForm();
-        }, 30000);
-    </script>
+        if (!data) return;
+
+        /* Accept envelope { ok, entity } or flat */
+        var ent = (data.ok && data.entity) ? data.entity : data;
+        applyEntityData(ent);
+    }
+
+    /* ================================================================
+       BOTTOM BAR — Chip click handler  (spec §5)
+       Puts the preset text into the chat input and focuses it.
+       Does NOT auto-send — operator completes the prompt.
+    ================================================================ */
+    document.getElementById('bottom-bar').addEventListener('click', function (e) {
+        var chip = e.target.closest('.chip');
+        if (!chip) return;
+
+        var preset = chip.getAttribute('data-preset');
+        var text   = CHIP_PRESETS[preset];
+        if (!text) return;
+
+        var input = document.getElementById('chat-input');
+        if (input) {
+            input.value = text;
+            input.focus();
+            /* Move cursor to end of prefilled text */
+            input.setSelectionRange(text.length, text.length);
+        }
+    });
+
+    /* ================================================================
+       EVENT LISTENERS — nexusmon:entity  (spec §3, bubbles to document)
+    ================================================================ */
+    document.addEventListener('nexusmon:entity', function (e) {
+        applyEntityData(e.detail);
+    });
+
+    /* ================================================================
+       EVENT LISTENERS — nexusmon:operator
+    ================================================================ */
+    document.addEventListener('nexusmon:operator', function (e) {
+        var op = e.detail;
+        if (!op) return;
+
+        /* If operator carries a name, show it */
+        if (op.name && $operatorName) {
+            $operatorName.textContent = op.name;
+        }
+    });
+
+    /* ================================================================
+       EVENT LISTENERS — nexusmon:action  (chip-triggered actions)
+    ================================================================ */
+    document.addEventListener('nexusmon:action', function (e) {
+        var action = e.detail;
+        if (!action) return;
+        switch (action.type) {
+            case 'ViewMetrics':
+                refreshRight();
+                break;
+            default:
+                console.log('[Cockpit] Action:', action);
+        }
+    });
+
+    /* ================================================================
+       BOOTSTRAP
+    ================================================================ */
+    /* Eagerly populate left panel from REST before WS greeting arrives */
+    fetchEntityState();
+
+    /* First load of right panel immediately */
+    refreshRight();
+
+    /* Then every 30 s (spec §4) */
+    setInterval(refreshRight, REFRESH_MS);
+
+})();
+</script>
 </body>
 </html>

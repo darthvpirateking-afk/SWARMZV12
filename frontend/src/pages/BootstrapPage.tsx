@@ -5,6 +5,11 @@ export function BootstrapPage() {
   const { status, loading, error, refresh } = useBootstrapStatus();
 
   return (
-    <BootstrapStatusCard status={status} loading={loading} error={error} onRefresh={refresh} />
+    <BootstrapStatusCard
+      status={status}
+      loading={loading}
+      error={error}
+      onRefresh={refresh}
+    />
   );
 }

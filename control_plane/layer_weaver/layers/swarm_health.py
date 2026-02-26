@@ -12,7 +12,6 @@ from .base import BaseLayer
 
 
 class SwarmHealthLayer(BaseLayer):
-
     name = "SwarmHealth"
     variables = [
         "task_latency_p95",

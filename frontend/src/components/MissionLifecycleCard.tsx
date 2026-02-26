@@ -13,7 +13,14 @@ const STATE_COLOR: Record<string, string> = {
   ABORTED: colors.error,
 };
 
-const PHASES = ["IDLE", "QUEUED", "INITIALIZING", "RUNNING", "PAUSED", "COMPLETED"];
+const PHASES = [
+  "IDLE",
+  "QUEUED",
+  "INITIALIZING",
+  "RUNNING",
+  "PAUSED",
+  "COMPLETED",
+];
 
 export function MissionLifecycleCard() {
   const [missions, setMissions] = useState<MissionStatus[]>([]);
@@ -75,7 +82,11 @@ export function MissionLifecycleCard() {
           onChange={(e) => setGoal(e.target.value)}
           disabled={loading}
         />
-        <button style={styles.startBtn} onClick={() => void handleStart()} disabled={loading || !goal.trim()}>
+        <button
+          style={styles.startBtn}
+          onClick={() => void handleStart()}
+          disabled={loading || !goal.trim()}
+        >
           {loading ? "…" : "Launch"}
         </button>
       </div>
@@ -91,7 +102,12 @@ export function MissionLifecycleCard() {
                 background: STATE_COLOR[phase] ?? colors.textSecondary,
               }}
             />
-            <span style={{ ...styles.stepLabel, color: STATE_COLOR[phase] ?? colors.textSecondary }}>
+            <span
+              style={{
+                ...styles.stepLabel,
+                color: STATE_COLOR[phase] ?? colors.textSecondary,
+              }}
+            >
               {phase}
             </span>
             {i < PHASES.length - 1 && <div style={styles.stepLine} />}
@@ -116,17 +132,26 @@ export function MissionLifecycleCard() {
               </span>
               <div style={styles.missionActions}>
                 {m.state === "RUNNING" && (
-                  <button style={styles.actionBtn} onClick={() => void handleAction("pause", m.mission_id)}>
+                  <button
+                    style={styles.actionBtn}
+                    onClick={() => void handleAction("pause", m.mission_id)}
+                  >
                     Pause
                   </button>
                 )}
                 {m.state === "PAUSED" && (
-                  <button style={styles.actionBtn} onClick={() => void handleAction("resume", m.mission_id)}>
+                  <button
+                    style={styles.actionBtn}
+                    onClick={() => void handleAction("resume", m.mission_id)}
+                  >
                     Resume
                   </button>
                 )}
                 {!["COMPLETED", "FAILED", "ABORTED"].includes(m.state) && (
-                  <button style={{ ...styles.actionBtn, color: colors.error }} onClick={() => void handleAction("stop", m.mission_id)}>
+                  <button
+                    style={{ ...styles.actionBtn, color: colors.error }}
+                    onClick={() => void handleAction("stop", m.mission_id)}
+                  >
                     Abort
                   </button>
                 )}

@@ -3,8 +3,8 @@
  * Part of Commit Engine
  */
 
-import { QueuedAction } from './pending_queue';
-import { Action } from '../types';
+import { QueuedAction } from "./pending_queue";
+import { Action } from "../types";
 
 export interface GuardResult {
   allowed: boolean;
@@ -26,10 +26,10 @@ export class ExecutionGuard {
   check(action: QueuedAction): GuardResult {
     const warnings: string[] = [];
     let allowed = true;
-    let reason = 'Execution approved';
+    let reason = "Execution approved";
 
     // Check state
-    if (action.state !== 'ACTION_READY') {
+    if (action.state !== "ACTION_READY") {
       allowed = false;
       reason = `Action state is ${action.state}, not ACTION_READY`;
     }
@@ -39,33 +39,33 @@ export class ExecutionGuard {
     const max_age_ms = 300000; // 5 minutes
     if (age_ms > max_age_ms) {
       allowed = false;
-      reason = 'Action has been queued too long and may be stale';
+      reason = "Action has been queued too long and may be stale";
     }
 
     // Check if action was supposed to execute by now
     if (action.execute_at && Date.now() < action.execute_at) {
       allowed = false;
-      reason = 'Action execute time has not been reached';
+      reason = "Action execute time has not been reached";
     }
 
     // Add warnings for high-risk actions
     const task_action = action.commit_decision.task_id.toLowerCase();
-    if (task_action.includes('delete') || task_action.includes('remove')) {
-      warnings.push('This action is destructive');
+    if (task_action.includes("delete") || task_action.includes("remove")) {
+      warnings.push("This action is destructive");
     }
 
     const result: GuardResult = {
       allowed,
       reason,
       warnings,
-      require_preview: warnings.length > 0
+      require_preview: warnings.length > 0,
     };
 
     // Log the check
     this.executionLog.push({
       action_id: action.id,
       timestamp: Date.now(),
-      allowed
+      allowed,
     });
 
     return result;
@@ -80,7 +80,7 @@ export class ExecutionGuard {
       const preview = await action.preview();
       return preview.length > 0;
     } catch (error) {
-      console.error('Action preview failed:', error);
+      console.error("Action preview failed:", error);
       return false;
     }
   }
@@ -92,7 +92,7 @@ export class ExecutionGuard {
     this.executionLog.push({
       action_id,
       timestamp: Date.now(),
-      allowed: success
+      allowed: success,
     });
   }
 
@@ -121,13 +121,13 @@ export class ExecutionGuard {
     success_rate: number;
   } {
     const total = this.executionLog.length;
-    const allowed = this.executionLog.filter(e => e.allowed).length;
-    
+    const allowed = this.executionLog.filter((e) => e.allowed).length;
+
     return {
       total_checks: total,
       allowed,
       blocked: total - allowed,
-      success_rate: total > 0 ? allowed / total : 0
+      success_rate: total > 0 ? allowed / total : 0,
     };
   }
 }

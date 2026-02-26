@@ -85,6 +85,20 @@ All under your control.
 
 ## Quick Start
 
+## Ship Now Status (2026-02-23)
+
+- **Go** for normal development release (core API/UI/mission-path regression coverage is green).
+- Latest full suite: **303 passed, 3 skipped**.
+- Browser parity smoke (`/` + `/console`): **2 passed**.
+- Full release readiness and deferred live-infra items: [SWARMZ_RELEASE_READINESS.md](SWARMZ_RELEASE_READINESS.md).
+
+Quick verification commands:
+
+```powershell
+python -m pytest tests/ -v --tb=short
+python -m pytest tests/test_dashboard_browser_smoke.py -v --tb=short
+```
+
 ### Fastest Windows Start (Canonical)
 
 ```powershell
@@ -300,3 +314,28 @@ Notice
 
 The system executes exactly what it is instructed to execute.
 Responsibility for usage and exposure rests with the operator.
+
+
+<!-- MARKETPLACE_START -->
+## Marketplace
+
+### Plugins (5)
+
+| Name | Version | Category | Description |
+|------|---------|----------|-------------|
+| dataprocessing | 1.0.0 | data | Data manipulation and processing capabilities including JSON parsing, hashing, and data transformation. |
+| filesystem | 1.0.0 | storage | File system manipulation capabilities including read, write, and directory operations. |
+| lead_audit | 1.0.0 | analytics | Deterministic lead scoring and prioritization for decision bottleneck product. |
+| mission_contract | 1.0.0 | governance | Converts 12 laws into hard preflight validation. Enforces minimum required fields and external signal requirements. |
+| reality_gate | 1.0.0 | safety | Ensures SWARMZ only learns and mutates based on external signals, not internal reflections. |
+
+### Skills (5)
+
+| Name | Version | Category | Description |
+|------|---------|----------|-------------|
+| artifact_management | 1.0.0 | storage | Create, store, retrieve, and manage artifact packs produced by the SWARMZ factory. |
+| data_analysis | 1.0.0 | analytics | Analyze structured data, compute statistics, and identify patterns. |
+| file_operations | 1.0.0 | storage | Read, write, and manage files in the operator's workspace. |
+| mission_execution | 1.0.0 | execution | Execute a validated mission contract through the SWARMZ runtime. |
+| nexusmon_interact | 1.0.0 | interface | Interact with the Nexusmon avatar - absorb data, execute directives, and receive results. |
+<!-- MARKETPLACE_END -->
