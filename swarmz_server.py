@@ -128,6 +128,22 @@ except Exception as e:
     print(f"Warning: governance router not available: {e}")
 
 try:
+    from swarmz_runtime.api.system_control import router as system_control_router
+
+    _system_control_router_available = True
+except Exception as e:
+    _system_control_router_available = False
+    print(f"Warning: system control router not available: {e}")
+
+try:
+    from swarmz_runtime.api.mission_lifecycle import router as mission_lifecycle_router
+
+    _mission_lifecycle_router_available = True
+except Exception as e:
+    _mission_lifecycle_router_available = False
+    print(f"Warning: mission lifecycle router not available: {e}")
+
+try:
     from backend.intel.vuln_db_client import search_vulnerabilities
 except Exception:
     search_vulnerabilities = None
@@ -318,6 +334,12 @@ if _plugins_router_available:
 
 if _governance_router_available:
     app.include_router(governance_router)
+
+if _system_control_router_available:
+    app.include_router(system_control_router, prefix="/v1/system", tags=["system-control"])
+
+if _mission_lifecycle_router_available:
+    app.include_router(mission_lifecycle_router, prefix="/v1/missions", tags=["mission-lifecycle"])
 
 # Include the new tab loader routes
 # app.include_router(app.router, prefix="/v1/tabs")
