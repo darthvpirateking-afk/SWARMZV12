@@ -85,9 +85,9 @@ def test_worker_spawn():
 
 
 def test_companion():
-    # Mock the model call so we don't hang waiting for Ollama/LLM
+    # Patch the name as bound in companion.py (from core.model_router import call as model_call)
     mock_response = {"ok": True, "text": "NEXUSMON online. Awaiting orders.", "provider": "mock", "model": "mock", "latencyMs": 0}
-    with patch("core.model_router.call", return_value=mock_response):
+    with patch("core.companion.model_call", return_value=mock_response):
         r = client.post(
             "/v1/nexusmon/organism/companion",
             json={"text": "status check"},

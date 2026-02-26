@@ -3779,58 +3779,39 @@ async function loadUpliftStatus() {
     document.getElementById('uplift-success-rate').textContent = sr;
     document.getElementById('uplift-total-ops').textContent = maturity.total_operations ?? '—';
     document.getElementById('uplift-rollbacks').textContent = maturity.rollback_count ?? '—';
+
     const TIERS = ['basic', 'intermediate', 'advanced', 'experimental'];
     for (const tier of TIERS) {
       const badge = document.getElementById('tier-' + tier + '-badge');
       const caps = document.getElementById('tier-' + tier + '-caps');
-      const tierCaps = (capabilities[tier] || []);
-      const all_caps_for_tier = tierCaps.length ? tierCaps.map(c => c.name || c).join(', ') : '—';
+      const tierCaps = capabilities[tier] || [];
+      const allCapsForTier = tierCaps.length ? tierCaps.map(c => c.name || c).join(', ') : '—';
       const tierUnlocked = tierCaps.some(c => c.unlocked === true) || (data.unlocked_tiers || []).includes(tier);
+
       if (badge) {
         badge.className = 'tier-badge ' + (tierUnlocked ? 'unlocked' : 'locked');
         badge.textContent = tier.toUpperCase() + (tierUnlocked ? ' ✓' : ' 🔒');
       }
-      if (caps) caps.textContent = all_caps_for_tier;
+      if (caps) caps.textContent = allCapsForTier;
     }
-async function loadUpliftStatus() {
-  try {
-    const r = await fetch(API + '/v1/governance/uplift');
-    const data = await r.json();
-    const maturity = data.maturity || {};
-    const capabilities = data.capabilities || {};
-    const sr = maturity.success_rate != null ? (maturity.success_rate * 100).toFixed(1) + '%' : '—';
-    document.getElementById('uplift-success-rate').textContent = sr;
-    document.getElementById('uplift-total-ops').textContent = maturity.total_operations ?? '—';
-    document.getElementById('uplift-rollbacks').textContent = maturity.rollback_count ?? '—';
-    const TIERS = ['basic', 'intermediate', 'advanced', 'experimental'];
-    for (const tier of TIERS) {
-      const badge = document.getElementById('tier-' + tier + '-badge');
-      const caps = document.getElementById('tier-' + tier + '-caps');
-      const tierCaps = (capabilities[tier] || []);
-      const all_caps_for_tier = tierCaps.length ? tierCaps.map(c => c.name || c).join(', ') : '—';
-      const tierUnlocked = tierCaps.some(c => c.unlocked === true) || (data.unlocked_tiers || []).includes(tier);
-      if (badge) {
-        badge.className = 'tier-badge ' + (tierUnlocked ? 'unlocked' : 'locked');
-        badge.textContent = tier.toUpperCase() + (tierUnlocked ? ' ✓' : ' 🔒');
-      }
-      if (caps) caps.textContent = all_caps_for_tier;
-    }
-  } catch(_) { /* uplift data unavailable */ }
+  } catch (_) {
+  }
 }
 
 async function loadGovernancePerf() {
   const tbody = document.getElementById('gov-perf-tbody');
   const alertsEl = document.getElementById('gov-perf-alerts');
   if (!tbody) return;
+
   try {
     const r = await fetch(API + '/v1/governance/perf');
     if (!r.ok) throw new Error('HTTP ' + r.status);
+
     const data = await r.json();
     const layers = data.layers || {};
     const pipeline = data.pipeline || {};
     const alerts = data.alerts || [];
 
-    // Render per-layer rows
     const LAYER_ORDER = [
       'geometry','integrity','coherence','sovereignty','boundaries',
       'dag','reversibility','thresholds','sovereign','shadow_channel',
@@ -3862,14 +3843,11 @@ async function loadGovernancePerf() {
       }).join('');
     }
 
-    // Pipeline summary
     document.getElementById('perf-pipeline-p50').textContent = pipeline.p50_ms != null ? pipeline.p50_ms.toFixed(2) : '—';
     document.getElementById('perf-pipeline-p95').textContent = pipeline.p95_ms != null ? pipeline.p95_ms.toFixed(2) : '—';
     document.getElementById('perf-pipeline-p99').textContent = pipeline.p99_ms != null ? pipeline.p99_ms.toFixed(2) : '—';
-
-    // Alerts
     alertsEl.textContent = alerts.length ? '⚠ ' + alerts.join(' | ') : '';
-  } catch(e) {
+  } catch (e) {
     tbody.innerHTML = `<tr><td colspan="6" style="padding:8px;color:#ff4444">perf data unavailable: ${e.message}</td></tr>`;
   }
 }
@@ -4102,16 +4080,6 @@ async function updateNerveStatus() {
 }
 
 // ── Polling ────────────────────────────────────────────────
-function loadAll() {
-  updateStatus();
-  updateEvolution();
-  updateCognition();
-  updateVault();
-  updateMissions();
-  updateBusterStatus();
-  updateNerveStatus();
-}
-
 loadAll();
 _wireDialPreview();
 loadSignalDials();

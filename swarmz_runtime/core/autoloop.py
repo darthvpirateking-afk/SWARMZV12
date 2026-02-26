@@ -160,26 +160,20 @@ class AutoLoopManager:
             self._recent_tick_times.append(time.monotonic())
 
         self._log_audit(
-            "ecosystem_tick",
+            "tick_completed",
             mission_id=mission_id,
             details={
-                "tick_count": self._tick_count,
                 "operator_goal": operator_goal,
-                "run_result_status": run_result.get(
-                    "status", run_result.get("error", "unknown")
-                ),
+                "category": category,
+                "tick_count": self._tick_count,
                 "ts": now_iso,
+                "result_ok": bool(run_result.get("ok", False)),
             },
         )
         self._persist_state()
 
-        return {
-            "mission_id": mission_id,
-            "tick_count": self._tick_count,
-            "create": create_result,
-            "run": run_result,
-            "ts": now_iso,
-        }
+        # Include mission_id and tick_count in the result
+        return {"mission_id": mission_id, "tick_count": self._tick_count, **run_result}
 
     # â”€â”€ helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
@@ -225,11 +219,13 @@ class AutoLoopManager:
             "last_tick_ts": self._last_tick_ts,
             "tick_interval": self._tick_interval,
         }
+        # Ensure the directory exists
+        self._state_file.parent.mkdir(parents=True, exist_ok=True)
         try:
             with open(self._state_file, "w") as f:
                 json.dump(state, f, indent=2)
-        except OSError:
-            pass  # best-effort
+        except OSError as e:
+            print(f"Failed to persist state: {e}")  # Log the error
 
     def _load_state(self) -> None:
         if self._state_file.exists():

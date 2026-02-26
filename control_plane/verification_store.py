@@ -44,3 +44,19 @@ class VerificationStore:
                 if line:
                     entries.append(json.loads(line))
         return entries
+
+    def find_by_job_id(self, job_id: str) -> list[dict]:
+        """Return entries matching a specific job_id."""
+        return [entry for entry in self.read_all() if entry.get("job_id") == job_id]
+
+    def find_by_decision_id(self, decision_id: str) -> list[dict]:
+        """Return entries matching a specific decision_id."""
+        return [
+            entry
+            for entry in self.read_all()
+            if entry.get("decision_id") == decision_id
+        ]
+
+    def find_by_outcome(self, outcome: str) -> list[dict]:
+        """Return entries matching a specific outcome."""
+        return [entry for entry in self.read_all() if entry.get("outcome") == outcome]

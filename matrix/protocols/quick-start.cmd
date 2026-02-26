@@ -10,5 +10,5 @@ python tools\switch_runtime_profile.py local >nul 2>nul
 rem Auto-free default port if blocked
 set KILL_PORT=1
 
-call SWARMZ_UP.cmd
+call startup\startup.cmd
 exit /b %ERRORLEVEL%

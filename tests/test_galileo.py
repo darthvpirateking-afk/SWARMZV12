@@ -130,7 +130,7 @@ def test_galileo_endpoints():
         print("  Storage dir does not exist")
 
     
-    return True
+    return
 
 
 def test_galileo():

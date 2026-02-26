@@ -597,34 +597,13 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
   };
 
   recognition.onerror = e => console.error('Voice error:', e.error);
-  recognition.onend = () => { if (recognition.running) recognition.start(); };
+  recognition.onend = () => { if (micActive) recognition.start(); };
+} else if (voiceBtn) {
+  voiceBtn.style.opacity = '0.45';
+  voiceBtn.title = 'SpeechRecognition not supported in this browser';
 }
 
-voiceBtn?.addEventListener('click', () => {
-  if (!recognition) return alert('Voice not supported in this browser');
-  recognition.running = !recognition.running;
-  if (recognition.running) {
-    recognition.start();
-    voiceBtn.textContent = 'MIC: ON';
-    voiceBtn.style.background = '#003300';
-    voiceBtn.style.borderColor = '#00cc00';
-  } else {
-    recognition.stop();
-    voiceBtn.textContent = 'MIC: OFF';
-    voiceBtn.style.background = '#330000';
-    voiceBtn.style.borderColor = '#ff4444';
-  }
-});
-  recognition.continuous = true;
-  recognition.interimResults = false;
-  recognition.lang = 'en-US';
-  recognition.onresult = async (ev) => {
-    const text = ev.results[ev.results.length - 1][0].transcript.trim();
-    if (text) await handleVoiceCommand(text);
-  };
-  recognition.onerror = (e) => console.error('Voice error:', e.error);
-  recognition.onend = () => { if (micActive) recognition.start(); };
-}
+voiceBtn?.addEventListener('click', toggleMic);
 
 function toggleMic() {
   if (!recognition) return;
