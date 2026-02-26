@@ -82,8 +82,8 @@ class TestRankFromXP:
     def test_1500_xp_is_rank_s(self):
         assert rank_from_xp(1500) == "S"
 
-    def test_huge_xp_is_rank_s(self):
-        assert rank_from_xp(999999) == "S"
+    def test_huge_xp_is_rank_n(self):  # rank N (NEXUS) added above S at 3000 XP
+        assert rank_from_xp(999999) == "N"
 
     def test_negative_xp_is_rank_e(self):
         assert rank_from_xp(-10) == "E"
@@ -97,8 +97,12 @@ class TestNextRankInfo:
         assert info["next_rank"] == "D"
         assert info["xp_needed"] == 50
 
-    def test_rank_s_no_next(self):
+    def test_rank_s_next_is_n(self):  # rank N (NEXUS) is above S
         info = next_rank_info(1500)
+        assert info["next_rank"] == "N"
+
+    def test_rank_n_no_next(self):  # NEXUS is the highest rank
+        info = next_rank_info(3000)
         assert info["next_rank"] is None
         assert info["progress"] == 1.0
 
@@ -130,10 +134,11 @@ class TestTraits:
         assert "Worker Control" in traits   # from D
         assert "Evolution Sync" in traits   # from C
 
-    def test_rank_s_has_all_traits(self):
+    def test_rank_s_has_s_and_below_traits(self):  # rank N traits require rank N (3000 XP)
         traits = traits_for_xp(1500)
         assert "Organism Override" in traits
-        assert len(traits) == sum(len(v) for v in RANK_TRAITS.values())
+        s_and_below = sum(len(v) for k, v in RANK_TRAITS.items() if k != "N")
+        assert len(traits) == s_and_below
 
 
 # ─── has_permission ──────────────────────────────────────────────────────────
@@ -157,9 +162,13 @@ class TestPermissions:
     def test_rank_b_can_activate_module(self):
         assert has_permission(400, "activate_module") is True
 
-    def test_rank_s_can_do_everything(self):
+    def test_rank_s_can_do_everything_except_nexus(self):  # singularity_override requires rank N
+        nexus_only = {a for a, r in PERMISSION_MATRIX.items() if r == "N"}
         for action in PERMISSION_MATRIX:
-            assert has_permission(1500, action) is True
+            if action in nexus_only:
+                assert has_permission(1500, action) is False, f"rank S should NOT have {action}"
+            else:
+                assert has_permission(1500, action) is True, f"rank S should have {action}"
 
     def test_unknown_action_is_allowed(self):
         assert has_permission(0, "some_future_action") is True

@@ -3,6 +3,7 @@ NEXUSMON route integration tests.
 Tests every critical endpoint required by the ultimate integration pass.
 """
 import pytest
+from unittest.mock import patch
 from fastapi.testclient import TestClient
 from swarmz_server import app
 
@@ -84,10 +85,13 @@ def test_worker_spawn():
 
 
 def test_companion():
-    r = client.post(
-        "/v1/nexusmon/organism/companion",
-        json={"text": "status check"},
-    )
+    # Mock the model call so we don't hang waiting for Ollama/LLM
+    mock_response = {"ok": True, "text": "NEXUSMON online. Awaiting orders.", "provider": "mock", "model": "mock", "latencyMs": 0}
+    with patch("core.model_router.call", return_value=mock_response):
+        r = client.post(
+            "/v1/nexusmon/organism/companion",
+            json={"text": "status check"},
+        )
     assert r.status_code == 200
 
 
