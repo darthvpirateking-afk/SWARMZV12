@@ -36,8 +36,8 @@ class TestWebServer(unittest.TestCase):
         """Test PWA home page is served."""
         response = self.client.get("/")
         self.assertEqual(response.status_code, 200)
-        self.assertIn("SWARMZ", response.text)
-        self.assertIn("Operator-Sovereign", response.text)
+        self.assertIn("NEXUSMON", response.text)
+        self.assertIn("Quick", response.text)
 
     def test_manifest(self):
         """Test PWA manifest is served."""
@@ -72,7 +72,7 @@ class TestWebServer(unittest.TestCase):
         response = self.client.get("/v1/health")
         self.assertEqual(response.status_code, 200)
         data = response.json()
-        self.assertEqual(data["status"], "healthy")
+        self.assertEqual(data["status"], "ok")
         self.assertEqual(data["service"], "SWARMZ API")
 
     def test_list_tasks(self):
