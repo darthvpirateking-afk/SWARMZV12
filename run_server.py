@@ -1,6 +1,3 @@
-from core.license_guard import enforce
-
-enforce()
 # SWARMZ Source Available License
 # Commercial use, hosting, and resale prohibited.
 # See LICENSE file for details.
@@ -75,16 +72,31 @@ def main():
     print("PHONE: open LAN URL on same Wi-Fi")
     print(f"HOST:  {args.host}")
 
+    # License check (non-blocking: runs in background thread, offline-safe)
+    def _check_license():
+        try:
+            from core.license_guard import enforce
+
+            enforce()
+            print("[LICENSE] Check passed.")
+        except Exception as exc:
+            print(f"[LICENSE] WARNING: {exc}")
+
+    print("[STARTUP] Phase 1: license check (background)")
+    threading.Thread(target=_check_license, daemon=True, name="license-check").start()
+
     # Cold start: ensure all data files/dirs exist
+    print("[STARTUP] Phase 2: cold start")
     try:
         from core.cold_start import ensure_cold_start
 
         result = ensure_cold_start()
-        print(f"[COLD START] {result.get('data_dir', 'data')} â€” OK")
+        print(f"[COLD START] {result.get('data_dir', 'data')} — OK")
     except Exception as exc:
         print(f"[COLD START] WARNING: {exc}")
 
     # Boot NEXUSMON entity (SQLite state persistence)
+    print("[STARTUP] Phase 3: NEXUSMON entity boot")
     try:
         from nexusmon.entity import get_entity
 
@@ -97,6 +109,7 @@ def main():
         print(f"[NEXUSMON] WARNING: {exc}")
 
     # Initialise engine singletons (fast, safe)
+    print("[STARTUP] Phase 4: engine initialisation")
     try:
         from core.context_pack import load as _load_engines
 
@@ -128,6 +141,7 @@ def main():
         print(f"[DAILY SCHEDULER] WARNING: {exc}")
 
     # Start swarm runner as a daemon thread (won't block shutdown)
+    print("[STARTUP] Phase 5: starting background threads")
     try:
         from swarm_runner import run_loop as _runner_loop
 
@@ -137,7 +151,7 @@ def main():
         runner_thread.start()
         print("[SWARM RUNNER] Background runner started.")
     except Exception as exc:
-        print(f"[SWARM RUNNER] WARNING: Could not start runner â€” {exc}")
+        print(f"[SWARM RUNNER] WARNING: Could not start runner — {exc}")
 
     uvicorn.run(
         "swarmz_server:app",
