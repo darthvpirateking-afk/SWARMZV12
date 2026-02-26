@@ -349,7 +349,7 @@ async def get_notifications(limit: int = Query(20, ge=1, le=100)) -> Dict[str, A
     """
     buffer = get_event_buffer()
     recent = buffer[-limit:] if buffer else []
-    
+
     return {
         "events": recent,
         "total": len(buffer),
