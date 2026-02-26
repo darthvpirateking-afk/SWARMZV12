@@ -3,6 +3,7 @@
 # See LICENSE file for details.
 """Mission lifecycle state machine endpoints."""
 
+import logging
 import threading
 import uuid
 from datetime import datetime, timezone
@@ -11,7 +12,19 @@ from typing import Any, Dict, List
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
+logger = logging.getLogger("swarmz.mission_lifecycle")
+
 router = APIRouter()
+
+# Optional artifact vault — import at module level so failures are visible at startup
+try:
+    from nexusmon_artifact_vault import store_artifact as _vault_store_artifact
+
+    _VAULT_AVAILABLE = True
+except Exception as _vault_import_err:
+    _vault_store_artifact = None  # type: ignore[assignment]
+    _VAULT_AVAILABLE = False
+    logger.warning("Artifact vault unavailable: %s", _vault_import_err)
 
 # ── State machine ─────────────────────────────────────────────────────────────
 VALID_STATES = {
@@ -68,7 +81,29 @@ def _transition(mission_id: str, new_state: str) -> Dict[str, Any]:
             )
         m["state"] = new_state
         m["history"].append({"state": new_state, "timestamp": _ts()})
-        return dict(m)
+        snapshot = dict(m)
+
+    # Store an artifact when a mission reaches a terminal state
+    if new_state in ("COMPLETED", "FAILED", "ABORTED") and _VAULT_AVAILABLE and _vault_store_artifact is not None:
+        try:
+            artifact_type = "REPORT" if new_state == "COMPLETED" else "LOG"
+            _vault_store_artifact(
+                mission_id=mission_id,
+                task_id=mission_id,
+                type=artifact_type,
+                title=f"Mission {mission_id} — {new_state}",
+                content={
+                    "goal": snapshot.get("goal"),
+                    "category": snapshot.get("category"),
+                    "final_state": new_state,
+                    "history": snapshot.get("history", []),
+                },
+                input_snapshot={"constraints": snapshot.get("constraints", {})},
+            )
+        except Exception as exc:
+            logger.warning("Failed to store mission artifact for %s: %s", mission_id, exc)
+
+    return snapshot
 
 
 # ── Request schemas ───────────────────────────────────────────────────────────

@@ -16,6 +16,8 @@ import { MissionLifecycleCard } from "./components/MissionLifecycleCard";
 import { KernelLogsViewer } from "./components/KernelLogsViewer";
 import { AppStoreTracker } from "./components/AppStoreTracker";
 import { OperatorIdentityPanel } from "./components/OperatorIdentityPanel";
+import { ArtifactVaultPanel } from "./components/ArtifactVaultPanel";
+import { NexusmonEntityPanel } from "./components/NexusmonEntityPanel";
 import { CompanionCorePage } from "./pages/CompanionCorePage";
 import { BootstrapPage } from "./pages/BootstrapPage";
 import { BuildMilestonesPage } from "./pages/BuildMilestonesPage";
@@ -33,6 +35,7 @@ type CompanionResponse = {
 };
 
 type PageId =
+  | "nexusmon"
   | "companion"
   | "runtime"
   | "missions"
@@ -42,6 +45,7 @@ type PageId =
   | "build"
   | "auth"
   | "api"
+  | "vault"
   | "appstore"
   | "chat";
 
@@ -52,9 +56,11 @@ interface NavItem {
 }
 
 const NAV_ITEMS: NavItem[] = [
+  { id: "nexusmon",  icon: "⬡", label: "NEXUSMON" },
   { id: "companion", icon: "🤖", label: "Companion" },
   { id: "runtime",   icon: "⚡", label: "Runtime" },
   { id: "missions",  icon: "🎯", label: "Missions" },
+  { id: "vault",     icon: "🗃️", label: "Artifact Vault" },
   { id: "logs",      icon: "📋", label: "Kernel Logs" },
   { id: "database",  icon: "🗄️", label: "Database" },
   { id: "bootstrap", icon: "🚀", label: "Bootstrap" },
@@ -66,7 +72,7 @@ const NAV_ITEMS: NavItem[] = [
 ];
 
 export default function App() {
-  const [activePage, setActivePage] = useState<PageId>("companion");
+  const [activePage, setActivePage] = useState<PageId>("nexusmon");
   const [runtimeStatus, setRuntimeStatus] = useState<
     "running" | "stopped" | "restarting" | "degraded"
   >("running");
@@ -80,8 +86,11 @@ export default function App() {
           (s.status as "running" | "stopped" | "restarting" | "degraded") ??
             "running",
         );
-      } catch {
-        // silent
+      } catch (err) {
+        // Status polling failures are expected during startup — log for debugging
+        if (import.meta.env.DEV) {
+          console.warn("[App] Runtime status poll failed:", err);
+        }
       }
     };
     void poll();
@@ -185,12 +194,16 @@ export default function App() {
 
 function PageContent({ activePage }: { activePage: PageId }) {
   switch (activePage) {
+    case "nexusmon":
+      return <NexusmonEntityPanel />;
     case "companion":
       return <CompanionCorePage />;
     case "runtime":
       return <RuntimeControlCard />;
     case "missions":
       return <MissionLifecycleCard />;
+    case "vault":
+      return <ArtifactVaultPanel />;
     case "logs":
       return <KernelLogsViewer />;
     case "database":
@@ -208,7 +221,7 @@ function PageContent({ activePage }: { activePage: PageId }) {
     case "chat":
       return <ChatPanel />;
     default:
-      return <CompanionCorePage />;
+      return <NexusmonEntityPanel />;
   }
 }
 
