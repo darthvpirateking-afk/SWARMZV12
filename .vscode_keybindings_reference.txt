@@ -1,0 +1,28 @@
+# VS CODE AI STACK - KEYBINDINGS REFERENCE
+# Copy this into your VS Code keybindings.json file
+
+[
+  {
+    "key": "ctrl+shift+e",
+    "command": "continue.editSelectedCode"
+  },
+  {
+    "key": "ctrl+shift+t",
+    "command": "continue.newTask"
+  },
+  {
+    "key": "ctrl+shift+a",
+    "command": "continue.ask"
+  }
+]
+
+# OLLAMA MODEL INSTALLS (Run these in terminal):
+# ollama pull deepseek-coder-v2
+# ollama pull qwen2.5-coder
+# ollama pull llama3.1
+# ollama pull nomic-embed-text
+
+# CODEIUM SETTINGS (Add to VS Code settings.json):
+# "codeium.local_model_provider": "ollama"
+# "codeium.local_model": "deepseek-coder-v2"
+# "codeium.local_model_endpoint": "http://localhost:11434"
