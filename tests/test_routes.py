@@ -2,6 +2,7 @@
 NEXUSMON route integration tests.
 Tests every critical endpoint required by the ultimate integration pass.
 """
+
 import pytest
 from unittest.mock import patch
 from fastapi.testclient import TestClient

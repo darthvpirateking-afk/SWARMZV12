@@ -89,9 +89,15 @@ def get_xp():
     # Compute xp_to_next from known evolution thresholds
     try:
         from nexusmon.evolution import FORM_XP_THRESHOLDS
+
         xp_to_next = FORM_XP_THRESHOLDS.get(form)
     except Exception:
-        _thresholds = {"ROOKIE": 100.0, "CHAMPION": 500.0, "ULTIMATE": 2000.0, "MEGA": 10000.0}
+        _thresholds = {
+            "ROOKIE": 100.0,
+            "CHAMPION": 500.0,
+            "ULTIMATE": 2000.0,
+            "MEGA": 10000.0,
+        }
         xp_to_next = _thresholds.get(form)
     if xp_to_next is None or xp_to_next == float("inf"):
         xp_to_next = None
@@ -115,13 +121,18 @@ def get_evolution():
     evolution_log = []
     try:
         from nexusmon.memory import get_db
+
         db = get_db()
         rows = db.conn.execute(
             "SELECT from_form, to_form, occurred_at, trigger FROM evolution_events ORDER BY id DESC LIMIT 50"
         ).fetchall()
         evolution_log = [
-            {"from_form": r["from_form"], "to_form": r["to_form"],
-             "occurred_at": r["occurred_at"], "trigger": r["trigger"]}
+            {
+                "from_form": r["from_form"],
+                "to_form": r["to_form"],
+                "occurred_at": r["occurred_at"],
+                "trigger": r["trigger"],
+            }
             for r in rows
         ]
     except Exception:

@@ -32,8 +32,8 @@ from uuid import uuid4
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 
-
 # ── Storage helpers (mirrors nexusmon_organism pattern) ────────
+
 
 def _data_dir() -> Path:
     db = os.environ.get("DATABASE_URL", "data/nexusmon.db")
@@ -668,6 +668,7 @@ async def create_prediction(payload: PredictionCreate):
     _append_jsonl(_PRED_PATH(), record)
     try:
         from nexusmon_operator_rank import award_xp as _rank_xp
+
         _rank_xp("log_prediction", detail=pid)
     except Exception:
         pass
@@ -675,7 +676,9 @@ async def create_prediction(payload: PredictionCreate):
 
 
 @router.get("/v1/cognition/predictions")
-async def list_predictions(resolved: Optional[bool] = None, category: Optional[str] = None):
+async def list_predictions(
+    resolved: Optional[bool] = None, category: Optional[str] = None
+):
     preds = _load_jsonl(_PRED_PATH())
     if resolved is not None:
         preds = [p for p in preds if p.get("resolved") == resolved]
@@ -705,9 +708,11 @@ async def resolve_prediction(pid: str, payload: PredictionResolve):
                 "ok": True,
                 "prediction_id": pid,
                 "brier_score": p["brier_score"],
-                "verdict": "correct"
-                if (p["probability"] > 0.5) == payload.outcome
-                else "incorrect",
+                "verdict": (
+                    "correct"
+                    if (p["probability"] > 0.5) == payload.outcome
+                    else "incorrect"
+                ),
             }
     raise HTTPException(404, f"Prediction {pid} not found")
 
@@ -800,7 +805,9 @@ async def counter_argument(payload: CounterRequest):
 
 @router.post("/v1/cognition/autopsy", status_code=201)
 async def create_autopsy(payload: DecisionAutopsyCreate):
-    classification = classify_decision(payload.decision_quality, payload.outcome_quality)
+    classification = classify_decision(
+        payload.decision_quality, payload.outcome_quality
+    )
     record = {
         "id": _uid(),
         "description": payload.description,
@@ -815,6 +822,7 @@ async def create_autopsy(payload: DecisionAutopsyCreate):
     _append_jsonl(_AUTOPSY_PATH(), record)
     try:
         from nexusmon_operator_rank import award_xp as _rank_xp
+
         _rank_xp("decision_autopsy", detail=record["id"])
     except Exception:
         pass
@@ -889,7 +897,7 @@ async def log_error(payload: ErrorCreate):
         try:
             types_list = "\n".join(f"{k}: {v}" for k, v in ERROR_TYPES.items())
             result = _ai_json(
-                f"Classify this reasoning error into one of these types:\n{types_list}\nReturn JSON: {{\"error_type\": \"TYPE_NAME\"}}",
+                f'Classify this reasoning error into one of these types:\n{types_list}\nReturn JSON: {{"error_type": "TYPE_NAME"}}',
                 f"Error description: {payload.description}",
             )
             payload.error_type = result.get("error_type", "UNKNOWN")
@@ -908,6 +916,7 @@ async def log_error(payload: ErrorCreate):
     _append_jsonl(_ERR_PATH(), record)
     try:
         from nexusmon_operator_rank import award_xp as _rank_xp
+
         _rank_xp("log_cognition_error", detail=record["id"])
     except Exception:
         pass
@@ -920,7 +929,12 @@ async def list_errors(error_type: Optional[str] = None):
     if error_type:
         errors = [e for e in errors if e.get("error_type") == error_type]
     patterns = error_pattern_analysis(errors)
-    return {"ok": True, "errors": errors[-30:], "total": len(errors), "patterns": patterns}
+    return {
+        "ok": True,
+        "errors": errors[-30:],
+        "total": len(errors),
+        "patterns": patterns,
+    }
 
 
 @router.get("/v1/cognition/errors/taxonomy")
@@ -947,7 +961,12 @@ async def abstract_concept(payload: AbstractionRequest):
 @router.post("/v1/cognition/prerequisites")
 async def get_prerequisites(payload: PrerequisiteRequest):
     result = map_prerequisites(payload.concept)
-    record = {"id": _uid(), "concept": payload.concept, "map": result, "created_at": _utc()}
+    record = {
+        "id": _uid(),
+        "concept": payload.concept,
+        "map": result,
+        "created_at": _utc(),
+    }
     _append_jsonl(_data_dir() / "concept_maps.jsonl", record)
     return {"ok": True, "record_id": record["id"], "prerequisites": result}
 
@@ -955,7 +974,12 @@ async def get_prerequisites(payload: PrerequisiteRequest):
 @router.post("/v1/cognition/causality")
 async def build_dag(payload: CausalRequest):
     result = build_causal_dag(payload.scenario)
-    record = {"id": _uid(), "scenario": payload.scenario, "dag": result, "created_at": _utc()}
+    record = {
+        "id": _uid(),
+        "scenario": payload.scenario,
+        "dag": result,
+        "created_at": _utc(),
+    }
     dags = _load_json(_DAG_PATH(), [])
     dags.append(record)
     _save_json(_DAG_PATH(), dags[-50:])
@@ -970,7 +994,9 @@ async def list_dags():
 
 @router.post("/v1/cognition/sources/claim", status_code=201)
 async def record_source_claim(payload: SourceClaimCreate):
-    cid = source_record_claim(payload.source, payload.claim, payload.claimed_probability)
+    cid = source_record_claim(
+        payload.source, payload.claim, payload.claimed_probability
+    )
     return {"ok": True, "claim_id": cid, "source": payload.source}
 
 
@@ -1066,7 +1092,9 @@ async def recall_memory(mid: str, payload: MemoryDelayed):
     records = _load_jsonl(_MEM_PATH())
     for r in records:
         if r["id"] == mid:
-            distortion = memory_distortion_score(r["immediate_recall"], payload.delayed_recall)
+            distortion = memory_distortion_score(
+                r["immediate_recall"], payload.delayed_recall
+            )
             r["delayed_recall"] = payload.delayed_recall
             r["distortion"] = distortion
             r["recalled_at"] = _utc()
@@ -1088,7 +1116,8 @@ async def list_memories():
     avg_distortion = None
     if resolved:
         avg_distortion = round(
-            sum(r["distortion"]["distortion_score"] for r in resolved) / len(resolved), 3
+            sum(r["distortion"]["distortion_score"] for r in resolved) / len(resolved),
+            3,
         )
     return {
         "ok": True,
@@ -1114,7 +1143,8 @@ async def cognition_status():
     avg_mem_distortion = None
     if resolved_mems:
         avg_mem_distortion = round(
-            sum(m["distortion"]["distortion_score"] for m in resolved_mems) / len(resolved_mems),
+            sum(m["distortion"]["distortion_score"] for m in resolved_mems)
+            / len(resolved_mems),
             3,
         )
 
@@ -1148,19 +1178,23 @@ async def cognition_status():
         },
         "attention": {
             "sessions": len(sessions),
-            "avg_focus": round(
-                sum(s.get("focus_score", 0) for s in sessions) / len(sessions), 3
-            )
-            if sessions
-            else None,
+            "avg_focus": (
+                round(sum(s.get("focus_score", 0) for s in sessions) / len(sessions), 3)
+                if sessions
+                else None
+            ),
         },
         "sources": {
             "tracked": len(sources),
-            "top_source": max(
-                sources.values(), key=lambda s: s.get("reliability_score") or -999, default=None
-            )
-            if sources
-            else None,
+            "top_source": (
+                max(
+                    sources.values(),
+                    key=lambda s: s.get("reliability_score") or -999,
+                    default=None,
+                )
+                if sources
+                else None
+            ),
         },
     }
 

@@ -24,9 +24,11 @@ try:
 except ImportError:
     # Fallback if tracing not available
     from contextlib import contextmanager
+
     @contextmanager
     def trace_llm_call(*args, **kwargs):
         yield None
+
 
 ROOT = Path(__file__).resolve().parent.parent
 CONFIG_FILE = ROOT / "config" / "runtime.json"
@@ -171,7 +173,9 @@ def _call_anthropic(
             )
         except Exception as e:
             latency = int((time.monotonic() - t0) * 1000)
-            return _err_response(f"Anthropic error: {str(e)}", "anthropic", model, latency)
+            return _err_response(
+                f"Anthropic error: {str(e)}", "anthropic", model, latency
+            )
 
 
 # â”€â”€ OpenAI (Chat Completions API) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -268,12 +272,16 @@ def _call_ollama(
         has_system_prompt=bool(system),
     ) as span:
         url = f"{endpoint}/api/chat"
-        full_messages = ([{"role": "system", "content": system}] + messages) if system else messages
-        body = json.dumps({
-            "model": model,
-            "messages": full_messages,
-            "stream": False,
-        }).encode("utf-8")
+        full_messages = (
+            ([{"role": "system", "content": system}] + messages) if system else messages
+        )
+        body = json.dumps(
+            {
+                "model": model,
+                "messages": full_messages,
+                "stream": False,
+            }
+        ).encode("utf-8")
         req = urllib.request.Request(url, data=body, method="POST")
         req.add_header("Content-Type", "application/json")
         t0 = time.monotonic()
@@ -294,14 +302,15 @@ def _call_ollama(
                 detail = e.read().decode("utf-8")[:500]
             except Exception:
                 pass
-            return _err_response(f"Ollama HTTP {e.code}: {detail}", "ollama", model, latency)
+            return _err_response(
+                f"Ollama HTTP {e.code}: {detail}", "ollama", model, latency
+            )
         except Exception as e:
             latency = int((time.monotonic() - t0) * 1000)
             return _err_response(f"Ollama error: {str(e)}", "ollama", model, latency)
 
 
 # â”€â”€ Public interface â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-
 
 
 # -- Google Gemini (generateContent REST API) --
@@ -429,10 +438,13 @@ def _call_gemini(
                 detail = e.read().decode("utf-8")[:500]
             except Exception:
                 pass
-            return _err_response(f"Gemini HTTP {e.code}: {detail}", "gemini", model, latency)
+            return _err_response(
+                f"Gemini HTTP {e.code}: {detail}", "gemini", model, latency
+            )
         except Exception as e:
             latency = int((time.monotonic() - t0) * 1000)
             return _err_response(f"Gemini error: {str(e)}", "gemini", model, latency)
+
 
 def call(
     messages: List[Dict[str, str]],
@@ -493,11 +505,24 @@ def call(
         endpoint = prov_cfg.get("endpoint", "http://localhost:11434")
         return _call_ollama(messages, system, mdl, endpoint, tout, mtok)
     elif prov == "gemini":
-        endpoint = prov_cfg.get("endpoint", "https://generativelanguage.googleapis.com/v1beta")
-        use_grounding = grounding if grounding is not None else prov_cfg.get("grounding", False)
+        endpoint = prov_cfg.get(
+            "endpoint", "https://generativelanguage.googleapis.com/v1beta"
+        )
+        use_grounding = (
+            grounding if grounding is not None else prov_cfg.get("grounding", False)
+        )
         fn_tools = tools if tools is not None else prov_cfg.get("tools", None)
-        return _call_gemini(messages, system, mdl, api_key, endpoint, tout, mtok,
-                            tools=fn_tools, grounding=use_grounding)
+        return _call_gemini(
+            messages,
+            system,
+            mdl,
+            api_key,
+            endpoint,
+            tout,
+            mtok,
+            tools=fn_tools,
+            grounding=use_grounding,
+        )
     else:
         return _err_response(f"Unknown provider: {prov}", prov, mdl, 0)
 

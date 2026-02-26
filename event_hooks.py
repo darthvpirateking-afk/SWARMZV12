@@ -21,6 +21,7 @@ from typing import Optional, Dict, Any
 _event_buffer = []
 _max_buffer_size = 100
 
+
 def _buffer_event(event_dict: Dict[str, Any]) -> None:
     """Add event to notification buffer for subscribers."""
     global _event_buffer
@@ -35,7 +36,7 @@ def on_plugin_installed(plugin_id: str, url: str, dest: str) -> Dict[str, Any]:
         "id": plugin_id,
         "url": url,
         "destination": dest,
-        "installed_at": datetime.utcnow().isoformat() + "Z"
+        "installed_at": datetime.utcnow().isoformat() + "Z",
     }
     timeline_evt = append_event("plugin_installed", event)
     _buffer_event({**timeline_evt, "event_type": "plugin_installed"})
@@ -43,13 +44,15 @@ def on_plugin_installed(plugin_id: str, url: str, dest: str) -> Dict[str, Any]:
     return timeline_evt
 
 
-def on_plugin_unlocked(plugin_id: str, operator_rank: str, operator_xp: int) -> Dict[str, Any]:
+def on_plugin_unlocked(
+    plugin_id: str, operator_rank: str, operator_xp: int
+) -> Dict[str, Any]:
     """Fire when plugin is unlocked by operator."""
     event = {
         "id": plugin_id,
         "unlocked_by_rank": operator_rank,
         "operator_xp_at_unlock": operator_xp,
-        "unlocked_at": datetime.utcnow().isoformat() + "Z"
+        "unlocked_at": datetime.utcnow().isoformat() + "Z",
     }
     timeline_evt = append_event("plugin_unlocked", event)
     _buffer_event({**timeline_evt, "event_type": "plugin_unlocked"})
@@ -57,13 +60,15 @@ def on_plugin_unlocked(plugin_id: str, operator_rank: str, operator_xp: int) -> 
     return timeline_evt
 
 
-def on_xp_gain(amount: int, reason: str, plugin_id: Optional[str] = None) -> Dict[str, Any]:
+def on_xp_gain(
+    amount: int, reason: str, plugin_id: Optional[str] = None
+) -> Dict[str, Any]:
     """Fire when operator gains XP (from missions, tasks, etc.)."""
     event = {
         "amount": amount,
         "reason": reason,
         "from_plugin": plugin_id,
-        "gained_at": datetime.utcnow().isoformat() + "Z"
+        "gained_at": datetime.utcnow().isoformat() + "Z",
     }
     timeline_evt = append_event("xp_gain", event)
     _buffer_event({**timeline_evt, "event_type": "xp_gain"})
@@ -76,7 +81,7 @@ def on_rank_up(new_rank: str, operator_id: Optional[str] = None) -> Dict[str, An
     event = {
         "new_rank": new_rank,
         "operator_id": operator_id,
-        "promoted_at": datetime.utcnow().isoformat() + "Z"
+        "promoted_at": datetime.utcnow().isoformat() + "Z",
     }
     timeline_evt = append_event("rank_up", event)
     _buffer_event({**timeline_evt, "event_type": "rank_up"})
@@ -84,13 +89,15 @@ def on_rank_up(new_rank: str, operator_id: Optional[str] = None) -> Dict[str, An
     return timeline_evt
 
 
-def on_mission_complete(mission_id: str, reward_xp: int, completed_by: Optional[str] = None) -> Dict[str, Any]:
+def on_mission_complete(
+    mission_id: str, reward_xp: int, completed_by: Optional[str] = None
+) -> Dict[str, Any]:
     """Fire when a mission is completed."""
     event = {
         "mission_id": mission_id,
         "reward_xp": reward_xp,
         "completed_by": completed_by,
-        "completed_at": datetime.utcnow().isoformat() + "Z"
+        "completed_at": datetime.utcnow().isoformat() + "Z",
     }
     timeline_evt = append_event("mission_complete", event)
     _buffer_event({**timeline_evt, "event_type": "mission_complete"})
@@ -98,14 +105,16 @@ def on_mission_complete(mission_id: str, reward_xp: int, completed_by: Optional[
     return timeline_evt
 
 
-def on_evolution(organism_id: str, old_stage: str, new_stage: str, trigger: Optional[str] = None) -> Dict[str, Any]:
+def on_evolution(
+    organism_id: str, old_stage: str, new_stage: str, trigger: Optional[str] = None
+) -> Dict[str, Any]:
     """Fire when organism evolves to a new stage."""
     event = {
         "organism_id": organism_id,
         "old_stage": old_stage,
         "new_stage": new_stage,
         "evolution_trigger": trigger,
-        "evolved_at": datetime.utcnow().isoformat() + "Z"
+        "evolved_at": datetime.utcnow().isoformat() + "Z",
     }
     timeline_evt = append_event("evolution", event)
     _buffer_event({**timeline_evt, "event_type": "evolution"})
@@ -113,13 +122,15 @@ def on_evolution(organism_id: str, old_stage: str, new_stage: str, trigger: Opti
     return timeline_evt
 
 
-def on_system_event(event_type: str, message: str, severity: str = "info") -> Dict[str, Any]:
+def on_system_event(
+    event_type: str, message: str, severity: str = "info"
+) -> Dict[str, Any]:
     """Fire for general system events (warnings, errors, milestones)."""
     event = {
         "type": event_type,
         "message": message,
         "severity": severity,
-        "occurred_at": datetime.utcnow().isoformat() + "Z"
+        "occurred_at": datetime.utcnow().isoformat() + "Z",
     }
     timeline_evt = append_event("system", event)
     _buffer_event({**timeline_evt, "event_type": "system"})
@@ -130,6 +141,7 @@ def on_system_event(event_type: str, message: str, severity: str = "info") -> Di
 # ─────────────────────────────────────────────────────────────
 # Notification Buffer API (Phase 5 ready)
 # ─────────────────────────────────────────────────────────────
+
 
 def get_event_buffer() -> list:
     """Return recent events for notifications."""
@@ -149,6 +161,7 @@ def clear_event_buffer(keep_last_n: int = 10) -> None:
 # Wire hooks into plugin lifecycle
 # ─────────────────────────────────────────────────────────────
 
+
 def wire_hooks(nexusmon_plugins_router) -> None:
     """
     Optional: Wire hooks into nexusmon_plugins endpoints.
@@ -161,7 +174,9 @@ def wire_hooks(nexusmon_plugins_router) -> None:
 
 if __name__ == "__main__":
     # Example hook usage
-    on_plugin_installed("scout-worker", "https://github.com/example/scout", "plugins/scout-worker")
+    on_plugin_installed(
+        "scout-worker", "https://github.com/example/scout", "plugins/scout-worker"
+    )
     on_xp_gain(100, "installed_plugin", "scout-worker")
     on_plugin_unlocked("parallel-node-v2", "C", 500)
     on_mission_complete("first-swarm", 250, "operator-001")

@@ -15,7 +15,6 @@ from typing import Optional
 from fastapi import APIRouter
 from fastapi.middleware.gzip import GZipMiddleware
 
-
 # ─── Caching Decorator ───────────────────────────────────────────────────────
 
 _cache: dict = {}
@@ -30,6 +29,7 @@ def cached(key: str, ttl: float = 5.0):
         def get_operator_rank_state():
             ...
     """
+
     def decorator(fn):
         @functools.wraps(fn)
         def wrapper(*args, **kwargs):
@@ -39,7 +39,9 @@ def cached(key: str, ttl: float = 5.0):
             result = fn(*args, **kwargs)
             _cache[key] = (result, now)
             return result
+
         return wrapper
+
     return decorator
 
 
@@ -69,14 +71,22 @@ async def cockpit_snapshot():
     # Operator rank state
     try:
         from nexusmon_operator_rank import get_operator_rank_state
+
         result["operator"] = get_operator_rank_state()
     except Exception as e:
         result["operator"] = {"error": str(e)}
 
     # Organism: evolution + operator context + workers + claimlab
     try:
-        from nexusmon_organism import evo_status, ctx_status, _load_jsonl, _data_dir, _beliefs_path
+        from nexusmon_organism import (
+            evo_status,
+            ctx_status,
+            _load_jsonl,
+            _data_dir,
+            _beliefs_path,
+        )
         from pathlib import Path
+
         workers = _load_jsonl(_data_dir() / "workers.jsonl")
         active = [w for w in workers if w.get("status") == "RUNNING"]
         beliefs = _load_jsonl(_beliefs_path())
@@ -99,6 +109,7 @@ async def cockpit_snapshot():
     # Mission stats (sync function)
     try:
         from nexusmon_mission_engine import get_stats as _mission_stats
+
         result["missions"] = _mission_stats()
     except Exception as e:
         result["missions"] = {"error": str(e)}
@@ -106,6 +117,7 @@ async def cockpit_snapshot():
     # Vault stats (sync function)
     try:
         from nexusmon_artifact_vault import get_stats as _vault_stats
+
         result["vault"] = _vault_stats()
     except Exception as e:
         result["vault"] = {"error": str(e)}
@@ -113,6 +125,7 @@ async def cockpit_snapshot():
     # Cognition status
     try:
         from nexusmon_cognition import cognition_status as _cog_status
+
         result["cognition"] = await _cog_status()
     except Exception as e:
         result["cognition"] = {"error": str(e)}
@@ -122,28 +135,36 @@ async def cockpit_snapshot():
         from core.telemetry import telemetry
         from core.capability_flags import registry
         from core.reflection import reflector
-        
+
         logs = telemetry.get_recent_logs()
         critical_count = len([l for l in logs if l.get("level") == "CRITICAL"])
         error_count = len([l for l in logs if l.get("level") == "ERROR"])
-        
+
         # Trigger self-reflection
         cog_state = reflector.reflect()
         cog_summary = reflector.get_cognition_summary()
-        
+
         result["sovereign"] = {
             "ok": True,
             "recent_logs": logs[-15:],  # Last 15 for dashboard
             "health": {
                 "critical": critical_count,
                 "errors": error_count,
-                "status": "HARDENED" if critical_count == 0 else "WARNING"
+                "status": "HARDENED" if critical_count == 0 else "WARNING",
             },
-            "cognition": cog_summary, # SELF-AWARENESS (P5)
+            "cognition": cog_summary,  # SELF-AWARENESS (P5)
             "capabilities": {
-                "enabled": [cid for cid, cap in registry._capabilities.items() if registry.check(cid)],
-                "disabled": [cid for cid, cap in registry._capabilities.items() if not registry.check(cid)]
-            }
+                "enabled": [
+                    cid
+                    for cid, cap in registry._capabilities.items()
+                    if registry.check(cid)
+                ],
+                "disabled": [
+                    cid
+                    for cid, cap in registry._capabilities.items()
+                    if not registry.check(cid)
+                ],
+            },
         }
     except Exception as e:
         result["sovereign"] = {"error": str(e)}
@@ -152,6 +173,7 @@ async def cockpit_snapshot():
 
 
 # ─── Fusion ──────────────────────────────────────────────────────────────────
+
 
 def fuse_performance(app):
     """

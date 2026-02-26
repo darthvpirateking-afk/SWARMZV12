@@ -1,5 +1,6 @@
 # Ollama provider function to insert into core/model_router.py
 
+
 def _call_ollama(
     messages: List[Dict[str, str]],
     system: str,
@@ -18,7 +19,9 @@ def _call_ollama(
     ) as span:
         url = f"{endpoint}/api/chat"
 
-        full_messages = ([{"role": "system", "content": system}] + messages) if system else messages
+        full_messages = (
+            ([{"role": "system", "content": system}] + messages) if system else messages
+        )
         body = json.dumps(
             {
                 "model": model,

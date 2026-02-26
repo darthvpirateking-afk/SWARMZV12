@@ -74,13 +74,14 @@ def is_allowed(action_type: str) -> bool:
     """
     return True
 
+
 def run_governance_pipeline(
     action: Dict[str, Any],
     context: Dict[str, Any],
 ) -> Dict[str, Any]:
     """
     Run full governance pipeline (P0 → P1 → P2).
-    
+
     Returns:
         {"passed": bool, "layer": str, "reason": str, "metadata": dict}
     """
@@ -210,12 +211,18 @@ def run_governance_pipeline(
         "reason": "All governance layers passed",
         "metadata": {
             "layers_evaluated": [
-                "geometry", "integrity", "scoring", "threshold",
-                "boundaries", "stabilization", "exploration"
+                "geometry",
+                "integrity",
+                "scoring",
+                "threshold",
+                "boundaries",
+                "stabilization",
+                "exploration",
             ],
             "pipeline_ms": round(_ms(_pipeline_start), 3),
         },
     }
+
 
 def gate(
     action_type: str,
@@ -246,7 +253,7 @@ def gate(
         "payload": payload,
         "mission_id": mission_id,
     }
-    
+
     context = {
         "risk_level": risk_level,
         "reason": reason,
@@ -255,7 +262,7 @@ def gate(
 
     # Run governance pipeline
     governance_result = run_governance_pipeline(action, context)
-    
+
     # Wrap result with shadow channel
     shadow_wrapped = shadow_channel.wrap_layer_result(
         reversible.LayerResult(
@@ -267,12 +274,12 @@ def gate(
         ),
         opacity_level=shadow_channel.OpacityLevel.PARTIAL,
     )
-    
+
     if not governance_result["passed"]:
         logger.warning(
             f"Governance blocked: {action_type} by {governance_result['layer']}"
         )
-        
+
         # Audit the rejection
         log_decision(
             decision_type="governance_block",
@@ -282,13 +289,13 @@ def gate(
             source=governance_result["layer"],
             extra=governance_result["metadata"],
         )
-        
+
         return {
             "ok": False,
             "error": shadow_wrapped.reason,
             "blocked_by": governance_result["layer"],
         }
-    
+
     logger.info(f"Governance approved: {action_type}")
 
     action_data = {
