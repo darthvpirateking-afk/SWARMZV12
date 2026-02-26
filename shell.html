@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>NEXUSMON // SHELL</title>
+  <link rel="stylesheet" href="./app.css">
+</head>
+<body>
+  <header>
+    <h1>NEXUSMON Shell</h1>
+  </header>
+  <main>
+    <section>
+      <h2>Registered Modules</h2>
+      <ul id="moduleList"></ul>
+    </section>
+    <section>
+      <h2>Self-Check</h2>
+      <button id="btnSelfCheck">Run Self-Check</button>
+      <pre id="selfCheckResult"></pre>
+    </section>
+  </main>
+  <script>
+    async function fetchModules() {
+      const response = await fetch('/v1/shell/modules');
+      const data = await response.json();
+      const list = document.getElementById('moduleList');
+      list.innerHTML = '';
+      if (data.ok) {
+        Object.entries(data.modules).forEach(([name, meta]) => {
+          const li = document.createElement('li');
+          li.textContent = `${name}: ${JSON.stringify(meta)}`;
+          list.appendChild(li);
+        });
+      } else {
+        list.textContent = 'Error loading modules';
+      }
+    }
+
+    async function runSelfCheck() {
+      const response = await fetch('/v1/shell/self_check', { method: 'POST' });
+      const data = await response.json();
+      document.getElementById('selfCheckResult').textContent = JSON.stringify(data, null, 2);
+    }
+
+    document.getElementById('btnSelfCheck').addEventListener('click', runSelfCheck);
+    fetchModules();
+  </script>
+</body>
+</html>

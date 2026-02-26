@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <meta name="theme-color" content="#05070C">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./app.css">
+  <link rel="stylesheet" href="./hologram.css">
+  <title>NEXUSMON // HOLOGRAM</title>
+</head>
+<body>
+
+<div class="scanlines" aria-hidden="true"></div>
+
+<div id="holoFrame">
+
+  <!-- TOP BAR -->
+  <header id="topBar">
+    <div class="top-left">
+      <a href="/" class="logo-link"><h1 class="logo">NEXUSMON HOLOGRAM</h1></a>
+    </div>
+    <div class="top-right">
+      <span class="chip" id="chipLevel">LV0 · EGG</span>
+      <span class="chip" id="chipXP">XP 0</span>
+      <a href="trials.html" class="btn btn-tiny">TRIALS</a>
+      <a href="/" class="btn btn-tiny">CONTROL</a>
+    </div>
+  </header>
+
+  <!-- ERROR BANNER -->
+  <div id="errorBanner" class="error-banner hidden"></div>
+
+  <!-- EVOLUTION DISPLAY -->
+  <section id="evolutionDisplay" class="evo-display">
+    <div class="evo-orb-wrap">
+      <div class="evo-orb" id="evoOrb">
+        <div class="orb-inner" id="orbInner">
+          <span class="orb-level" id="orbLevel">0</span>
+          <span class="orb-name" id="orbName">EGG</span>
+        </div>
+        <div class="orb-ring" id="orbRing"></div>
+      </div>
+    </div>
+
+    <div class="evo-stats">
+      <div class="stat-row">
+        <span class="stat-label">XP</span>
+        <div class="stat-bar-wrap">
+          <div class="stat-bar stat-bar-xp" id="barXP" style="width:0%"></div>
+        </div>
+        <span class="stat-val" id="valXP">0 / 5</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">STABILITY</span>
+        <div class="stat-bar-wrap">
+          <div class="stat-bar stat-bar-stab" id="barStab" style="width:0%"></div>
+        </div>
+        <span class="stat-val" id="valStab">0%</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">NOVELTY</span>
+        <div class="stat-bar-wrap">
+          <div class="stat-bar stat-bar-nov" id="barNov" style="width:0%"></div>
+        </div>
+        <span class="stat-val" id="valNov">0%</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">REVERSIBILITY</span>
+        <div class="stat-bar-wrap">
+          <div class="stat-bar stat-bar-rev" id="barRev" style="width:0%"></div>
+        </div>
+        <span class="stat-val" id="valRev">0%</span>
+      </div>
+    </div>
+
+    <div class="evo-next" id="evoNext">
+      <span class="next-label">NEXT EVOLUTION</span>
+      <span class="next-name" id="nextName">ROOKIE</span>
+      <span class="next-hint" id="nextHint">Need =5 verified trials</span>
+    </div>
+  </section>
+
+  <!-- TRIAL LENS (PER-TRIAL EFFECTS) -->
+  <section class="trial-panel" id="trialPanel">
+    <h2 class="panel-title">TRIAL LENS</h2>
+    <div class="trial-controls">
+      <input id="trialIdInput" class="trial-input" placeholder="Paste Trial ID from Trials Inbox" autocomplete="off" />
+      <button class="btn btn-tiny" onclick="holoApp.loadTrial()">LOAD TRIAL</button>
+    </div>
+    <div class="trial-summary" id="trialSummary">
+      <div class="empty-msg">Orb is showing aggregate level. Load a specific trial to see per-trial glow, flicker, and verdict.</div>
+    </div>
+  </section>
+
+  <!-- LEVEL LADDER -->
+  <section class="level-ladder">
+    <h2 class="panel-title">EVOLUTION LADDER</h2>
+    <div class="ladder-track" id="ladderTrack">
+      <div class="ladder-node" data-level="0">
+        <span class="ladder-badge badge-egg">EGG</span>
+        <span class="ladder-desc">Static crystal. No powers.</span>
+      </div>
+      <div class="ladder-node" data-level="1">
+        <span class="ladder-badge badge-rookie">ROOKIE</span>
+        <span class="ladder-desc">Pulse on trial resolve. Auto-baseline.</span>
+      </div>
+      <div class="ladder-node" data-level="2">
+        <span class="ladder-badge badge-champion">CHAMPION</span>
+        <span class="ladder-desc">Holographic scan lines. Auto-check &amp; triage.</span>
+      </div>
+      <div class="ladder-node" data-level="3">
+        <span class="ladder-badge badge-ultimate">ULTIMATE</span>
+        <span class="ladder-desc">Full hologram body. Survival ranking.</span>
+      </div>
+      <div class="ladder-node" data-level="4">
+        <span class="ladder-badge badge-mega">MEGA</span>
+        <span class="ladder-desc">Stability field shimmer. Drift alarms.</span>
+      </div>
+      <div class="ladder-node" data-level="5">
+        <span class="ladder-badge badge-burst">BURST</span>
+        <span class="ladder-desc">Overclocked glitch. Parallel batch.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- POWERS PANEL -->
+  <section class="powers-panel">
+    <h2 class="panel-title">UNLOCKED POWERS</h2>
+    <div id="powersList" class="powers-list">
+      <div class="empty-msg">No powers unlocked yet (LV0)</div>
+    </div>
+  </section>
+
+  <!-- CURRENCIES PANEL -->
+  <section class="currencies-panel">
+    <h2 class="panel-title">POWER CURRENCIES</h2>
+    <div class="currency-cards" id="currencyCards">
+      <div class="currency-card" id="cardStab">
+        <div class="currency-icon">&#9670;</div>
+        <div class="currency-name">STABILITY</div>
+        <div class="currency-val" id="currStab">0%</div>
+        <div class="currency-desc">% survived (30d)</div>
+      </div>
+      <div class="currency-card" id="cardNov">
+        <div class="currency-icon">&#9733;</div>
+        <div class="currency-name">NOVELTY</div>
+        <div class="currency-val" id="currNov">0%</div>
+        <div class="currency-desc">% new templates (30d)</div>
+      </div>
+      <div class="currency-card" id="cardRev">
+        <div class="currency-icon">&#8635;</div>
+        <div class="currency-name">REVERSIBILITY</div>
+        <div class="currency-val" id="currRev">0%</div>
+        <div class="currency-desc">% with rollback path</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BURST MODE PANEL (LV5) -->
+  <section class="burst-panel" id="burstPanel">
+    <h2 class="panel-title">BURST MODE <span class="burst-status" id="burstStatus">OFF</span></h2>
+    <div class="burst-controls">
+      <button class="btn btn-primary" id="btnBurstToggle" onclick="holoApp.toggleBurst()">ENABLE BURST</button>
+      <button class="btn btn-danger" id="btnBurstKill" onclick="holoApp.killBatch()" disabled>KILL SWITCH</button>
+    </div>
+    <div class="burst-batches" id="burstBatches">
+      <div class="empty-msg">No burst batches</div>
+    </div>
+  </section>
+
+  <!-- DRIFT PANEL (LV4+) -->
+  <section class="drift-panel" id="driftPanel">
+    <h2 class="panel-title">DRIFT ALARMS</h2>
+    <div class="drift-events" id="driftEvents">
+      <div class="empty-msg">No drift events recorded</div>
+    </div>
+  </section>
+
+</div>
+
+<script src="./hologram.js"></script>
+</body>
+</html>
+

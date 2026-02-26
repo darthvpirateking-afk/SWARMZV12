@@ -1,0 +1,4190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>NEXUSMON // ORGANISM COCKPIT ⚡🟢</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap');
+
+:root {
+  --bg:      #03050a;
+  --panel:   #060a10;
+  --card:    #080d16;
+  --border:  #0c1520;
+  --bh:      #142030;
+  --text:    #7aaac0;
+  --dim:     #253545;
+  --bright:  #c0e0f0;
+  --accent:  #00ccff;
+  --a2:      #005580;
+  --green:   #00ff88;
+  --amber:   #ffaa00;
+  --red:     #ff3355;
+  --purple:  #aa55ff;
+  --mono:    'Share Tech Mono', monospace;
+  --head:    'Rajdhani', sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: linear-gradient(135deg, #0a0015 0%, #050510 50%, #0a0520 100%);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 12px;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.holo-panel, .status-panel, .trait-section, .input-bar {
+  background: rgba(8,10,20,0.7);
+  border: 1px solid #00f0ff28;
+  box-shadow: 0 0 30px #00f0ff18, inset 0 0 15px #aa44ff08;
+  backdrop-filter: blur(14px);
+  border-radius: 10px;
+  transition: all 0.3s ease-out;
+}
+
+.holo-panel:hover, .status-panel:hover {
+  transform: translateY(-4px);
+  border-color: #00f0ff44;
+  box-shadow: 0 0 50px #00f0ff32, inset 0 0 20px #aa44ff12;
+}
+
+.neon-text, .trait-label, .status-title {
+  color: #00f0ff;
+  text-shadow: 0 0 8px #00f0ff, 0 0 16px #00f0ff66;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+@keyframes neon-flicker { 0%,100% { opacity:1; } 50% { opacity:0.96; } }
+
+.input-bar {
+  background: rgba(0,0,0,0.7);
+  border: 1px solid #00f0ff44;
+  box-shadow: 0 0 30px #00f0ff22;
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.input-bar input {
+  background: transparent;
+  border: none;
+  color: #00f0ff;
+  outline: none;
+  flex: 1;
+}
+
+.input-bar button {
+  background: #00f0ff22;
+  border: 1px solid #00f0ff;
+  color: #00f0ff;
+  border-radius: 8px;
+  padding: 10px 24px;
+  cursor: pointer;
+}
+
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,180,255,0.008) 2px, rgba(0,180,255,0.008) 3px);
+  pointer-events: none;
+  z-index: 9999;
+  animation: scanlines 8s linear infinite;
+}
+
+@keyframes scanlines { 0% { transform: translateY(0); } 100% { transform: translateY(2px); } }
+
+/* ── TOPBAR ── */
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px; height: 52px;
+  border-bottom: 1px solid var(--bh);
+  background: var(--panel);
+  position: sticky; top: 0; z-index: 200;
+}
+
+.logo {
+  font-family: var(--head); font-size: 22px; font-weight: 700;
+  letter-spacing: 0.2em; color: var(--bright);
+}
+.logo em { color: var(--accent); font-style: normal; }
+.logo-sub { font-size: 10px; letter-spacing: 0.15em; color: var(--dim); margin-left: 12px; vertical-align: middle; }
+
+.topbar-right { display: flex; align-items: center; gap: 16px; }
+
+.stage-badge {
+  font-family: var(--head); font-size: 13px; font-weight: 600;
+  letter-spacing: 0.12em; padding: 4px 14px;
+  border: 1px solid currentColor; border-radius: 2px;
+  transition: all 0.4s;
+}
+
+.clock { font-size: 11px; color: var(--dim); letter-spacing: 0.08em; }
+.last-updated { font-size: 9px; color: var(--dim); letter-spacing: 0.06em; }
+
+/* Minimal topbar: hide secondary readouts */
+.topbar-right .last-updated,
+.topbar-right .clock {
+  display: none;
+}
+
+.refresh-btn {
+  background: none; border: 1px solid var(--bh); border-radius: 2px;
+  color: var(--dim); font-family: var(--mono); font-size: 10px;
+  letter-spacing: 0.1em; padding: 5px 12px; cursor: pointer;
+  transition: all 0.2s;
+}
+.refresh-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ── LAYOUT ── */
+.shell {
+  display: grid;
+  grid-template-columns: 200px 1fr 240px;
+  grid-template-rows: auto 1fr;
+  min-height: calc(100vh - 52px);
+  gap: 1px;
+  background: var(--border);
+}
+
+@media (max-width: 1400px) {
+  .shell { grid-template-columns: 180px 1fr 200px; }
+}
+
+@media (max-width: 1024px) {
+  .shell { grid-template-columns: 1fr; }
+  .sidebar-left, .sidebar-right { display: none; }
+}
+
+/* ── LEFT SIDEBAR ── */
+.sidebar-left {
+  border-right: 1px solid var(--border);
+  border-left: none;
+  display: flex; flex-direction: column;
+  background: var(--panel);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.side-section { padding: 16px; border-bottom: 1px solid var(--border); }
+
+.side-label {
+  font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--dim); margin-bottom: 12px;
+}
+
+/* Evolution stage display */
+.evo-stage {
+  text-align: center; padding: 12px 0;
+}
+.evo-stage-name {
+  font-family: var(--head); font-size: 28px; font-weight: 700;
+  letter-spacing: 0.1em; transition: color 0.4s;
+  line-height: 1;
+}
+.evo-rank-dots {
+  display: flex; justify-content: center; gap: 6px; margin: 10px 0 8px;
+}
+.rank-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  border: 1px solid var(--bh);
+  transition: all 0.4s;
+}
+.rank-dot.filled { border-color: var(--accent); background: var(--accent); box-shadow: 0 0 6px var(--accent); }
+
+.xp-row { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
+.xp-label { font-size: 9px; color: var(--dim); letter-spacing: 0.1em; }
+.xp-val { font-size: 11px; color: var(--accent); }
+
+/* Plasma Buster Status */
+.buster-status {
+  padding: 16px; border-bottom: 1px solid var(--border);
+  background: rgba(0, 255, 255, 0.03);
+}
+.buster-label {
+  font-size: 10px; color: #0ff; letter-spacing: 0.2em;
+  text-transform: uppercase; margin-bottom: 12px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.buster-indicator {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #0ff; box-shadow: 0 0 10px #0ff;
+  animation: pulse-buster 2s infinite;
+}
+@keyframes pulse-buster {
+  0% { opacity: 0.4; } 50% { opacity: 1; } 100% { opacity: 0.4; }
+}
+
+.buster-stat {
+  display: flex; justify-content: space-between; margin-bottom: 8px;
+  font-family: var(--mono); font-size: 11px;
+}
+.buster-stat-label { color: var(--dim); }
+.buster-stat-val { color: #0ff; }
+
+.plasma-bar-container {
+  height: 4px; background: rgba(0, 255, 255, 0.1);
+  border-radius: 2px; margin-top: 10px; overflow: hidden;
+}
+.plasma-bar-fill {
+  height: 100%; width: 0%; background: #0ff;
+  box-shadow: 0 0 10px #0ff; transition: width 0.5s ease-out;
+}
+.xp-bar { flex: 1; height: 2px; background: var(--border); border-radius: 1px; overflow: hidden; }
+.xp-fill { height: 100%; background: var(--accent); box-shadow: 0 0 4px var(--accent); transition: width 0.6s ease; }
+
+/* Traits list */
+.trait-list { display: flex; flex-direction: column; gap: 6px; }
+.trait-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 5px 8px; border-radius: 2px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  transition: all 0.2s;
+}
+.trait-item:hover { border-color: var(--bh); }
+.trait-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  flex-shrink: 0;
+}
+.trait-name { font-size: 10px; letter-spacing: 0.06em; color: var(--bright); }
+.trait-cat { font-size: 9px; color: var(--dim); margin-left: auto; }
+
+.cat-COGNITIVE { background: var(--accent); box-shadow: 0 0 4px var(--accent); }
+.cat-RESONANCE { background: var(--purple); box-shadow: 0 0 4px var(--purple); }
+.cat-TACTICAL  { background: var(--amber); box-shadow: 0 0 4px var(--amber); }
+.cat-ADAPTIVE  { background: var(--green); box-shadow: 0 0 4px var(--green); }
+
+/* Next stage */
+.next-stage-box {
+  font-size: 10px; color: var(--dim);
+  padding: 8px; border: 1px dashed var(--border); border-radius: 2px;
+}
+.next-stage-name { color: var(--text); letter-spacing: 0.08em; margin-bottom: 4px; }
+.next-req { display: flex; justify-content: space-between; margin-top: 3px; }
+
+/* ── MAIN AREA ── */
+.main {
+  overflow-y: auto;
+  display: flex; flex-direction: column;
+  gap: 0;
+}
+
+/* Tab nav */
+.tab-nav {
+  display: flex; border-bottom: 1px solid var(--border);
+  background: var(--panel); position: sticky; top: 0; z-index: 100;
+  overflow-x: auto; gap: 2px; padding: 0 8px;
+}
+.tab-btn {
+  padding: 10px 16px; font-family: var(--mono); font-size: 11px;
+  letter-spacing: 0.08em; text-transform: uppercase; font-weight: 500;
+  color: var(--dim); background: none; border: none;
+  border-bottom: 2px solid transparent; cursor: pointer;
+  transition: color 0.2s, border-color 0.2s; margin-bottom: -1px;
+  white-space: nowrap; position: relative;
+}
+.tab-btn:hover { color: var(--text); border-bottom-color: #00f0ff44; }
+.tab-btn.active { color: #00f0ff; border-bottom-color: #00f0ff; text-shadow: 0 0 8px #00f0ff; }
+
+.tab-more { position: relative; display: inline-flex; }
+.tab-more-btn { padding-right: 10px; }
+.tab-more-menu {
+  position: absolute; top: 36px; right: 0;
+  background: rgba(6,10,16,0.95);
+  border: 1px solid var(--bh);
+  box-shadow: 0 0 24px rgba(0,240,255,0.15);
+  border-radius: 6px;
+  min-width: 180px;
+  display: none;
+  flex-direction: column;
+  z-index: 999;
+}
+.tab-more-menu.open { display: flex; }
+.tab-more-item {
+  background: none;
+  border: none;
+  text-align: left;
+  padding: 10px 12px;
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+}
+.tab-more-item:last-child { border-bottom: none; }
+.tab-more-item:hover { color: var(--accent); background: rgba(0,240,255,0.06); }
+
+/* Notification dot on tab */
+.tab-notif {
+  display: inline-block; background: var(--red); color: #fff;
+  font-size: 8px; border-radius: 8px; padding: 1px 5px;
+  margin-left: 5px; vertical-align: middle; min-width: 16px;
+  text-align: center; line-height: 14px;
+  opacity: 0; transition: opacity 0.3s;
+}
+.tab-notif.visible { opacity: 1; }
+
+/* Tab panels */
+.tab-panel { display: none; padding: 16px; flex-direction: column; gap: 12px; overflow-y: auto; max-height: calc(100vh - 120px); }
+.tab-panel.active { display: flex; }
+
+/* Cards */
+.card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 8px; overflow: hidden; transition: border-color 0.2s;
+}
+.card:hover { border-color: #00f0ff28; }
+.card-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 14px; border-bottom: 1px solid var(--border);
+  background: rgba(8,10,20,0.4);
+}
+.card-title {
+  font-family: var(--head); font-size: 13px; font-weight: 600;
+  letter-spacing: 0.1em; color: #00f0ff;
+}
+.card-body { padding: 12px; }
+
+/* Status grid */
+.status-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; }
+.stat-block {
+  background: rgba(8,10,20,0.5); border: 1px solid var(--border);
+  padding: 12px; border-radius: 6px; transition: border-color 0.2s;
+}
+.stat-block:hover { border-color: #00f0ff28; }
+.stat-val {
+  font-family: var(--head); font-size: 24px; font-weight: 600;
+  color: #00ffaa; line-height: 1; text-shadow: 0 0 6px #00ffaa44;
+}
+.stat-label { font-size: 10px; letter-spacing: 0.08em; color: var(--dim); margin-top: 6px; text-transform: uppercase; }
+
+/* Governance panel */
+.gov-layer-card {
+  background: rgba(8,10,20,0.6); border: 1px solid var(--border);
+  border-radius: 6px; padding: 10px; transition: border-color 0.25s;
+}
+.gov-layer-card:hover { border-color: #00f0ff28; }
+.gov-layer-name { font-size: 9px; letter-spacing: 0.1em; color: var(--dim); margin-bottom: 6px; text-transform: uppercase; }
+.gov-layer-status { font-size: 13px; font-weight: 700; font-family: var(--head); letter-spacing: 0.05em; }
+.gov-layer-status.gov-pass { color: var(--green); text-shadow: 0 0 6px #00ff8844; }
+.gov-layer-status.gov-warn { color: var(--amber); text-shadow: 0 0 6px #ffaa0044; }
+.gov-layer-status.gov-block { color: var(--red); text-shadow: 0 0 6px #ff335544; }
+.gov-layer-status.gov-tracking { color: var(--purple); text-shadow: 0 0 6px #aa55ff44; }
+.gov-layer-reason { font-size: 9px; color: var(--dim); margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.uplift-tier {
+  background: rgba(8,10,20,0.6); border: 1px solid var(--border);
+  border-radius: 6px; padding: 10px;
+}
+.tier-badge { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; padding: 4px 10px; border-radius: 4px; display: inline-block; margin-bottom: 6px; }
+.tier-badge.unlocked { background: rgba(0,255,136,0.15); color: var(--green); border: 1px solid #00ff8844; }
+.tier-badge.locked { background: rgba(255,255,255,0.04); color: var(--dim); border: 1px solid var(--border); }
+.tier-caps { font-size: 10px; color: var(--dim); }
+
+/* Operator vocab */
+.vocab-cloud { display: flex; flex-wrap: wrap; gap: 6px; }
+.vocab-word {
+  font-size: 10px; padding: 2px 8px; border-radius: 2px;
+  background: var(--border); color: var(--text);
+  border: 1px solid var(--bh);
+}
+
+/* Worker panel */
+.worker-spawn-form { display: flex; flex-direction: column; gap: 10px; }
+.form-row { display: flex; gap: 8px; }
+.goal-input {
+  flex: 1; background: var(--panel); border: 1px solid var(--bh);
+  border-radius: 2px; color: var(--bright); font-family: var(--mono);
+  font-size: 12px; padding: 9px 12px; outline: none;
+  transition: border-color 0.2s;
+}
+.goal-input:focus { border-color: var(--accent); }
+.goal-input::placeholder { color: var(--dim); }
+
+.auto-toggle {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 10px; letter-spacing: 0.08em; color: var(--dim);
+}
+.toggle-switch {
+  width: 32px; height: 16px; border-radius: 8px;
+  border: 1px solid var(--bh); background: var(--border);
+  cursor: pointer; position: relative; transition: all 0.2s;
+}
+.toggle-switch.on { background: var(--a2); border-color: var(--accent); }
+.toggle-switch::after {
+  content: ''; position: absolute; top: 2px; left: 2px;
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--dim); transition: all 0.2s;
+}
+.toggle-switch.on::after { left: 18px; background: var(--accent); box-shadow: 0 0 4px var(--accent); }
+
+/* Buttons */
+.btn {
+  background: none; border: 1px solid var(--bh); border-radius: 2px;
+  color: var(--text); font-family: var(--mono); font-size: 10px;
+  letter-spacing: 0.1em; padding: 8px 16px; cursor: pointer;
+  transition: all 0.2s; white-space: nowrap;
+}
+.btn:hover { border-color: var(--accent); color: var(--accent); }
+.btn.primary {
+  border-color: var(--accent); color: var(--accent);
+  background: rgba(0,204,255,0.06);
+}
+.btn.primary:hover { background: rgba(0,204,255,0.14); }
+.btn.success { border-color: var(--green); color: var(--green); }
+.btn.success:hover { background: rgba(0,255,136,0.1); }
+.btn.danger { border-color: var(--red); color: var(--red); }
+.btn.danger:hover { background: rgba(255,51,85,0.1); }
+.btn.amber { border-color: var(--amber); color: var(--amber); }
+.btn.amber:hover { background: rgba(255,170,0,0.1); }
+.btn:disabled { opacity: 0.3; cursor: default; }
+
+/* Worker list */
+.worker-list { display: flex; flex-direction: column; gap: 8px; }
+.worker-row {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 12px; background: var(--panel); border: 1px solid var(--border);
+  border-radius: 2px; transition: border-color 0.2s;
+}
+.worker-row:hover { border-color: var(--bh); }
+.worker-id { font-size: 11px; color: var(--accent); min-width: 70px; letter-spacing: 0.04em; }
+.worker-goal { flex: 1; font-size: 11px; color: var(--bright); line-height: 1.4; }
+.worker-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+.status-badge {
+  font-size: 9px; letter-spacing: 0.1em; padding: 2px 8px;
+  border-radius: 2px; font-weight: 500; text-transform: uppercase;
+}
+.s-QUEUED    { background: rgba(0,204,255,0.1);  color: var(--accent); }
+.s-RUNNING   { background: rgba(0,255,136,0.1);  color: var(--green); animation: pulse-glow 1.5s infinite; }
+.s-COMPLETED { background: rgba(0,255,136,0.08); color: var(--green); }
+.s-FAILED    { background: rgba(255,51,85,0.1);  color: var(--red); }
+.s-CANCELLED { background: rgba(37,53,69,0.5);   color: var(--dim); }
+.s-PAUSED    { background: rgba(255,170,0,0.1);  color: var(--amber); }
+.s-PENDING   { background: rgba(0,204,255,0.08); color: var(--accent); }
+.s-BLOCKED   { background: rgba(255,51,85,0.08); color: var(--red); }
+@keyframes pulse-glow { 0%,100%{opacity:1} 50%{opacity:0.5} }
+
+.worker-steps { display: flex; gap: 3px; margin-top: 4px; }
+.step-pip {
+  width: 20px; height: 3px; border-radius: 1px;
+  background: var(--border); transition: background 0.3s;
+}
+.step-pip.done { background: var(--green); box-shadow: 0 0 4px var(--green); }
+.step-pip.running { background: var(--amber); animation: pulse-glow 1s infinite; }
+.step-pip.fail { background: var(--red); }
+
+/* Companion */
+.companion-window {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 8px; overflow: hidden;
+  display: flex; flex-direction: column; height: 480px;
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.1);
+}
+.companion-messages {
+  flex: 1; overflow-y: auto; padding: 12px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.msg {
+  display: flex; flex-direction: column; gap: 3px;
+  padding: 8px 10px; border-radius: 6px; word-break: break-word;
+  animation: msgSlide 0.3s ease;
+}
+@keyframes msgSlide { 0% { opacity: 0; transform: translateY(4px); } 100% { opacity: 1; transform: translateY(0); } }
+.msg.op { background: rgba(0, 240, 255, 0.06); }
+.msg.nx { background: rgba(170, 68, 255, 0.06); }
+.msg-source {
+  font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase;
+  font-weight: 600;
+}
+.msg.op .msg-source { color: #00f0ff; }
+.msg.nx .msg-source { color: #aa44ff; }
+.msg-text {
+  font-size: 12px; line-height: 1.5; padding: 6px 8px;
+  border-radius: 4px; border-left: 2px solid;
+  max-width: 90%;
+}
+.msg.op .msg-text { background: rgba(0, 240, 255, 0.04); border-color: #00f0ff; }
+.msg.nx .msg-text { background: rgba(170, 68, 255, 0.04); border-color: #aa44ff; color: #00ffaa; }
+.companion-input-row {
+  display: flex; border-top: 1px solid var(--border);
+}
+.companion-input {
+  flex: 1; background: transparent; border: none; outline: none;
+  color: var(--bright); font-family: var(--mono); font-size: 12px;
+  padding: 10px 12px; transition: box-shadow 0.2s;
+}
+.companion-input:focus {
+  box-shadow: 0 0 8px rgba(0, 240, 255, 0.2);
+}
+.companion-input::placeholder { color: var(--dim); }
+.companion-send {
+  background: none; border: none; border-left: 1px solid var(--border);
+  color: #00ffaa; font-family: var(--mono); font-size: 10px;
+  letter-spacing: 0.1em; padding: 0 14px; cursor: pointer;
+  transition: all 0.2s; font-weight: 600;
+}
+.companion-send:hover {
+  background: rgba(0, 255, 170, 0.08);
+  color: #00ffcc;
+  border-left-color: rgba(0, 255, 170, 0.3);
+}
+
+/* Typing indicator */
+.typing-indicator {
+  display: none; align-items: center; gap: 4px;
+  padding: 8px 10px;
+}
+.typing-indicator.visible { display: flex; }
+.typing-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--purple); opacity: 0.4;
+  animation: typing-bounce 1.2s infinite;
+}
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes typing-bounce { 0%,60%,100%{transform:translateY(0);opacity:0.4} 30%{transform:translateY(-4px);opacity:1} }
+
+/* Fusion block */
+.fusion-block {
+  background: var(--panel); border: 1px solid var(--border);
+  padding: 12px; border-radius: 2px; font-size: 11px;
+  line-height: 1.7; color: var(--text); white-space: pre-wrap;
+  max-height: 200px; overflow-y: auto;
+}
+
+/* ── MISSIONS TAB ── */
+.mission-list { display: flex; flex-direction: column; gap: 8px; }
+.mission-row {
+  padding: 12px; background: var(--panel); border: 1px solid var(--border);
+  border-radius: 2px; transition: border-color 0.2s;
+}
+.mission-row:hover { border-color: var(--bh); }
+.mission-top { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+.rank-badge {
+  font-size: 9px; font-weight: 700; letter-spacing: 0.1em;
+  padding: 2px 7px; border-radius: 2px; border: 1px solid;
+}
+.rank-E, .rank-D { border-color: var(--accent); color: var(--accent); background: rgba(0,204,255,0.08); }
+.rank-C, .rank-B { border-color: var(--amber); color: var(--amber); background: rgba(255,170,0,0.08); }
+.rank-A, .rank-S { border-color: var(--red); color: var(--red); background: rgba(255,51,85,0.08); }
+.mission-goal { flex: 1; font-size: 11px; color: var(--bright); }
+.mission-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.mission-actions { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+.task-dag { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 6px; }
+.task-chip {
+  font-size: 9px; padding: 2px 7px; border-radius: 2px;
+  background: var(--border); color: var(--dim); border: 1px solid var(--bh);
+}
+.task-chip.done { color: var(--green); border-color: var(--green); background: rgba(0,255,136,0.06); }
+.task-chip.fail { color: var(--red); border-color: var(--red); }
+.task-chip.run { color: var(--amber); border-color: var(--amber); animation: pulse-glow 1s infinite; }
+.mission-create-form { display: flex; flex-direction: column; gap: 10px; }
+.form-select {
+  background: var(--panel); border: 1px solid var(--bh); border-radius: 2px;
+  color: var(--text); font-family: var(--mono); font-size: 10px;
+  padding: 8px 10px; outline: none; cursor: pointer;
+}
+
+/* ── VAULT TAB ── */
+.artifact-list { display: flex; flex-direction: column; gap: 8px; }
+.artifact-row {
+  padding: 12px; background: var(--panel); border: 1px solid var(--border);
+  border-radius: 2px;
+}
+.artifact-top { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+.type-badge {
+  font-size: 9px; letter-spacing: 0.08em; padding: 2px 7px;
+  border-radius: 2px; border: 1px solid var(--bh);
+  color: var(--dim);
+}
+.artifact-title { flex: 1; font-size: 11px; color: var(--bright); }
+.artifact-preview {
+  font-size: 10px; color: var(--dim); line-height: 1.5;
+  max-height: 40px; overflow: hidden;
+  border-left: 2px solid var(--border); padding-left: 8px;
+  margin-top: 4px;
+}
+.artifact-actions { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+.vault-filters { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+/* ── COGNITION TAB ── */
+.cog-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.cog-block {
+  background: var(--panel); border: 1px solid var(--border);
+  padding: 12px; border-radius: 2px;
+}
+.cog-val {
+  font-family: var(--head); font-size: 22px; font-weight: 600;
+  color: var(--bright); line-height: 1;
+}
+.cog-label { font-size: 9px; letter-spacing: 0.1em; color: var(--dim); margin-top: 4px; text-transform: uppercase; }
+.cog-sub { font-size: 10px; color: var(--accent); margin-top: 4px; }
+.prediction-form { display: flex; flex-direction: column; gap: 8px; }
+.pred-input {
+  background: var(--panel); border: 1px solid var(--bh); border-radius: 2px;
+  color: var(--bright); font-family: var(--mono); font-size: 11px;
+  padding: 8px 10px; outline: none; width: 100%;
+  transition: border-color 0.2s;
+}
+.pred-input:focus { border-color: var(--accent); }
+.pred-input::placeholder { color: var(--dim); }
+.pred-row { display: flex; gap: 8px; align-items: center; }
+.pred-row label { font-size: 9px; color: var(--dim); letter-spacing: 0.08em; min-width: 80px; }
+
+/* ── WORKER DETAIL OVERLAY ── */
+.detail-overlay {
+  position: fixed; inset: 0; background: rgba(3,5,10,0.92);
+  z-index: 500; display: none; align-items: center; justify-content: center;
+  padding: 24px;
+}
+.detail-overlay.open { display: flex; }
+.detail-panel {
+  background: var(--card); border: 1px solid var(--bh);
+  border-radius: 2px; max-width: 680px; width: 100%;
+  max-height: 80vh; overflow-y: auto;
+  display: flex; flex-direction: column;
+}
+.detail-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px; border-bottom: 1px solid var(--border);
+  background: var(--panel); position: sticky; top: 0;
+}
+.detail-title { font-family: var(--head); font-size: 16px; font-weight: 600; letter-spacing: 0.1em; color: var(--bright); }
+.detail-body { padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+.step-log-entry {
+  padding: 8px 10px; background: var(--panel); border: 1px solid var(--border);
+  border-radius: 2px; font-size: 10px; line-height: 1.5;
+}
+.step-log-entry.ok { border-left: 2px solid var(--green); }
+.step-log-entry.fail { border-left: 2px solid var(--red); }
+.step-num { color: var(--accent); margin-right: 8px; }
+.step-type { color: var(--bright); }
+.step-out { color: var(--dim); margin-top: 3px; word-break: break-all; }
+
+/* ── RIGHT SIDEBAR — event log ── */
+.sidebar-right {
+  border-left: 1px solid var(--border);
+  background: var(--panel);
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex; flex-direction: column;
+  font-size: 11px;
+}
+
+.log-head {
+  padding: 10px 12px; border-bottom: 1px solid var(--border);
+  font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: #00f0ff; display: flex; align-items: center; justify-content: space-between;
+  font-weight: 600;
+}
+.log-live { display: flex; align-items: center; gap: 6px; }
+.live-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: #00ff88; box-shadow: 0 0 4px #00ff88;
+  animation: pulse-glow 1.5s infinite;
+}
+
+.event-list { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 6px 0; }
+.event-item {
+  padding: 8px 12px; border-bottom: 1px solid var(--border);
+  display: flex; flex-direction: column; gap: 3px;
+  transition: background 0.2s, border-color 0.2s;
+  word-wrap: break-word;
+}
+.event-item:hover { background: rgba(0, 240, 255, 0.04); }
+.event-type {
+  font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase;
+  font-weight: 600;
+}
+.et-STAGE_CHANGE    { color: #ffaa00; }
+.et-TRAIT_UNLOCKED  { color: #00ffaa; text-shadow: 0 0 4px #00ffaa; }
+.et-WORKER          { color: #00f0ff; }
+.et-MISSION         { color: #aa44ff; }
+.et-COMPANION       { color: #7aaac0; }
+.et-ERROR           { color: #ff3355; }
+.et-VAULT           { color: #ffaa00; }
+.et-COGNITION       { color: #00ffaa; }
+.event-msg { font-size: 11px; color: var(--text); line-height: 1.4; word-break: break-word; }
+.event-ts { font-size: 9px; color: var(--dim); margin-top: 2px; }
+
+/* misc */
+.empty { color: var(--dim); font-size: 11px; padding: 20px; text-align: center; }
+.error-msg { color: var(--red); font-size: 11px; padding: 8px; border: 1px solid rgba(255,51,85,0.2); border-radius: 2px; }
+.loading { color: var(--dim); font-size: 10px; letter-spacing: 0.08em; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.info-row { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid var(--border); }
+.info-key { color: var(--dim); font-size: 10px; letter-spacing: 0.06em; }
+.info-val { color: var(--bright); font-size: 10px; }
+/* ── Operator Rank Panel ── */
+.operator-card { display:flex; flex-direction:column; gap:18px; max-width:580px; }
+
+/* ── Plugins Tab ── */
+.plugins-container { display:flex; flex-direction:column; gap:20px; }
+.plugins-header { padding:12px 0; border-bottom:1px solid rgba(0,255,255,0.15); }
+.plugins-header h2 { margin:0; font-size:18px; }
+.plugin-section { display:flex; flex-direction:column; gap:10px; }
+.section-title { font-size:12px; color:var(--bright); text-transform:uppercase; letter-spacing:2px; margin:0; padding:8px 0; border-bottom:1px solid rgba(170,68,255,0.2); }
+.plugin-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:8px; }
+.plugin-card { background:rgba(20,30,50,0.6); border:1px solid rgba(0,255,255,0.15); border-radius:6px; padding:10px; cursor:pointer; transition:all 0.2s ease; }
+.plugin-card:hover { border-color:rgba(0,255,255,0.35); box-shadow:0 0 16px rgba(0,255,255,0.15); transform:translateY(-2px); }
+.plugin-card.locked { opacity:0.5; border-color:rgba(255,100,100,0.2); cursor:not-allowed; }
+.plugin-card-id { font-size:11px; color:var(--bright); font-weight:bold; margin:0 0 4px; }
+.plugin-card-type { font-size:9px; color:var(--bright); opacity:0.7; }
+.plugin-card-version { font-size:9px; color:var(--dim); margin-top:4px; }
+.plugin-card-trust { font-size:8px; margin-top:6px; padding:2px 4px; border-radius:3px; display:inline-block; }
+.trust-core { background:rgba(255,200,0,0.2); color:var(--gold); }
+.trust-verified { background:rgba(0,255,255,0.1); color:var(--bright); }
+.trust-community { background:rgba(0,255,150,0.1); color:var(--green); }
+.trust-unsigned { background:rgba(255,100,100,0.1); color:#ff8888; }
+.plugin-card-btn { font-size:9px; margin-top:8px; padding:4px 8px; background:rgba(0,255,255,0.2); border:1px solid rgba(0,255,255,0.3); color:var(--bright); border-radius:3px; cursor:pointer; transition:all 0.15s; }
+.plugin-card-btn:hover { background:rgba(0,255,255,0.35); box-shadow:0 0 8px rgba(0,255,255,0.2); }
+.plugin-details-panel { position:fixed; right:0; bottom:0; width:340px; height:calc(100vh - 120px); background:rgba(0,0,0,0.85); border-left:1px solid rgba(0,255,255,0.2); padding:16px; overflow-y:auto; font-size:10px; }
+.plugin-details-panel h3 { margin:0 0 12px; font-size:13px; }
+@media (max-width:1024px) { .plugin-details-panel { display:none; } }
+.timeline-strip { display:flex; overflow-x:auto; gap:8px; padding:8px; background:rgba(0,0,0,0.5); border-top:1px solid rgba(0,255,255,0.15); height:92px; align-items:center; font-size:10px; }
+.timeline-event { flex-shrink:0; display:flex; flex-direction:column; gap:3px; align-items:center; width:80px; height:76px; padding:6px; border:1px solid rgba(0,255,255,0.15); border-radius:6px; background:rgba(10,10,30,0.6); cursor:pointer; transition:all 0.2s; text-align:center; }
+.timeline-event:hover { border-color:rgba(0,255,255,0.4); box-shadow:0 0 12px rgba(0,255,255,0.15); transform:translateY(-2px); }
+.timeline-event .icon { font-size:20px; line-height:1; }
+.timeline-event .type { font-size:8px; color:var(--bright); font-weight:bold; text-transform:uppercase; }
+.timeline-event .timestamp { font-size:7px; color:var(--dim); }
+.timeline-loading { color:var(--dim); font-size:11px; padding:8px; }
+/* ── Marketplace Styles ── */
+/* ── Notifications Rail ── */
+.notifications-rail { position:fixed; top:60px; right:12px; z-index:9999; display:flex; flex-direction:column; gap:8px; max-width:380px; }
+.notification-toast {
+  background:rgba(0,10,20,0.95); border:1px solid rgba(0,255,255,0.25); border-radius:6px; padding:12px 14px;
+  font-size:10px; color:var(--text);
+  animation:slideIn 0.3s ease-out;
+  display:flex; align-items:flex-start; gap:10px;
+  box-shadow:0 4px 20px rgba(0,0,0,0.6);
+  transition:opacity 0.3s, transform 0.3s;
+}
+.notification-toast.closing { animation:slideOut 0.3s ease-in forwards; }
+.notification-icon { font-size:14px; flex-shrink:0; line-height:1; }
+.notification-content { flex:1; display:flex; flex-direction:column; gap:3px; }
+.notification-title { font-weight:bold; color:var(--bright); font-size:10px; }
+.notification-msg { color:var(--text); font-size:9px; opacity:0.85; }
+.notification-close { font-size:11px; cursor:pointer; color:var(--dim); opacity:0.6; transition:opacity 0.2s; line-height:1; }
+.notification-close:hover { opacity:1; }
+/* Toast type colors */
+.notif-plugin-installed { border-left-color:#00ffaa; border-left-width:3px; padding-left:11px; }
+.notif-plugin-unlocked { border-left-color:#aa44ff; border-left-width:3px; padding-left:11px; }
+.notif-success { border-left-color:#00ff88; border-left-width:3px; padding-left:11px; }
+.notif-error { border-left-color:#ff3333; border-left-width:3px; padding-left:11px; }
+.notif-info { border-left-color:#00f0ff; border-left-width:3px; padding-left:11px; }
+@keyframes slideIn { from { transform:translateX(400px); opacity:0; } to { transform:translateX(0); opacity:1; } }
+@keyframes slideOut { from { transform:translateX(0); opacity:1; } to { transform:translateX(400px); opacity:0; } }
+
+.marketplace-container { display:flex; flex-direction:column; gap:16px; padding:12px; }
+.marketplace-header { display:flex; flex-direction:column; gap:12px; }
+.marketplace-header h2 { margin:0; font-size:16px; color:var(--bright); }
+.marketplace-controls { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+.search-input { padding:6px 10px; background:rgba(0,0,0,0.6); border:1px solid rgba(0,255,255,0.2); color:var(--text); font-size:10px; border-radius:3px; flex:1; min-width:180px; }
+.search-input:focus { outline:none; border-color:rgba(0,255,255,0.5); box-shadow:0 0 8px rgba(0,255,255,0.1); }
+.filter-select { padding:6px 8px; background:rgba(0,0,0,0.6); border:1px solid rgba(0,255,255,0.2); color:var(--text); font-size:10px; border-radius:3px; cursor:pointer; }
+.filter-select:focus { outline:none; border-color:rgba(0,255,255,0.5); }
+.marketplace-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:12px; }
+.marketplace-card { background:rgba(20,30,50,0.6); border:1px solid rgba(0,255,255,0.15); border-radius:6px; padding:12px; cursor:pointer; transition:all 0.2s ease; display:flex; flex-direction:column; gap:8px; }
+.marketplace-card:hover { border-color:rgba(0,255,255,0.35); box-shadow:0 0 16px rgba(0,255,255,0.15); transform:translateY(-2px); }
+.marketplace-card-title { font-size:12px; font-weight:bold; color:var(--bright); margin:0; }
+.marketplace-card-type { font-size:9px; color:var(--bright); opacity:0.7; text-transform:uppercase; }
+.marketplace-card-desc { font-size:9px; color:var(--text); opacity:0.8; line-height:1.3; flex-grow:1; }
+.marketplace-card-author { font-size:8px; color:var(--dim); margin-top:4px; }
+.marketplace-card-stats { display:flex; justify-content:space-between; font-size:8px; color:var(--dim); }
+.marketplace-card-trust { display:inline-block; font-size:8px; padding:2px 4px; border-radius:3px; margin-top:6px; }
+.trust-core { background:rgba(255,200,0,0.2); color:#ffaa00; }
+.trust-verified { background:rgba(0,255,255,0.1); color:var(--bright); }
+.trust-community { background:rgba(0,255,150,0.1); color:#00ffaa; }
+.trust-unsigned { background:rgba(255,100,100,0.1); color:#ff8888; }
+.marketplace-card-action { font-size:9px; padding:4px 8px; background:rgba(0,255,255,0.2); border:1px solid rgba(0,255,255,0.3); color:var(--bright); border-radius:3px; cursor:pointer; text-align:center; transition:all 0.15s; }
+.marketplace-card-action:hover { background:rgba(0,255,255,0.35); box-shadow:0 0 8px rgba(0,255,255,0.2); }
+.marketplace-stats { display:flex; gap:20px; padding:12px; border-top:1px solid rgba(0,255,255,0.15); font-size:10px; color:var(--dim); }
+.op-rank-section { display:flex; align-items:center; gap:16px; }
+.op-rank-badge { width:62px; height:62px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:26px; font-weight:900; font-family:monospace; letter-spacing:2px; border:2px solid rgba(255,255,255,0.1); }
+.rank-E { background:#1a1a1a; color:#666; }
+.rank-D { background:#071830; color:#4a9eff; border-color:#1a3a6a; }
+.rank-C { background:#071a0f; color:#4aff7a; border-color:#1a4a2a; }
+.rank-B { background:#120730; color:#b44aff; border-color:#2a1a5a; }
+.rank-A { background:#1a1007; color:#ffb44a; border-color:#4a2a1a; }
+.rank-S { background:#1a0707; color:#ff4a4a; border-color:#4a1a1a; text-shadow:0 0 10px rgba(255,74,74,0.5); }
+.op-rank-label { font-size:15px; font-weight:700; color:var(--bright); }
+.op-tier-label { font-size:11px; color:var(--dim); margin-top:2px; }
+.op-xp-section { background:rgba(255,255,255,0.025); border-radius:8px; padding:12px 14px; }
+.op-xp-header { display:flex; justify-content:space-between; margin-bottom:8px; }
+#op-xp-text { color:var(--bright); font-size:14px; font-weight:600; }
+.op-xp-next { color:var(--dim); font-size:11px; }
+.op-xp-track { width:100%; height:9px; background:#111; border-radius:5px; overflow:hidden; }
+.op-xp-fill { height:100%; border-radius:5px; transition:width 0.6s ease, background 0.4s ease; }
+.xp-E { background:linear-gradient(90deg,#333,#555); }
+.xp-D { background:linear-gradient(90deg,#1a5aaa,#4a9eff); }
+.xp-C { background:linear-gradient(90deg,#1a8a3a,#4aff7a); }
+.xp-B { background:linear-gradient(90deg,#5a1aaa,#b44aff); }
+.xp-A { background:linear-gradient(90deg,#aa6a1a,#ffb44a); }
+.xp-S { background:linear-gradient(90deg,#aa1a1a,#ff4a4a); box-shadow:0 0 8px rgba(255,74,74,0.4); }
+.op-xp-detail { font-size:11px; color:var(--dim); margin-top:6px; text-align:center; }
+.op-section-title { font-size:10px; font-weight:700; color:var(--dim); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; }
+.op-traits-grid, .op-perms-grid { display:flex; flex-wrap:wrap; gap:5px; }
+.op-trait, .op-perm { padding:3px 9px; border-radius:4px; font-size:11px; font-weight:600; }
+.op-trait.unlocked { background:rgba(74,255,122,0.08); color:#4aff7a; border:1px solid rgba(74,255,122,0.18); }
+.op-trait.locked { background:rgba(255,255,255,0.02); color:#333; border:1px solid rgba(255,255,255,0.04); }
+.op-perm.allowed { background:rgba(74,158,255,0.08); color:#4a9eff; border:1px solid rgba(74,158,255,0.15); }
+.op-perm.denied { background:rgba(255,255,255,0.02); color:#333; border:1px solid rgba(255,255,255,0.04); }
+.op-xp-history { display:flex; flex-direction:column; gap:4px; max-height:180px; overflow-y:auto; }
+.op-xp-event { display:flex; justify-content:space-between; padding:4px 8px; font-size:11px; border-radius:3px; background:rgba(255,255,255,0.02); }
+.op-xp-event .action { color:var(--text); }
+.op-xp-event .points { color:#4aff7a; font-weight:700; }
+.op-empty { color:var(--dim); font-size:11px; font-style:italic; }
+
+/* JARVIS NEON HOLOGRAM OVERRIDE */
+:root {
+  --bg: #010308;
+  --panel: rgba(6, 10, 16, 0.6);
+  --card: rgba(8, 13, 22, 0.7);
+  --border: rgba(0, 204, 255, 0.2);
+  --bh: rgba(0, 204, 255, 0.4);
+  --text: #88ccff;
+  --dim: #336688;
+  --bright: #e0f8ff;
+  --accent: #00f0ff;
+  --a2: #0088cc;
+  --green: #00ffaa;
+  --amber: #ffcc00;
+  --red: #ff4466;
+  --purple: #aa44ff;
+}
+
+body {
+  background: #0a0015 radial-gradient(circle at center, #0a0015 0%, #000000 100%);
+  text-shadow: 0 0 4px rgba(0, 204, 255, 0.3);
+}
+
+/* Neon Borders & Glows */
+.topbar, .sidebar-left, .sidebar-right, .card, .stat-block, .worker-row, .mission-row, .artifact-row, .cog-block, .companion-window {
+  background: rgba(10, 20, 30, 0.6);
+  border: 1px solid #00f0ff33;
+  box-shadow: 0 0 30px #00f0ff22, inset 0 0 20px #aa44ff11;
+  backdrop-filter: blur(8px);
+  transition: all 0.4s;
+}
+.card:hover, .stat-block:hover, .worker-row:hover, .mission-row:hover, .artifact-row:hover, .cog-block:hover, .companion-window:hover {
+  box-shadow: 0 0 50px #00f0ff44, 0 0 80px #aa44ff22;
+  transform: translateY(-6px);
+}
+.neon-text {
+  color: #00f0ff; text-shadow: 0 0 10px #00f0ff, 0 0 20px #00f0ff88;
+  animation: neon-flicker 4s infinite alternate;
+}
+@keyframes neon-flicker { 0%,100% { opacity:1; } 50% { opacity:0.92; } }
+
+.trait-bar {
+  height: 10px; border-radius: 5px; overflow:hidden;
+  background: linear-gradient(90deg, #aa44ff, #00f0ff);
+  box-shadow: 0 0 15px #00f0ff44;
+}
+.trait-label { color:#00f0ff; text-shadow:0 0 8px #00f0ff; }
+
+.topbar { border-bottom: 2px solid var(--accent); box-shadow: 0 2px 20px rgba(0, 240, 255, 0.2); }
+.sidebar-left { border-right: 1px solid var(--border); border-left: 3px solid var(--accent); }
+.sidebar-right { border-left: 1px solid var(--border); }
+
+/* Typography Enhancements */
+.logo { text-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent); }
+.evo-stage-name, .stat-val, .cog-val { text-shadow: 0 0 15px currentColor; }
+.card-title, .side-label, .log-head { color: var(--accent); text-shadow: 0 0 8px var(--accent); letter-spacing: 0.2em; }
+
+/* Buttons & Inputs */
+.btn {
+  background: rgba(0, 240, 255, 0.08);
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  box-shadow: 0 0 8px rgba(0, 240, 255, 0.1);
+  text-shadow: 0 0 4px rgba(0, 240, 255, 0.4);
+  padding: 8px 16px; border-radius: 6px;
+  transition: all 0.2s;
+  cursor: pointer; font-weight: 500;
+}
+.btn:hover {
+  background: rgba(0, 240, 255, 0.2);
+  box-shadow: 0 0 16px rgba(0, 240, 255, 0.4);
+  border-color: rgba(0, 240, 255, 0.6);
+  transform: translateY(-1px);
+}
+.btn.primary {
+  background: rgba(0, 255, 170, 0.15);
+  border-color: rgba(0, 255, 170, 0.4);
+  color: #00ffaa;
+  text-shadow: 0 0 4px #00ffaa;
+}
+.btn.primary:hover {
+  background: rgba(0, 255, 170, 0.25);
+  box-shadow: 0 0 16px rgba(0, 255, 170, 0.4);
+  border-color: rgba(0, 255, 170, 0.7);
+}
+.goal-input, .companion-input, .pred-input, .form-select {
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(0, 240, 255, 0.25);
+  box-shadow: inset 0 0 8px rgba(0, 240, 255, 0.08);
+  padding: 8px 12px; border-radius: 6px;
+  color: var(--bright);
+  transition: all 0.2s;
+}
+.goal-input:focus, .companion-input:focus, .pred-input:focus, .form-select:focus {
+  border-color: rgba(0, 240, 255, 0.5);
+  box-shadow: inset 0 0 12px rgba(0, 240, 255, 0.15), 0 0 12px rgba(0, 240, 255, 0.2);
+  outline: none;
+}
+
+/* Tabs */
+.tab-btn {
+  color: var(--dim); padding: 10px 16px;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s; cursor: pointer;
+  font-weight: 500; font-size: 11px; letter-spacing: 0.6px;
+}
+.tab-btn:hover {
+  color: #00f0ff;
+  border-bottom-color: rgba(0, 240, 255, 0.2);
+}
+.tab-btn.active {
+  color: #00f0ff; font-weight: 600;
+  border-bottom: 2px solid #00f0ff;
+  text-shadow: 0 0 8px #00f0ff;
+  background: linear-gradient(0deg, rgba(0, 240, 255, 0.08) 0%, transparent 100%);
+}
+
+/* Scrollbars */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); }
+::-webkit-scrollbar-thumb { background: var(--bh); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); box-shadow: 0 0 10px var(--accent); }
+
+/* Particle Canvas */
+#jarvis-particles {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  pointer-events: none; z-index: 0;
+  opacity: 0.6;
+}
+
+.holo-center {
+  width: 100%;
+  height: 72vh;
+  min-height: 520px;
+  max-height: 880px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(0,240,255,0.28);
+  box-shadow: 0 0 90px rgba(0,240,255,0.28), inset 0 0 40px rgba(0,255,255,0.08);
+  border-radius: 20px;
+  background:
+    radial-gradient(1200px 600px at 50% 10%, rgba(0,255,255,0.12), transparent 60%),
+    radial-gradient(700px 380px at 20% 80%, rgba(0,120,255,0.12), transparent 55%),
+    linear-gradient(180deg, rgba(0,0,0,0.6), rgba(0,0,0,0.35));
+  backdrop-filter: blur(10px);
+  margin-bottom: 16px;
+}
+.holo-center::before {
+  content: '';
+  position: absolute;
+  inset: 14px;
+  border: 1px dashed rgba(0,240,255,0.28);
+  border-radius: 16px;
+  pointer-events: none;
+  box-shadow: inset 0 0 20px rgba(0,240,255,0.15);
+}
+.holo-center::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    180deg,
+    rgba(0,255,255,0.08) 0px,
+    rgba(0,255,255,0.08) 1px,
+    transparent 1px,
+    transparent 4px
+  );
+  opacity: 0.25;
+  mix-blend-mode: screen;
+}
+.holo-center iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: transparent;
+  display: block;
+  filter: saturate(1.15) contrast(1.05) brightness(1.05);
+}
+.avatar-core {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 32px;
+  z-index: 2;
+  animation: avatarBob 6.5s ease-in-out infinite;
+}
+.avatar-svg {
+  width: min(520px, 90%);
+  height: auto;
+  filter: drop-shadow(0 0 18px rgba(0,240,255,0.35));
+}
+.avatar-ring {
+  transform-origin: 50% 50%;
+  animation: avatarRingSpin 22s linear infinite;
+}
+.avatar-pulse {
+  animation: avatarPulseGlow 4.6s ease-in-out infinite;
+}
+.avatar-caption {
+  position: absolute;
+  bottom: 24px;
+  left: 24px;
+  right: 24px;
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: rgba(230,240,255,0.9);
+  text-transform: uppercase;
+  text-shadow: 0 0 12px rgba(0,240,255,0.4);
+}
+@keyframes avatarRingSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes avatarPulseGlow {
+  0%, 100% { opacity: 0.65; }
+  50% { opacity: 1; }
+}
+@keyframes avatarBob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.holo-glow-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at center, rgba(0,240,255,0.2) 0%, transparent 70%);
+}
+/* Avatar hero layout */
+.status-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(240px, 0.9fr);
+  gap: 16px;
+  align-items: stretch;
+}
+.status-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 0;
+}
+.status-panel {
+  background: linear-gradient(160deg, rgba(0,15,22,0.75), rgba(0,0,0,0.55));
+  border: 1px solid rgba(0,240,255,0.18);
+  box-shadow: inset 0 0 18px rgba(0,240,255,0.1);
+  border-radius: 16px;
+}
+@media (max-width: 980px) {
+  .status-hero { grid-template-columns: 1fr; }
+  .holo-center { height: 62vh; min-height: 460px; }
+}
+.holo-glow-overlay { animation: pulse-glow 6s infinite ease-in-out; }
+@keyframes pulse-glow { 0%,100% { opacity:0.18; } 50% { opacity:0.35; } }
+
+/* Ensure content sits above canvas */
+.topbar, .shell { position: relative; z-index: 10; }
+
+/* Avatar Iframe Container */
+.avatar-hologram-container {
+  width: 100%;
+  height: 400px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 0 30px rgba(0, 204, 255, 0.1), 0 0 20px rgba(0, 204, 255, 0.2);
+  background: radial-gradient(circle at center, rgba(0,204,255,0.05) 0%, transparent 70%);
+}
+.avatar-hologram-container::before {
+  content: 'AVATAR UPLINK ONLINE';
+  position: absolute; top: 10px; left: 14px;
+  font-family: var(--mono); font-size: 10px; color: var(--accent);
+  letter-spacing: 0.2em; text-shadow: 0 0 5px var(--accent);
+  z-index: 5; pointer-events: none;
+}
+.avatar-hologram-container iframe {
+  width: 100%; height: 100%; border: none;
+  mix-blend-mode: screen;
+}
+/* ── Avatar Reactions ── */
+.avatar-react-pulse { animation: avatarPulse 0.6s ease-out; }
+.avatar-react-burst { animation: avatarBurst 0.8s ease-out; }
+.avatar-react-unlock { animation: avatarUnlock 0.9s ease-out; }
+.avatar-react-error { animation: avatarError 0.6s ease-out; }
+@keyframes avatarPulse {
+  0% { box-shadow: 0 0 0 rgba(0,240,255,0.0); transform: scale(1); }
+  50% { box-shadow: 0 0 40px rgba(0,240,255,0.5); transform: scale(1.01); }
+  100% { box-shadow: 0 0 0 rgba(0,240,255,0.0); transform: scale(1); }
+}
+@keyframes avatarBurst {
+  0% { box-shadow: 0 0 0 rgba(0,255,170,0.0); }
+  40% { box-shadow: 0 0 60px rgba(0,255,170,0.7); }
+  100% { box-shadow: 0 0 0 rgba(0,255,170,0.0); }
+}
+@keyframes avatarUnlock {
+  0% { box-shadow: 0 0 0 rgba(170,68,255,0.0); transform: translateY(0); }
+  40% { box-shadow: 0 0 50px rgba(170,68,255,0.7); transform: translateY(-2px); }
+  100% { box-shadow: 0 0 0 rgba(170,68,255,0.0); transform: translateY(0); }
+}
+@keyframes avatarError {
+  0% { box-shadow: 0 0 0 rgba(255,51,85,0.0); }
+  30% { box-shadow: 0 0 40px rgba(255,51,85,0.7); }
+  60% { box-shadow: 0 0 10px rgba(255,51,85,0.2); }
+  100% { box-shadow: 0 0 0 rgba(255,51,85,0.0); }
+}
+/* ── Orbiting Glyphs ── */
+.avatar-glyphs {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.glyph-orbit {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+.glyph-item {
+  position: absolute;
+  font-size: 32px;
+  font-weight: bold;
+  color: rgba(70,200,255,255);
+  text-shadow: 0 0 12px rgba(70,200,255,0.8), 0 0 6px rgba(0,240,255,0.5);
+  filter: drop-shadow(0 0 8px rgba(70,200,255,0.4));
+  animation: orbitSpin 28s linear infinite;
+}
+.glyph-item:nth-child(1) {
+  animation: orbitSpin 28s linear infinite, glyphBob1 4.2s ease-in-out infinite;
+  animation-delay: 0s, 0s;
+}
+.glyph-item:nth-child(2) {
+  animation: orbitSpin 28s linear infinite, glyphBob2 4.2s ease-in-out infinite;
+  animation-delay: -7s, -0.8s;
+}
+.glyph-item:nth-child(3) {
+  animation: orbitSpin 28s linear infinite, glyphBob3 4.2s ease-in-out infinite;
+  animation-delay: -14s, -1.6s;
+}
+.glyph-item:nth-child(4) {
+  animation: orbitSpin 28s linear infinite, glyphBob4 4.2s ease-in-out infinite;
+  animation-delay: -21s, -2.4s;
+}
+@keyframes orbitSpin {
+  0% { transform: rotate(0deg) translateX(240px) rotate(0deg); }
+  100% { transform: rotate(360deg) translateX(240px) rotate(-360deg); }
+}
+@keyframes glyphBob1 {
+  0%, 100% { transform: translateY(0) scale(1); opacity: 0.8; }
+  50% { transform: translateY(-12px) scale(1.1); opacity: 1; }
+}
+@keyframes glyphBob2 {
+  0%, 100% { transform: translateY(0) scale(1); opacity: 0.8; }
+  50% { transform: translateY(-8px) scale(1.08); opacity: 0.95; }
+}
+@keyframes glyphBob3 {
+  0%, 100% { transform: translateY(0) scale(1); opacity: 0.8; }
+  50% { transform: translateY(-10px) scale(1.09); opacity: 0.97; }
+}
+@keyframes glyphBob4 {
+  0%, 100% { transform: translateY(0) scale(1); opacity: 0.8; }
+  50% { transform: translateY(-14px) scale(1.12); opacity: 1; }
+}
+</style>
+</head>
+<body>
+<canvas id="jarvis-particles"></canvas>
+<!-- NOTIFICATIONS RAIL -->
+<div id="notifications-rail" class="notifications-rail">
+  <!-- Notifications appended here -->
+</div>
+
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div style="display:flex;align-items:center;gap:8px">
+    <div class="logo">NEX<em>US</em>MON <span style="font-size:13px;color:var(--dim);font-weight:300">// BIOECONOMY COORDINATION OS</span></div>
+  </div>
+  <div class="topbar-right">
+    <span class="last-updated" id="last-updated"></span>
+    <span class="stage-badge" id="top-stage" style="color:var(--dim)">STASIS</span>
+    <span class="clock" id="clock"></span>
+  </div>
+</header>
+
+<div class="shell">
+
+  <!-- LEFT SIDEBAR — Evolution -->
+  <aside class="sidebar-left" id="sidebar-evo">
+    <div class="side-section trait-section">
+      <div class="side-label neon-text">Layer Position ⚡</div>
+      <div class="evo-stage">
+        <div class="evo-stage-name" id="stage-name">—</div>
+        <div class="evo-rank-dots" id="rank-dots">
+          <div class="rank-dot"></div>
+          <div class="rank-dot"></div>
+          <div class="rank-dot"></div>
+          <div class="rank-dot"></div>
+          <div class="rank-dot"></div>
+        </div>
+        <div class="xp-row" style="margin-bottom: 4px;">
+          <span class="xp-label">LEVEL</span>
+          <span class="xp-val" id="level-val" style="color:var(--bright); font-weight:bold; font-size:13px;">1</span>
+        </div>
+        <div class="xp-row">
+          <span class="xp-label">DATAFLOW</span>
+          <span class="xp-val" id="xp-val">0</span>
+          <div class="xp-bar"><div class="xp-fill" id="xp-fill" style="width:0%"></div></div>
+        </div>
+        <div style="margin-top:10px;display:flex;gap:8px;justify-content:center">
+          <div style="text-align:center">
+            <div style="font-size:18px;font-family:var(--head);font-weight:600;color:var(--bright)" id="total-missions">0</div>
+            <div style="font-size:9px;color:var(--dim);letter-spacing:0.1em">OPS</div>
+          </div>
+          <div style="width:1px;background:var(--border)"></div>
+          <div style="text-align:center">
+            <div style="font-size:18px;font-family:var(--head);font-weight:600;color:var(--green)" id="success-rate">0%</div>
+            <div style="font-size:9px;color:var(--dim);letter-spacing:0.1em">VICTORY</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PLASMA BUSTER ACTIVE DEFENSE -->
+    <div class="buster-status">
+      <div class="buster-label">
+        <span>Plasma Buster</span>
+        <div class="buster-indicator" id="buster-active"></div>
+      </div>
+      <div class="buster-stat">
+        <span class="buster-stat-label">Viruses Defeated</span>
+        <span class="buster-stat-val" id="buster-defeated">0</span>
+      </div>
+      <div class="buster-stat">
+        <span class="buster-stat-label">Plasma Energy</span>
+        <span class="buster-stat-val" id="buster-energy">100%</span>
+      </div>
+      <div class="plasma-bar-container">
+        <div class="plasma-bar-fill" id="buster-bar" style="width: 100%"></div>
+      </div>
+      <div id="buster-log" style="font-size:8px;color:var(--dim);margin-top:8px;font-family:var(--mono);text-transform:uppercase">System Secure</div>
+    </div>
+
+    <!-- SYNTHETIC NERVE STATUS -->
+    <div class="side-section" style="background:rgba(255,0,255,0.02);border-bottom:1px solid var(--border)">
+      <div style="font-size:10px; color:#f0f; letter-spacing:0.2em; text-transform:uppercase; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
+        <span>Synth Nerve</span>
+        <div style="width:8px; height:8px; border-radius:50%; background:#f0f; box-shadow:0 0(10px #f0f);" id="nerve-active"></div>
+      </div>
+      <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-family:var(--mono); font-size:11px;">
+        <span style="color:var(--dim)">Stress Level</span>
+        <span style="color:#f0f" id="nerve-stress">0.0</span>
+      </div>
+      <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-family:var(--mono); font-size:11px;">
+        <span style="color:var(--dim)">Synergy Index</span>
+        <span style="color:#f0f" id="nerve-synergy">1.0</span>
+      </div>
+      <div style="height:4px; background:rgba(255,0,255,0.1); border-radius:2px; margin-top:10px; overflow:hidden;">
+        <div id="nerve-bar" style="height:100%; width:20%; background:#f0f; box-shadow:0 0 10px #f0f; transition:width 0.5s;"></div>
+      </div>
+    </div>
+
+    <div class="side-section trait-section" style="flex:1;overflow-y:auto">
+      <div class="side-label neon-text">IP Assets <span id="trait-count" style="color:var(--accent)">0</span></div>
+      <div class="trait-list" id="trait-list">
+        <div class="loading">syncing IP assets…</div>
+      </div>
+    </div>
+
+    <div class="side-section trait-section" id="next-stage-wrap" style="display:none">
+      <div class="side-label neon-text">Layer Unlock</div>
+      <div class="next-stage-box">
+        <div class="next-stage-name" id="next-stage-name">—</div>
+        <div class="next-req">
+          <span style="color:var(--dim)">operations</span>
+          <span id="next-missions" style="color:var(--text)">—</span>
+        </div>
+        <div class="next-req">
+          <span style="color:var(--dim)">victory rate</span>
+          <span id="next-rate" style="color:var(--text)">—</span>
+        </div>
+        <button class="btn" style="margin-top:10px;width:100%;font-size:9px" onclick="syncEvolution()">ADVANCE LAYER</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <nav class="tab-nav">
+      <button class="tab-btn active" onclick="switchTab('status')">COORD CORE 🟢</button>
+      <button class="tab-btn" onclick="switchTab('companion')">SIGNALS</button>
+      <button class="tab-btn" onclick="switchTab('operator')">IP NODE</button>
+      <button class="tab-btn" onclick="switchTab('workers')">AGENTS</button>
+      <button class="tab-btn" onclick="switchTab('missions')">WORKFLOWS <span class="tab-notif" id="notif-missions"></span></button>
+      <button class="tab-btn" onclick="switchTab('vault')">DATA LAYER <span class="tab-notif" id="notif-vault"></span></button>
+      <button class="tab-btn" onclick="switchTab('cognition')">COGNITION CORE</button>
+      <button class="tab-btn" onclick="switchTab('plugins')">INFRASTRUCTURE ⚙️</button>
+      <button class="tab-btn" onclick="switchTab('marketplace')">DISTRIBUTION 🌐</button>
+      <button class="tab-btn" onclick="switchTab('fulltimeline')">FULL TIMELINE</button>
+      <button class="tab-btn" onclick="switchTab('fullevolution')">EVOLUTION</button>
+      <button class="tab-btn" onclick="switchTab('sysmon')">SYSTEM</button>
+      <button class="tab-btn" onclick="switchTab('audit')">AUDIT</button>
+      <button class="tab-btn" onclick="switchTab('governance')">GOVERNANCE 🔒</button>
+      <button class="tab-btn" onclick="switchTab('deptree')">GRAPH</button>
+      <button class="tab-btn" onclick="switchTab('doctrine')" style="color:#ff00ff;text-shadow:0 0 8px #ff00ff">⚡ DOCTRINE</button>
+    </nav>
+
+    <!-- STATUS TAB -->
+    <div class="tab-panel active" id="tab-status">
+      <div class="status-hero">
+        <!-- Central JARVIS Hologram – Avatar Embed -->
+        <div class="holo-center" id="avatar-holo">
+          <div class="avatar-core">
+            <svg class="avatar-svg" viewBox="0 0 600 700" role="img" aria-label="Mini Nexusmon" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="nexusGlow" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#e6f7ff" stop-opacity="0.9" />
+                  <stop offset="60%" stop-color="#3fd4ff" stop-opacity="0.75" />
+                  <stop offset="100%" stop-color="#7aa2ff" stop-opacity="0.6" />
+                </linearGradient>
+                <radialGradient id="coreLight" cx="50%" cy="40%" r="60%">
+                  <stop offset="0%" stop-color="#ffffff" stop-opacity="0.98" />
+                  <stop offset="55%" stop-color="#5fe3ff" stop-opacity="0.65" />
+                  <stop offset="100%" stop-color="#00202a" stop-opacity="0" />
+                </radialGradient>
+              </defs>
+              <rect x="10" y="20" width="580" height="660" rx="26" ry="26" fill="rgba(5,10,12,0.35)" stroke="rgba(140,210,255,0.25)" />
+              <g class="avatar-ring" opacity="0.5">
+                <circle cx="300" cy="360" r="210" fill="none" stroke="url(#nexusGlow)" stroke-width="2" stroke-dasharray="3 10" />
+              </g>
+              <g class="avatar-pulse">
+                <circle cx="300" cy="360" r="150" fill="url(#coreLight)" />
+              </g>
+              <g>
+                <ellipse cx="300" cy="370" rx="128" ry="148" fill="rgba(235,245,255,0.9)" stroke="rgba(70,200,255,0.85)" stroke-width="3" />
+                <ellipse cx="240" cy="270" rx="52" ry="76" fill="rgba(210,225,235,0.9)" stroke="rgba(70,200,255,0.8)" stroke-width="3" />
+                <ellipse cx="360" cy="270" rx="52" ry="76" fill="rgba(210,225,235,0.9)" stroke="rgba(70,200,255,0.8)" stroke-width="3" />
+                <circle cx="300" cy="220" r="20" fill="rgba(200,235,255,0.95)" stroke="#3fd4ff" stroke-width="3" />
+                <circle cx="300" cy="220" r="7" fill="#0b1216" opacity="0.9" />
+                <circle cx="268" cy="360" r="16" fill="#ffffff" opacity="0.98" />
+                <circle cx="332" cy="360" r="16" fill="#ffffff" opacity="0.98" />
+                <circle cx="268" cy="360" r="7" fill="#0b1216" />
+                <circle cx="332" cy="360" r="7" fill="#0b1216" />
+                <circle cx="252" cy="392" r="10" fill="#bfe9ff" opacity="0.8" />
+                <circle cx="348" cy="392" r="10" fill="#bfe9ff" opacity="0.8" />
+                <path d="M288 412 Q300 426 312 412" stroke="#3fd4ff" stroke-width="3" fill="none" stroke-linecap="round" />
+                <ellipse cx="258" cy="500" rx="42" ry="28" fill="rgba(210,225,235,0.85)" stroke="rgba(70,200,255,0.6)" stroke-width="3" />
+                <ellipse cx="342" cy="500" rx="42" ry="28" fill="rgba(210,225,235,0.85)" stroke="rgba(70,200,255,0.6)" stroke-width="3" />
+                <path d="M210 300 L240 310" stroke="#7aa2ff" stroke-width="2" />
+                <path d="M390 300 L360 310" stroke="#7aa2ff" stroke-width="2" />
+                <path d="M300 450 L300 485" stroke="#7aa2ff" stroke-width="2" />
+              </g>
+              <text x="300" y="90" text-anchor="middle" font-family="monospace" font-size="14" fill="#e6f7ff" letter-spacing="4">MINI NEXUSMON</text>
+              <text x="300" y="635" text-anchor="middle" font-family="monospace" font-size="12" fill="#7aa2ff" letter-spacing="3">LEVEL 0 CIRCUIT ONLINE</text>
+            </svg>
+            <div class="avatar-glyphs">
+              <div class="glyph-orbit">
+                <div class="glyph-item">⚡</div>
+                <div class="glyph-item">⚙️</div>
+                <div class="glyph-item">🧬</div>
+                <div class="glyph-item">◇</div>
+              </div>
+            </div>
+            <div class="avatar-caption">
+              <span>CORE: CIRCUIT SEED</span>
+              <span>MOOD: READY</span>
+            </div>
+          </div>
+          <div class="holo-glow-overlay"></div>
+        </div>
+
+        <div class="status-grid" id="status-grid">
+          <div class="stat-block status-panel">
+            <div class="stat-val" id="s-stage">—</div>
+            <div class="stat-label neon-text">Layer Stage</div>
+          </div>
+          <div class="stat-block status-panel">
+            <div class="stat-val" id="s-workers">—</div>
+            <div class="stat-label neon-text">Active Agents</div>
+          </div>
+          <div class="stat-block status-panel">
+            <div class="stat-val" id="s-beliefs">—</div>
+            <div class="stat-label neon-text">Belief Anchors</div>
+          </div>
+          <div class="stat-block status-panel" id="sovereign-block">
+            <div class="stat-val" id="s-sovereign">—</div>
+            <div class="stat-label neon-text">Sovereign Guard</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card holo-panel">
+        <div class="card-head">
+          <div class="card-title neon-text">IP NODE PROFILE</div>
+          <button class="btn" onclick="loadFusion()" style="font-size:9px">VIEW IP MAP</button>
+        </div>
+        <div class="card-body">
+          <div class="grid-2" id="operator-quick">
+            <div class="info-row"><span class="info-key">Operator</span><span class="info-val" id="q-operator">—</span></div>
+            <div class="info-row"><span class="info-key">Network Links</span><span class="info-val" id="q-interactions">—</span></div>
+            <div class="info-row"><span class="info-key">Protocol Revisions</span><span class="info-val" id="q-revisions">—</span></div>
+            <div class="info-row"><span class="info-key">Governance Mode</span><span class="info-val" id="q-trust">—</span></div>
+          </div>
+          <div style="margin-top:12px">
+            <div class="side-label" style="margin-bottom:8px">SIGNAL FINGERPRINT</div>
+            <div class="vocab-cloud" id="q-vocab"></div>
+          </div>
+          <div id="fusion-wrap" style="display:none;margin-top:12px">
+            <div class="side-label" style="margin-bottom:6px">IP SIGNATURE</div>
+            <div class="fusion-block" id="fusion-content"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card holo-panel">
+        <div class="card-head">
+          <div class="card-title neon-text">ACTIVE AGENTS</div>
+          <span id="workers-count-badge" style="font-size:10px;color:var(--dim)"></span>
+        </div>
+        <div class="card-body">
+          <div id="active-workers-list"><div class="empty">No agents deployed yet</div></div>
+        </div>
+      </div>
+
+      <!-- QUICK COMPANION CHAT (inline on STATUS tab) -->
+      <div class="card holo-panel" style="margin-top:16px">
+        <div class="card-head">
+          <div class="card-title neon-text">SIGNAL CHANNEL</div>
+          <span id="companion-source-badge" style="font-size:9px;color:var(--dim)"></span>
+        </div>
+        <div class="card-body">
+          <div id="companion-reply" style="min-height:60px; padding:12px; margin-bottom:12px; background:rgba(0,240,255,0.06); border:1px solid #00f0ff22; border-radius:10px; color:#00ffaa; font-size:13px; line-height:1.6; letter-spacing:0.3px; text-shadow:0 0 6px #00ffaa44;">
+            <span style="color:var(--dim);font-size:11px;">Ask the Signal anything…</span>
+          </div>
+          <div style="display:flex; gap:10px;">
+            <input type="text" id="quick-companion-input" placeholder="Speak your command..." style="flex:1; padding:10px 14px; background:rgba(0,0,0,0.5); border:1px solid #00f0ff44; border-radius:10px; color:#00f0ff; font-family:var(--mono); font-size:12px; outline:none;" onkeydown="if(event.key==='Enter')quickSendCompanion()" />
+            <button onclick="quickSendCompanion()" style="padding:10px 20px; background:#00f0ff18; border:1px solid #00f0ff; color:#00f0ff; border-radius:8px; cursor:pointer; font-family:var(--mono); font-size:11px; letter-spacing:0.1em;">TRANSMIT</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- OPERATOR TAB -->
+    <div class="tab-panel" id="tab-operator">
+      <div class="operator-card">
+        <div class="op-rank-section">
+          <div id="op-rank-badge" class="op-rank-badge rank-E">E</div>
+          <div class="op-rank-meta">
+            <div id="op-rank-label" class="op-rank-label">Rank E — Initiate</div>
+            <div id="op-tier-label" class="op-tier-label">Evolution: SUBSTRATE</div>
+          </div>
+        </div>
+        <div class="op-xp-section">
+          <div class="op-xp-header">
+            <span id="op-xp-text">0 DATAFLOW</span>
+            <span id="op-xp-next" class="op-xp-next">Next milestone: 50 DATAFLOW</span>
+          </div>
+          <div class="op-xp-track">
+            <div id="op-xp-fill" class="op-xp-fill xp-E" style="width:0%"></div>
+          </div>
+          <div id="op-xp-detail" class="op-xp-detail">0 / 50 DATAFLOW to Rank D</div>
+        </div>
+        <div class="op-traits-section">
+          <div class="op-section-title">IP Assets</div>
+          <div id="op-traits-grid" class="op-traits-grid"></div>
+        </div>
+        <div class="op-perms-section">
+          <div class="op-section-title">Clearance</div>
+          <div id="op-perms-grid" class="op-perms-grid"></div>
+        </div>
+        <div class="op-history-section">
+          <div class="op-section-title">Recent Dataflow</div>
+          <div id="op-xp-history" class="op-xp-history">
+            <div class="op-empty">No dataflow events yet. Complete operations to earn dataflow.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WORKERS TAB -->
+    <div class="tab-panel" id="tab-workers">
+      <div class="card holo-panel">
+        <div class="card-head"><div class="card-title neon-text">DEPLOY AGENT</div></div>
+        <div class="card-body">
+          <div class="worker-spawn-form input-bar">
+            <div class="form-row">
+              <input class="goal-input" id="worker-goal" placeholder="Directive — what shall the agent do?"
+                     onkeydown="if(event.key==='Enter')spawnWorker()" />
+              <button class="btn primary" id="spawn-btn" onclick="spawnWorker()">DEPLOY</button>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <div class="auto-toggle">
+                <div class="toggle-switch on" id="auto-toggle" onclick="toggleAuto()"></div>
+                <span id="auto-label">AUTONOMY LINK</span>
+              </div>
+              <span style="font-size:9px;color:var(--dim)" id="auto-gate"></span>
+            </div>
+            <div id="spawn-error" style="display:none" class="error-msg"></div>
+          </div>
+        </div>
+      </div>
+      <div class="card holo-panel">
+        <div class="card-head">
+          <div class="card-title neon-text">AGENT LOG</div>
+          <div style="display:flex;gap:8px">
+            <select id="worker-filter" onchange="loadWorkers()" class="form-select">
+              <option value="">ALL</option>
+              <option value="RUNNING">ACTIVE</option>
+              <option value="COMPLETED">COMPLETE</option>
+              <option value="FAILED">FAILED</option>
+              <option value="QUEUED">QUEUED</option>
+            </select>
+            <button class="btn" onclick="loadWorkers()">↻</button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="worker-list" id="worker-list"><div class="loading">syncing agent feed…</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMPANION TAB -->
+    <div class="tab-panel" id="tab-companion">
+      <div class="companion-window">
+        <div class="companion-messages" id="companion-msgs">
+          <div class="msg nx">
+            <div class="msg-source">SIGNAL</div>
+            <div class="msg-text">Organism online. Operator context loaded. Awaiting command.</div>
+          </div>
+        </div>
+        <div class="typing-indicator" id="typing-indicator">
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+        </div>
+        <div class="input-holo" style="display:flex; gap:12px; padding:12px; background:rgba(0,0,0,0.6); border:1px solid #00f0ff44; border-radius:12px; box-shadow:0 0 30px #00f0ff22;">
+          <input type="text" id="companion-input" placeholder="Signal the system..." style="flex:1; background:transparent; border:none; color:#00f0ff; outline:none;" onkeydown="if(event.key==='Enter')sendCompanion()" />
+          <button onclick="sendCompanion()" style="padding:10px 24px; background:#00f0ff22; border:1px solid #00f0ff; color:#00f0ff; border-radius:8px; cursor:pointer;">TRANSMIT</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MISSIONS TAB -->
+    <div class="tab-panel" id="tab-missions">
+      <div class="card holo-panel">
+        <div class="card-head"><div class="card-title neon-text">FORGE OPERATION</div></div>
+        <div class="card-body">
+          <div class="mission-create-form input-bar">
+            <div class="form-row">
+              <input class="goal-input" id="mission-goal" placeholder="Operation objective…"
+                     onkeydown="if(event.key==='Enter')createMission()" />
+              <select id="mission-rank" class="form-select" style="width:80px">
+                <option value="E">E</option>
+                <option value="D" selected>D</option>
+                <option value="C">C</option>
+                <option value="B">B</option>
+                <option value="A">A</option>
+                <option value="S">S</option>
+              </select>
+              <button class="btn primary" id="create-mission-btn" onclick="createMission()">FORGE</button>
+            </div>
+            <div id="mission-create-error" style="display:none" class="error-msg"></div>
+          </div>
+        </div>
+      </div>
+      <div class="card holo-panel">
+        <div class="card-head">
+          <div class="card-title neon-text">OPERATION LOG</div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <span id="missions-stats-badge" style="font-size:10px;color:var(--dim)"></span>
+            <button class="btn" onclick="loadMissions()">↻</button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="mission-list" id="mission-list"><div class="loading">syncing operation log…</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VAULT TAB -->
+    <div class="tab-panel" id="tab-vault">
+      <div class="card holo-panel">
+        <div class="card-head">
+          <div class="card-title neon-text">DATA LAYER ARCHIVE</div>
+          <div class="vault-filters">
+            <select id="vault-status-filter" onchange="loadVault()" class="form-select">
+              <option value="">ALL STATES</option>
+              <option value="PENDING_REVIEW">AWAITING JUDGMENT</option>
+              <option value="APPROVED">SANCTIONED</option>
+              <option value="REJECTED">BANISHED</option>
+            </select>
+            <select id="vault-type-filter" onchange="loadVault()" class="form-select">
+              <option value="">ALL TYPES</option>
+              <option value="LOG">LOG</option>
+              <option value="TEXT">TEXT</option>
+              <option value="CODE">CODE</option>
+              <option value="DATA">DATA</option>
+              <option value="REPORT">REPORT</option>
+              <option value="ANALYSIS">ANALYSIS</option>
+              <option value="DECISION">DECISION</option>
+            </select>
+            <button class="btn" onclick="loadVault()">↻</button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div id="vault-stats" style="margin-bottom:10px;font-size:10px;color:var(--dim)"></div>
+          <div class="artifact-list" id="artifact-list"><div class="loading">syncing data layer…</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COGNITION TAB -->
+    <div class="tab-panel" id="tab-cognition">
+      <div class="cog-grid" id="cog-grid">
+        <div class="cog-block status-panel">
+          <div class="cog-val" id="cog-predictions">—</div>
+          <div class="cog-label neon-text">Foresight</div>
+          <div class="cog-sub" id="cog-brier">Brier —</div>
+        </div>
+        <div class="cog-block status-panel">
+          <div class="cog-val" id="cog-errors">—</div>
+          <div class="cog-label neon-text">Faults Logged</div>
+          <div class="cog-sub" id="cog-dominant-error">Dominant —</div>
+        </div>
+        <div class="cog-block status-panel">
+          <div class="cog-val" id="cog-autopsies">—</div>
+          <div class="cog-label neon-text">Postmortems</div>
+          <div class="cog-sub" id="cog-decisions">Decisions —</div>
+        </div>
+      </div>
+
+      <div class="card holo-panel">
+        <div class="card-head"><div class="card-title neon-text">SIGNAL THROTTLES 🎛️</div></div>
+        <div class="card-body">
+          <div class="prediction-form input-bar">
+            <div class="pred-row" style="align-items:center;gap:10px;flex-wrap:wrap">
+              <label style="min-width:160px">LLM Helm</label>
+              <input id="dial-llm-steer" type="range" min="0" max="1" step="0.01" style="flex:1" />
+              <span id="dial-llm-steer-val" style="font-size:10px;color:var(--bright);min-width:42px">0.50</span>
+            </div>
+            <div class="pred-row" style="align-items:center;gap:10px;flex-wrap:wrap">
+              <label style="min-width:160px">Biofield</label>
+              <input id="dial-bio-aura" type="range" min="0" max="1" step="0.01" style="flex:1" />
+              <span id="dial-bio-aura-val" style="font-size:10px;color:var(--bright);min-width:42px">0.50</span>
+            </div>
+            <div class="pred-row" style="align-items:center;gap:10px;flex-wrap:wrap">
+              <label style="min-width:160px">Particle Flux</label>
+              <input id="dial-particle-intensity" type="range" min="0" max="1" step="0.01" style="flex:1" />
+              <span id="dial-particle-intensity-val" style="font-size:10px;color:var(--bright);min-width:42px">0.50</span>
+            </div>
+            <div class="pred-row" style="align-items:center;gap:10px;flex-wrap:wrap">
+              <label style="min-width:160px">Strange Attractor Gain</label>
+              <input id="dial-strange-gain" type="range" min="0" max="1" step="0.01" style="flex:1" />
+              <span id="dial-strange-gain-val" style="font-size:10px;color:var(--bright);min-width:42px">0.50</span>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+              <button class="btn primary" onclick="saveSignalDials()">COMMIT THROTTLES</button>
+              <button class="btn" onclick="loadSignalDials()">RECALIBRATE</button>
+              <span id="signal-dials-result" style="font-size:10px;color:var(--dim)"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card holo-panel">
+        <div class="card-head"><div class="card-title neon-text">LOG FORECAST</div></div>
+        <div class="card-body">
+          <div class="prediction-form input-bar">
+            <input class="pred-input" id="pred-claim" placeholder="Forecast claim…" />
+            <div class="pred-row">
+              <label>Certainty</label>
+              <input class="pred-input" id="pred-confidence" type="number" min="0" max="1" step="0.05"
+                     placeholder="0.0 – 1.0" style="width:120px" />
+              <label style="margin-left:12px">Domain</label>
+              <input class="pred-input" id="pred-category" placeholder="e.g. TECHNICAL" style="width:140px" />
+            </div>
+            <div style="display:flex;gap:8px">
+              <button class="btn primary" onclick="logPrediction()">COMMIT FORECAST</button>
+              <span id="pred-result" style="font-size:10px;color:var(--dim);align-self:center"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card holo-panel">
+        <div class="card-head"><div class="card-title neon-text">DECISION POSTMORTEM</div></div>
+        <div class="card-body">
+          <div class="prediction-form input-bar">
+            <input class="pred-input" id="autopsy-decision" placeholder="Decision enacted…" />
+            <input class="pred-input" id="autopsy-outcome" placeholder="Outcome observed…" />
+            <div class="pred-row">
+              <label>Fidelity (0–1)</label>
+              <input class="pred-input" id="autopsy-quality" type="number" min="0" max="1" step="0.1"
+                     placeholder="0.0 – 1.0" style="width:120px" />
+            </div>
+            <div style="display:flex;gap:8px">
+              <button class="btn primary" onclick="submitAutopsy()">SUBMIT POSTMORTEM</button>
+              <span id="autopsy-result" style="font-size:10px;color:var(--dim);align-self:center"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PLUGINS TAB -->
+    <div class="tab-panel" id="tab-plugins">
+      <div class="plugins-container">
+        <div class="plugins-header">
+          <h2 class="neon-text">INFRASTRUCTURE MODULES</h2>
+          <p style="font-size:11px;color:var(--dim);margin-top:4px">ascension armory</p>
+        </div>
+
+        <!-- INSTALLED SECTION -->
+        <section class="plugin-section">
+          <h3 class="section-title">BOUND</h3>
+          <div class="plugin-grid" id="installed-grid">
+            <div style="color:var(--dim);font-size:11px;padding:12px">scanning...</div>
+          </div>
+        </section>
+
+        <!-- UNLOCKABLE SECTION -->
+        <section class="plugin-section">
+          <h3 class="section-title">SEALED</h3>
+          <div class="plugin-grid" id="unlockable-grid">
+            <div style="color:var(--dim);font-size:11px;padding:12px">scanning...</div>
+          </div>
+        </section>
+
+        <!-- COMMUNITY SECTION -->
+        <section class="plugin-section">
+          <h3 class="section-title">OUTER RING</h3>
+          <div class="plugin-grid" id="community-grid">
+            <div style="color:var(--dim);font-size:11px;padding:12px">scanning...</div>
+          </div>
+        </section>
+
+        <!-- INSTALL FROM URL -->
+        <section class="plugin-section">
+          <h3 class="section-title">BIND FROM URL</h3>
+          <div class="input-bar" style="flex-direction:row;gap:8px;align-items:center">
+            <input id="install-url-input" type="text" placeholder="https://github.com/author/module" style="flex:1;padding:8px;" />
+            <button class="btn primary" onclick="installPluginFromUrl()">BIND</button>
+          </div>
+          <div id="install-status" style="font-size:10px;color:var(--dim);margin-top:8px"></div>
+        </section>
+
+        <!-- DETAILS PANEL -->
+        <aside class="plugin-details-panel">
+          <h3 class="neon-text" id="details-title">Module Dossier</h3>
+          <pre id="details-content" style="font-size:9px;overflow:auto;max-height:300px;opacity:0.85">Select a module to view dossier</pre>
+        </aside>
+      </div>
+    </div>
+
+    <!-- MARKETPLACE TAB -->
+    <div class="tab-panel" id="tab-marketplace">
+      <div class="marketplace-container">
+        <div class="marketplace-header">
+          <h2>🌐 BIOECONOMY EXCHANGE</h2>
+          <div class="marketplace-controls">
+            <input type="text" id="mkt-search" placeholder="Seek modules..." class="search-input" onkeyup="filterMarketplace()" />
+            <select id="mkt-type-filter" class="filter-select" onchange="filterMarketplace()">
+              <option value="">All Orders</option>
+              <option value="worker">Agents</option>
+              <option value="mission">Ops</option>
+              <option value="skin">Visages</option>
+              <option value="trait">IP Assets</option>
+            </select>
+            <select id="mkt-trust-filter" class="filter-select" onchange="filterMarketplace()">
+              <option value="">All Seals</option>
+              <option value="core">Core (Prime)</option>
+              <option value="verified">Sanctioned</option>
+              <option value="community">Outer Ring</option>
+              <option value="unsigned">Unbound</option>
+            </select>
+            <button class="btn primary" onclick="refreshMarketplace()" style="padding:6px 12px;font-size:10px;">SCAN</button>
+          </div>
+        </div>
+
+        <!-- MARKETPLACE GRID -->
+        <div class="marketplace-grid" id="marketplace-grid">
+          <div style="grid-column:1/-1;color:var(--dim);text-align:center;padding:20px">Mapping exchange...</div>
+        </div>
+
+        <!-- MARKETPLACE STATS -->
+        <div class="marketplace-stats">
+          <span>Total Modules: <span id="mkt-total">0</span></span>
+          <span>Filters Active: <span id="mkt-filtered">0</span></span>
+          <span>Avg Resonance: <span id="mkt-rating">--</span></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SYSTEM TAB -->
+    <div class="tab-panel" id="tab-sysmon">
+      <div class="card" style="padding:16px">
+        <div class="card-title">SYSTEM HEALTH</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px" id="sysmon-grid">
+          <div class="stat-block"><div class="stat-val" id="sys-status">—</div><div class="stat-sub">API STATUS</div></div>
+          <div class="stat-block"><div class="stat-val" id="sys-version">—</div><div class="stat-sub">VERSION</div></div>
+          <div class="stat-block"><div class="stat-val" id="sys-mode">—</div><div class="stat-sub">RUN MODE</div></div>
+          <div class="stat-block"><div class="stat-val" id="sys-uptime">—</div><div class="stat-sub">UPTIME</div></div>
+          <div class="stat-block"><div class="stat-val" id="sys-env">—</div><div class="stat-sub">ENVIRONMENT</div></div>
+          <div class="stat-block"><div class="stat-val" id="sys-threat">—</div><div class="stat-sub">THREAT LEVEL</div></div>
+        </div>
+      </div>
+      <div class="card" style="padding:16px">
+        <div class="card-title">SECURITY STATUS</div>
+        <div id="sysmon-security" style="margin-top:8px;color:var(--dim);font-size:11px">loading security matrix…</div>
+      </div>
+      <div class="card" style="padding:16px">
+        <div class="card-title">ACTIVE SERVICES</div>
+        <div id="sysmon-services" style="margin-top:8px;color:var(--dim);font-size:11px">scanning services…</div>
+        <button class="btn" style="margin-top:10px;font-size:9px" onclick="loadSysmon()">REFRESH ↺</button>
+      </div>
+    </div>
+
+    <!-- AUDIT TAB -->
+    <div class="tab-panel" id="tab-audit">
+      <div class="card" style="padding:16px">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <div class="card-title" style="flex:1">AUDIT LOG</div>
+          <select id="audit-type-filter" style="background:var(--panel);color:var(--text);border:1px solid var(--border);padding:4px 8px;font-family:var(--mono);font-size:10px">
+            <option value="">ALL TYPES</option>
+            <option value="MUTATION">MUTATION</option>
+            <option value="PERMISSION">PERMISSION</option>
+            <option value="SECURITY">SECURITY</option>
+            <option value="POLICY">POLICY</option>
+          </select>
+          <button class="btn" style="font-size:9px" onclick="loadAudit()">REFRESH ↺</button>
+        </div>
+        <div id="audit-list" style="margin-top:12px;color:var(--dim);font-size:11px">loading audit records…</div>
+      </div>
+    </div>
+
+    <!-- GOVERNANCE PIPELINE TAB -->
+    <div class="tab-panel" id="tab-governance">
+
+      <!-- Pipeline Layer Status -->
+      <div class="card holo-panel">
+        <div class="card-head" style="display:flex;align-items:center;gap:10px">
+          <div class="card-title neon-text" style="flex:1">GOVERNANCE PIPELINE ⚖️</div>
+          <span id="gov-last-updated" style="font-size:9px;color:var(--dim)">not polled</span>
+          <button class="btn" style="font-size:9px" onclick="refreshGovernance()">REFRESH ↺</button>
+          <button class="btn amber" style="font-size:9px" onclick="toggleGovAutoRefresh()">AUTO <span id="gov-auto-label">OFF</span></button>
+        </div>
+        <div class="card-body">
+          <p style="font-size:10px;color:var(--dim);margin-bottom:12px">Real-time status of all 12 governance layers. Green = PASS · Amber = WARN · Red = BLOCK.</p>
+          <div id="gov-pipeline" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px">
+            <div class="gov-layer-card" id="gov-layer-geometry"><div class="gov-layer-name">P0.1 · GEOMETRY</div><div class="gov-layer-status" id="gov-status-geometry">—</div><div class="gov-layer-reason" id="gov-reason-geometry"></div></div>
+            <div class="gov-layer-card" id="gov-layer-integrity"><div class="gov-layer-name">P0.2 · INTEGRITY</div><div class="gov-layer-status" id="gov-status-integrity">—</div><div class="gov-layer-reason" id="gov-reason-integrity"></div></div>
+            <div class="gov-layer-card" id="gov-layer-scoring"><div class="gov-layer-name">P0.3 · SCORING</div><div class="gov-layer-status" id="gov-status-scoring">—</div><div class="gov-layer-reason" id="gov-reason-scoring"></div></div>
+            <div class="gov-layer-card" id="gov-layer-threshold"><div class="gov-layer-name">P0.4 · THRESHOLD</div><div class="gov-layer-status" id="gov-status-threshold">—</div><div class="gov-layer-reason" id="gov-reason-threshold"></div></div>
+            <div class="gov-layer-card" id="gov-layer-reversible"><div class="gov-layer-name">P0.5 · REVERSIBLE</div><div class="gov-layer-status" id="gov-status-reversible">—</div><div class="gov-layer-reason" id="gov-reason-reversible"></div></div>
+            <div class="gov-layer-card" id="gov-layer-sovereign"><div class="gov-layer-name">P1.1 · SOVEREIGN</div><div class="gov-layer-status" id="gov-status-sovereign">—</div><div class="gov-layer-reason" id="gov-reason-sovereign"></div></div>
+            <div class="gov-layer-card" id="gov-layer-shadow"><div class="gov-layer-name">P1.2 · SHADOW</div><div class="gov-layer-status" id="gov-status-shadow">—</div><div class="gov-layer-reason" id="gov-reason-shadow"></div></div>
+            <div class="gov-layer-card" id="gov-layer-boundaries"><div class="gov-layer-name">P1.4 · BOUNDARIES</div><div class="gov-layer-status" id="gov-status-boundaries">—</div><div class="gov-layer-reason" id="gov-reason-boundaries"></div></div>
+            <div class="gov-layer-card" id="gov-layer-stabilization"><div class="gov-layer-name">P2.3 · STABILIZATION</div><div class="gov-layer-status" id="gov-status-stabilization">—</div><div class="gov-layer-reason" id="gov-reason-stabilization"></div></div>
+            <div class="gov-layer-card" id="gov-layer-exploration"><div class="gov-layer-name">P2.4 · EXPLORATION</div><div class="gov-layer-status" id="gov-status-exploration">—</div><div class="gov-layer-reason" id="gov-reason-exploration"></div></div>
+            <div class="gov-layer-card" id="gov-layer-emergence"><div class="gov-layer-name">P2.1 · EMERGENCE</div><div class="gov-layer-status gov-tracking" id="gov-status-emergence">TRACKING</div><div class="gov-layer-reason" id="gov-reason-emergence">non-blocking</div></div>
+            <div class="gov-layer-card" id="gov-layer-uplift"><div class="gov-layer-name">P2.2 · UPLIFT</div><div class="gov-layer-status gov-tracking" id="gov-status-uplift">TRACKING</div><div class="gov-layer-reason" id="gov-reason-uplift">non-blocking</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sovereign Override History -->
+      <div class="card holo-panel">
+        <div class="card-head" style="display:flex;align-items:center;gap:10px">
+          <div class="card-title neon-text" style="flex:1">SOVEREIGN OVERRIDES</div>
+          <button class="btn" style="font-size:9px" onclick="loadSovereignLog()">REFRESH ↺</button>
+        </div>
+        <div class="card-body">
+          <p style="font-size:10px;color:var(--dim);margin-bottom:8px">Priority-based decisions that overrode lower-layer verdicts.</p>
+          <div id="gov-sovereign-log" style="font-size:11px;color:var(--dim)">no overrides recorded</div>
+        </div>
+      </div>
+
+      <!-- Shadow Log -->
+      <div class="card holo-panel">
+        <div class="card-head" style="display:flex;align-items:center;gap:10px">
+          <div class="card-title neon-text" style="flex:1">SHADOW LOG</div>
+          <select id="shadow-opacity-filter" style="background:var(--panel);color:var(--text);border:1px solid var(--border);padding:4px 8px;font-family:var(--mono);font-size:10px" onchange="filterShadowLog()">
+            <option value="">ALL OPACITY</option>
+            <option value="TRANSPARENT">TRANSPARENT</option>
+            <option value="PARTIAL">PARTIAL</option>
+            <option value="OPAQUE">OPAQUE</option>
+            <option value="SILENT">SILENT</option>
+          </select>
+          <button class="btn" style="font-size:9px" onclick="loadShadowLog()">REFRESH ↺</button>
+        </div>
+        <div class="card-body">
+          <p style="font-size:10px;color:var(--dim);margin-bottom:8px">Actions wrapped by the shadow channel with their opacity classification.</p>
+          <div id="gov-shadow-log" style="font-size:11px;color:var(--dim)">no shadow entries</div>
+        </div>
+      </div>
+
+      <!-- Emergence Patterns -->
+      <div class="card holo-panel">
+        <div class="card-head" style="display:flex;align-items:center;gap:10px">
+          <div class="card-title neon-text" style="flex:1">EMERGENCE PATTERNS</div>
+          <button class="btn" style="font-size:9px" onclick="loadEmergencePatterns()">REFRESH ↺</button>
+        </div>
+        <div class="card-body">
+          <p style="font-size:10px;color:var(--dim);margin-bottom:8px">Detected behavioral patterns: sequence, correlation, anomaly, cyclic.</p>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px">
+            <div class="stat-block"><div class="stat-val" id="em-sequence-count">0</div><div class="stat-sub">SEQUENCE</div></div>
+            <div class="stat-block"><div class="stat-val" id="em-correlation-count">0</div><div class="stat-sub">CORRELATION</div></div>
+            <div class="stat-block"><div class="stat-val" id="em-anomaly-count">0</div><div class="stat-sub">ANOMALY</div></div>
+            <div class="stat-block"><div class="stat-val" id="em-cyclic-count">0</div><div class="stat-sub">CYCLIC</div></div>
+          </div>
+          <div id="gov-emergence-list" style="font-size:11px;color:var(--dim)">no patterns detected yet</div>
+        </div>
+      </div>
+
+      <!-- Uplift Capability Tiers -->
+      <div class="card holo-panel">
+        <div class="card-head" style="display:flex;align-items:center;gap:10px">
+          <div class="card-title neon-text" style="flex:1">UPLIFT CAPABILITIES</div>
+          <button class="btn" style="font-size:9px" onclick="loadUpliftStatus()">REFRESH ↺</button>
+        </div>
+        <div class="card-body">
+          <p style="font-size:10px;color:var(--dim);margin-bottom:8px">Progressive capability tiers: BASIC → INTERMEDIATE → ADVANCED → EXPERIMENTAL.</p>
+          <div id="gov-uplift-tiers" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px">
+            <div class="uplift-tier"><div class="tier-badge unlocked">BASIC</div><div class="tier-caps" id="tier-basic-caps">loading…</div></div>
+            <div class="uplift-tier"><div class="tier-badge locked" id="tier-intermediate-badge">INTERMEDIATE 🔒</div><div class="tier-caps" id="tier-intermediate-caps">10 successes needed</div></div>
+            <div class="uplift-tier"><div class="tier-badge locked" id="tier-advanced-badge">ADVANCED 🔒</div><div class="tier-caps" id="tier-advanced-caps">50 successes needed</div></div>
+            <div class="uplift-tier"><div class="tier-badge locked" id="tier-experimental-badge">EXPERIMENTAL 🔒</div><div class="tier-caps" id="tier-experimental-caps">100 successes needed</div></div>
+          </div>
+          <div style="margin-top:12px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+            <div class="stat-block"><div class="stat-val" id="uplift-success-rate">—</div><div class="stat-sub">SUCCESS RATE</div></div>
+            <div class="stat-block"><div class="stat-val" id="uplift-total-ops">—</div><div class="stat-sub">TOTAL OPS</div></div>
+            <div class="stat-block"><div class="stat-val" id="uplift-rollbacks">—</div><div class="stat-sub">ROLLBACKS</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Perf Monitor -->
+      <div class="card holo-panel">
+        <div class="card-head" style="display:flex;align-items:center;gap:10px">
+          <div class="card-title neon-text" style="flex:1">PERF MONITOR ⚡</div>
+          <button class="btn" style="font-size:9px" onclick="loadGovernancePerf()">REFRESH ↺</button>
+        </div>
+        <div class="card-body">
+          <p style="font-size:10px;color:var(--dim);margin-bottom:8px">P50 / P95 / P99 latency (ms) per governance layer since server start.</p>
+          <table id="gov-perf-table" style="width:100%;font-size:11px;border-collapse:collapse">
+            <thead>
+              <tr style="color:var(--dim);text-align:left;border-bottom:1px solid #333">
+                <th style="padding:4px 8px">LAYER</th>
+                <th style="padding:4px 8px;text-align:right">P50</th>
+                <th style="padding:4px 8px;text-align:right">P95</th>
+                <th style="padding:4px 8px;text-align:right">P99</th>
+                <th style="padding:4px 8px;text-align:right">CALLS</th>
+                <th style="padding:4px 8px;text-align:right">BLOCK%</th>
+              </tr>
+            </thead>
+            <tbody id="gov-perf-tbody">
+              <tr><td colspan="6" style="padding:8px;color:var(--dim)">hit REFRESH to load latency data</td></tr>
+            </tbody>
+          </table>
+          <div style="margin-top:10px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+            <div class="stat-block"><div class="stat-val" id="perf-pipeline-p50">—</div><div class="stat-sub">PIPELINE P50 ms</div></div>
+            <div class="stat-block"><div class="stat-val" id="perf-pipeline-p95">—</div><div class="stat-sub">PIPELINE P95 ms</div></div>
+            <div class="stat-block"><div class="stat-val" id="perf-pipeline-p99">—</div><div class="stat-sub">PIPELINE P99 ms</div></div>
+          </div>
+          <div id="gov-perf-alerts" style="margin-top:8px;font-size:10px;color:#ff4444"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- DEPENDENCY GRAPH TAB -->
+    <div class="tab-panel" id="tab-deptree">
+      <div class="card" style="padding:16px">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div class="card-title" style="flex:1">MODULE DEPENDENCY GRAPH</div>
+          <button class="btn" style="font-size:9px" onclick="loadDepTree()">REFRESH ↺</button>
+          <button class="btn amber" style="font-size:9px" onclick="exportDepGraph()">EXPORT JSON</button>
+        </div>
+        <p style="font-size:10px;color:var(--dim);margin:8px 0">Live topology of installed modules, their dependencies, and inter-module linkages.</p>
+        <div id="deptree-container" style="margin-top:8px;font-size:10px;color:var(--dim)">mapping module graph…</div>
+      </div>
+    </div>
+
+    <!-- FULL TIMELINE TAB -->
+    <div class="tab-panel" id="tab-fulltimeline">
+      <div class="card" style="padding:16px">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div class="card-title" style="flex:1">FULL ORGANISM TIMELINE</div>
+          <button class="btn" style="font-size:9px" onclick="loadFullTimeline()">REFRESH ↺</button>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin:10px 0" id="ft-stats">
+          <div class="stat-block" style="min-width:90px"><div class="stat-val" id="ft-total">—</div><div class="stat-sub">EVENTS</div></div>
+          <div class="stat-block" style="min-width:90px"><div class="stat-val" id="ft-stages">—</div><div class="stat-sub">STAGE SHIFTS</div></div>
+          <div class="stat-block" style="min-width:90px"><div class="stat-val" id="ft-milestones">—</div><div class="stat-sub">MILESTONES</div></div>
+        </div>
+        <div id="fulltimeline-list" style="margin-top:8px;color:var(--dim);font-size:11px">loading timeline…</div>
+      </div>
+    </div>
+
+    <!-- FULL EVOLUTION TAB -->
+    <div class="tab-panel" id="tab-fullevolution">
+      <div class="card" style="padding:16px">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div class="card-title" style="flex:1">EVOLUTION TRAJECTORY</div>
+          <button class="btn" style="font-size:9px" onclick="loadFullEvolution()">REFRESH ↺</button>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0">
+          <div class="stat-block"><div class="stat-val" id="evo-ops">—</div><div class="stat-sub">OPERATIONS</div></div>
+          <div class="stat-block"><div class="stat-val" id="evo-win-rate">—</div><div class="stat-sub">YIELD RATE</div></div>
+          <div class="stat-block"><div class="stat-val" id="evo-essence">—</div><div class="stat-sub">DATAFLOW POOL</div></div>
+          <div class="stat-block"><div class="stat-val" id="evo-stage">—</div><div class="stat-sub">CURRENT STAGE</div></div>
+          <div class="stat-block"><div class="stat-val" id="evo-next">—</div><div class="stat-sub">NEXT STAGE</div></div>
+          <div class="stat-block"><div class="stat-val" id="evo-traits">—</div><div class="stat-sub">ACTIVE TRAITS</div></div>
+        </div>
+        <div class="side-label neon-text" style="margin-top:12px;margin-bottom:6px">STAGE HISTORY</div>
+        <div id="fullevolution-history" style="color:var(--dim);font-size:11px">loading evolution data…</div>
+        <button class="btn" style="margin-top:12px;font-size:9px;width:100%" onclick="syncEvolution()">INITIATE ASCENSION CHECK</button>
+      </div>
+    </div>
+
+    <!-- DOCTRINE TAB -->
+    <div class="tab-panel" id="tab-doctrine">
+      <div class="card" style="padding:20px;border:1px solid #ff00ff44;box-shadow:0 0 40px #ff00ff18">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+          <div class="card-title neon-text" style="flex:1;color:#ff00ff;text-shadow:0 0 12px #ff00ff">⚡ NEXUSMON DOCTRINE — CORE IDENTITY BRIEFING</div>
+          <button class="btn" style="font-size:9px;border-color:#ff00ff;color:#ff00ff" onclick="loadDoctrine()">RELOAD DOCTRINE</button>
+          <button class="btn" style="font-size:9px;border-color:#00ffaa;color:#00ffaa" onclick="receiveDoctrine()">TRANSMIT TO NEXUSMON</button>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px">
+          <div class="stat-block"><div class="stat-val" id="doc-status" style="color:#ff00ff">—</div><div class="stat-sub">STATUS</div></div>
+          <div class="stat-block"><div class="stat-val" id="doc-bytes">—</div><div class="stat-sub">BYTES</div></div>
+          <div class="stat-block"><div class="stat-val" id="doc-sections">—</div><div class="stat-sub">SECTIONS</div></div>
+        </div>
+        <div id="doctrine-mood" style="font-size:11px;color:var(--dim);margin-bottom:8px"></div>
+        <div id="doctrine-receive-result" style="font-size:11px;margin-bottom:12px"></div>
+        <div class="side-label neon-text" style="margin-bottom:6px;color:#ff00ff">DOCTRINE SECTIONS</div>
+        <div id="doctrine-sections" style="color:var(--dim);font-size:11px">loading…</div>
+        <div class="side-label neon-text" style="margin-top:16px;margin-bottom:6px;color:#ff00ff">FULL BRIEFING</div>
+        <div id="doctrine-full" style="max-height:500px;overflow-y:auto;padding:12px;background:rgba(0,0,0,0.5);border:1px solid #ff00ff22;border-radius:6px;font-size:11px;color:var(--text);line-height:1.6;white-space:pre-wrap;font-family:var(--mono)">loading…</div>
+      </div>
+    </div>
+
+    <!-- EVOLUTION TIMELINE -->
+    <div id="evolution-timeline" class="timeline-strip">
+      <div class="timeline-loading">tracking ascension history...</div>
+    </div>
+
+  </main>
+
+  <!-- RIGHT SIDEBAR — Event Log -->
+  <aside class="sidebar-right">
+    <div class="log-head">
+      <span>SIGNAL ARCHIVE // LIVE STREAM</span>
+      <div class="log-live"><div class="live-dot"></div><span>LIVE</span></div>
+    </div>
+    <div class="event-list" id="event-list">
+      <div class="empty">awaiting transmissions…</div>
+    </div>
+  </aside>
+
+</div>
+
+<!-- WORKER DETAIL OVERLAY -->
+<div class="detail-overlay" id="detail-overlay" onclick="if(event.target===this)closeDetail()">
+  <div class="detail-panel">
+    <div class="detail-head">
+      <div class="detail-title" id="detail-title">AGENT DOSSIER</div>
+      <button class="btn danger" style="font-size:9px" onclick="closeDetail()">SEAL ✕</button>
+    </div>
+    <div class="detail-body" id="detail-body"></div>
+  </div>
+</div>
+
+<script>
+const API = '';
+let autoOn = true;
+let eventLog = [];
+let lastSyncData = { total: 0, success: 0, beliefs: 0 };
+let _cockpitData = null;
+let _lastSnapshot = 0;
+const SNAPSHOT_TTL = 3000;
+
+async function loadSnapshot(force = false) {
+  const now = Date.now();
+  if (!force && _cockpitData && (now - _lastSnapshot) < SNAPSHOT_TTL) {
+    return _cockpitData;
+  }
+  try {
+    const res = await fetch(API + '/v1/cockpit/snapshot');
+    _cockpitData = await res.json();
+    _lastSnapshot = now;
+  } catch (e) {
+    console.error('Snapshot failed:', e);
+  }
+  return _cockpitData;
+}
+
+// ── Plugins Tab Handlers ────────────────────────────────────
+async function refreshPlugins() {
+  try {
+    const res = await fetch('/v1/plugins');
+    const data = await res.json();
+    renderInstalledPlugins(data.installed);
+    renderUnlockablePlugins(data.unlockable);
+  } catch (e) {
+    console.error('Failed to refresh plugins:', e);
+  }
+
+  try {
+    const community = await fetch('/v1/plugins/community').then(r => r.json());
+    renderCommunityPlugins(community.plugins || []);
+  } catch (e) {
+    console.error('Failed to load community registry:', e);
+  }
+}
+
+function renderInstalledPlugins(plugins) {
+  const grid = document.getElementById('installed-grid');
+  if (!plugins || plugins.length === 0) {
+    grid.innerHTML = '<div style="color:var(--dim);font-size:11px;padding:12px">no bound modules</div>';
+    return;
+  }
+  grid.innerHTML = plugins.map(p => `
+    <div class="plugin-card" onclick="showPluginDetails(${JSON.stringify(p).replace(/"/g, '&quot;')})">
+      <div class="plugin-card-id">${p.id}</div>
+      <div class="plugin-card-type">${p.type}</div>
+      <div class="plugin-card-version">v${p.version}</div>
+      <div class="plugin-card-trust trust-${p.trust}">${p.trust}</div>
+      <div style="font-size:8px;color:var(--dim);margin-top:4px">mode: ${p.state}</div>
+    </div>
+  `).join('');
+}
+
+function renderUnlockablePlugins(plugins) {
+  const grid = document.getElementById('unlockable-grid');
+  if (!plugins || plugins.length === 0) {
+    grid.innerHTML = '<div style="color:var(--dim);font-size:11px;padding:12px">no sealed modules</div>';
+    return;
+  }
+  grid.innerHTML = plugins.map(p => `
+    <div class="plugin-card locked">
+      <div class="plugin-card-id">${p.id}</div>
+      <div class="plugin-card-type">${p.type}</div>
+      <div style="font-size:9px;color:var(--dim);margin-top:6px">
+        seal: ${Object.entries(p.requires).map(([k,v]) => `${k}=${v}`).join(', ')}
+      </div>
+      <button class="plugin-card-btn" onclick="unlockPlugin('${p.id}')">BREAK SEAL</button>
+    </div>
+  `).join('');
+}
+
+function renderCommunityPlugins(plugins) {
+  const grid = document.getElementById('community-grid');
+  if (!plugins || plugins.length === 0) {
+    grid.innerHTML = '<div style="color:var(--dim);font-size:11px;padding:12px">no outer ring modules</div>';
+    return;
+  }
+  grid.innerHTML = plugins.map(p => `
+    <div class="plugin-card" onclick="showPluginDetails(${JSON.stringify(p).replace(/"/g, '&quot;')})">
+      <div class="plugin-card-id">${p.id}</div>
+      <div class="plugin-card-type">${p.type}</div>
+      <div class="plugin-card-version">v${p.version}</div>
+      <div style="font-size:8px;color:var(--dim);margin-top:4px">containment: ${p.sandbox}</div>
+      <button class="plugin-card-btn" onclick="event.stopPropagation(); installPluginFromGitHub('${p.repo}')">BIND</button>
+    </div>
+  `).join('');
+}
+
+function showPluginDetails(plugin) {
+  const title = document.getElementById('details-title');
+  const content = document.getElementById('details-content');
+  title.textContent = plugin.id;
+  content.textContent = JSON.stringify(plugin, null, 2);
+}
+
+async function unlockPlugin(pluginId) {
+  const status = document.getElementById('install-status');
+  status.textContent = `unsealing ${pluginId}...`;
+  try {
+    const res = await fetch('/v1/plugins/unlock', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: pluginId })
+    });
+    if (res.ok) {
+      status.textContent = `✓ seal broken ${pluginId}`;
+      status.style.color = 'var(--green)';
+      setTimeout(() => refreshPlugins(), 2000);
+    } else {
+      const err = await res.json();
+      status.textContent = `breach failed: ${err.detail || 'unknown error'}`;
+      status.style.color = '#ff8888';
+    }
+  } catch (e) {
+    status.textContent = `fault: ${e.message}`;
+    status.style.color = '#ff8888';
+  }
+}
+
+async function installPluginFromUrl() {
+  const input = document.getElementById('install-url-input');
+  const url = input.value.trim();
+  const status = document.getElementById('install-status');
+
+  if (!url) {
+    status.textContent = 'provide a GitHub module URL';
+    status.style.color = '#ff8888';
+    return;
+  }
+
+  status.textContent = `binding from ${url}...`;
+  status.style.color = 'var(--dim)';
+
+  try {
+    const res = await fetch('/v1/plugins/install', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url })
+    });
+
+    if (res.ok) {
+      const result = await res.json();
+      status.textContent = `✓ bound ${result.plugin_id}`;
+      status.style.color = 'var(--green)';
+      input.value = '';
+      setTimeout(() => refreshPlugins(), 2000);
+    } else {
+      const err = await res.json();
+      status.textContent = `binding failed: ${err.detail || 'unknown error'}`;
+      status.style.color = '#ff8888';
+    }
+  } catch (e) {
+    status.textContent = `fault: ${e.message}`;
+    status.style.color = '#ff8888';
+  }
+}
+
+async function installPluginFromGitHub(repo) {
+  if (!repo) return;
+  document.getElementById('install-url-input').value = repo;
+  await installPluginFromUrl();
+}
+
+// Load plugins + timeline on page init
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => { refreshPlugins(); loadEvolutionTimeline(); });
+} else {
+  refreshPlugins(); loadEvolutionTimeline();
+}
+
+async function loadEvolutionTimeline() {
+  try {
+    const r = await fetch('/v1/timeline');
+    const d = await r.json();
+    renderEvolutionTimeline(d.timeline || []);
+  } catch(e) {
+    document.getElementById('evolution-timeline').innerHTML = '<div class="timeline-loading">chronicle offline</div>';
+  }
+}
+
+function renderEvolutionTimeline(events) {
+  const icons = {
+    plugin_installed:'🧩', plugin_unlocked:'🔓', xp_gain:'✨',
+    rank_up:'⬆️', mission_complete:'🏁', evolution:'🌙', system:'⚙️'
+  };
+  const strip = document.getElementById('evolution-timeline');
+  if (!events.length) {
+    strip.innerHTML = '<div class="timeline-loading">no chronicle entries</div>';
+    return;
+  }
+  events.sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
+  strip.innerHTML = events.slice(0,30).map(e => {
+    const ts = new Date(e.timestamp).toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'});
+    return `<div class="timeline-event" title="${e.type}: ${e.timestamp}"><div class="icon">${icons[e.type]||'●'}</div><div class="type">${e.type.replace(/_/g,' ')}</div><div class="timestamp">${ts}</div></div>`;
+  }).join('');
+}
+
+setInterval(loadEvolutionTimeline, 8000);
+
+// ── MARKETPLACE ────────────────────────────────────────────
+
+let marketplaceData = [];
+let filteredMarketplaceData = [];
+
+async function refreshMarketplace() {
+  try {
+    const r = await fetch('/v1/plugins/community');
+    const data = await r.json();
+    marketplaceData = data.plugins || data.community || [];
+    filterMarketplace();
+    document.getElementById('mkt-total').textContent = marketplaceData.length;
+  } catch(e) {
+    console.error('Marketplace load failed:', e);
+    document.getElementById('marketplace-grid').innerHTML = '<div style="grid-column:1/-1;color:var(--red);text-align:center">Exchange map failed</div>';
+  }
+}
+
+function filterMarketplace() {
+  const search = document.getElementById('mkt-search').value.toLowerCase();
+  const typeFilter = document.getElementById('mkt-type-filter').value;
+  const trustFilter = document.getElementById('mkt-trust-filter').value;
+
+  filteredMarketplaceData = marketplaceData.filter(p => {
+    const matchSearch = !search || p.id.toLowerCase().includes(search) || (p.description || '').toLowerCase().includes(search) || (p.author || '').toLowerCase().includes(search);
+    const matchType = !typeFilter || p.type === typeFilter;
+    const matchTrust = !trustFilter || p.trust === trustFilter;
+    return matchSearch && matchType && matchTrust;
+  });
+
+  renderMarketplace(filteredMarketplaceData);
+  document.getElementById('mkt-filtered').textContent = filteredMarketplaceData.length;
+
+  if (filteredMarketplaceData.length > 0) {
+    const avgRating = (filteredMarketplaceData.reduce((s,p) => s + (p.rating || 0), 0) / filteredMarketplaceData.length).toFixed(1);
+    document.getElementById('mkt-rating').textContent = avgRating;
+  }
+}
+
+function renderMarketplace(plugins) {
+  const grid = document.getElementById('marketplace-grid');
+  if (!plugins.length) {
+    grid.innerHTML = '<div style="grid-column:1/-1;color:var(--dim);text-align:center;padding:20px">No modules match your filters</div>';
+    return;
+  }
+
+  const trustIcons = { core:'🔒', verified:'✓', community:'👥', unsigned:'⚠️' };
+  grid.innerHTML = plugins.map(p => {
+    const trustBadge = p.trust ? `<span class="marketplace-card-trust trust-${p.trust}">${trustIcons[p.trust]||'•'} ${p.trust}</span>` : '';
+    const rating = p.rating ? `⭐${p.rating.toFixed(1)}` : 'unranked';
+    const downloads = p.downloads ? `${p.downloads} echoes` : '—';
+    return `<div class="marketplace-card" title="${p.description}">
+      <div class="marketplace-card-title">${p.id}</div>
+      <div class="marketplace-card-type">${p.type}</div>
+      <div class="marketplace-card-desc">${p.description || 'No description'}</div>
+      <div class="marketplace-card-author">By ${p.author || 'unknown'}</div>
+      <div class="marketplace-card-stats"><span>${rating}</span><span>${downloads}</span></div>
+      ${trustBadge}
+      <button class="marketplace-card-action" onclick="installMarketplacePlugin('${p.id}', '${p.url}')">BIND</button>
+    </div>`;
+  }).join('');
+}
+
+async function installMarketplacePlugin(pluginId, url) {
+  if (!url) { alert('No module URL bound'); return; }
+  try {
+    const r = await fetch('/v1/plugins/install', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url })
+    });
+    const data = await r.json();
+    if (r.ok) {
+      alert(`✓ ${pluginId} bound!`);
+      refreshPlugins();
+      refreshMarketplace();
+    } else {
+      alert(`✗ Binding failed: ${data.detail || data.message || 'unknown error'}`);
+    }
+  } catch(e) {
+    alert(`✗ Fault: ${e.message}`);
+  }
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', refreshMarketplace);
+} else {
+  refreshMarketplace();
+}
+
+// ── NOTIFICATIONS SYSTEM ──────────────────────────────────────
+
+const notificationIcons = {
+  plugin_installed: '🧩',
+  plugin_unlocked: '🔓',
+  xp_gain: '✨',
+  rank_up: '⬆️',
+  mission_complete: '🏁',
+  evolution: '🌙',
+  system: '⚙️',
+  success: '✓',
+  error: '✗',
+  info: 'ℹ'
+};
+
+function triggerAvatarReaction(eventType) {
+  const holo = document.getElementById('avatar-holo');
+  if (!holo) return;
+
+  const classMap = {
+    plugin_installed: 'avatar-react-burst',
+    plugin_unlocked: 'avatar-react-unlock',
+    xp_gain: 'avatar-react-pulse',
+    rank_up: 'avatar-react-pulse',
+    mission_complete: 'avatar-react-burst',
+    evolution: 'avatar-react-unlock',
+    system: 'avatar-react-pulse',
+    error: 'avatar-react-error'
+  };
+
+  const cls = classMap[eventType] || 'avatar-react-pulse';
+  holo.classList.remove(cls);
+  void holo.offsetWidth;
+  holo.classList.add(cls);
+  setTimeout(() => holo.classList.remove(cls), 900);
+}
+
+function addNotification(title, message, type = 'info', duration = 4000) {
+  const rail = document.getElementById('notifications-rail');
+  if (!rail) return;
+
+  const notif = document.createElement('div');
+  const icon = notificationIcons[type] || '•';
+  const typeClass = `notif-${type}`;
+
+  notif.className = `notification-toast ${typeClass}`;
+  notif.innerHTML = `
+    <div class="notification-icon">${icon}</div>
+    <div class="notification-content">
+      <div class="notification-title">${title}</div>
+      <div class="notification-msg">${message}</div>
+    </div>
+    <div class="notification-close" onclick="this.closest('.notification-toast').closeNotif()">✕</div>
+  `;
+
+  notif.closeNotif = function() {
+    this.classList.add('closing');
+    setTimeout(() => this.remove(), 300);
+  };
+
+  rail.appendChild(notif);
+
+  if (duration > 0) {
+    setTimeout(() => notif.closeNotif(), duration);
+  }
+
+  return notif;
+}
+
+async function pollNotifications() {
+  try {
+    const r = await fetch('/v1/notifications', { method: 'GET' });
+    if (r.status === 200) {
+      const data = await r.json();
+      const events = data.events || [];
+
+      for (const evt of events) {
+        let title = evt.type.replace(/_/g, ' ').toUpperCase();
+        let msg = '';
+        let type = evt.type;
+
+        if (evt.type === 'plugin_installed') {
+          title = '🧩 Module Bound';
+          msg = `${evt.payload.id} v${evt.payload.version}`;
+        } else if (evt.type === 'plugin_unlocked') {
+          title = '🔓 Seal Broken';
+          msg = evt.payload.id;
+        } else if (evt.type === 'xp_gain') {
+          title = '✨ Dataflow Gained';
+          msg = `+${evt.payload.amount} ${evt.payload.reason}`;
+        } else if (evt.type === 'rank_up') {
+          title = '⬆️ Ascension';
+          msg = `Ascended to ${evt.payload.new_rank}`;
+        } else if (evt.type === 'mission_complete') {
+          title = '🏁 Operation Complete';
+          msg = `${evt.payload.mission_id} (+${evt.payload.reward_xp} DATAFLOW)`;
+        } else if (evt.type === 'evolution') {
+          title = '🌙 Ascension';
+          const oldStage = (typeof STAGE_LABELS !== 'undefined' && STAGE_LABELS[evt.payload.old_stage]) || evt.payload.old_stage;
+          const newStage = (typeof STAGE_LABELS !== 'undefined' && STAGE_LABELS[evt.payload.new_stage]) || evt.payload.new_stage;
+          msg = `${oldStage} → ${newStage}`;
+        } else if (evt.type === 'system') {
+          title = evt.payload.message;
+          msg = `[${evt.payload.severity}]`;
+          type = evt.payload.severity === 'error' ? 'error' : 'info';
+        }
+
+        addNotification(title, msg, type, 5000);
+        triggerAvatarReaction(type === 'error' ? 'error' : evt.type);
+      }
+    }
+  } catch(e) {
+    // Silent fail - don't spam with notification errors
+  }
+}
+
+// Poll for notifications every 2 seconds
+setInterval(pollNotifications, 2000);
+
+// ── Clock ────────────────────────────────────────────────────
+function tickClock() {
+  const d = new Date();
+  document.getElementById('clock').textContent =
+    d.toUTCString().replace('GMT','UTC').split(' ').slice(1).join(' ');
+}
+setInterval(tickClock, 1000); tickClock();
+
+function setLastUpdated() {
+  const el = document.getElementById('last-updated');
+  if (el) el.textContent = 'pulse synced ' + new Date().toLocaleTimeString();
+}
+
+// ── Tab switching ──────────────────────────────────────────
+function toggleMoreMenu() {
+  const menu = document.getElementById('tab-more-menu');
+  if (!menu) return;
+  menu.classList.toggle('open');
+}
+
+function closeMoreMenu() {
+  const menu = document.getElementById('tab-more-menu');
+  if (!menu) return;
+  menu.classList.remove('open');
+}
+
+document.addEventListener('click', (e) => {
+  const menu = document.getElementById('tab-more-menu');
+  const btn = document.getElementById('tab-more-btn');
+  if (!menu || !btn) return;
+  if (!menu.contains(e.target) && !btn.contains(e.target)) {
+    closeMoreMenu();
+  }
+});
+
+async function switchTab(name) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  const btn = document.querySelector(`.tab-btn[onclick*="'${name}'"]`);
+  if (btn) btn.classList.add('active');
+  const panel = document.getElementById('tab-' + name);
+  if (panel) panel.classList.add('active');
+  const data = await loadSnapshot();
+  if (name === 'operator') {
+    if (data?.operator && !data.operator.error) {
+      _renderOperatorPanel(data.operator, { history: [] });
+      fetch(API + '/v1/operator/xp/history').then(r => r.json()).then(h => {
+        _renderOperatorPanel(data.operator, h);
+      }).catch(() => {});
+    } else {
+      loadOperator();
+    }
+  }
+  if (name === 'workers') loadWorkers();
+  if (name === 'missions') loadMissions();
+  if (name === 'vault') loadVault();
+  if (name === 'cognition') {
+    if (data?.cognition && !data.cognition.error) _renderCognition(data.cognition);
+    else loadCognition();
+    loadSignalDials();
+  }
+  if (name === 'sysmon') loadSysmon();
+  if (name === 'audit') loadAudit();
+  if (name === 'deptree') loadDepTree();
+  if (name === 'fulltimeline') loadFullTimeline();
+  if (name === 'fullevolution') loadFullEvolution();
+  if (name === 'doctrine') loadDoctrine();
+}
+
+// ── Stage colors ───────────────────────────────────────────
+const STAGE_COLORS = {
+  DORMANT: '#2a4050', AWAKENING: '#0088cc', FORGING: '#cc7700',
+  SOVEREIGN: '#00aa55', APEX: '#d63384', NEXUS: '#8b5cf6'
+};
+const STAGE_RANK = { DORMANT:0, AWAKENING:1, FORGING:2, SOVEREIGN:3, APEX:4, NEXUS:5 };
+const STAGE_LABELS = {
+  DORMANT: 'SUBSTRATE',
+  AWAKENING: 'IGNITION',
+  FORGING: 'SYNTHESIS',
+  SOVEREIGN: 'SOVEREIGN',
+  APEX: 'APEX',
+  NEXUS: 'NEXUS'
+};
+
+function applyStage(stage) {
+  const color = STAGE_COLORS[stage] || STAGE_COLORS.DORMANT;
+  const rank = STAGE_RANK[stage] || 0;
+  const stageLabel = STAGE_LABELS[stage] || stage;
+  document.getElementById('stage-name').textContent = stageLabel;
+  document.getElementById('stage-name').style.color = color;
+  document.getElementById('top-stage').textContent = stageLabel;
+  document.getElementById('top-stage').style.color = color;
+  document.getElementById('s-stage').textContent = stageLabel;
+  document.getElementById('s-stage').style.color = color;
+  const dots = document.querySelectorAll('.rank-dot');
+  dots.forEach((d, i) => {
+    d.classList.toggle('filled', i <= rank);
+    if (i <= rank) { d.style.background = color; d.style.borderColor = color; d.style.boxShadow = `0 0 6px ${color}`; }
+    else { d.style.background = ''; d.style.boxShadow = ''; d.style.borderColor = ''; }
+  });
+  // Stage color on sidebar border
+  const sidebar = document.getElementById('sidebar-evo');
+  if (sidebar) sidebar.style.borderLeftColor = color;
+}
+
+// ── Load all (organism/status) ─────────────────────────────
+async function loadAll() {
+  try {
+    const snap = await loadSnapshot(true);
+    if (!snap) throw new Error('Snapshot unavailable');
+    const data = snap.organism || {};
+    if (!data.ok) throw new Error(JSON.stringify(snap));
+
+    // Evolution
+    const evo = data.evolution || {};
+    applyStage(evo.stage || 'DORMANT');
+    document.getElementById('level-val').textContent = evo.level || 1;
+    document.getElementById('xp-val').textContent = evo.xp || 0;
+    document.getElementById('xp-fill').style.width = Math.min(100, (evo.xp || 0) / 100) + '%';
+    document.getElementById('total-missions').textContent = evo.total_missions || 0;
+    document.getElementById('success-rate').textContent = Math.round((evo.success_rate || 0) * 100) + '%';
+    document.getElementById('trait-count').textContent = (evo.active_traits || []).length;
+
+    // Track real values for syncEvolution
+    const beliefs = data.claimlab?.belief_count || 0;
+    const total = evo.total_missions || 0;
+    const success = Math.round((evo.success_rate || 0) * total);
+    lastSyncData = { total, success, beliefs };
+
+    // Traits
+    const tl = document.getElementById('trait-list');
+    const traits = evo.active_traits || [];
+    tl.innerHTML = traits.length ? traits.map(t => `
+      <div class="trait-item" style="display:flex; flex-direction:column; gap:4px; align-items:stretch; background:transparent; border:none; padding:4px 0;">
+        <div style="display:flex; justify-content:space-between;">
+          <span class="trait-label" style="font-size:10px; letter-spacing:0.06em;">${t.label || t.id}</span>
+          <span class="trait-cat" style="font-size:9px; color:var(--dim);">${(t.category||'').slice(0,3)}</span>
+        </div>
+        <div class="trait-bar"></div>
+      </div>`).join('') : '<div class="empty">No traits unlocked yet — run missions to awaken</div>';
+
+    // Next stage
+    if (evo.next_stage) {
+      document.getElementById('next-stage-wrap').style.display = 'block';
+      const nextStageRaw = evo.next_stage.label || evo.next_stage.name;
+      const nextStageLabel = (STAGE_LABELS[nextStageRaw] || nextStageRaw);
+      document.getElementById('next-stage-name').textContent = nextStageLabel;
+      document.getElementById('next-missions').textContent = evo.next_stage.requires_missions || evo.next_stage.min_missions;
+      document.getElementById('next-rate').textContent = Math.round((evo.next_stage.requires_success_rate || evo.next_stage.min_rate || 0) * 100) + '%';
+    }
+
+    // Recent events → sidebar
+    const recentEvts = evo.recent_events || [];
+    recentEvts.forEach(e => pushEvent(e.type || 'EVENT', e.to || e.label || e.trait || '', e.timestamp));
+
+    // Operator quick
+    const op = data.operator || {};
+    document.getElementById('q-operator').textContent = op.operator_id || '—';
+    document.getElementById('q-interactions').textContent = op.total_interactions || 0;
+    document.getElementById('q-revisions').textContent = op.belief_calibration?.revisions || op.belief_calibration?.total_revisions || 0;
+    const trust = op.trust_signals || op.trust || {};
+    const pref = trust.autonomy_preference ?? trust.preference;
+    document.getElementById('q-trust').textContent = pref != null ? Math.round(pref * 100) + '%' : '—';
+
+    // Vocab
+    const vocab = document.getElementById('q-vocab');
+    vocab.innerHTML = (op.vocab_signature || []).map(w =>
+      `<span class="vocab-word">${w}</span>`).join('');
+
+    // Workers
+    const wdata = data.workers || {};
+    document.getElementById('s-workers').textContent = wdata.active_count || 0;
+    document.getElementById('workers-count-badge').textContent = (wdata.total || 0) + ' total';
+
+    // Sovereign & Self-Awareness (P5)
+    const sov = snap.sovereign || {};
+    const s_sov = document.getElementById('s-sovereign');
+    if (sov.health) {
+      const cog = sov.cognition || { state: 'UNKNOWN' };
+      s_sov.textContent = cog.state; // Use the cognitive state label
+      s_sov.style.color = cog.state === 'OPTIMAL' ? 'var(--green)' : (cog.state === 'CRITICAL' ? 'var(--red)' : 'var(--amber)');
+      
+      if (sov.health.critical > 0) {
+        pushEvent('CRITICAL', `Sovereign Alert: ${sov.health.critical} Critical events detected!`, new Date().toISOString());
+      }
+      
+      // Update badge if any
+      const label = document.querySelector('#sovereign-block .stat-label');
+      if (label) label.textContent = `Sovereign: ${sov.health.status}`;
+    }
+    const awl = document.getElementById('active-workers-list');
+    const active = wdata.active || [];
+    awl.innerHTML = active.length ? active.map(renderWorkerRow).join('') :
+      '<div class="empty">No active workers in the swarm</div>';
+
+    // ClaimLab
+    const cl = data.claimlab || {};
+    document.getElementById('s-beliefs').textContent = cl.belief_count || 0;
+
+    // Check autonomous chain trait
+    const hasChain = traits.some(t => t.id === 'AUTONOMOUS_CHAIN');
+    document.getElementById('auto-gate').textContent = hasChain ? '' : 'AUTONOMOUS_CHAIN locked — accumulate more dataflow';
+
+    setLastUpdated();
+    updateNotifDots();
+    await updateBusterStatus();
+  } catch (e) {
+    pushEvent('ERROR', e.message, new Date().toISOString());
+  }
+}
+
+// ── Evolution sync ─────────────────────────────────────────
+async function syncEvolution() {
+  const btn = document.querySelector('[onclick="syncEvolution()"]');
+  if (btn) { btn.disabled = true; btn.textContent = 'SYNCING…'; }
+  try {
+    const r = await fetch(API + '/v1/nexusmon/organism/evolution/sync', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        total_missions: lastSyncData.total,
+        success_count: lastSyncData.success,
+        belief_count: lastSyncData.beliefs
+      })
+    });
+    const data = await r.json();
+    if (data.ok) {
+      (data.events || []).forEach(e => pushEvent(e.type, e.to || e.label || '', e.timestamp));
+      await loadAll();
+    } else {
+      pushEvent('ERROR', 'Sync failed: ' + JSON.stringify(data), new Date().toISOString());
+    }
+  } catch(e) {
+    pushEvent('ERROR', 'Sync error: ' + e.message, new Date().toISOString());
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = 'SYNC EVOLUTION'; }
+  }
+}
+
+// ── Operator full ──────────────────────────────────────────
+const _RANK_LABELS = {E:'New Operator',D:'Initiate',C:'Controller',B:'Overseer',A:'Commander',S:'Sovereign Operator',N:'Nexus Mind'};
+const _RANK_TO_TIER = {E:'DORMANT',D:'INITIATED',C:'ACTIVE',B:'EVOLVED',A:'ASCENDED',S:'ASCENDED'};
+const _ALL_TRAITS = ['Worker Control','Artifact Review','Evolution Sync','Mission Governance',
+  'Module Activation','Multi-Worker Coordination','Full Governance','System-Level Reasoning',
+  'Organism Override','Evolution Tier Unlock'];
+const _PERM_LABELS = {
+  run_mission_E:'Run E Missions', run_mission_D:'Run D Missions', run_mission_C:'Run C Missions',
+  run_mission_B:'Run B Missions', run_mission_A:'Run A Missions', run_mission_S:'Run S Missions',
+  approve_artifact:'Approve Artifacts', reject_artifact:'Reject Artifacts',
+  approve_mission:'Approve Missions', spawn_worker:'Spawn Workers',
+  activate_module:'Activate Modules', evolution_sync:'Evolution Sync',
+  full_organism_control:'Organism Control'
+};
+
+async function loadOperator() {
+  try {
+    const [rankRes, histRes] = await Promise.all([
+      fetch(API + '/v1/operator/rank'),
+      fetch(API + '/v1/operator/xp/history')
+    ]);
+    const rankData = await rankRes.json();
+    const histData = await histRes.json();
+    _renderOperatorPanel(rankData, histData);
+  } catch(e) {
+    pushEvent('ERROR', 'Operator load failed: ' + e.message, new Date().toISOString());
+  }
+}
+
+function _renderOperatorPanel(data, histData) {
+  const rank = data.rank || 'E';
+  const xp = data.xp || 0;
+  const nextRank = data.next_rank;
+  const xpNeeded = data.xp_needed || 0;
+  const progress = data.progress || 0;
+  const traits = data.traits || [];
+  const perms = data.permissions || {};
+  const tier = _RANK_TO_TIER[rank] || 'DORMANT';
+
+  const badge = document.getElementById('op-rank-badge');
+  badge.textContent = rank;
+  badge.className = 'op-rank-badge rank-' + rank;
+
+  document.getElementById('op-rank-label').textContent = 'Rank ' + rank + ' — ' + (_RANK_LABELS[rank] || '');
+  document.getElementById('op-tier-label').textContent = 'Evolution: ' + (STAGE_LABELS[tier] || tier);
+  document.getElementById('op-xp-text').textContent = xp + ' DATAFLOW';
+
+  const nextEl = document.getElementById('op-xp-next');
+  nextEl.textContent = nextRank ? 'Next: Rank ' + nextRank + ' (' + xpNeeded + ' DATAFLOW)' : 'MAX RANK';
+
+  const fill = document.getElementById('op-xp-fill');
+  fill.style.width = (progress * 100) + '%';
+  fill.className = 'op-xp-fill xp-' + rank;
+
+  const detailEl = document.getElementById('op-xp-detail');
+  if (nextRank) {
+    detailEl.textContent = xp + ' / ' + (xp + xpNeeded) + ' DATAFLOW to Rank ' + nextRank;
+  } else {
+    detailEl.textContent = 'Sovereign Operator — Maximum Rank Achieved';
+  }
+
+  document.getElementById('op-traits-grid').innerHTML = _ALL_TRAITS.map(t => {
+    const unlocked = traits.includes(t);
+    return `<span class="op-trait ${unlocked?'unlocked':'locked'}">${unlocked?'✓ ':'✗ '}${t}</span>`;
+  }).join('');
+
+  document.getElementById('op-perms-grid').innerHTML = Object.entries(_PERM_LABELS).map(([key, label]) => {
+    const allowed = perms[key] === true;
+    return `<span class="op-perm ${allowed?'allowed':'denied'}">${allowed?'✓':'✗'} ${label}</span>`;
+  }).join('');
+
+  const history = (histData.history || []).slice(-10).reverse();
+  const histEl = document.getElementById('op-xp-history');
+  histEl.innerHTML = history.length ? history.map(e => {
+    const action = (e.action || '').replace(/_/g, ' ');
+    return `<div class="op-xp-event"><span class="action">${action}${e.detail?' — '+e.detail:''}</span><span class="points">+${e.xp} DATAFLOW</span></div>`;
+  }).join('') : '<div class="op-empty">No dataflow events yet. Complete operations to earn dataflow.</div>';
+}
+
+// ── Fusion block ───────────────────────────────────────────
+async function loadFusion(full = false) {
+  try {
+    const r = await fetch(API + '/v1/nexusmon/organism/operator/fusion');
+    const data = await r.json();
+    const block = data.fusion_block || '(no fusion block)';
+    if (full) {
+      document.getElementById('fusion-full').textContent = block;
+    } else {
+      const fw = document.getElementById('fusion-wrap');
+      const fc = document.getElementById('fusion-content');
+      fw.style.display = fw.style.display === 'none' ? 'block' : 'none';
+      fc.textContent = block;
+    }
+  } catch(e) {
+    if (full) {
+      document.getElementById('fusion-full').textContent = 'Error: ' + e.message;
+    }
+  }
+}
+
+// ── Workers ────────────────────────────────────────────────
+function toggleAuto() {
+  autoOn = !autoOn;
+  const el = document.getElementById('auto-toggle');
+  el.classList.toggle('on', autoOn);
+  document.getElementById('auto-label').style.color = autoOn ? 'var(--text)' : 'var(--dim)';
+}
+
+async function spawnWorker() {
+  const goal = document.getElementById('worker-goal').value.trim();
+  if (!goal) return;
+  const btn = document.getElementById('spawn-btn');
+  const errEl = document.getElementById('spawn-error');
+  errEl.style.display = 'none';
+  btn.disabled = true; btn.textContent = 'SPAWNING UNIT…';
+  try {
+    const r = await fetch(API + '/v1/nexusmon/organism/worker/spawn', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({goal, autonomous: autoOn})
+    });
+    const data = await r.json();
+    if (data.ok) {
+      pushEvent('WORKER', `Spawned ${data.worker_id} — ${goal.slice(0,40)}`, new Date().toISOString());
+      document.getElementById('worker-goal').value = '';
+      switchTab('workers');
+      setTimeout(loadWorkers, 600);
+    } else {
+      errEl.textContent = 'Spawn gate failed: ' + (data.detail || JSON.stringify(data));
+      errEl.style.display = 'block';
+    }
+  } catch(e) {
+    errEl.textContent = 'Spawn error: ' + e.message;
+    errEl.style.display = 'block';
+  }
+  btn.disabled = false; btn.textContent = 'SPAWN';
+}
+
+async function loadWorkers() {
+  const status = document.getElementById('worker-filter').value;
+  const url = API + '/v1/nexusmon/organism/worker' + (status ? `?status=${status}` : '');
+  const el = document.getElementById('worker-list');
+  try {
+    const r = await fetch(url);
+    const data = await r.json();
+    const workers = data.workers || [];
+    el.innerHTML = workers.length ? workers.map(renderWorkerRow).join('') :
+      '<div class="empty">No workers found</div>';
+  } catch(e) {
+    el.innerHTML = `<div class="error-msg">Worker feed failed to load: ${e.message}</div>`;
+  }
+}
+
+function renderWorkerRow(w) {
+  const steps = w.steps || [];
+  const log = w.step_log || [];
+  const pips = steps.map((s, i) => {
+    const logEntry = log.find(l => l.step === i);
+    const cls = logEntry ? (logEntry.status === 'COMPLETED' ? 'done' : logEntry.status === 'FAILED' ? 'fail' : 'running') :
+                (s.status === 'RUNNING' ? 'running' : '');
+    return `<div class="step-pip ${cls}"></div>`;
+  }).join('');
+
+  const canCancel = ['QUEUED','PAUSED'].includes(w.status);
+  return `
+    <div class="worker-row">
+      <div>
+        <div class="worker-id">#${w.id}</div>
+        <div style="font-size:9px;color:var(--dim);margin-top:3px">${w.autonomous ? 'AUTO' : 'MANUAL'}</div>
+      </div>
+      <div style="flex:1">
+        <div class="worker-goal">${w.goal}</div>
+        <div class="worker-steps" style="margin-top:6px">${pips}</div>
+        ${w.error ? `<div style="font-size:10px;color:var(--red);margin-top:4px">${w.error}</div>` : ''}
+        ${w.output && w.status==='COMPLETED' ? `<div style="font-size:10px;color:var(--green);margin-top:4px">✓ ${JSON.stringify(w.output).slice(0,80)}</div>` : ''}
+      </div>
+      <div class="worker-meta">
+        <span class="status-badge s-${w.status}">${w.status}</span>
+        <span style="font-size:9px;color:var(--dim)">${fmtDate(w.created_at)}</span>
+        ${canCancel ? `<button class="btn danger" style="font-size:9px;padding:3px 8px" onclick="cancelWorker('${w.id}')">CANCEL</button>` : ''}
+        <button class="btn" style="font-size:9px;padding:3px 8px" onclick="loadWorkerDetail('${w.id}')">DETAIL</button>
+      </div>
+    </div>`;
+}
+
+async function cancelWorker(id) {
+  try {
+    const r = await fetch(API + '/v1/nexusmon/organism/worker/' + id, {method:'DELETE'});
+    const data = await r.json();
+    if (data.ok !== false) {
+      pushEvent('WORKER', `Cancelled ${id}`, new Date().toISOString());
+      loadWorkers();
+    } else {
+      pushEvent('ERROR', `Cancel failed: ${data.detail || JSON.stringify(data)}`, new Date().toISOString());
+    }
+  } catch(e) {
+    pushEvent('ERROR', `Cancel error: ${e.message}`, new Date().toISOString());
+  }
+}
+
+async function loadWorkerDetail(id) {
+  try {
+    const r = await fetch(API + '/v1/nexusmon/organism/worker/' + id);
+    const data = await r.json();
+    const w = data.worker || data;
+    showWorkerDetail(w);
+  } catch(e) {
+    pushEvent('ERROR', `Detail fetch error: ${e.message}`, new Date().toISOString());
+  }
+}
+
+function showWorkerDetail(w) {
+  document.getElementById('detail-title').textContent = `WORKER #${w.id}`;
+  const logEntries = (w.step_log || []).map(s => `
+    <div class="step-log-entry ${s.status==='COMPLETED'?'ok':s.status==='FAILED'?'fail':''}">
+      <span class="step-num">[${s.step}]</span>
+      <span class="step-type">${s.type}</span>
+      <span class="status-badge s-${s.status}" style="margin-left:8px;font-size:8px">${s.status}</span>
+      <div class="step-out">${s.output ? JSON.stringify(s.output).slice(0,200) : s.error || ''}</div>
+    </div>`).join('') || '<div class="empty">No step log</div>';
+
+  document.getElementById('detail-body').innerHTML = `
+    <div class="info-row"><span class="info-key">Status</span><span class="info-val"><span class="status-badge s-${w.status}">${w.status}</span></span></div>
+    <div class="info-row"><span class="info-key">Goal</span><span class="info-val" style="max-width:360px;word-break:break-word">${w.goal}</span></div>
+    <div class="info-row"><span class="info-key">Mode</span><span class="info-val">${w.autonomous ? 'AUTONOMOUS' : 'MANUAL'}</span></div>
+    <div class="info-row"><span class="info-key">Created</span><span class="info-val">${fmtDate(w.created_at)}</span></div>
+    <div class="info-row"><span class="info-key">Completed</span><span class="info-val">${fmtDate(w.completed_at)}</span></div>
+    ${w.error ? `<div class="error-msg">${w.error}</div>` : ''}
+    <div class="side-label" style="margin:12px 0 6px">STEP LOG</div>
+    ${logEntries}
+    ${w.output ? `<div class="side-label" style="margin:12px 0 6px">OUTPUT</div>
+    <pre style="font-size:10px;color:var(--bright);background:var(--panel);padding:10px;border:1px solid var(--border);border-radius:2px;overflow-x:auto;white-space:pre-wrap">${JSON.stringify(w.output, null, 2).slice(0,1000)}</pre>` : ''}
+  `;
+  document.getElementById('detail-overlay').classList.add('open');
+}
+
+function closeDetail() {
+  document.getElementById('detail-overlay').classList.remove('open');
+}
+
+// ── Typewriter effect ──────────────────────────────────────
+function typeReply(el, text, speed) {
+  speed = speed || 25;
+  el.textContent = '';
+  let i = 0;
+  function t() {
+    if (i < text.length) {
+      el.textContent += text[i++];
+      setTimeout(t, speed);
+    }
+  }
+  t();
+}
+
+// ── Companion ──────────────────────────────────────────────
+async function _companionCall(text) {
+  const r = await fetch(API + '/v1/nexusmon/organism/companion', {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({text})
+  });
+  return await r.json();
+}
+
+async function sendCompanion() {
+  const input = document.getElementById('companion-input');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  addMsg('op', text);
+  const typing = document.getElementById('typing-indicator');
+  typing.classList.add('visible');
+  try {
+    const data = await _companionCall(text);
+    typing.classList.remove('visible');
+    const reply = data.ok ? data.reply : `ERROR: ${data.error || data.detail}`;
+    addMsg('nx', reply);
+    // Mirror reply to STATUS tab reply div
+    const replyEl = document.getElementById('companion-reply');
+    if (replyEl) typeReply(replyEl, reply);
+    const srcBadge = document.getElementById('companion-source-badge');
+    if (srcBadge) srcBadge.textContent = data.source ? `via ${data.source}` : '';
+    pushEvent('COMPANION', text.slice(0,40), new Date().toISOString());
+  } catch(e) {
+    typing.classList.remove('visible');
+    addMsg('nx', `[offline] ${e.message}`);
+  }
+}
+
+async function quickSendCompanion() {
+  const input = document.getElementById('quick-companion-input');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  const replyEl = document.getElementById('companion-reply');
+  if (replyEl) { replyEl.textContent = ''; replyEl.style.opacity = '0.5'; replyEl.textContent = 'thinking…'; }
+  try {
+    const data = await _companionCall(text);
+    const reply = data.ok ? data.reply : `ERROR: ${data.error || data.detail}`;
+    if (replyEl) { replyEl.style.opacity = '1'; typeReply(replyEl, reply); }
+    // Also push to COMPANION tab messages
+    addMsg('op', text);
+    addMsg('nx', reply);
+    const srcBadge = document.getElementById('companion-source-badge');
+    if (srcBadge) srcBadge.textContent = data.source ? `via ${data.source}` : '';
+    pushEvent('COMPANION', text.slice(0,40), new Date().toISOString());
+  } catch(e) {
+    if (replyEl) { replyEl.style.opacity = '1'; replyEl.textContent = `[offline] ${e.message}`; }
+  }
+}
+
+function addMsg(src, text) {
+  const msgs = document.getElementById('companion-msgs');
+  const div = document.createElement('div');
+  div.className = 'msg ' + src;
+  div.innerHTML = `
+    <div class="msg-source">${src === 'op' ? 'OPERATOR' : 'NEXUSMON'}</div>
+    <div class="msg-text">${text}</div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+// ── Missions ────────────────────────────────────────────────
+async function createMission() {
+  const goal = document.getElementById('mission-goal').value.trim();
+  const rank = document.getElementById('mission-rank').value;
+  if (!goal) return;
+  const btn = document.getElementById('create-mission-btn');
+  const errEl = document.getElementById('mission-create-error');
+  errEl.style.display = 'none';
+  btn.disabled = true; btn.textContent = 'FORGING MISSION…';
+  try {
+    const r = await fetch(API + '/v1/engine/missions', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({goal, rank})
+    });
+    const data = await r.json();
+    if (data.ok) {
+      document.getElementById('mission-goal').value = '';
+      pushEvent('MISSION', `Created ${data.mission?.id} [${rank}] — ${goal.slice(0,40)}`, new Date().toISOString());
+      loadMissions();
+    } else {
+      errEl.textContent = 'Mission forge failed: ' + (data.detail || JSON.stringify(data));
+      errEl.style.display = 'block';
+    }
+  } catch(e) {
+    errEl.textContent = 'Create error: ' + e.message;
+    errEl.style.display = 'block';
+  }
+  btn.disabled = false; btn.textContent = 'CREATE';
+}
+
+async function loadMissions() {
+  const el = document.getElementById('mission-list');
+  const statsEl = document.getElementById('missions-stats-badge');
+  el.innerHTML = '<div class="loading">syncing mission log…</div>';
+  try {
+    const [listR, statsR] = await Promise.all([
+      fetch(API + '/v1/engine/missions?limit=30'),
+      fetch(API + '/v1/engine/missions/stats')
+    ]);
+    const listData = await listR.json();
+    const statsData = await statsR.json();
+
+    const missions = listData.missions || [];
+    if (statsData.ok) {
+      statsEl.textContent = `${statsData.total || 0} total`;
+      // Update notif dot for blocked missions
+      const blocked = (statsData.by_status || {}).BLOCKED || 0;
+      updateNotifDot('notif-missions', blocked);
+    }
+
+    el.innerHTML = missions.length ? missions.map(renderMissionRow).join('') :
+      '<div class="empty">No missions yet — drop your first objective</div>';
+  } catch(e) {
+    el.innerHTML = `<div class="error-msg">Mission log failed to load: ${e.message}</div>`;
+  }
+}
+
+function renderMissionRow(m) {
+  const tasks = m.tasks || [];
+  const chips = tasks.map(t => {
+    const cls = t.status === 'COMPLETED' ? 'done' : t.status === 'FAILED' ? 'fail' : t.status === 'RUNNING' ? 'run' : '';
+    return `<span class="task-chip ${cls}">${(t.type || t.description || '').slice(0,20)}</span>`;
+  }).join('');
+
+  const isBlocked = m.status === 'BLOCKED';
+  const isPending = m.status === 'PENDING';
+  const isHighRisk = ['A','S'].includes(m.rank);
+
+  return `
+    <div class="mission-row">
+      <div class="mission-top">
+        <span class="rank-badge rank-${m.rank}">${m.rank}</span>
+        <span class="mission-goal">${m.goal}</span>
+        <span class="status-badge s-${m.status}" style="flex-shrink:0">${m.status}</span>
+      </div>
+      <div class="mission-meta">
+        <span style="font-size:9px;color:var(--dim)">${fmtDate(m.created_at)}</span>
+        ${m.xp_awarded ? `<span style="font-size:9px;color:var(--green)">+${m.xp_awarded} DATAFLOW</span>` : ''}
+        <span style="font-size:9px;color:var(--dim)">${tasks.length} task${tasks.length!==1?'s':''}</span>
+      </div>
+      ${chips ? `<div class="task-dag">${chips}</div>` : ''}
+      <div class="mission-actions">
+        ${isBlocked && isHighRisk ? `<button class="btn amber" style="font-size:9px;padding:4px 10px" onclick="approveMission('${m.id}')">APPROVE [${m.rank}-RANK]</button>` : ''}
+        ${isPending ? `<button class="btn success" style="font-size:9px;padding:4px 10px" onclick="runMission('${m.id}')">RUN</button>` : ''}
+        ${['PENDING','BLOCKED'].includes(m.status) ? `<button class="btn danger" style="font-size:9px;padding:4px 10px" onclick="cancelMission('${m.id}')">CANCEL</button>` : ''}
+      </div>
+    </div>`;
+}
+
+async function approveMission(id) {
+  try {
+    const r = await fetch(API + `/v1/engine/missions/${id}/approve`, {
+      method: 'POST', headers: {'Content-Type':'application/json'}, body: '{}'
+    });
+    const data = await r.json();
+    if (data.ok) {
+      pushEvent('MISSION', `Approved mission ${id}`, new Date().toISOString());
+      loadMissions();
+    } else {
+      pushEvent('ERROR', `Approve failed: ${data.detail || JSON.stringify(data)}`, new Date().toISOString());
+    }
+  } catch(e) {
+    pushEvent('ERROR', `Approve error: ${e.message}`, new Date().toISOString());
+  }
+}
+
+async function runMission(id) {
+  try {
+    const r = await fetch(API + `/v1/engine/missions/${id}/run`, {
+      method: 'POST', headers: {'Content-Type':'application/json'}, body: '{}'
+    });
+    const data = await r.json();
+    if (data.ok) {
+      pushEvent('MISSION', `Running mission ${id}`, new Date().toISOString());
+      setTimeout(loadMissions, 800);
+    } else {
+      pushEvent('ERROR', `Run failed: ${data.detail || JSON.stringify(data)}`, new Date().toISOString());
+    }
+  } catch(e) {
+    pushEvent('ERROR', `Run error: ${e.message}`, new Date().toISOString());
+  }
+}
+
+async function cancelMission(id) {
+  try {
+    const r = await fetch(API + `/v1/engine/missions/${id}`, {method:'DELETE'});
+    const data = await r.json();
+    if (data.ok !== false) {
+      pushEvent('MISSION', `Cancelled mission ${id}`, new Date().toISOString());
+      loadMissions();
+    } else {
+      pushEvent('ERROR', `Cancel failed: ${data.detail || JSON.stringify(data)}`, new Date().toISOString());
+    }
+  } catch(e) {
+    pushEvent('ERROR', `Cancel mission error: ${e.message}`, new Date().toISOString());
+  }
+}
+
+// ── Vault ────────────────────────────────────────────────────
+async function loadVault() {
+  const el = document.getElementById('artifact-list');
+  const statsEl = document.getElementById('vault-stats');
+  const statusFilter = document.getElementById('vault-status-filter').value;
+  const typeFilter = document.getElementById('vault-type-filter').value;
+  el.innerHTML = '<div class="loading">syncing vault stream…</div>';
+  try {
+    const params = new URLSearchParams({limit: '40'});
+    if (statusFilter) params.set('status', statusFilter);
+    if (typeFilter) params.set('type', typeFilter);
+
+    const [listR, statsR] = await Promise.all([
+      fetch(API + '/v1/vault/artifacts?' + params),
+      fetch(API + '/v1/vault/stats')
+    ]);
+    const listData = await listR.json();
+    const statsData = await statsR.json();
+
+    const artifacts = listData.artifacts || [];
+    if (statsData.ok) {
+      const pending = statsData.pending_review || 0;
+      statsEl.textContent = `${statsData.total || 0} total · ${pending} pending review`;
+      updateNotifDot('notif-vault', pending);
+    }
+
+    el.innerHTML = artifacts.length ? artifacts.map(renderArtifactRow).join('') :
+      '<div class="empty">No artifacts in this filter lane</div>';
+  } catch(e) {
+    el.innerHTML = `<div class="error-msg">Vault stream failed to load: ${e.message}</div>`;
+  }
+}
+
+function renderArtifactRow(a) {
+  const contentPreview = typeof a.content === 'string'
+    ? a.content.slice(0, 120)
+    : JSON.stringify(a.content).slice(0, 120);
+  const isPending = a.status === 'PENDING_REVIEW';
+
+  return `
+    <div class="artifact-row">
+      <div class="artifact-top">
+        <span class="type-badge">${a.type}</span>
+        <span class="artifact-title">${a.title}</span>
+        <span class="status-badge s-${a.status}" style="flex-shrink:0">${a.status.replace('_',' ')}</span>
+        ${a.version > 1 ? `<span style="font-size:9px;color:var(--dim)">v${a.version}</span>` : ''}
+      </div>
+      <div class="artifact-preview">${contentPreview}</div>
+      <div style="font-size:9px;color:var(--dim);margin-top:4px">${fmtDate(a.created_at)}</div>
+      ${isPending ? `
+      <div class="artifact-actions">
+        <button class="btn success" style="font-size:9px;padding:4px 10px" onclick="approveArtifact('${a.id}')">APPROVE</button>
+        <button class="btn danger" style="font-size:9px;padding:4px 10px" onclick="rejectArtifact('${a.id}')">REJECT</button>
+      </div>` : ''}
+    </div>`;
+}
+
+async function approveArtifact(id) {
+  try {
+    const r = await fetch(API + `/v1/vault/artifacts/${id}/approve`, {
+      method: 'POST', headers: {'Content-Type':'application/json'}, body: '{}'
+    });
+    const data = await r.json();
+    if (data.ok) {
+      pushEvent('VAULT', `Approved artifact ${id.slice(0,8)}`, new Date().toISOString());
+      loadVault();
+    } else {
+      pushEvent('ERROR', `Approve failed: ${data.detail}`, new Date().toISOString());
+    }
+  } catch(e) {
+    pushEvent('ERROR', `Approve error: ${e.message}`, new Date().toISOString());
+  }
+}
+
+async function rejectArtifact(id) {
+  try {
+    const r = await fetch(API + `/v1/vault/artifacts/${id}/reject`, {
+      method: 'POST', headers: {'Content-Type':'application/json'}, body: '{}'
+    });
+    const data = await r.json();
+    if (data.ok) {
+      pushEvent('VAULT', `Rejected artifact ${id.slice(0,8)}`, new Date().toISOString());
+      loadVault();
+    } else {
+      pushEvent('ERROR', `Reject failed: ${data.detail}`, new Date().toISOString());
+    }
+  } catch(e) {
+    pushEvent('ERROR', `Reject error: ${e.message}`, new Date().toISOString());
+  }
+}
+
+// ── Cognition ────────────────────────────────────────────────
+function _renderCognition(data) {
+  const preds = data.predictions || {};
+  document.getElementById('cog-predictions').textContent = preds.total || 0;
+  const brier = preds.avg_brier_score ?? preds.avg_brier ?? '—';
+  document.getElementById('cog-brier').textContent = 'Brier ' + (typeof brier === 'number' ? brier.toFixed(3) : '—');
+
+  const errs = data.errors || {};
+  document.getElementById('cog-errors').textContent = errs.total || 0;
+  document.getElementById('cog-dominant-error').textContent = 'Dominant ' + (errs.dominant_type || '—');
+
+  const decisions = data.decisions || {};
+  document.getElementById('cog-autopsies').textContent = decisions.autopsies || decisions.total_autopsies || 0;
+  document.getElementById('cog-decisions').textContent = 'Decisions ' + (decisions.total || decisions.total_classified || '—');
+}
+
+function _setDialValue(inputId, labelId, value) {
+  const input = document.getElementById(inputId);
+  const label = document.getElementById(labelId);
+  if (!input || !label) return;
+  const number = Number(value ?? 0.5);
+  input.value = Number.isFinite(number) ? number : 0.5;
+  label.textContent = Number(input.value).toFixed(2);
+}
+
+function _readDialValue(inputId) {
+  const input = document.getElementById(inputId);
+  if (!input) return 0.5;
+  const number = Number(input.value);
+  return Number.isFinite(number) ? number : 0.5;
+}
+
+function _wireDialPreview() {
+  const dialMap = [
+    ['dial-llm-steer', 'dial-llm-steer-val'],
+    ['dial-bio-aura', 'dial-bio-aura-val'],
+    ['dial-particle-intensity', 'dial-particle-intensity-val'],
+    ['dial-strange-gain', 'dial-strange-gain-val'],
+  ];
+  dialMap.forEach(([inputId, labelId]) => {
+    const input = document.getElementById(inputId);
+    const label = document.getElementById(labelId);
+    if (!input || !label) return;
+    input.addEventListener('input', () => {
+      label.textContent = Number(input.value).toFixed(2);
+    });
+  });
+}
+
+async function loadSignalDials() {
+  const resultEl = document.getElementById('signal-dials-result');
+  try {
+    const response = await fetch(API + '/v1/nexusmon/signal/modules');
+    const data = await response.json();
+    if (!data.ok) throw new Error(data.detail || 'failed');
+    const dials = data.dials || {};
+    _setDialValue('dial-llm-steer', 'dial-llm-steer-val', dials.llm_steer);
+    _setDialValue('dial-bio-aura', 'dial-bio-aura-val', dials.bio_aura);
+    _setDialValue('dial-particle-intensity', 'dial-particle-intensity-val', dials.particle_intensity);
+    _setDialValue('dial-strange-gain', 'dial-strange-gain-val', dials.strange_attractor_gain);
+    if (resultEl) {
+      resultEl.textContent = 'Signal dials synced ⚡';
+      resultEl.style.color = 'var(--dim)';
+    }
+  } catch (e) {
+    if (resultEl) {
+      resultEl.textContent = 'Signal dial load failed: ' + e.message;
+      resultEl.style.color = 'var(--red)';
+    }
+  }
+}
+
+async function saveSignalDials() {
+  const resultEl = document.getElementById('signal-dials-result');
+  const payload = {
+    llm_steer: _readDialValue('dial-llm-steer'),
+    bio_aura: _readDialValue('dial-bio-aura'),
+    particle_intensity: _readDialValue('dial-particle-intensity'),
+    strange_attractor_gain: _readDialValue('dial-strange-gain'),
+  };
+  try {
+    const response = await fetch(API + '/v1/nexusmon/signal/dials', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await response.json();
+    if (!data.ok) throw new Error(data.detail || 'failed');
+    _setDialValue('dial-llm-steer', 'dial-llm-steer-val', data.dials?.llm_steer);
+    _setDialValue('dial-bio-aura', 'dial-bio-aura-val', data.dials?.bio_aura);
+    _setDialValue('dial-particle-intensity', 'dial-particle-intensity-val', data.dials?.particle_intensity);
+    _setDialValue('dial-strange-gain', 'dial-strange-gain-val', data.dials?.strange_attractor_gain);
+    if (resultEl) {
+      resultEl.textContent = 'Signal dials saved 🟢';
+      resultEl.style.color = 'var(--green)';
+    }
+    pushEvent('COGNITION', 'Signal dials updated', new Date().toISOString());
+  } catch (e) {
+    if (resultEl) {
+      resultEl.textContent = 'Signal dial save failed: ' + e.message;
+      resultEl.style.color = 'var(--red)';
+    }
+    pushEvent('ERROR', 'Signal dial save failed: ' + e.message, new Date().toISOString());
+  }
+}
+
+async function loadCognition() {
+  try {
+    const r = await fetch(API + '/v1/cognition/status');
+    const data = await r.json();
+    if (!data.ok) throw new Error(data.detail || 'failed');
+    _renderCognition(data);
+  } catch(e) {
+    document.getElementById('cog-predictions').textContent = '—';
+    pushEvent('ERROR', 'Cognition load failed: ' + e.message, new Date().toISOString());
+  }
+}
+
+async function logPrediction() {
+  const claim = document.getElementById('pred-claim').value.trim();
+  const confidence = parseFloat(document.getElementById('pred-confidence').value);
+  const category = document.getElementById('pred-category').value.trim() || 'GENERAL';
+  const resultEl = document.getElementById('pred-result');
+  if (!claim || isNaN(confidence)) {
+    resultEl.textContent = 'Claim and confidence are required.';
+    resultEl.style.color = 'var(--red)';
+    return;
+  }
+  try {
+    const r = await fetch(API + '/v1/cognition/predictions', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({claim, confidence, category})
+    });
+    const data = await r.json();
+    if (data.ok) {
+      resultEl.textContent = 'Prediction logged ⚡';
+      resultEl.style.color = 'var(--green)';
+      document.getElementById('pred-claim').value = '';
+      document.getElementById('pred-confidence').value = '';
+      pushEvent('COGNITION', `Prediction logged: ${claim.slice(0,40)}`, new Date().toISOString());
+      setTimeout(() => loadCognition(), 400);
+    } else {
+      resultEl.textContent = 'Error: ' + (data.detail || JSON.stringify(data));
+      resultEl.style.color = 'var(--red)';
+    }
+  } catch(e) {
+    resultEl.textContent = 'Error: ' + e.message;
+    resultEl.style.color = 'var(--red)';
+  }
+}
+
+async function submitAutopsy() {
+  const decision = document.getElementById('autopsy-decision').value.trim();
+  const outcome = document.getElementById('autopsy-outcome').value.trim();
+  const quality = parseFloat(document.getElementById('autopsy-quality').value);
+  const resultEl = document.getElementById('autopsy-result');
+  if (!decision || !outcome) {
+    resultEl.textContent = 'Decision and outcome required.';
+    resultEl.style.color = 'var(--red)';
+    return;
+  }
+  try {
+    const r = await fetch(API + '/v1/cognition/autopsy', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({decision, outcome, quality: isNaN(quality) ? 0.5 : quality})
+    });
+    const data = await r.json();
+    if (data.ok) {
+      resultEl.textContent = 'Autopsy submitted ⚡';
+      resultEl.style.color = 'var(--green)';
+      document.getElementById('autopsy-decision').value = '';
+      document.getElementById('autopsy-outcome').value = '';
+      document.getElementById('autopsy-quality').value = '';
+      pushEvent('COGNITION', `Autopsy: ${decision.slice(0,40)}`, new Date().toISOString());
+      setTimeout(() => loadCognition(), 400);
+    } else {
+      resultEl.textContent = 'Error: ' + (data.detail || JSON.stringify(data));
+      resultEl.style.color = 'var(--red)';
+    }
+  } catch(e) {
+    resultEl.textContent = 'Error: ' + e.message;
+    resultEl.style.color = 'var(--red)';
+  }
+}
+
+// ── Notification dots ──────────────────────────────────────
+function updateNotifDot(id, count) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (count > 0) {
+    el.textContent = count > 99 ? '99+' : count;
+    el.classList.add('visible');
+  } else {
+    el.classList.remove('visible');
+  }
+}
+
+async function updateNotifDots() {
+  try {
+    const [mR, vR] = await Promise.all([
+      fetch(API + '/v1/engine/missions/stats'),
+      fetch(API + '/v1/vault/stats')
+    ]);
+    const mData = await mR.json();
+    const vData = await vR.json();
+    if (mData.ok) updateNotifDot('notif-missions', (mData.by_status || {}).BLOCKED || 0);
+    if (vData.ok) updateNotifDot('notif-vault', vData.pending_review || 0);
+  } catch(e) {
+    // silent — notif dots are best-effort
+  }
+}
+
+// ── Event log ──────────────────────────────────────────────
+function pushEvent(type, msg, ts) {
+  eventLog.unshift({type, msg, ts});
+  if (eventLog.length > 80) eventLog.pop();
+  renderEventLog();
+}
+
+function renderEventLog() {
+  const el = document.getElementById('event-list');
+  if (!eventLog.length) { el.innerHTML = '<div class="empty">awaiting signal events…</div>'; return; }
+  el.innerHTML = eventLog.map(e => `
+    <div class="event-item">
+      <div class="event-type et-${e.type}">${e.type}</div>
+      <div class="event-msg">${e.msg}</div>
+      <div class="event-ts">${fmtDate(e.ts)}</div>
+    </div>`).join('');
+}
+
+function fmtDate(iso) {
+  if (!iso) return '';
+  try { return new Date(iso).toLocaleTimeString(); } catch { return iso; }
+}
+
+// ── System Monitor ─────────────────────────────────────────
+async function loadSysmon() {
+  try {
+    const [infoR, healthR, secR] = await Promise.all([
+      fetch(API + '/v1/system/info'),
+      fetch(API + '/health'),
+      fetch(API + '/v1/security/status').catch(() => null)
+    ]);
+    const info = await infoR.json().catch(() => ({}));
+    const health = await healthR.json().catch(() => ({}));
+
+    document.getElementById('sys-status').textContent = health.status || info.status || '—';
+    document.getElementById('sys-status').style.color = (health.status === 'ok' || health.status === 'healthy') ? 'var(--green)' : 'var(--amber)';
+    document.getElementById('sys-version').textContent = info.version || health.version || '—';
+    document.getElementById('sys-mode').textContent = info.mode || info.run_mode || '—';
+    document.getElementById('sys-uptime').textContent = info.uptime ? `${Math.round(info.uptime)}s` : '—';
+    document.getElementById('sys-env').textContent = info.environment || info.env || '—';
+    document.getElementById('sys-threat').textContent = info.threat_level || 'LOW';
+    document.getElementById('sys-threat').style.color = info.threat_level === 'HIGH' ? 'var(--red)' : info.threat_level === 'MEDIUM' ? 'var(--amber)' : 'var(--green)';
+
+    if (secR) {
+      const sec = await secR.json().catch(() => ({}));
+      const secEl = document.getElementById('sysmon-security');
+      if (sec.ok !== false) {
+        const rows = Object.entries(sec).filter(([k]) => k !== 'ok').map(([k, v]) =>
+          `<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
+            <span style="color:var(--dim)">${k.replace(/_/g,' ').toUpperCase()}</span>
+            <span style="color:${v === true || v === 'OK' || v === 'CLEAR' ? 'var(--green)' : 'var(--amber)'}">${JSON.stringify(v)}</span>
+          </div>`).join('');
+        secEl.innerHTML = rows || '<span style="color:var(--green)">All systems nominal</span>';
+      } else {
+        secEl.innerHTML = '<span style="color:var(--amber)">Security endpoint unavailable</span>';
+      }
+    }
+
+    const services = info.services || health.services || {};
+    const svcEl = document.getElementById('sysmon-services');
+    if (Object.keys(services).length) {
+      svcEl.innerHTML = Object.entries(services).map(([k, v]) =>
+        `<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
+          <span style="color:var(--dim)">${k.toUpperCase()}</span>
+          <span style="color:${v === 'up' || v === true ? 'var(--green)' : 'var(--red)'}">${v}</span>
+        </div>`).join('');
+    } else {
+      svcEl.innerHTML = '<span style="color:var(--dim)">No service map available</span>';
+    }
+    pushEvent('SYSTEM', 'Sysmon refreshed', new Date().toISOString());
+  } catch(e) {
+    document.getElementById('sys-status').textContent = 'ERROR';
+    document.getElementById('sys-status').style.color = 'var(--red)';
+    pushEvent('ERROR', 'Sysmon load failed: ' + e.message, new Date().toISOString());
+  }
+}
+
+// ── Audit Log ──────────────────────────────────────────────
+async function loadAudit() {
+  const el = document.getElementById('audit-list');
+  const typeFilter = document.getElementById('audit-type-filter')?.value || '';
+  el.innerHTML = '<div class="loading">loading audit records…</div>';
+  try {
+    const params = new URLSearchParams({ limit: '50' });
+    if (typeFilter) params.set('type', typeFilter);
+    const r = await fetch(API + '/v1/audit?' + params);
+    const data = await r.json();
+    const records = data.records || data.audit || data.events || [];
+    if (!records.length) {
+      el.innerHTML = '<div class="empty">No audit records found</div>';
+      return;
+    }
+    el.innerHTML = records.map(rec => `
+      <div style="padding:8px 0;border-bottom:1px solid var(--border)">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span class="status-badge s-${(rec.type||rec.event_type||'').toLowerCase()}" style="font-size:8px">${rec.type || rec.event_type || 'EVENT'}</span>
+          <span style="font-size:9px;color:var(--dim)">${fmtDate(rec.timestamp || rec.created_at || rec.ts)}</span>
+        </div>
+        <div style="font-size:11px;color:var(--text);margin-top:4px">${rec.message || rec.description || rec.action || JSON.stringify(rec).slice(0, 120)}</div>
+        ${rec.actor ? `<div style="font-size:9px;color:var(--dim);margin-top:2px">Actor: ${rec.actor}</div>` : ''}
+      </div>`).join('');
+    pushEvent('AUDIT', `Loaded ${records.length} records`, new Date().toISOString());
+  } catch(e) {
+    el.innerHTML = `<div class="error-msg">Audit load failed: ${e.message}</div>`;
+    pushEvent('ERROR', 'Audit load failed: ' + e.message, new Date().toISOString());
+  }
+}
+
+// ── Governance Panel ───────────────────────────────────────
+let _govAutoTimer = null;
+
+function toggleGovAutoRefresh() {
+  const lbl = document.getElementById('gov-auto-label');
+  if (_govAutoTimer) {
+    clearInterval(_govAutoTimer);
+    _govAutoTimer = null;
+    if (lbl) lbl.textContent = 'OFF';
+  } else {
+    refreshGovernance();
+    _govAutoTimer = setInterval(refreshGovernance, 5000);
+    if (lbl) lbl.textContent = 'ON';
+  }
+}
+
+async function refreshGovernance() {
+  document.getElementById('gov-last-updated').textContent = 'polling…';
+  try {
+    const r = await fetch(API + '/v1/governance/status');
+    const data = await r.json();
+    _applyGovernanceStatus(data.layers || {});
+    document.getElementById('gov-last-updated').textContent = 'updated ' + new Date().toLocaleTimeString();
+  } catch(e) {
+    // Endpoint may not exist yet — show unknown state gracefully
+    document.getElementById('gov-last-updated').textContent = 'offline (no API)';
+  }
+}
+
+function _applyGovernanceStatus(layers) {
+  const LAYER_KEYS = ['geometry','integrity','scoring','threshold','reversible','sovereign','shadow','boundaries','stabilization','exploration'];
+  for (const key of LAYER_KEYS) {
+    const info = layers[key] || {};
+    const passed = info.passed;
+    const statusEl = document.getElementById('gov-status-' + key);
+    const reasonEl = document.getElementById('gov-reason-' + key);
+    if (!statusEl) continue;
+    statusEl.className = 'gov-layer-status';
+    if (passed === true) {
+      statusEl.classList.add('gov-pass');
+      statusEl.textContent = 'PASS';
+    } else if (passed === false) {
+      statusEl.classList.add('gov-block');
+      statusEl.textContent = 'BLOCK';
+    } else {
+      statusEl.textContent = '—';
+    }
+    if (reasonEl) reasonEl.textContent = info.reason || '';
+  }
+}
+
+async function loadSovereignLog() {
+  const el = document.getElementById('gov-sovereign-log');
+  el.innerHTML = '<span style="color:var(--dim)">loading…</span>';
+  try {
+    const r = await fetch(API + '/v1/governance/sovereign/log');
+    const data = await r.json();
+    const entries = data.overrides || data.log || [];
+    if (!entries.length) { el.textContent = 'no overrides recorded'; return; }
+    el.innerHTML = entries.map(e => `
+      <div style="padding:6px 0;border-bottom:1px solid var(--border)">
+        <div style="display:flex;justify-content:space-between">
+          <span style="color:var(--accent);font-size:10px">${e.layer || '?'} ↗ priority ${e.priority || '?'}</span>
+          <span style="color:var(--dim);font-size:9px">${fmtDate(e.timestamp)}</span>
+        </div>
+        <div style="font-size:11px;color:var(--text);margin-top:2px">${e.action || ''} — ${e.reason || ''}</div>
+      </div>`).join('');
+  } catch(_) { el.textContent = 'sovereign log unavailable'; }
+}
+
+let _shadowLogRaw = [];
+async function loadShadowLog() {
+  const el = document.getElementById('gov-shadow-log');
+  el.innerHTML = '<span style="color:var(--dim)">loading…</span>';
+  try {
+    const r = await fetch(API + '/v1/governance/shadow/log');
+    const data = await r.json();
+    _shadowLogRaw = data.entries || data.log || [];
+    _renderShadowLog();
+  } catch(_) { el.textContent = 'shadow log unavailable'; }
+}
+
+function filterShadowLog() { _renderShadowLog(); }
+
+function _renderShadowLog() {
+  const el = document.getElementById('gov-shadow-log');
+  const filter = document.getElementById('shadow-opacity-filter')?.value || '';
+  const entries = filter ? _shadowLogRaw.filter(e => (e.opacity||'').toUpperCase() === filter) : _shadowLogRaw;
+  if (!entries.length) { el.textContent = 'no shadow entries' + (filter ? ' for ' + filter : ''); return; }
+  const OPACITY_COLOR = { TRANSPARENT: 'var(--green)', PARTIAL: 'var(--amber)', OPAQUE: 'var(--red)', SILENT: 'var(--dim)' };
+  el.innerHTML = entries.map(e => {
+    const col = OPACITY_COLOR[(e.opacity||'').toUpperCase()] || 'var(--text)';
+    return `<div style="padding:5px 0;border-bottom:1px solid var(--border)">
+      <div style="display:flex;gap:8px;align-items:center">
+        <span style="color:${col};font-size:9px;font-weight:700">${e.opacity||'?'}</span>
+        <span style="color:var(--text);font-size:11px">${e.action || e.type || ''}</span>
+        <span style="color:var(--dim);font-size:9px;margin-left:auto">${fmtDate(e.timestamp)}</span>
+      </div>
+      ${e.wrapped ? `<div style="font-size:9px;color:var(--dim);margin-top:2px">${e.wrapped}</div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+async function loadEmergencePatterns() {
+  const el = document.getElementById('gov-emergence-list');
+  el.innerHTML = '<span style="color:var(--dim)">loading…</span>';
+  try {
+    const r = await fetch(API + '/v1/governance/emergence');
+    const data = await r.json();
+    const patterns = data.patterns || [];
+    const counts = { sequence: 0, correlation: 0, anomaly: 0, cyclic: 0 };
+    patterns.forEach(p => { if (counts[p.type] !== undefined) counts[p.type]++; });
+    document.getElementById('em-sequence-count').textContent = counts.sequence;
+    document.getElementById('em-correlation-count').textContent = counts.correlation;
+    document.getElementById('em-anomaly-count').textContent = counts.anomaly;
+    document.getElementById('em-cyclic-count').textContent = counts.cyclic;
+    if (!patterns.length) { el.textContent = 'no patterns detected yet'; return; }
+    const TYPE_COLOR = { sequence: 'var(--accent)', correlation: 'var(--green)', anomaly: 'var(--amber)', cyclic: 'var(--purple)' };
+    el.innerHTML = patterns.map(p => {
+      const col = TYPE_COLOR[p.type] || 'var(--text)';
+      return `<div style="padding:5px 0;border-bottom:1px solid var(--border)">
+        <span style="color:${col};font-size:9px;text-transform:uppercase;font-weight:700">${p.type||'?'}</span>
+        <span style="font-size:11px;color:var(--text);margin-left:8px">${p.description || p.pattern || JSON.stringify(p).slice(0,100)}</span>
+        <span style="font-size:9px;color:var(--dim);float:right">conf ${((p.confidence||0)*100).toFixed(0)}%</span>
+      </div>`;
+    }).join('');
+  } catch(_) { el.textContent = 'emergence data unavailable'; }
+}
+
+async function loadUpliftStatus() {
+  try {
+    const r = await fetch(API + '/v1/governance/uplift');
+    const data = await r.json();
+    const maturity = data.maturity || {};
+    const capabilities = data.capabilities || {};
+    const sr = maturity.success_rate != null ? (maturity.success_rate * 100).toFixed(1) + '%' : '—';
+    document.getElementById('uplift-success-rate').textContent = sr;
+    document.getElementById('uplift-total-ops').textContent = maturity.total_operations ?? '—';
+    document.getElementById('uplift-rollbacks').textContent = maturity.rollback_count ?? '—';
+    const TIERS = ['basic', 'intermediate', 'advanced', 'experimental'];
+    for (const tier of TIERS) {
+      const badge = document.getElementById('tier-' + tier + '-badge');
+      const caps = document.getElementById('tier-' + tier + '-caps');
+      const tierCaps = (capabilities[tier] || []);
+      const all_caps_for_tier = tierCaps.length ? tierCaps.map(c => c.name || c).join(', ') : '—';
+      const tierUnlocked = tierCaps.some(c => c.unlocked === true) || (data.unlocked_tiers || []).includes(tier);
+      if (badge) {
+        badge.className = 'tier-badge ' + (tierUnlocked ? 'unlocked' : 'locked');
+        badge.textContent = tier.toUpperCase() + (tierUnlocked ? ' ✓' : ' 🔒');
+      }
+      if (caps) caps.textContent = all_caps_for_tier;
+    }
+async function loadUpliftStatus() {
+  try {
+    const r = await fetch(API + '/v1/governance/uplift');
+    const data = await r.json();
+    const maturity = data.maturity || {};
+    const capabilities = data.capabilities || {};
+    const sr = maturity.success_rate != null ? (maturity.success_rate * 100).toFixed(1) + '%' : '—';
+    document.getElementById('uplift-success-rate').textContent = sr;
+    document.getElementById('uplift-total-ops').textContent = maturity.total_operations ?? '—';
+    document.getElementById('uplift-rollbacks').textContent = maturity.rollback_count ?? '—';
+    const TIERS = ['basic', 'intermediate', 'advanced', 'experimental'];
+    for (const tier of TIERS) {
+      const badge = document.getElementById('tier-' + tier + '-badge');
+      const caps = document.getElementById('tier-' + tier + '-caps');
+      const tierCaps = (capabilities[tier] || []);
+      const all_caps_for_tier = tierCaps.length ? tierCaps.map(c => c.name || c).join(', ') : '—';
+      const tierUnlocked = tierCaps.some(c => c.unlocked === true) || (data.unlocked_tiers || []).includes(tier);
+      if (badge) {
+        badge.className = 'tier-badge ' + (tierUnlocked ? 'unlocked' : 'locked');
+        badge.textContent = tier.toUpperCase() + (tierUnlocked ? ' ✓' : ' 🔒');
+      }
+      if (caps) caps.textContent = all_caps_for_tier;
+    }
+  } catch(_) { /* uplift data unavailable */ }
+}
+
+async function loadGovernancePerf() {
+  const tbody = document.getElementById('gov-perf-tbody');
+  const alertsEl = document.getElementById('gov-perf-alerts');
+  if (!tbody) return;
+  try {
+    const r = await fetch(API + '/v1/governance/perf');
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const data = await r.json();
+    const layers = data.layers || {};
+    const pipeline = data.pipeline || {};
+    const alerts = data.alerts || [];
+
+    // Render per-layer rows
+    const LAYER_ORDER = [
+      'geometry','integrity','coherence','sovereignty','boundaries',
+      'dag','reversibility','thresholds','sovereign','shadow_channel',
+      'emergence','uplift','stabilization','exploration'
+    ];
+    const names = LAYER_ORDER.filter(n => layers[n]).concat(
+      Object.keys(layers).filter(n => !LAYER_ORDER.includes(n))
+    );
+
+    if (!names.length) {
+      tbody.innerHTML = '<tr><td colspan="6" style="padding:8px;color:var(--dim)">no layer data yet — run a gate() call first</td></tr>';
+    } else {
+      tbody.innerHTML = names.map(name => {
+        const d = layers[name];
+        const p50 = d.p50_ms != null ? d.p50_ms.toFixed(2) : '—';
+        const p95 = d.p95_ms != null ? d.p95_ms.toFixed(2) : '—';
+        const p99 = d.p99_ms != null ? d.p99_ms.toFixed(2) : '—';
+        const calls = d.total_calls ?? '—';
+        const br = d.block_rate != null ? (d.block_rate * 100).toFixed(1) + '%' : '—';
+        const slow = d.p99_ms > 50 ? 'color:#ff6b6b' : '';
+        return `<tr style="border-bottom:1px solid #222">
+          <td style="padding:4px 8px;font-weight:bold">${name}</td>
+          <td style="padding:4px 8px;text-align:right">${p50}</td>
+          <td style="padding:4px 8px;text-align:right">${p95}</td>
+          <td style="padding:4px 8px;text-align:right;${slow}">${p99}</td>
+          <td style="padding:4px 8px;text-align:right">${calls}</td>
+          <td style="padding:4px 8px;text-align:right">${br}</td>
+        </tr>`;
+      }).join('');
+    }
+
+    // Pipeline summary
+    document.getElementById('perf-pipeline-p50').textContent = pipeline.p50_ms != null ? pipeline.p50_ms.toFixed(2) : '—';
+    document.getElementById('perf-pipeline-p95').textContent = pipeline.p95_ms != null ? pipeline.p95_ms.toFixed(2) : '—';
+    document.getElementById('perf-pipeline-p99').textContent = pipeline.p99_ms != null ? pipeline.p99_ms.toFixed(2) : '—';
+
+    // Alerts
+    alertsEl.textContent = alerts.length ? '⚠ ' + alerts.join(' | ') : '';
+  } catch(e) {
+    tbody.innerHTML = `<tr><td colspan="6" style="padding:8px;color:#ff4444">perf data unavailable: ${e.message}</td></tr>`;
+  }
+}
+
+// ── Dependency Graph ───────────────────────────────────────
+async function loadDepTree() {
+  const el = document.getElementById('deptree-container');
+  el.innerHTML = '<div class="loading">mapping module graph…</div>';
+  try {
+    const [instR, commR] = await Promise.all([
+      fetch(API + '/v1/plugins'),
+      fetch(API + '/v1/plugins/community')
+    ]);
+    const instData = await instR.json();
+    const commData = await commR.json();
+    const installed = instData.installed || instData.plugins || [];
+    const community = commData.plugins || commData.community || [];
+
+    const allModules = [...installed, ...community];
+    if (!allModules.length) {
+      el.innerHTML = '<div class="empty">No modules in registry</div>';
+      return;
+    }
+
+    const installedIds = new Set(installed.map(p => p.id || p.name));
+
+    el.innerHTML = allModules.map(p => {
+      const isInst = installedIds.has(p.id || p.name);
+      const deps = p.dependencies || p.deps || [];
+      const depsHtml = deps.length
+        ? `<ul style="margin:4px 0 0 16px;padding:0">${deps.map(d =>
+            `<li style="font-size:9px;color:${installedIds.has(d) ? 'var(--green)' : 'var(--amber)'}">${d} ${installedIds.has(d) ? '✓' : '⚠ missing'}</li>`
+          ).join('')}</ul>`
+        : `<span style="font-size:9px;color:var(--dim);margin-left:8px">no dependencies</span>`;
+      return `
+        <details style="margin-bottom:6px;border:1px solid var(--border);border-radius:3px;padding:6px 10px">
+          <summary style="cursor:pointer;display:flex;justify-content:space-between;align-items:center">
+            <span style="font-size:11px;color:${isInst ? 'var(--accent)' : 'var(--dim)'}">${p.name || p.id}</span>
+            <span style="font-size:9px;color:${isInst ? 'var(--green)' : 'var(--dim)'}">${isInst ? 'INSTALLED' : 'AVAILABLE'}</span>
+          </summary>
+          <div style="margin-top:6px;font-size:10px;color:var(--dim)">${p.description || ''}</div>
+          <div style="margin-top:4px;font-size:9px;color:var(--dim)">DEPS: ${depsHtml}</div>
+        </details>`;
+    }).join('');
+    pushEvent('GRAPH', `Mapped ${allModules.length} modules`, new Date().toISOString());
+  } catch(e) {
+    el.innerHTML = `<div class="error-msg">Graph load failed: ${e.message}</div>`;
+  }
+}
+
+async function exportDepGraph() {
+  try {
+    const r = await fetch(API + '/v1/plugins/export-graph', { method: 'POST', headers: {'Content-Type':'application/json'}, body: '{}' });
+    if (r.ok) {
+      const blob = await r.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'dep-graph.json'; a.click();
+      URL.revokeObjectURL(url);
+      pushEvent('GRAPH', 'Dependency graph exported', new Date().toISOString());
+    } else {
+      const data = await r.json().catch(() => ({}));
+      pushEvent('ERROR', 'Export failed: ' + (data.detail || r.status), new Date().toISOString());
+    }
+  } catch(e) {
+    pushEvent('ERROR', 'Export error: ' + e.message, new Date().toISOString());
+  }
+}
+
+// ── Full Timeline ──────────────────────────────────────────
+async function loadFullTimeline() {
+  const el = document.getElementById('fulltimeline-list');
+  el.innerHTML = '<div class="loading">loading timeline…</div>';
+  try {
+    const [listR, statsR] = await Promise.all([
+      fetch(API + '/v1/timeline?limit=200'),
+      fetch(API + '/v1/timeline/stats')
+    ]);
+    const listData = await listR.json();
+    const statsData = await statsR.json();
+    const events = listData.events || listData.timeline || [];
+
+    if (statsData.ok !== false) {
+      document.getElementById('ft-total').textContent = statsData.total || events.length;
+      document.getElementById('ft-stages').textContent = statsData.stage_shifts || statsData.stages || '—';
+      document.getElementById('ft-milestones').textContent = statsData.milestones || '—';
+    }
+
+    if (!events.length) {
+      el.innerHTML = '<div class="empty">No timeline events</div>';
+      return;
+    }
+    el.innerHTML = events.map(ev => `
+      <div style="display:flex;gap:10px;padding:6px 0;border-bottom:1px solid var(--border);align-items:flex-start">
+        <span class="status-badge s-${(ev.type||'').toLowerCase()}" style="font-size:8px;flex-shrink:0">${ev.type || 'EVENT'}</span>
+        <div style="flex:1">
+          <div style="font-size:11px;color:var(--text)">${ev.description || ev.label || ev.message || JSON.stringify(ev.data||{}).slice(0,100)}</div>
+          ${ev.stage ? `<span style="font-size:9px;color:var(--accent)">${ev.stage}</span>` : ''}
+        </div>
+        <span style="font-size:9px;color:var(--dim);flex-shrink:0">${fmtDate(ev.timestamp || ev.ts || ev.created_at)}</span>
+      </div>`).join('');
+    pushEvent('TIMELINE', `Loaded ${events.length} events`, new Date().toISOString());
+  } catch(e) {
+    el.innerHTML = `<div class="error-msg">Timeline load failed: ${e.message}</div>`;
+  }
+}
+
+// ── Full Evolution ─────────────────────────────────────────
+async function loadFullEvolution() {
+  try {
+    const data = await loadSnapshot(true);
+    if (!data) return;
+
+    const org = data.organism || data;
+    const evo = data.evolution || data.stage_data || {};
+    const opData = data.operator || {};
+
+    document.getElementById('evo-ops').textContent = org.total_missions ?? evo.total_ops ?? '—';
+    const winRate = org.success_rate ?? evo.win_rate;
+    document.getElementById('evo-win-rate').textContent = winRate != null ? Math.round(winRate * 100) + '%' : '—';
+    document.getElementById('evo-essence').textContent = opData.xp ?? org.xp ?? evo.essence ?? '—';
+    document.getElementById('evo-stage').textContent = org.stage ? (STAGE_LABELS[org.stage] || org.stage) : '—';
+    document.getElementById('evo-next').textContent = evo.next_stage ? (STAGE_LABELS[evo.next_stage] || evo.next_stage) : '—';
+    document.getElementById('evo-traits').textContent = org.active_traits?.length ?? data.traits?.length ?? '—';
+
+    const histEl = document.getElementById('fullevolution-history');
+    const history = evo.stage_history || evo.history || data.stage_history || [];
+    if (history.length) {
+      histEl.innerHTML = history.map(h => `
+        <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border)">
+          <span style="font-size:11px;color:var(--accent)">${STAGE_LABELS[h.stage] || h.stage}</span>
+          <span style="font-size:9px;color:var(--dim)">${fmtDate(h.timestamp || h.ts)}</span>
+        </div>`).join('');
+    } else {
+      histEl.innerHTML = '<div class="empty">No stage history recorded</div>';
+    }
+    pushEvent('EVOLUTION', 'Evolution data loaded', new Date().toISOString());
+  } catch(e) {
+    pushEvent('ERROR', 'Evolution load failed: ' + e.message, new Date().toISOString());
+  }
+}
+
+// ── Doctrine ──────────────────────────────────────────────────
+async function loadDoctrine() {
+  try {
+    const r = await fetch(API + '/v1/nexusmon/doctrine');
+    const data = await r.json();
+    document.getElementById('doc-status').textContent = data.has_doctrine ? 'ACTIVE' : 'MISSING';
+    document.getElementById('doc-status').style.color = data.has_doctrine ? '#00ffaa' : '#ff3355';
+    document.getElementById('doc-bytes').textContent = data.doctrine_bytes || '—';
+    document.getElementById('doc-sections').textContent = (data.sections || []).length;
+    const secEl = document.getElementById('doctrine-sections');
+    if (data.sections && data.sections.length) {
+      secEl.innerHTML = data.sections.map(s =>
+        `<div style="padding:4px 0;border-bottom:1px solid var(--border);color:#ff00ff">${s}</div>`
+      ).join('');
+    } else {
+      secEl.textContent = 'No doctrine loaded';
+    }
+    document.getElementById('doctrine-full').textContent = data.full_text || 'No doctrine file found.';
+    pushEvent('DOCTRINE', 'Doctrine loaded (' + (data.doctrine_bytes||0) + ' bytes)', new Date().toISOString());
+  } catch(e) {
+    document.getElementById('doc-status').textContent = 'ERROR';
+    document.getElementById('doc-status').style.color = '#ff3355';
+    pushEvent('ERROR', 'Doctrine load failed: ' + e.message, new Date().toISOString());
+  }
+}
+
+async function receiveDoctrine() {
+  const resultEl = document.getElementById('doctrine-receive-result');
+  resultEl.textContent = 'Transmitting doctrine to NEXUSMON...';
+  resultEl.style.color = 'var(--amber)';
+  try {
+    const r = await fetch(API + '/v1/nexusmon/doctrine/receive', { method: 'POST', headers: {'Content-Type':'application/json'}, body: '{}' });
+    const data = await r.json();
+    if (data.ok) {
+      resultEl.innerHTML = `<span style="color:#00ffaa">⚡ ${data.message}</span>`;
+      const moodEl = document.getElementById('doctrine-mood');
+      if (data.mentality) {
+        moodEl.innerHTML = `Mood: <span style="color:#ff00ff">${data.mentality.mood}</span> | ` +
+          (data.mentality.desires || []).slice(0,2).map(d => `<span style="color:var(--text)">${d}</span>`).join(' | ');
+      }
+      pushEvent('DOCTRINE', '⚡ BRIEFING RECEIVED — Identity substrate updated', new Date().toISOString());
+      // Refresh nerve panel
+      updateNerveStatus();
+    } else {
+      resultEl.innerHTML = `<span style="color:#ff3355">Failed: ${data.error}</span>`;
+    }
+  } catch(e) {
+    resultEl.innerHTML = `<span style="color:#ff3355">Transmission failed: ${e.message}</span>`;
+  }
+}
+
+async function updateBusterStatus() {
+  try {
+    const res = await fetch('/v1/nexusmon/organism/buster');
+    const data = await res.json();
+    if (data.ok && data.buster) {
+      document.getElementById('buster-active').style.display = data.buster.active ? 'block' : 'none';
+      document.getElementById('buster-energy').innerText = data.buster.plasma_energy + '%';
+      document.getElementById('buster-bar').style.width = data.buster.plasma_energy + '%';
+      document.getElementById('buster-defeated').innerText = data.buster.viruses_defeated;
+      
+      const log = document.getElementById('buster-log');
+      if (data.buster.viruses_defeated > 0) {
+        log.innerText = "System Cleaned " + data.buster.viruses_defeated + "x";
+        log.style.color = "#00ffaa";
+      } else {
+        log.innerText = "System Secure";
+        log.style.color = "var(--dim)";
+      }
+    }
+  } catch(e) {
+    console.error("Buster sync failed:", e);
+  }
+}
+
+async function updateNerveStatus() {
+  try {
+    const res = await fetch('/v1/nexusmon/organism/nerve');
+    const data = await res.json();
+    if (data.ok && data.substrate) {
+      document.getElementById('nerve-stress').innerText = data.substrate.stress.toFixed(1);
+      document.getElementById('nerve-synergy').innerText = data.substrate.synergy.toFixed(2);
+      const intensity = (data.substrate.synergy / 5.0) * 100;
+      document.getElementById('nerve-bar').style.width = Math.min(100, intensity) + '%';
+    }
+  } catch(e) {
+    console.error("Nerve sync failed:", e);
+  }
+}
+
+// ── Polling ────────────────────────────────────────────────
+function loadAll() {
+  updateStatus();
+  updateEvolution();
+  updateCognition();
+  updateVault();
+  updateMissions();
+  updateBusterStatus();
+  updateNerveStatus();
+}
+
+loadAll();
+_wireDialPreview();
+loadSignalDials();
+setInterval(loadAll, 8000);
+setInterval(loadWorkers, 5000);
+setInterval(updateNotifDots, 15000);
+setInterval(() => { if (document.getElementById('tab-sysmon')?.classList.contains('active')) loadSysmon(); }, 10000);
+</script>
+
+<!-- JARVIS PARTICLES JS -->
+<script id="jarvis-particles-js">
+(function() {
+  const pCanvas = document.getElementById('jarvis-particles');
+  if (!pCanvas) return;
+  const pCtx = pCanvas.getContext('2d');
+
+  function resize() {
+    pCanvas.width = window.innerWidth;
+    pCanvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  let particles = [];
+  for (let i = 0; i < 80; i++) {
+    particles.push({
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * window.innerHeight,
+      size: Math.random() * 2 + 1,
+      speed: Math.random() * 0.5 + 0.1,
+      hue: Math.random() * 60 + 180 // cyan-purple range
+    });
+  }
+
+  function animateParticles() {
+    pCtx.fillStyle = 'rgba(10,0,30,0.05)';
+    pCtx.fillRect(0,0,pCanvas.width,pCanvas.height);
+    particles.forEach(p => {
+      p.y += p.speed;
+      if (p.y > pCanvas.height) p.y = 0;
+      pCtx.fillStyle = `hsla(${p.hue}, 80%, 60%, 0.6)`;
+      pCtx.beginPath();
+      pCtx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+      pCtx.fill();
+    });
+    requestAnimationFrame(animateParticles);
+  }
+  animateParticles();
+})();
+
+// GSAP Floating Panels
+if (typeof gsap !== 'undefined') {
+  gsap.utils.toArray(".card, .stat-block, .companion-window, .holo-panel, .status-panel, .trait-section").forEach((panel, i) => {
+    gsap.to(panel, {
+      y: "random(-8,8)",
+      rotation: "random(-1.5,1.5)",
+      duration: "random(6,12)",
+      repeat: -1,
+      yoyo: true,
+      ease: "sine.inOut",
+      delay: i * 0.3
+    });
+  });
+
+  // Text neon flicker
+  gsap.to(".neon-text", {
+    textShadow: "0 0 10px #00f0ff, 0 0 20px #00f0ff88, 0 0 40px #aa44ff44",
+    duration: 2,
+    repeat: -1,
+    yoyo: true,
+    ease: "sine.inOut"
+  });
+}
+</script>
+</body>
+</html>

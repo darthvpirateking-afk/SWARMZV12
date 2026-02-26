@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <meta name="theme-color" content="#05070C">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./app.css">
+  <link rel="stylesheet" href="./trials.css">
+  <title>NEXUSMON // TRIALS INBOX</title>
+</head>
+<body>
+
+<div class="scanlines" aria-hidden="true"></div>
+
+<div id="trialsFrame">
+
+  <!-- TOP BAR -->
+  <header id="topBar">
+    <div class="top-left">
+      <a href="/" class="logo-link"><h1 class="logo">NEXUSMON TRIALS</h1></a>
+    </div>
+    <div class="top-right">
+      <span class="chip" id="chipWorker">WORKER --</span>
+      <span class="chip" id="chipTotal">TOTAL 0</span>
+      <button class="btn btn-tiny" id="btnCheckNow">CHECK NOW</button>
+      <a href="/" class="btn btn-tiny">CONTROL</a>
+    </div>
+  </header>
+
+  <!-- ERROR BANNER -->
+  <div id="errorBanner" class="error-banner hidden"></div>
+
+  <!-- TAB BAR -->
+  <div class="trials-tabs">
+    <button class="trials-tab active" data-tab="pending" id="tabPending">
+      PENDING <span class="tab-count" id="countPending">0</span>
+    </button>
+    <button class="trials-tab" data-tab="needs_review" id="tabNeedsReview">
+      NEEDS REVIEW <span class="tab-count tab-count-warn" id="countNeedsReview">0</span>
+    </button>
+    <button class="trials-tab" data-tab="completed" id="tabCompleted">
+      COMPLETED <span class="tab-count tab-count-ok" id="countCompleted">0</span>
+    </button>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <main id="trialsMain">
+
+    <div class="trials-layout">
+
+      <!-- LEFT: Trial List -->
+      <section class="trials-list-panel">
+        <div class="trials-list" id="trialsList">
+          <div class="empty-msg">Loading trials...</div>
+        </div>
+      </section>
+
+      <!-- RIGHT: Detail + Actions -->
+      <section class="trials-detail-panel" id="trialsDetail">
+        <div class="empty-msg">Select a trial to view details</div>
+      </section>
+
+    </div>
+
+    <!-- CREATE TRIAL -->
+    <section class="trials-create-panel">
+      <h2 class="panel-title">CREATE TRIAL</h2>
+      <div class="create-form">
+        <div class="form-row">
+          <label>ACTION</label>
+          <input type="text" id="createAction" placeholder="e.g. Deploy feature toggle X">
+        </div>
+        <div class="form-row">
+          <label>CONTEXT</label>
+          <input type="text" id="createContext" placeholder="e.g. onboarding/step-3">
+        </div>
+        <div class="form-row">
+          <label>METRIC</label>
+          <select id="createMetric">
+            <option value="conversion_rate">conversion_rate</option>
+            <option value="activation_rate">activation_rate</option>
+            <option value="retention_d1">retention_d1</option>
+            <option value="errors_per_1k">errors_per_1k</option>
+            <option value="latency_p95">latency_p95</option>
+            <option value="cost_per_day">cost_per_day</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>CHECK AFTER (sec)</label>
+          <input type="number" id="createDelay" value="300" min="10">
+        </div>
+        <div class="form-row">
+          <label>EXPECTED DELTA</label>
+          <input type="number" id="createDelta" step="0.01" placeholder="0 = must not worsen">
+        </div>
+        <div class="form-row">
+          <label>TAGS</label>
+          <input type="text" id="createTags" placeholder="growth, stability (comma sep)">
+        </div>
+        <div class="form-row">
+          <label>NOTES</label>
+          <input type="text" id="createNotes" placeholder="Optional notes">
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" id="btnCreateTrial">CREATE TRIAL</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SURVIVAL SCORES -->
+    <section class="trials-scores-panel">
+      <h2 class="panel-title">SURVIVAL LEADERBOARD</h2>
+      <div id="scoresBoard" class="scores-board">
+        <div class="empty-msg">No scores yet</div>
+      </div>
+    </section>
+
+    <!-- METRICS DASHBOARD -->
+    <section class="trials-metrics-panel">
+      <h2 class="panel-title">LIVE METRICS</h2>
+      <div id="metricsDash" class="metrics-dash">
+        <div class="empty-msg">Loading metrics...</div>
+      </div>
+    </section>
+
+  </main>
+
+</div>
+
+<script src="./trials.js"></script>
+</body>
+</html>
+
