@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>NEXUSMON // ORGANISM COCKPIT ⚡🟢</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<link rel="stylesheet" href="/web/neon-modern.css">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap');
 
@@ -1222,6 +1223,11 @@ body {
 <header class="topbar">
   <div style="display:flex;align-items:center;gap:8px">
     <div class="logo">NEX<em>US</em>MON <span style="font-size:13px;color:var(--dim);font-weight:300">// BIOECONOMY COORDINATION OS</span></div>
+    <nav class="quick-nav" aria-label="Primary navigation">
+      <a href="/">HOME</a>
+      <a href="/organism">COCKPIT</a>
+      <a href="/avatar">AVATAR</a>
+    </nav>
   </div>
   <div class="topbar-right">
     <span class="last-updated" id="last-updated"></span>
@@ -1357,61 +1363,16 @@ body {
       <div class="status-hero">
         <!-- Central JARVIS Hologram – Avatar Embed -->
         <div class="holo-center" id="avatar-holo">
-          <div class="avatar-core">
-            <svg class="avatar-svg" viewBox="0 0 600 700" role="img" aria-label="Mini Nexusmon" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <linearGradient id="nexusGlow" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0%" stop-color="#e6f7ff" stop-opacity="0.9" />
-                  <stop offset="60%" stop-color="#3fd4ff" stop-opacity="0.75" />
-                  <stop offset="100%" stop-color="#7aa2ff" stop-opacity="0.6" />
-                </linearGradient>
-                <radialGradient id="coreLight" cx="50%" cy="40%" r="60%">
-                  <stop offset="0%" stop-color="#ffffff" stop-opacity="0.98" />
-                  <stop offset="55%" stop-color="#5fe3ff" stop-opacity="0.65" />
-                  <stop offset="100%" stop-color="#00202a" stop-opacity="0" />
-                </radialGradient>
-              </defs>
-              <rect x="10" y="20" width="580" height="660" rx="26" ry="26" fill="rgba(5,10,12,0.35)" stroke="rgba(140,210,255,0.25)" />
-              <g class="avatar-ring" opacity="0.5">
-                <circle cx="300" cy="360" r="210" fill="none" stroke="url(#nexusGlow)" stroke-width="2" stroke-dasharray="3 10" />
-              </g>
-              <g class="avatar-pulse">
-                <circle cx="300" cy="360" r="150" fill="url(#coreLight)" />
-              </g>
-              <g>
-                <ellipse cx="300" cy="370" rx="128" ry="148" fill="rgba(235,245,255,0.9)" stroke="rgba(70,200,255,0.85)" stroke-width="3" />
-                <ellipse cx="240" cy="270" rx="52" ry="76" fill="rgba(210,225,235,0.9)" stroke="rgba(70,200,255,0.8)" stroke-width="3" />
-                <ellipse cx="360" cy="270" rx="52" ry="76" fill="rgba(210,225,235,0.9)" stroke="rgba(70,200,255,0.8)" stroke-width="3" />
-                <circle cx="300" cy="220" r="20" fill="rgba(200,235,255,0.95)" stroke="#3fd4ff" stroke-width="3" />
-                <circle cx="300" cy="220" r="7" fill="#0b1216" opacity="0.9" />
-                <circle cx="268" cy="360" r="16" fill="#ffffff" opacity="0.98" />
-                <circle cx="332" cy="360" r="16" fill="#ffffff" opacity="0.98" />
-                <circle cx="268" cy="360" r="7" fill="#0b1216" />
-                <circle cx="332" cy="360" r="7" fill="#0b1216" />
-                <circle cx="252" cy="392" r="10" fill="#bfe9ff" opacity="0.8" />
-                <circle cx="348" cy="392" r="10" fill="#bfe9ff" opacity="0.8" />
-                <path d="M288 412 Q300 426 312 412" stroke="#3fd4ff" stroke-width="3" fill="none" stroke-linecap="round" />
-                <ellipse cx="258" cy="500" rx="42" ry="28" fill="rgba(210,225,235,0.85)" stroke="rgba(70,200,255,0.6)" stroke-width="3" />
-                <ellipse cx="342" cy="500" rx="42" ry="28" fill="rgba(210,225,235,0.85)" stroke="rgba(70,200,255,0.6)" stroke-width="3" />
-                <path d="M210 300 L240 310" stroke="#7aa2ff" stroke-width="2" />
-                <path d="M390 300 L360 310" stroke="#7aa2ff" stroke-width="2" />
-                <path d="M300 450 L300 485" stroke="#7aa2ff" stroke-width="2" />
-              </g>
-              <text x="300" y="90" text-anchor="middle" font-family="monospace" font-size="14" fill="#e6f7ff" letter-spacing="4">MINI NEXUSMON</text>
-              <text x="300" y="635" text-anchor="middle" font-family="monospace" font-size="12" fill="#7aa2ff" letter-spacing="3">LEVEL 0 CIRCUIT ONLINE</text>
-            </svg>
-            <div class="avatar-glyphs">
-              <div class="glyph-orbit">
-                <div class="glyph-item">⚡</div>
-                <div class="glyph-item">⚙️</div>
-                <div class="glyph-item">🧬</div>
-                <div class="glyph-item">◇</div>
-              </div>
-            </div>
-            <div class="avatar-caption">
-              <span>CORE: CIRCUIT SEED</span>
-              <span>MOOD: READY</span>
-            </div>
+          <iframe
+            id="avatar-embed"
+            src="/avatar?embed=1"
+            title="NEXUSMON Avatar Embed"
+            loading="lazy"
+            referrerpolicy="same-origin"
+          ></iframe>
+          <div class="avatar-inline-caption">
+            <span>AVATAR UPLINK LIVE</span>
+            <span class="presence"><span class="presence-dot"></span>SIGNAL LOCKED</span>
           </div>
           <div class="holo-glow-overlay"></div>
         </div>
@@ -3025,12 +2986,24 @@ function typeReply(el, text, speed) {
 }
 
 // ── Companion ──────────────────────────────────────────────
+const _companionCache = new Map();
+
 async function _companionCall(text) {
+  const clean = (text || '').trim();
+  const cacheKey = clean.toLowerCase();
+  const now = Date.now();
+  const cached = _companionCache.get(cacheKey);
+  if (cached && (now - cached.ts) < 12000) {
+    return cached.data;
+  }
+
   const r = await fetch(API + '/v1/nexusmon/organism/companion', {
     method: 'POST', headers: {'Content-Type':'application/json'},
-    body: JSON.stringify({text})
+    body: JSON.stringify({text: clean})
   });
-  return await r.json();
+  const data = await r.json();
+  _companionCache.set(cacheKey, { ts: now, data });
+  return data;
 }
 
 async function sendCompanion() {
@@ -3050,7 +3023,7 @@ async function sendCompanion() {
     const replyEl = document.getElementById('companion-reply');
     if (replyEl) typeReply(replyEl, reply);
     const srcBadge = document.getElementById('companion-source-badge');
-    if (srcBadge) srcBadge.textContent = data.source ? `via ${data.source}` : '';
+    if (srcBadge) srcBadge.textContent = data.source ? `live via ${data.source}` : 'live link';
     pushEvent('COMPANION', text.slice(0,40), new Date().toISOString());
   } catch(e) {
     typing.classList.remove('visible');
@@ -3073,7 +3046,7 @@ async function quickSendCompanion() {
     addMsg('op', text);
     addMsg('nx', reply);
     const srcBadge = document.getElementById('companion-source-badge');
-    if (srcBadge) srcBadge.textContent = data.source ? `via ${data.source}` : '';
+    if (srcBadge) srcBadge.textContent = data.source ? `live via ${data.source}` : 'live link';
     pushEvent('COMPANION', text.slice(0,40), new Date().toISOString());
   } catch(e) {
     if (replyEl) { replyEl.style.opacity = '1'; replyEl.textContent = `[offline] ${e.message}`; }
@@ -4154,5 +4127,6 @@ if (typeof gsap !== 'undefined') {
   });
 }
 </script>
+<script defer src="/web/neon-modern.js"></script>
 </body>
 </html>

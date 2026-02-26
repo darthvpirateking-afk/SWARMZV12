@@ -4,181 +4,36 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>NEXUSMON</title>
-<script src="https://cdn.jsdelivr.net/npm/elevenlabs@latest/elevenlabs.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-<script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
-<script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body {
-  background: linear-gradient(135deg, #0a0015 0%, #050510 50%, #0a0015 100%);
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  min-height: 100vh; font-family: 'Courier New', monospace; color: #00f0ff;
-  overflow: hidden; position: relative;
-}
-canvas { position: fixed; top: 0; left: 0; z-index: 0; }
-.container {
-  position: relative; z-index: 2; display: flex; flex-direction: column;
-  align-items: center; justify-content: center; min-height: 100vh; width: 100%;
-  transition: all 1.8s cubic-bezier(0.23, 1, 0.32, 1);
-}
-.mech-stage {
-  position: relative; width: 380px; height: 480px; perspective: 1200px;
-  transition: transform 1.8s;
-}
-.robot-svg {
-  position: relative; z-index: 3; width: 100%; height: 100%;
-  filter: drop-shadow(0 0 40px var(--glow));
-  transform: scale(var(--scale));
-  transform-box: fill-box; transform-origin: 50% 55%; transform-style: preserve-3d;
-  transition: transform 1.8s cubic-bezier(0.23, 1, 0.32, 1), filter 1.8s;
-}
-.digivolve {
-  animation: digiEvolve 2.0s forwards;
-}
-@keyframes digiEvolve {
-  0% { opacity: 1; transform: scale(var(--scale)) rotateX(0deg); }
-  15% { opacity: 0.3; transform: scale(calc(var(--scale) * 1.4)) rotateX(20deg); }
-  35% { opacity: 0.7; transform: scale(calc(var(--scale) * 1.1)) rotateX(-15deg); }
-  55% { opacity: 0.5; transform: scale(calc(var(--scale) * 1.3)) rotateX(12deg); }
-  100% { opacity: 1; transform: scale(var(--scale)) rotateX(0deg); }
-}
-.scanlines {
-  position: fixed; inset: 0;
-  background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0, 240, 255, 0.02) 3px, rgba(0, 240, 255, 0.02) 6px);
-  pointer-events: none; z-index: 20; animation: scanRoll 12s linear infinite; opacity: 0.2;
-}
-@keyframes scanRoll { 0% { transform: translateY(0); } 100% { transform: translateY(-6px); } }
-.matrix {
-  position: fixed; inset: 0; pointer-events: none; z-index: 5;
-  overflow: hidden; opacity: 0.08;
-}
-.matrix-col {
-  position: absolute; top: -100%; font-size: 12px; font-family: monospace;
-  color: var(--glow); white-space: pre; animation: matrixFall linear infinite;
-}
-@keyframes matrixFall { 0% { transform: translateY(-100vh); } 100% { transform: translateY(200vh); } }
-.particles {
-  position: absolute; inset: 0; pointer-events: none; z-index: 4; overflow: hidden;
-}
-.particle {
-  position: absolute; width: 3px; height: 3px; background: var(--glow);
-  border-radius: 50%; opacity: 0; animation: particleRise 4s linear infinite;
-}
-@keyframes particleRise {
-  0% { opacity: 0; transform: translateY(0) scale(0.3); }
-  25% { opacity: 0.8; }
-  100% { opacity: 0; transform: translateY(-200px) scale(1.2); }
-}
-.status-bar {
-  margin-top: 20px; text-align: center; padding: 0 20px;
-}
-#nexus-reply {
-  margin-top: 12px; padding: 12px 16px;
-  background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(0, 240, 255, 0.2);
-  border-radius: 6px; min-height: 40px; max-width: 520px; width: 90vw;
-  color: #00ffaa; font-size: 13px; letter-spacing: 0.3px; line-height: 1.5;
-  text-shadow: 0 0 6px #00ffaa44; word-break: break-word;
-  transition: border-color 0.3s, box-shadow 0.3s;
-}
-#nexus-reply:not(:empty) {
-  border-color: rgba(0, 240, 255, 0.4);
-  box-shadow: 0 0 12px rgba(0, 240, 255, 0.15);
-}
-.name {
-  font-size: 28px; font-weight: 900; letter-spacing: 6px;
-  text-shadow: 0 0 20px var(--glow);
-}
-.tier {
-  font-size: 11px; letter-spacing: 6px; opacity: 0.7;
-  margin: 6px 0 10px; text-transform: uppercase; font-weight: 600;
-}
-.rank-badge {
-  display: inline-flex; align-items: center; gap: 12px;
-  background: rgba(0, 240, 255, 0.08); border: 1px solid rgba(0, 240, 255, 0.15);
-  padding: 10px 24px; border-radius: 6px; transition: box-shadow 0.3s;
-}
-.rank-badge:hover {
-  border-color: rgba(0, 240, 255, 0.3);
-  box-shadow: 0 0 16px rgba(0, 240, 255, 0.1);
-}
-.rank-letter {
-  font-size: 32px; font-weight: 900; text-shadow: 0 0 16px var(--glow);
-  color: var(--glow);
-}
-.xp {
-  font-size: 12px; color: #7aaac0; letter-spacing: 0.5px;
-}
-#mission-status {
-  margin-top: 12px; font-size: 12px; opacity: 0.8;
-  text-shadow: 0 0 8px rgba(0, 240, 255, 0.2);
-  display: flex; align-items: center; gap: 10px;
-  flex-wrap: wrap; justify-content: center;
-}
-#progress-container {
-  width: 180px; height: 6px; background: rgba(255, 255, 255, 0.06);
-  border-radius: 3px; overflow: hidden; transition: box-shadow 0.3s;
-}
-#progress-bar {
-  height: 100%; width: 0%; background: linear-gradient(90deg, #00ffaa, #00cc88);
-  transition: width 1.0s ease; box-shadow: 0 0 8px #00ffaa;
-}
-#mission-flash {
-  color: #ffcc33; opacity: 0; transition: opacity 0.6s;
-  font-weight: 600; letter-spacing: 1px;
-}
-/* tier CSS vars */
-.tier-DORMANT   { --glow: #445566; --eye: #667788; --scale: 0.6; --wings: 0; --hood: 0; }
-.tier-INITIATED { --glow: #00ccff; --eye: #00eeff; --scale: 1; --wings: 0; --hood: 0; }
-.tier-ACTIVE    { --glow: #00ffaa; --eye: #00ffcc; --scale: 1.15; --wings: 0.4; --hood: 0; }
-.tier-EVOLVED   { --glow: #aa44ff; --eye: #cc77ff; --scale: 1.35; --wings: 0.8; --hood: 0.25; }
-.tier-ASCENDED  { --glow: #ffcc33; --eye: #ffee66; --scale: 1.6; --wings: 1; --hood: 1; }
-#wings { transition: opacity 1.8s; opacity: var(--wings); }
-#hood { transition: opacity 1.8s; opacity: var(--hood); }
-.audio-panel {
-  position: fixed; bottom: 20px; left: 20px; z-index: 101;
-  display: flex; align-items: center; gap: 8px;
-  padding: 8px 12px; border-radius: 6px;
-  background: rgba(0, 0, 0, 0.7); border: 1px solid rgba(0, 240, 255, 0.2);
-  font-size: 11px; letter-spacing: 0.6px;
-}
-.audio-panel input[type="range"] {
-  width: 100px; accent-color: #00ccff;
-}
-.audio-panel button {
-  padding: 5px 8px; background: #1a1a25; color: #00ccff;
-  border: 1px solid rgba(0, 204, 255, 0.25); border-radius: 4px;
-  cursor: pointer; font-family: 'Courier New', monospace; font-size: 10px;
-  transition: border-color 0.2s, background 0.2s;
-}
-.audio-panel button:hover {
-  border-color: rgba(0, 204, 255, 0.5);
-  background: rgba(0, 240, 255, 0.08);
-}
-/* Button styling */
-#ar-toggle, #mic-toggle {
-  font-family: 'Courier New', monospace; font-weight: 600;
-  letter-spacing: 1px; transition: all 0.2s;
-  border-radius: 6px; cursor: pointer; z-index: 100;
-}
-#ar-toggle {
-  position: fixed; bottom: 80px; right: 20px; padding: 10px 16px;
-  background: rgba(170, 68, 255, 0.15); color: #aa44ff;
-  border: 1px solid rgba(170, 68, 255, 0.3);
-}
-#ar-toggle:hover {
-  background: rgba(170, 68, 255, 0.25);
-  border-color: rgba(170, 68, 255, 0.6);
-}
-#mic-toggle {
-  position: fixed; bottom: 20px; right: 20px; padding: 10px 16px;
-  background: rgba(0, 0, 0, 0.6); color: #ff8888;
-  border: 1px solid rgba(255, 68, 68, 0.3);
-}
-#mic-toggle:hover {
-  border-color: rgba(255, 68, 68, 0.6);
-  background: rgba(255, 68, 68, 0.08);
-}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#05050f;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:'Courier New',monospace;color:#fff;overflow:hidden}
+canvas{position:fixed;top:0;left:0;z-index:0}
+.container{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;width:100%;transition:all 2.2s cubic-bezier(0.23,1,0.32,1)}
+.mech-stage{position:relative;width:380px;height:480px;perspective:1200px;transition:transform 2.5s}
+.robot-svg{position:relative;z-index:3;width:100%;height:100%;filter:drop-shadow(0 0 60px var(--glow));transform-style:preserve-3d;transition:transform 2.5s cubic-bezier(0.23,1,0.32,1)}
+.digivolve{animation:digiEvolve 2.4s forwards}
+@keyframes digiEvolve{0%{opacity:1;transform:scale(1) rotateX(0deg)}15%{opacity:0.3;transform:scale(1.5) rotateX(20deg)}35%{opacity:0.7;transform:scale(1.1) rotateX(-15deg)}55%{opacity:0.5;transform:scale(1.4) rotateX(12deg)}100%{opacity:1;transform:scale(1) rotateX(0deg)}}
+.scanlines{position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,255,255,0.04) 3px,rgba(0,255,255,0.04) 6px);pointer-events:none;z-index:20;animation:scanRoll 20s linear infinite;opacity:0.3}
+@keyframes scanRoll{0%{transform:translateY(0)}100%{transform:translateY(-6px)}}
+.matrix{position:fixed;inset:0;pointer-events:none;z-index:5;overflow:hidden;opacity:0.12}
+.matrix-col{position:absolute;top:-100%;font-size:14px;font-family:monospace;color:var(--glow);white-space:pre;animation:matrixFall linear infinite}
+@keyframes matrixFall{0%{transform:translateY(-100vh)}100%{transform:translateY(200vh)}}
+.particles{position:absolute;inset:0;pointer-events:none;z-index:4;overflow:hidden}
+.particle{position:absolute;width:4px;height:4px;background:var(--glow);border-radius:50%;opacity:0;animation:particleRise 5s linear infinite}
+@keyframes particleRise{0%{opacity:0;transform:translateY(0) scale(0.4)}30%{opacity:0.9}100%{opacity:0;transform:translateY(-220px) scale(1.3)}}
+.status-bar{margin-top:40px;text-align:center}
+.name{font-size:32px;font-weight:900;letter-spacing:8px;text-shadow:0 0 30px var(--glow)}
+.tier{font-size:13px;letter-spacing:7px;opacity:0.6;margin:6px 0 12px}
+.rank-badge{display:inline-flex;align-items:center;gap:14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);padding:12px 30px;border-radius:10px}
+.rank-letter{font-size:38px;font-weight:900;text-shadow:0 0 20px var(--glow)}
+.xp{font-size:14px}
+#mission-status{margin-top:16px;font-size:14px;opacity:0.75;text-shadow:0 0 12px var(--glow)}
+#mission-flash{color:#00ffaa;opacity:0;transition:opacity 0.8s;font-weight:bold}
+.tier-DORMANT{--glow:#445566;--eye:#667788;--scale:0.6;--wings:0;--hood:0}
+.tier-INITIATED{--glow:#00ccff;--eye:#00eeff;--scale:1;--wings:0;--hood:0}
+.tier-ACTIVE{--glow:#00ffaa;--eye:#00ffcc;--scale:1.2;--wings:0.45;--hood:0}
+.tier-EVOLVED{--glow:#aa44ff;--eye:#cc77ff;--scale:1.4;--wings:0.85;--hood:0.3}
+.tier-ASCENDED{--glow:#ffcc33;--eye:#ffee66;--scale:1.65;--wings:1;--hood:1}
 </style>
 </head>
 <body>
@@ -187,63 +42,38 @@ canvas { position: fixed; top: 0; left: 0; z-index: 0; }
 <div class="particles" id="particles"></div>
 <div id="root" class="container tier-INITIATED">
   <div class="mech-stage">
-    <svg class="robot-svg" id="svg" viewBox="0 0 380 480" xmlns="http://www.w3.org/2000/svg">
+    <svg class="robot-svg" viewBox="0 0 380 480" xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <linearGradient id="bodyG" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stop-color="#1a1a25"/>
-          <stop offset="100%" stop-color="#0a0a14"/>
-        </linearGradient>
-        <linearGradient id="eyeG" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#00eeff"/>
-          <stop offset="100%" stop-color="#0066ff"/>
-        </linearGradient>
-        <filter id="glowF">
-          <feGaussianBlur stdDeviation="16" result="b"/>
-          <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-        </filter>
+        <linearGradient id="bodyG" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#1a1a25"/><stop offset="100%" stop-color="#0a0a14"/></linearGradient>
+        <linearGradient id="eyeG" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00eeff"/><stop offset="100%" stop-color="#0066ff"/></linearGradient>
+        <filter id="glowF"><feGaussianBlur stdDeviation="16" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
       </defs>
-
-      <!-- Robot body centred in viewBox (scale handled by CSS on .robot-svg) -->
-      <g id="body" transform="translate(190 240)">
-        <!-- Helmet -->
+      <g id="body" transform="scale(var(--scale)) translate(190 240)">
         <path d="M-90 -140 Q-90 -170 -40 -180 Q10 -170 10 -140 L15 -80 Q15 -60 -10 -45 L-90 -45 Q-115 -60 -115 -80 Z" fill="url(#bodyG)" stroke="#2a2a3a" stroke-width="10"/>
-        <!-- Ear horns -->
         <polygon points="-100,-120 -120,-160 -95,-130" fill="#1a1a25" stroke="#2a2a3a" stroke-width="6"/>
         <polygon points="20,-120 40,-160 15,-130" fill="#1a1a25" stroke="#2a2a3a" stroke-width="6"/>
-        <!-- Eyes -->
         <circle cx="-60" cy="-120" r="22" fill="#0a0a14"/>
-        <circle cx="20"  cy="-120" r="22" fill="#0a0a14"/>
+        <circle cx="20" cy="-120" r="22" fill="#0a0a14"/>
         <circle cx="-60" cy="-120" r="14" fill="url(#eyeG)" filter="url(#glowF)" id="eyeL"/>
-        <circle cx="20"  cy="-120" r="14" fill="url(#eyeG)" filter="url(#glowF)" id="eyeR"/>
-        <circle cx="-60" cy="-120" r="6"  fill="#fff"/>
-        <circle cx="20"  cy="-120" r="6"  fill="#fff"/>
-        <!-- Chest plate -->
+        <circle cx="20" cy="-120" r="14" fill="url(#eyeG)" filter="url(#glowF)" id="eyeR"/>
+        <circle cx="-60" cy="-120" r="6" fill="#fff"/>
+        <circle cx="20" cy="-120" r="6" fill="#fff"/>
         <path d="M-85 -40 Q-85 20 -60 50 L60 50 Q85 20 85 -40 Q85 -70 0 -80 Q-85 -70 -85 -40" fill="url(#bodyG)" stroke="#2a2a3a" stroke-width="12"/>
-        <!-- Core orb -->
         <circle cx="0" cy="0" r="32" fill="#0a0a14"/>
         <circle cx="0" cy="0" r="22" fill="#00ddff" filter="url(#glowF)" id="core"/>
-        <circle cx="0" cy="0" r="8"  fill="#fff"/>
-        <!-- Arms -->
+        <circle cx="0" cy="0" r="8" fill="#fff"/>
         <rect x="-110" y="-50" width="30" height="130" rx="10" fill="url(#bodyG)" stroke="#2a2a3a" stroke-width="8"/>
-        <rect x="80"   y="-50" width="30" height="130" rx="10" fill="url(#bodyG)" stroke="#2a2a3a" stroke-width="8"/>
-        <!-- Legs -->
+        <rect x="80" y="-50" width="30" height="130" rx="10" fill="url(#bodyG)" stroke="#2a2a3a" stroke-width="8"/>
         <rect x="-60" y="60" width="50" height="110" rx="8" fill="url(#bodyG)" stroke="#2a2a3a" stroke-width="8"/>
-        <rect x="10"  y="60" width="50" height="110" rx="8" fill="url(#bodyG)" stroke="#2a2a3a" stroke-width="8"/>
+        <rect x="10" y="60" width="50" height="110" rx="8" fill="url(#bodyG)" stroke="#2a2a3a" stroke-width="8"/>
       </g>
-
-      <!-- Energy wings — opacity via CSS #wings rule above -->
-      <g id="wings" filter="url(#glowF)" transform="translate(190 240)">
+      <g id="wings" opacity="var(--wings)" filter="url(#glowF)">
         <path d="M-100 -20 Q-180 -100 -220 -180 Q-140 -80 -90 -30" fill="none" stroke="#00ddff" stroke-width="24" opacity="0.75"/>
-        <path d="M100  -20 Q180  -100 220  -180 Q140  -80 90  -30"  fill="none" stroke="#00ddff" stroke-width="24" opacity="0.75"/>
+        <path d="M100 -20 Q180 -100 220 -180 Q140 -80 90 -30" fill="none" stroke="#00ddff" stroke-width="24" opacity="0.75"/>
       </g>
-
-      <!-- Mega hood overlay — opacity via CSS #hood rule above -->
-      <path id="hood" transform="translate(100 100)"
-        d="M-90 -140 Q-90 -170 -40 -180 Q10 -170 10 -140 L15 -80 Q15 -60 -10 -45 L-90 -45 Q-115 -60 -115 -80 Z"
-        fill="#0a0a14" stroke="#2a2a3a" stroke-width="10"/>
+      <path id="hood" d="M-90 -140 Q-90 -170 -40 -180 Q10 -170 10 -140 L15 -80 Q15 -60 -10 -45 L-90 -45 Q-115 -60 -115 -80 Z" fill="#0a0a14" opacity="var(--hood)" stroke="#2a2a3a" stroke-width="10"/>
     </svg>
   </div>
-
   <div class="status-bar">
     <div class="name" id="name">NEXUSMON</div>
     <div class="tier" id="tier">INITIATED</div>
@@ -252,538 +82,46 @@ canvas { position: fixed; top: 0; left: 0; z-index: 0; }
       <span class="xp" id="xp">0 XP</span>
     </div>
     <div id="mission-status">
-      <span id="active-missions">0 active missions</span>
-      <div id="progress-container">
-        <div id="progress-bar"></div>
-      </div>
-      <span id="mission-flash"></span>
+      <span id="active-missions">0 active missions</span> • 
+      <span id="mission-flash"> </span>
     </div>
   </div>
-  <div id="nexus-reply"></div>
-</div>
-<a-scene id="ar-scene" embedded arjs="trackingMethod: best;" style="display:none;position:fixed;inset:0;z-index:9999">
-  <a-marker preset="hiro">
-    <a-box position="0 0.5 0" material="color:#00ccff;opacity:0.8"></a-box>
-  </a-marker>
-  <a-entity camera></a-entity>
-</a-scene>
-<button id="ar-toggle" style="position:fixed;bottom:80px;right:20px;padding:12px 20px;background:#aa44ff;color:#fff;border:none;border-radius:8px;cursor:pointer;z-index:100;font-family:'Courier New',monospace;font-weight:bold;letter-spacing:1px">
-  AR: OFF
-</button>
-<button id="mic-toggle" style="position:fixed;bottom:20px;right:20px;padding:12px 20px;background:#330000;border:1px solid #ff4444;color:#ff8888;border-radius:8px;cursor:pointer;z-index:100;font-family:'Courier New',monospace;font-weight:bold;letter-spacing:1px">
-  MIC: OFF
-</button>
-<div class="audio-panel" aria-label="Audio controls">
-  <label for="audio-master">VOL</label>
-  <input id="audio-master" type="range" min="0" max="1" step="0.01" value="0.35">
-  <button id="audio-mute" type="button">MUTE</button>
 </div>
 <div class="scanlines"></div>
-
 <script>
-// ── Ultimate Web Audio Manager (additive only) ───────────
-const NEXUS_AUDIO = (() => {
-  const Ctx = window.AudioContext || window.webkitAudioContext;
-  const ctx = Ctx ? new Ctx() : null;
-  const sounds = {};
-  let masterGain = null;
-  let unlocked = false;
-  let coreHumSource = null;
-  let coreHumGain = null;
-
-  const urls = {
-    coreHum: 'https://assets.codepen.io/605876/low-hum.mp3',
-    metallicClick: 'https://assets.codepen.io/605876/metallic-click.mp3',
-    energySurge: 'https://assets.codepen.io/605876/energy-surge.mp3',
-    glitchStutter: 'https://assets.codepen.io/605876/glitch-stutter.mp3',
-    rankUpChime: 'https://assets.codepen.io/605876/rank-up-chime.mp3'
-  };
-
-  if (ctx) {
-    masterGain = ctx.createGain();
-    masterGain.gain.value = 0.35;
-    masterGain.connect(ctx.destination);
-  }
-
-  function randomize(base, spread) {
-    return base + ((Math.random() * 2 - 1) * spread);
-  }
-
-  async function preloadSounds() {
-    if (!ctx) return;
-    await Promise.all(Object.entries(urls).map(async ([name, url]) => {
-      try {
-        const res = await fetch(url);
-        const arr = await res.arrayBuffer();
-        sounds[name] = await ctx.decodeAudioData(arr);
-      } catch (e) {
-        console.warn(`[NEXUS_AUDIO] Failed to load ${name}`, e);
-      }
-    }));
-  }
-
-  function play(name, volume = 0.6, rate = 1.0, when = 0) {
-    if (!ctx || !sounds[name] || !masterGain) return;
-    const src = ctx.createBufferSource();
-    src.buffer = sounds[name];
-    src.playbackRate.value = Math.max(0.25, randomize(rate, 0.06));
-    const gain = ctx.createGain();
-    gain.gain.value = Math.max(0, Math.min(1, randomize(volume, 0.04)));
-    src.connect(gain);
-    gain.connect(masterGain);
-    src.start(ctx.currentTime + Math.max(0, when));
-    return src;
-  }
-
-  async function unlockAndStart() {
-    if (!ctx) return;
-    if (ctx.state !== 'running') {
-      try { await ctx.resume(); } catch (_) {}
-    }
-    unlocked = true;
-    startCorePulseLoop();
-  }
-
-  function startCorePulseLoop() {
-    if (!ctx || !sounds.coreHum || coreHumSource || !masterGain) return;
-    coreHumSource = ctx.createBufferSource();
-    coreHumSource.buffer = sounds.coreHum;
-    coreHumSource.loop = true;
-    coreHumGain = ctx.createGain();
-    coreHumGain.gain.value = 0.09;
-    coreHumSource.playbackRate.value = 0.92;
-    coreHumSource.connect(coreHumGain);
-    coreHumGain.connect(masterGain);
-    coreHumSource.start(0);
-  }
-
-  function setCorePulse(coreRadius) {
-    if (!coreHumGain || !coreHumSource) return;
-    const normalized = Math.max(0, Math.min(1, (coreRadius - 18) / 10));
-    coreHumGain.gain.value = 0.08 + (normalized * 0.05);
-    coreHumSource.playbackRate.value = 0.9 + (normalized * 0.2);
-  }
-
-  function onReplyStart() {
-    play('glitchStutter', 0.26, 1.08, 0);
-    play('metallicClick', 0.2, 0.96, 0.03);
-    play('metallicClick', 0.18, 1.08, 0.11);
-  }
-
-  function onTierUp(tier) {
-    play('energySurge', 0.42, 0.92);
-    play('rankUpChime', 0.5, 1.0, 0.04);
-    if (tier === 'ACTIVE' || tier === 'EVOLVED') {
-      play('energySurge', 0.3, 1.08, 0.16);
-    }
-  }
-
-  function onShadowSummon() {
-    play('energySurge', 0.35, 0.85);
-    play('glitchStutter', 0.25, 1.12, 0.05);
-    play('metallicClick', 0.22, 0.92, 0.16);
-  }
-
-  function onKeypress() {
-    play('metallicClick', 0.12, randomize(1.0, 0.22));
-  }
-
-  function setMasterVolume(v) {
-    if (!masterGain) return;
-    masterGain.gain.value = Math.max(0, Math.min(1, v));
-  }
-
-  function bindControls() {
-    const slider = document.getElementById('audio-master');
-    const muteBtn = document.getElementById('audio-mute');
-    if (slider) {
-      slider.addEventListener('input', () => setMasterVolume(parseFloat(slider.value)));
-      setMasterVolume(parseFloat(slider.value));
-    }
-    if (muteBtn && slider) {
-      muteBtn.addEventListener('click', () => {
-        if (parseFloat(slider.value) > 0) {
-          slider.dataset.prev = slider.value;
-          slider.value = '0';
-          muteBtn.textContent = 'UNMUTE';
-        } else {
-          slider.value = slider.dataset.prev || '0.35';
-          muteBtn.textContent = 'MUTE';
-        }
-        setMasterVolume(parseFloat(slider.value));
-      });
-    }
-  }
-
-  function init() {
-    bindControls();
-    preloadSounds().then(() => {
-      if (unlocked) startCorePulseLoop();
-      console.log('[NEXUS_AUDIO] Sounds ready');
-    });
-    const unlock = () => {
-      unlockAndStart();
-      window.removeEventListener('pointerdown', unlock);
-      window.removeEventListener('keydown', unlock);
-    };
-    window.addEventListener('pointerdown', unlock, { once: true });
-    window.addEventListener('keydown', unlock, { once: true });
-  }
-
-  return {
-    init,
-    unlockAndStart,
-    setCorePulse,
-    onReplyStart,
-    onTierUp,
-    onShadowSummon,
-    onKeypress,
-    setMasterVolume
-  };
-})();
-
-NEXUS_AUDIO.init();
-
-// ── Starfield ─────────────────────────────────────────────
-const c = document.getElementById('bg'), ctx = c.getContext('2d');
-let stars = [];
-function initStars(){
-  c.width = innerWidth; c.height = innerHeight; stars = [];
-  for(let i = 0; i < 350; i++){
-    stars.push({ x: Math.random()*c.width, y: Math.random()*c.height,
-                 z: Math.random()*2.5+0.5, speed: Math.random()*0.4+0.1 });
-  }
-}
-function drawStars(){
-  ctx.fillStyle = '#05050f'; ctx.fillRect(0, 0, c.width, c.height);
-  stars.forEach(s => {
-    s.y += s.speed * s.z;
-    if(s.y > c.height) s.y = 0;
-    const sz = s.z * 1.4;
-    ctx.fillStyle = `rgba(180,220,255,${0.4 + s.z * 0.35})`;
-    ctx.fillRect(s.x, s.y, sz, sz);
-  });
-  requestAnimationFrame(drawStars);
-}
-initStars(); drawStars(); window.addEventListener('resize', initStars);
-
-// ── Matrix rain ───────────────────────────────────────────
-(function(){
-  const m = document.getElementById('matrix');
-  const chars = '01アイウエオカキクケコ∇∆◊◆';
-  for(let i = 0; i < 30; i++){
-    const col = document.createElement('div');
-    col.className = 'matrix-col';
-    col.style.left = (Math.random() * 100) + '%';
-    col.style.animationDuration = (8 + Math.random() * 12) + 's';
-    col.style.animationDelay = -(Math.random() * 10) + 's';
-    let txt = '';
-    for(let j = 0; j < 40; j++) txt += chars[Math.floor(Math.random() * chars.length)] + '\n';
-    col.textContent = txt;
-    m.appendChild(col);
-  }
-})();
-
-// ── Rising particles ──────────────────────────────────────
-(function(){
-  const p = document.getElementById('particles');
-  for(let i = 0; i < 15; i++){
-    const el = document.createElement('div');
-    el.className = 'particle';
-    el.style.left = (Math.random() * 100) + '%';
-    el.style.bottom = '0';
-    el.style.animationDelay = (Math.random() * 5) + 's';
-    el.style.animationDuration = (4 + Math.random() * 4) + 's';
-    p.appendChild(el);
-  }
-})();
-
-// ── Idle: core breathing + eye blink ─────────────────────
-(function(){
-  const core = document.getElementById('core');
-  const eyes = [document.getElementById('eyeL'), document.getElementById('eyeR')];
-  setInterval(() => {
-    const r = 22 + Math.sin(Date.now() * 0.0012) * 4;
-    core.setAttribute('r', r);
-    NEXUS_AUDIO.setCorePulse(r);
-    if(Math.random() < 0.025){
-      eyes.forEach(e => e.style.opacity = '0.25');
-      setTimeout(() => eyes.forEach(e => e.style.opacity = '1'), 140);
-    }
-  }, 120);
-})();
-
-// ── Rank + mission polling ────────────────────────────────
-const tierMap = { E:'DORMANT', D:'INITIATED', C:'ACTIVE', B:'EVOLVED', A:'ASCENDED', S:'ASCENDED' };
-let lastTier = 'INITIATED';
-let lastXP = 0;
-let lastProgress = 0;
-
+const tierMap={E:'DORMANT',D:'INITIATED',C:'ACTIVE',B:'EVOLVED',A:'ASCENDED',S:'ASCENDED'};
+let lastTier='INITIATED';
+let lastXP=0;
 async function load(){
   try{
-    const r = await fetch('/v1/operator/rank');
-    const d = await r.json();
-    const rank = d.rank || 'E';
-    const t = tierMap[rank] || 'INITIATED';
-    const xp = d.xp || 0;
-    const missions = d.missions || {};
-    const active = missions.active_missions || 0;
-    const progress = missions.progress_pct || 0;
-
-    const root = document.getElementById('root');
-    if(t !== lastTier){
-      const svg = document.getElementById('svg');
-      svg.classList.add('digivolve');
-      setTimeout(() => svg.classList.remove('digivolve'), 2400);
-      playMorph(t);
-      lastTier = t;
+    const r=await fetch('/v1/operator/rank');
+    const d=await r.json();
+    const rank=d.rank||'E';
+    const t=tierMap[rank]||'INITIATED';
+    const xp=d.xp||0;
+    const missions=d.missions||{};
+    const active=missions.active_missions||0;
+    const root=document.getElementById('root');
+    if(t!==lastTier){
+      root.classList.add('digivolve');
+      setTimeout(()=>root.classList.remove('digivolve'),2400);
+      lastTier=t;
     }
-    root.className = `container tier-${t}`;
-    document.getElementById('rank').textContent = rank;
-    document.getElementById('tier').textContent = t;
-    document.getElementById('xp').textContent = xp + ' XP';
-    document.getElementById('active-missions').textContent = active + ' active missions';
-    document.getElementById('progress-bar').style.width = progress + '%';
-
-    // XP gain flash
+    root.className=`container tier-${t}`;
+    document.getElementById('rank').textContent=rank;
+    document.getElementById('tier').textContent=t;
+    document.getElementById('xp').textContent=xp+' XP';
+    document.getElementById('active-missions').textContent=active+' active missions';
     if(xp > lastXP){
-      const flash = document.getElementById('mission-flash');
-      flash.textContent = `+${xp - lastXP} XP! Mission complete`;
-      flash.style.opacity = '1';
-      setTimeout(() => { flash.style.opacity = '0'; flash.textContent = ''; }, 5000);
+      const flash=document.getElementById('mission-flash');
+      flash.textContent=`+${xp-lastXP} XP! Mission complete`;
+      flash.style.opacity=1;
+      setTimeout(()=>{flash.style.opacity=0; flash.textContent='';}, 4000);
     }
-    lastXP = xp;
-
-    // Progress bar pulse on change
-    if(Math.abs(progress - lastProgress) > 1){
-      const pc = document.getElementById('progress-container');
-      pc.style.boxShadow = '0 0 16px #00ffaa';
-      setTimeout(() => { pc.style.boxShadow = 'none'; }, 1200);
-    }
-    lastProgress = progress;
-
-  } catch(e){ console.error('Poll failed:', e); }
+    lastXP=xp;
+  }catch(e){console.error('Poll failed:',e);}
 }
-load();
-setInterval(load, 7000);
-
-// ── Config ────────────────────────────────────────────────
-const ELEVENLABS_KEY = ''; // elevenlabs.io free key — leave blank for browser TTS
-const VOICE_ID = '21m00Tcm4TlvDq8ikWAM'; // Rachel — swap for any ElevenLabs voice ID
-
-// ── Voice Input ───────────────────────────────────────────
-let recognition = null;
-let micActive = false;
-const voiceBtn = document.getElementById('mic-toggle');
-
-if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
-  recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-  recognition.continuous = true;
-  recognition.interimResults = false;
-  recognition.lang = 'en-US';
-
-  recognition.onresult = async (e) => {
-    const text = e.results[e.results.length - 1][0].transcript.trim();
-    if (text) {
-      console.log('Voice:', text);
-      // Send to companion endpoint or type into input bar
-      const inputEl = document.querySelector('input[placeholder*="mind"]') || document.getElementById('companion-input');
-      if (inputEl) {
-          inputEl.value = text;
-      }
-      // Optional: auto-send
-      // document.querySelector('button[type="submit"]').click();
-    }
-  };
-
-  recognition.onerror = e => console.error('Voice error:', e.error);
-  recognition.onend = () => { if (micActive) recognition.start(); };
-} else if (voiceBtn) {
-  voiceBtn.style.opacity = '0.45';
-  voiceBtn.title = 'SpeechRecognition not supported in this browser';
-}
-
-voiceBtn?.addEventListener('click', toggleMic);
-
-function toggleMic() {
-  if (!recognition) return;
-  micActive = !micActive;
-  if (micActive) {
-    NEXUS_AUDIO.unlockAndStart();
-    recognition.start();
-    if (voiceBtn) {
-      voiceBtn.textContent = 'MIC: ON';
-      voiceBtn.style.background = '#003300';
-      voiceBtn.style.borderColor = '#00cc00';
-    }
-  } else {
-    recognition.stop();
-    if (voiceBtn) {
-      voiceBtn.textContent = 'MIC: OFF';
-      voiceBtn.style.background = '#330000';
-      voiceBtn.style.borderColor = '#ff4444';
-    }
-  }
-}
-
-async function handleVoiceCommand(text) {
-  const lower = text.toLowerCase();
-  if (lower.includes('summon scouts') || lower.includes('summon shadows')) {
-    await summonShadows(3, text.split('for')[1]?.trim() || '');
-    return;
-  }
-  if (lower.includes('ar mode') || lower.includes('augmented reality')) {
-    toggleAR(); return;
-  }
-  await sendToCompanion(text);
-}
-
-function typeWriter(elementId, text, speed) {
-  speed = speed || 28;
-  const el = document.getElementById(elementId);
-  if (!el) return;
-  el.textContent = '';
-  let i = 0;
-  function type() {
-    if (i < text.length) {
-      el.textContent += text.charAt(i);
-      i++;
-      setTimeout(type, speed);
-    }
-  }
-  type();
-}
-
-async function sendToCompanion(text) {
-  try {
-    NEXUS_AUDIO.onReplyStart();
-    const res = await fetch('/v1/companion/message', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text, source: 'voice' })
-    });
-    if (!res.ok) throw new Error('Companion failed');
-    const data = await res.json();
-    const reply = data.reply || 'Acknowledged, Operator.';
-    // Hook note: if #response is added later, it is preferred; fallback is existing #nexus-reply.
-    const responseEl = document.getElementById('response') || document.getElementById('nexus-reply');
-    if (responseEl?.id) {
-      typeWriter(responseEl.id, reply, 22);
-    }
-    if (ELEVENLABS_KEY) {
-      try { new Audio(await elevenLabsAudio(reply)).play(); }
-      catch { fallbackSpeak(reply); }
-    } else {
-      fallbackSpeak(reply);
-    }
-    await saveMemory(text, reply);
-  } catch(e) {
-    console.error('Companion error:', e);
-    fallbackSpeak('Connection to core failed.');
-  }
-}
-
-async function elevenLabsAudio(text) {
-  const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${VOICE_ID}`, {
-    method: 'POST',
-    headers: { 'Accept': 'audio/mpeg', 'xi-api-key': ELEVENLABS_KEY, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ text, model_id: 'eleven_monolingual_v1',
-      voice_settings: { stability: 0.5, similarity_boost: 0.8 } })
-  });
-  if (!res.ok) throw new Error('ElevenLabs error');
-  return URL.createObjectURL(await res.blob());
-}
-
-function fallbackSpeak(text) {
-  const u = new SpeechSynthesisUtterance(text);
-  u.rate = 1.0; u.pitch = 0.9;
-  speechSynthesis.speak(u);
-}
-
-// ── Persistent Memory ─────────────────────────────────────
-async function saveMemory(userText, aiText) {
-  try {
-    await fetch('/v1/companion/memory/save', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ user: userText, ai: aiText, timestamp: new Date().toISOString() })
-    });
-  } catch(e) {}
-}
-
-async function loadMemory() {
-  try {
-    const res = await fetch('/v1/companion/memory?limit=10');
-    const data = await res.json();
-    console.log('[NEXUSMON] Memory loaded:', data.history?.length || 0, 'entries');
-  } catch(e) {}
-}
-loadMemory();
-
-// ── Shadow Summons ────────────────────────────────────────
-async function summonShadows(count = 3, goalSuffix = '') {
-  const goal = goalSuffix ? `Scout intel on: ${goalSuffix}` : 'Gather situational intel';
-  NEXUS_AUDIO.onShadowSummon();
-  fallbackSpeak(`Summoning ${count} shadow scouts.`);
-  const reports = [];
-  for (let i = 0; i < count; i++) {
-    try {
-      const cr = await fetch('/v1/engine/missions', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ goal: `${goal} #${i+1}`, rank: 'E' })
-      });
-      const m = await cr.json();
-      const mid = m.mission?.id;
-      if (mid) {
-        await fetch(`/v1/engine/missions/${mid}/run`, { method: 'POST',
-          headers: { 'Content-Type': 'application/json' }, body: '{}' });
-        reports.push(`Shadow ${i+1}: mission dispatched.`);
-      }
-    } catch(e) { reports.push(`Shadow ${i+1}: connection lost.`); }
-  }
-  fallbackSpeak('Shadow scouts deployed. ' + reports.join(' '));
-}
-
-// ── AR Toggle ─────────────────────────────────────────────
-function toggleAR() {
-  const ar = document.getElementById('ar-scene');
-  const btn = document.getElementById('ar-toggle');
-  const root = document.getElementById('root');
-  const on = ar.style.display !== 'none';
-  if (!on) NEXUS_AUDIO.onShadowSummon();
-  ar.style.display = on ? 'none' : 'block';
-  root.style.display = on ? 'flex' : 'none';
-  btn.textContent = on ? 'AR: OFF' : 'AR: ON';
-  btn.style.background = on ? '#aa44ff' : '#ffcc33';
-}
-document.getElementById('ar-toggle')?.addEventListener('click', toggleAR);
-
-// ── GSAP Morph on Tier Change ─────────────────────────────
-let morphTl = null;
-function playMorph(tier) {
-  if (typeof gsap === 'undefined') return;
-  if (morphTl) morphTl.kill();
-  NEXUS_AUDIO.onTierUp(tier);
-  morphTl = gsap.timeline({ defaults: { ease: 'power3.inOut' } });
-  // Screen shake
-  gsap.to('#root', { scale: 1.08, rotationX: 8, duration: 0.3, yoyo: true, repeat: 1 });
-  if (tier === 'ACTIVE') {
-    morphTl.to('#wings', { opacity: 0.5, duration: 2 }, 0);
-  }
-  if (tier === 'EVOLVED') {
-    morphTl.to('#wings', { opacity: 0.85, scale: 1.2, duration: 2.5 }, 0);
-  }
-  if (tier === 'ASCENDED') {
-    morphTl.to('#hood', { opacity: 1, duration: 1.8 }, 0);
-    morphTl.to('#wings', { opacity: 1, scale: 1.5, duration: 3 }, 0.3);
-    morphTl.to('#core', { attr: { r: 30 }, duration: 1.5, yoyo: true, repeat: -1 }, 0);
-  }
-}
-
-document.addEventListener('keydown', (ev) => {
-  if (ev.repeat) return;
-  NEXUS_AUDIO.onKeypress();
-});
+load();setInterval(load,7000);
 </script>
 </body>
 </html>

@@ -895,6 +895,11 @@ const NexusmonConsole = (() => {
    */
   return {
     init,
+    /** Programmatically inject text into the chat input and submit it. */
+    send: (text) => {
+      const input = document.getElementById('chat-input');
+      if (input) { input.value = text; sendMessage(); }
+    },
     sendMessage: () => sendMessage(),
     addMessage: (text, role) => addMessageToUI(text, role),
     loadProfile: loadOperatorProfile,

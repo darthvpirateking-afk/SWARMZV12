@@ -4,96 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NEXUSMON Cockpit</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link rel="stylesheet" href="/web/neon-modern.css">
     <style>
-        /* ============================================================
-           JARVIS NEON HOLOGRAM OVERRIDES
-           ============================================================ */
-        body {
-            background: #0a0015 radial-gradient(circle at center, #0a0015 0%, #000000 100%) !important;
-            text-shadow: 0 0 4px rgba(0, 204, 255, 0.3);
-        }
-
-        .side-panel {
-            background: rgba(10, 20, 30, 0.6) !important;
-            border: 1px solid #00f0ff33 !important;
-            box-shadow: 0 0 30px #00f0ff22, inset 0 0 20px #aa44ff11 !important;
-            backdrop-filter: blur(8px) !important;
-            transition: all 0.4s !important;
-        }
-        .side-panel:hover {
-            box-shadow: 0 0 50px #00f0ff44, 0 0 80px #aa44ff22 !important;
-        }
-
-        .ps-title {
-            color: #00f0ff !important;
-            text-shadow: 0 0 10px #00f0ff, 0 0 20px #00f0ff88 !important;
-            animation: neon-flicker 4s infinite alternate;
-        }
-
-        @keyframes neon-flicker { 0%,100% { opacity:1; } 50% { opacity:0.92; } }
-
-        .trait-track {
-            background: rgba(0, 240, 255, 0.1) !important;
-            box-shadow: inset 0 0 5px rgba(0, 240, 255, 0.2) !important;
-        }
-        .trait-fill {
-            background: linear-gradient(90deg, #aa44ff, #00f0ff) !important;
-            box-shadow: 0 0 15px #00f0ff44 !important;
-        }
-
-        .nx-title {
-            color: #00f0ff !important;
-            text-shadow: 0 0 10px #00f0ff, 0 0 20px #00f0ff88 !important;
-        }
-
-        /* Override nexusmon_console.js styles */
-        .nexusmon-console {
-            background: transparent !important;
-            box-shadow: none !important;
-            border: none !important;
-        }
-        .nexusmon-header, .nexusmon-footer, .nexusmon-actions {
-            background: transparent !important;
-            border-color: rgba(0, 240, 255, 0.2) !important;
-        }
-        .nexusmon-input {
-            background: rgba(0,0,0,0.6) !important;
-            border: 1px solid #00f0ff44 !important;
-            border-radius: 12px !important;
-            box-shadow: 0 0 30px #00f0ff22 !important;
-            margin: 12px !important;
-        }
-        #chat-input {
-            background: transparent !important;
-            border: none !important;
-            color: #00f0ff !important;
-            box-shadow: none !important;
-        }
-        #chat-input::placeholder { color: rgba(0, 240, 255, 0.5) !important; }
-        #send-btn {
-            background: rgba(0, 240, 255, 0.1) !important;
-            border: 1px solid #00f0ff !important;
-            color: #00f0ff !important;
-            border-radius: 8px !important;
-            box-shadow: 0 0 10px rgba(0, 240, 255, 0.2) !important;
-        }
-        #send-btn:hover:not(:disabled) {
-            background: rgba(0, 240, 255, 0.3) !important;
-            box-shadow: 0 0 20px rgba(0, 240, 255, 0.5) !important;
-        }
-        .message-bubble {
-            background: rgba(10, 20, 30, 0.8) !important;
-            border: 1px solid rgba(0, 240, 255, 0.3) !important;
-            box-shadow: 0 0 15px rgba(0, 240, 255, 0.1) !important;
-            backdrop-filter: blur(4px) !important;
-            color: #e0f8ff !important;
-        }
-        .message.user .message-bubble {
-            border-color: rgba(170, 68, 255, 0.5) !important;
-            box-shadow: 0 0 15px rgba(170, 68, 255, 0.2) !important;
-        }
-
         /* ============================================================
            CSS Reset & Variables — V2.0 Spec
            ============================================================ */
@@ -825,11 +737,8 @@
 
         <!-- ===================== CENTER PANEL — NAVI CHANNEL ======= -->
         <div id="panel-center" style="display:flex; flex-direction:column; height:100%; position:relative;">
-            <div class="jarvis-center" style="position:relative; height:260px; flex-shrink:0; width:100%; display:flex; align-items:center; justify-content:center; overflow:hidden;">
-                <div class="holo-center" style="width:100%; height:100%; position:relative;">
-                  <iframe src="/avatar" style="width:100%; height:100%; border:none; background:transparent; filter:drop-shadow(0 0 60px #00f0ff) brightness(1.2);"></iframe>
-                  <div class="holo-glow" style="position:absolute; inset:0; pointer-events:none; background:radial-gradient(circle at center, rgba(0,240,255,0.15) 0%, transparent 70%);"></div>
-                </div>
+            <div id="avatar-well" style="position:relative; height:280px; flex-shrink:0; width:100%; overflow:hidden; background:#05050f;">
+                <iframe src="/avatar" style="width:100%; height:100%; border:none; background:transparent;"></iframe>
             </div>
             <div id="nexusmon-console" style="flex:1; min-height:0; overflow:hidden; display:flex; flex-direction:column;"></div>
         </div>
@@ -926,8 +835,6 @@
 </div>
 <!-- END COCKPIT -->
 
-<canvas id="particle-bg" style="position:fixed; inset:0; z-index:-1; pointer-events:none;"></canvas>
-
 <!-- NEXUSMON Console Module — owns all chat logic -->
 <script src="/web/nexusmon_console.js"></script>
 
@@ -935,61 +842,23 @@
 (function () {
     'use strict';
 
-    // JARVIS Particles
-    const pCanvas = document.getElementById('particle-bg');
-    const pCtx = pCanvas.getContext('2d');
-
-    function resize() {
-        pCanvas.width = window.innerWidth;
-        pCanvas.height = window.innerHeight;
-    }
-    window.addEventListener('resize', resize);
-    resize();
-
-    let particles = [];
-    for (let i = 0; i < 80; i++) {
-        particles.push({
-            x: Math.random() * window.innerWidth,
-            y: Math.random() * window.innerHeight,
-            size: Math.random() * 2 + 1,
-            speed: Math.random() * 0.5 + 0.1,
-            hue: Math.random() * 60 + 180 // cyan-purple range
-        });
-    }
-
-    function animateParticles() {
-        pCtx.fillStyle = 'rgba(10,0,30,0.05)';
-        pCtx.fillRect(0,0,pCanvas.width,pCanvas.height);
-        particles.forEach(p => {
-            p.y += p.speed;
-            if (p.y > pCanvas.height) p.y = 0;
-            pCtx.fillStyle = `hsla(${p.hue}, 80%, 60%, 0.6)`;
-            pCtx.beginPath();
-            pCtx.arc(p.x, p.y, p.size, 0, Math.PI*2);
-            pCtx.fill();
-        });
-        requestAnimationFrame(animateParticles);
-    }
-    animateParticles();
-
-    // GSAP Floating Panels
-    if (typeof gsap !== 'undefined') {
-        gsap.utils.toArray(".side-panel").forEach((panel, i) => {
-            gsap.to(panel, {
-                y: "random(-8,8)",
-                duration: "random(6,12)",
-                repeat: -1,
-                yoyo: true,
-                ease: "sine.inOut",
-                delay: i * 0.5
-            });
-        });
-    }
-
     /* ================================================================
        CONSTANTS
     ================================================================ */
     var REFRESH_MS = 30000;   // 30-second polling interval (spec §4)
+
+    /* Agent Manifest v1.0 — rank colour palette (schema §rank) */
+    var RANK_COLORS = {
+        'E': '#445566',
+        'D': '#00aaff',
+        'C': '#00ffaa',
+        'B': '#ffaa00',
+        'A': '#ff6b00',
+        'S': '#ff44aa'
+    };
+
+    /* Autonomy labels (schema §missions.autonomy_level 0–3) */
+    var AUTONOMY_LABELS = ['Manual', 'Assisted', 'Semi-Auto', 'Full-Auto'];
 
     var FORM_COLORS = {
         'ROOKIE':     '#00AAFF',
@@ -1277,12 +1146,20 @@
             /* Show all units (scroll if many) */
             $swUnitList.innerHTML = units.map(function (u) {
                 var statusKey  = (u.status || 'IDLE').toUpperCase();
-                var dotColor   = STATUS_COLORS[statusKey] || '#445566';
+                /* dot color: manifest ui.color → rank color → status color */
+                var dotColor   = (u.ui && u.ui.color) ? u.ui.color
+                               : (u.rank ? RANK_COLORS[u.rank] : null)
+                               || STATUS_COLORS[statusKey] || '#445566';
                 var levelStr   = u.level != null ? 'Lv' + u.level : '';
                 var typeStr    = u.type  ? escHtml(u.type) : '';
-                var meta       = [typeStr, levelStr].filter(Boolean).join(' · ');
+                var rankBadge  = u.rank
+                    ? '<span style="font-size:8px;font-weight:900;padding:1px 5px;border-radius:4px;background:' + RANK_COLORS[u.rank] + '22;color:' + RANK_COLORS[u.rank] + ';border:1px solid ' + RANK_COLORS[u.rank] + '55;margin-right:3px;line-height:1.8;">' + escHtml(u.rank) + '</span>'
+                    : '';
+                var autoLabel  = (u.autonomy_level != null) ? (AUTONOMY_LABELS[u.autonomy_level] || '') : '';
+                var meta       = [typeStr, levelStr, autoLabel].filter(Boolean).join(' · ');
                 return '<div class="unit-row">' +
                     '<div class="unit-status-dot" style="background:' + dotColor + ';box-shadow:0 0 5px ' + dotColor + '88;"></div>' +
+                    rankBadge +
                     '<span class="unit-name">' + escHtml(u.name || u.id || 'Unit') + '</span>' +
                     '<span class="unit-meta">' + meta + '</span>' +
                     '</div>';
@@ -1528,9 +1405,10 @@
             input.value = text;
             input.focus();
             input.setSelectionRange(text.length, text.length);
-            /* Auto-send via NexusmonConsole if available */
-            if (typeof NexusmonConsole !== 'undefined' && NexusmonConsole.sendMessage) {
-                NexusmonConsole.sendMessage();
+            /* Auto-send via NexusmonConsole.send() (manifest-aware API) */
+            if (typeof NexusmonConsole !== 'undefined' && typeof NexusmonConsole.send === 'function') {
+                NexusmonConsole.send(text);
+                input.value = '';
             } else {
                 /* Fallback: dispatch Enter keydown so any listener picks it up */
                 input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));

@@ -1,0 +1,223 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://nexusmon.swarmz/schemas/agent-manifest/1.0.0",
+  "title": "NEXUSMON AI Agent Manifest",
+  "description": "Complete genome schema for a NEXUSMON agent: identity, cognition, behavior, safety, evolution, and operator-interface metadata.",
+  "type": "object",
+  "required": [
+    "id",
+    "name",
+    "version",
+    "persona",
+    "cognition",
+    "missions",
+    "safety"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "default": "1.0.0",
+      "description": "Version of this schema specification."
+    },
+
+    "id": {
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9._-]+$",
+      "description": "Unique machine identifier for this agent. Alphanumeric, dots, dashes, underscores only."
+    },
+
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Human-readable display name for the agent."
+    },
+
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Semantic version of this agent manifest (MAJOR.MINOR.PATCH)."
+    },
+
+    "rank": {
+      "type": "string",
+      "enum": ["E", "D", "C", "B", "A", "S"],
+      "description": "Agent rank tier. E = entry, S = sovereign. Governs authority and capability ceiling."
+    },
+
+    "traits": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true,
+      "description": "Behavioral trait tags. Loaded into the organism for pattern matching and peer selection."
+    },
+
+    "persona": {
+      "type": "object",
+      "description": "Behavioral DNA of the agent. Defines intent, directives, and hard constraints.",
+      "required": ["summary", "directives", "constraints"],
+      "additionalProperties": false,
+      "properties": {
+        "summary": {
+          "type": "string",
+          "minLength": 1,
+          "description": "One-paragraph identity summary read by the cognition loop at boot."
+        },
+        "directives": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "minItems": 1,
+          "description": "Ordered list of behavioral imperatives. Highest priority first."
+        },
+        "constraints": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "minItems": 1,
+          "description": "Hard limits the agent may never violate regardless of instruction."
+        }
+      }
+    },
+
+    "cognition": {
+      "type": "object",
+      "description": "Cognition loop specification: what model runs this agent and how it processes information.",
+      "required": ["entrypoint"],
+      "additionalProperties": false,
+      "properties": {
+        "entrypoint": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Python dotted path or model ID that drives the agent's reasoning loop."
+        },
+        "processors": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "description": "Ordered pipeline of processor modules applied before/after the entrypoint."
+        },
+        "memory_policy": {
+          "type": "string",
+          "enum": ["none", "short", "long", "episodic"],
+          "description": "Persistence policy for conversation/task memory. none = stateless, episodic = full replay."
+        }
+      }
+    },
+
+    "missions": {
+      "type": "object",
+      "description": "Mission interface contract: what this agent accepts, generates, and how autonomously it operates.",
+      "required": ["accepts", "generates", "autonomy_level"],
+      "additionalProperties": false,
+      "properties": {
+        "accepts": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "description": "Mission types this agent is registered to receive from the mission bus."
+        },
+        "generates": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "description": "Mission types this agent emits downstream."
+        },
+        "autonomy_level": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 3,
+          "description": "0=Manual (operator confirms each action), 1=Assisted, 2=Semi-Auto, 3=Full-Auto."
+        }
+      }
+    },
+
+    "safety": {
+      "type": "object",
+      "description": "Safety envelope governing what this agent is permitted to touch.",
+      "required": ["validators", "max_scope"],
+      "additionalProperties": false,
+      "properties": {
+        "validators": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "description": "Ordered list of validator modules applied to every action before execution."
+        },
+        "max_scope": {
+          "type": "string",
+          "enum": ["none", "read", "write", "system"],
+          "description": "Maximum filesystem/API scope the agent is allowed to exercise."
+        },
+        "rate_limits": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Optional throughput caps enforced by the safety layer.",
+          "properties": {
+            "calls_per_min": {
+              "type": "number",
+              "minimum": 0,
+              "description": "Maximum API or tool calls per minute."
+            },
+            "missions_per_hour": {
+              "type": "number",
+              "minimum": 0,
+              "description": "Maximum missions the agent may initiate per hour."
+            }
+          }
+        }
+      }
+    },
+
+    "evolution": {
+      "type": "object",
+      "description": "Promotion requirements and capability unlocks. Governs rank advancement.",
+      "additionalProperties": false,
+      "properties": {
+        "requires": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Preconditions that must be met before this agent can be promoted.",
+          "properties": {
+            "xp": {
+              "type": "number",
+              "minimum": 0,
+              "description": "Experience points threshold required for promotion."
+            },
+            "rank": {
+              "type": "string",
+              "enum": ["E", "D", "C", "B", "A", "S"],
+              "description": "Minimum rank required before promotion to the next tier."
+            },
+            "traits": {
+              "type": "array",
+              "items": { "type": "string", "minLength": 1 },
+              "description": "Trait prerequisites that must be present in the organism."
+            }
+          }
+        },
+        "unlocks": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "description": "Capabilities, mission types, or modules unlocked upon meeting promotion requirements."
+        }
+      }
+    },
+
+    "ui": {
+      "type": "object",
+      "description": "Operator console display metadata. Controls how this agent appears in the cockpit.",
+      "additionalProperties": false,
+      "properties": {
+        "icon": {
+          "type": "string",
+          "description": "SVG path, emoji, or asset reference for the agent's cockpit icon."
+        },
+        "color": {
+          "type": "string",
+          "pattern": "^(#[0-9a-fA-F]{3,8}|rgb\\(|rgba\\(|hsl\\()",
+          "description": "CSS color value overriding the rank-default dot/accent color in the cockpit."
+        },
+        "panel": {
+          "type": "string",
+          "enum": ["swarm", "factory", "missions", "chronicle", "custom"],
+          "description": "Which cockpit panel this agent's status card is pinned to by default."
+        }
+      }
+    }
+  }
+}
