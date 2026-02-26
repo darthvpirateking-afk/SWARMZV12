@@ -1,15 +1,16 @@
-# Reverting commit abfe8993bb8353c7ec5a015e0fd299957cceb2c3
-
-# This commit undoes the changes made in the specified commit. Adjusting the file to its previous state.
+# SWARMZ Source Available License
+# Commercial use, hosting, and resale prohibited.
+# See LICENSE file for details.
+"""
 XP = count(verified trials). Evolutions unlock at XP thresholds +
 minimum survival-data quality. Unlocks are deterministic (no vibes).
 
 Levels:
-  LV0 EGG        0â€“4 verified trials
-  LV1 ROOKIE     â‰¥5 verified trials
-  LV2 CHAMPION   â‰¥20 verified trials, â‰¥5 per metric
-  LV3 ULTIMATE   â‰¥60 verified trials, â‰¥20 in same context_tag
-  LV4 MEGA       â‰¥150 verified trials, â‰¥10 drift events
+  LV0 EGG        0-4 verified trials
+  LV1 ROOKIE     >=5 verified trials
+  LV2 CHAMPION   >=20 verified trials, >=5 per metric
+  LV3 ULTIMATE   >=60 verified trials, >=20 in same context_tag
+  LV4 MEGA       >=150 verified trials, >=10 drift events
   LV5 BURST      manual toggle; requires rollback available
 
 Power Currencies (all computed, never manual):
