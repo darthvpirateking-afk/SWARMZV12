@@ -16,13 +16,13 @@ matrix/
 │   └── nexusmon_artifact_vault.py # Artifact storage
 │
 ├── ⚡ protocols/               # Awakening & Control Protocols
-│   ├── NEXUSMON_AWAKEN.ps1       # Primary awakening protocol
-│   ├── matrix_online.ps1          # Full system activation
-│   ├── matrix_daemon.ps1          # Background daemon mode
-│   ├── one_jack_in.ps1            # Single-command entry
+│   ├── awaken.ps1                 # Primary awakening protocol
+│   ├── online.ps1                 # Full system activation
+│   ├── daemon.ps1                 # Background daemon mode
+│   ├── quick-start.ps1            # Single-command entry
 │   └── 🏥 diagnostics/           # System health protocols
-│       ├── matrix_diagnostics.ps1
-│       ├── smoke_test.ps1
+│       ├── diagnostics.ps1
+│       ├── smoke.ps1
 │       └── health_check.py
 │
 ├── 🚀 deployment/              # Deployment Matrices
@@ -55,7 +55,7 @@ matrix/
 
 **Quick Start:**
 ```powershell
-.\matrix\protocols\one_jack_in.ps1
+.\matrix\protocols\quick-start.ps1
 ```
 
 **Full System:**
