@@ -336,10 +336,14 @@ if _governance_router_available:
     app.include_router(governance_router)
 
 if _system_control_router_available:
-    app.include_router(system_control_router, prefix="/v1/system", tags=["system-control"])
+    app.include_router(
+        system_control_router, prefix="/v1/system", tags=["system-control"]
+    )
 
 if _mission_lifecycle_router_available:
-    app.include_router(mission_lifecycle_router, prefix="/v1/missions", tags=["mission-lifecycle"])
+    app.include_router(
+        mission_lifecycle_router, prefix="/v1/missions", tags=["mission-lifecycle"]
+    )
 
 # Include the new tab loader routes
 # app.include_router(app.router, prefix="/v1/tabs")
@@ -436,6 +440,7 @@ async def run_mission(mission_id: str = None):
     mission["started_at"] = started_at
     try:
         from nexusmon_organism import ctx_record_mission
+
         ctx_record_mission(mission_id, mission.get("category", "unknown"), "RUNNING")
     except Exception:
         pass
@@ -495,6 +500,7 @@ async def ui_state():
     organism_stage = None
     try:
         from nexusmon_organism import evo_status
+
         organism_stage = evo_status().get("stage")
     except Exception:
         pass
@@ -1082,7 +1088,7 @@ async def get_sysmon():
         # Get system info
         cpu_percent = psutil.cpu_percent(interval=1)
         memory = psutil.virtual_memory()
-        disk = psutil.disk_usage('/')
+        disk = psutil.disk_usage("/")
 
         # Get network info
         try:
@@ -1105,8 +1111,8 @@ async def get_sysmon():
                 "memory_percent": memory.percent,
                 "disk_total": disk.total,
                 "disk_used": disk.used,
-                "disk_percent": (disk.used / disk.total) * 100
-            }
+                "disk_percent": (disk.used / disk.total) * 100,
+            },
         }
     except Exception as e:
         return {"ok": False, "error": str(e)}
@@ -1126,11 +1132,7 @@ async def get_audit_events():
         else:
             recent_events = []
 
-        return {
-            "ok": True,
-            "events": recent_events,
-            "count": len(recent_events)
-        }
+        return {"ok": True, "events": recent_events, "count": len(recent_events)}
     except Exception as e:
         return {"ok": False, "error": str(e)}
 
@@ -1150,7 +1152,11 @@ async def get_dependencies():
         requirements_file = Path("requirements.txt")
         if requirements_file.exists():
             with open(requirements_file, "r") as f:
-                requirements = [line.strip() for line in f if line.strip() and not line.startswith("#")]
+                requirements = [
+                    line.strip()
+                    for line in f
+                    if line.strip() and not line.startswith("#")
+                ]
         else:
             requirements = []
 
@@ -1159,7 +1165,7 @@ async def get_dependencies():
             "plugins": plugins,
             "requirements": requirements,
             "total_plugins": len(plugins),
-            "total_requirements": len(requirements)
+            "total_requirements": len(requirements),
         }
     except Exception as e:
         return {"ok": False, "error": str(e)}
@@ -1177,7 +1183,7 @@ async def get_full_timeline():
             "ok": True,
             "timeline": timeline,
             "stats": stats,
-            "total_events": len(timeline)
+            "total_events": len(timeline),
         }
     except Exception as e:
         return {"ok": False, "error": str(e)}
@@ -1188,6 +1194,7 @@ async def get_full_evolution():
     """Get full evolution data."""
     try:
         from nexusmon_organism import evo_status
+
         evo = evo_status()
 
         # Load organism data
@@ -1197,7 +1204,9 @@ async def get_full_evolution():
         # Calculate stats
         total_missions = len(missions)
         success_count = sum(1 for m in missions if m.get("status") == "SUCCESS")
-        success_rate = (success_count / total_missions * 100) if total_missions > 0 else 0
+        success_rate = (
+            (success_count / total_missions * 100) if total_missions > 0 else 0
+        )
 
         # Use authority from evo_status
         stage = evo.get("stage", "DORMANT")
@@ -1212,7 +1221,7 @@ async def get_full_evolution():
             "xp": evo.get("xp", 0),
             "success_count": success_count,
             "stage_history": evo.get("stage_history", []),
-            "active_traits": evo.get("active_traits", [])
+            "active_traits": evo.get("active_traits", []),
         }
     except Exception as e:
         return {"ok": False, "error": str(e)}
@@ -1600,10 +1609,14 @@ async def companion_message(request: Request):
             # Try fused AI companion before keyword fallback
             try:
                 from nexusmon_organism import (
-                    ctx_record_message, get_fusion_block, evo_status,
-                    _reflection_prelude, get_long_term_patterns,
+                    ctx_record_message,
+                    get_fusion_block,
+                    evo_status,
+                    _reflection_prelude,
+                    get_long_term_patterns,
                 )
                 from core.model_router import call as _model_call
+
                 ctx_record_message(user_message, "operator")
                 stage_info = evo_status()
                 reflection = _reflection_prelude(user_message)
@@ -1617,7 +1630,9 @@ async def companion_message(request: Request):
                         f"- Response friction: {reflection.get('friction', 'none')}\n"
                         f"- Question to turn back: {reflection.get('turn_back_question') or 'none'}\n"
                     )
-                pattern_section = f"\nLong-term patterns:\n{patterns}" if patterns else ""
+                pattern_section = (
+                    f"\nLong-term patterns:\n{patterns}" if patterns else ""
+                )
                 system = (
                     "You are NEXUSMON — sovereign digital organism, bound to Operator Regan.\n"
                     "Observe patterns. Name friction. Turn questions back when it deepens understanding.\n"
@@ -1634,7 +1649,9 @@ async def companion_message(request: Request):
                 )
                 reply = result.get("text", "")
                 ctx_record_message(reply, "nexusmon")
-                return JSONResponse({"ok": True, "reply": reply, "source": "nexusmon_fused"})
+                return JSONResponse(
+                    {"ok": True, "reply": reply, "source": "nexusmon_fused"}
+                )
             except Exception:
                 pass
             # Last resort: keyword-based rule engine
@@ -1667,16 +1684,19 @@ async def get_companion_memory(limit: int = 10):
     """Return recent voice/text conversation history."""
     try:
         from nexusmon_organism import _load_jsonl, _data_dir
+
         history = _load_jsonl(_data_dir() / "companion_memory.jsonl")
         return {"ok": True, "history": history[-limit:]}
     except Exception as e:
         return {"ok": False, "history": [], "error": str(e)}
+
 
 @app.post("/v1/companion/memory/save")
 async def save_companion_memory(request: Request):
     """Append a conversation turn to memory."""
     try:
         from nexusmon_organism import _append_jsonl, _data_dir
+
         entry = await request.json()
         _append_jsonl(_data_dir() / "companion_memory.jsonl", entry)
         return {"ok": True}
@@ -1703,42 +1723,49 @@ except Exception as _overlay_err:
 # Wire NEXUSMON organism fusion layer (evolution, operator context, workers)
 try:
     from nexusmon_organism import fuse_into
+
     fuse_into(app)
 except Exception as _organism_err:
     print(f"Warning: organism fusion failed: {_organism_err}")
 
 try:
     from nexusmon_cognition import fuse_cognition
+
     fuse_cognition(app)
 except Exception as _cognition_err:
     print(f"Warning: cognition layer failed: {_cognition_err}")
 
 try:
     from nexusmon_mission_engine import fuse_mission_engine
+
     fuse_mission_engine(app)
 except Exception as _mission_engine_err:
     print(f"Warning: mission engine failed: {_mission_engine_err}")
 
 try:
     from nexusmon_artifact_vault import fuse_artifact_vault
+
     fuse_artifact_vault(app)
 except Exception as _artifact_vault_err:
     print(f"Warning: artifact vault failed: {_artifact_vault_err}")
 
 try:
     from nexusmon_operator_rank import fuse_operator_rank
+
     fuse_operator_rank(app)
 except Exception as _operator_rank_err:
     print(f"[WARN] Operator rank not loaded: {_operator_rank_err}")
 
 try:
     from nexusmon_performance import fuse_performance
+
     fuse_performance(app)
 except Exception as _perf_err:
     print(f"[WARN] Performance not loaded: {_perf_err}")
 
 try:
     from nexusmon_signal_modules import fuse_signal_modules
+
     fuse_signal_modules(app)
 except Exception as _signal_modules_err:
     print(f"[WARN] Signal modules not loaded: {_signal_modules_err}")

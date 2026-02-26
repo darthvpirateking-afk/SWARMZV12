@@ -70,7 +70,7 @@ def test_galileo_endpoints():
                 f"{BASE_URL}/v1/galileo/runs/{test_run_id}", timeout=10
             )
             result = response.json()
-            if result.get('ok'):
+            if result.get("ok"):
                 print("  OK: Retrieved run details")
             else:
                 print(f"  FAIL: {result.get('error')}")
@@ -79,7 +79,6 @@ def test_galileo_endpoints():
     else:
         print("\n[4/6] SKIPPED (no run_id from test 1)")
 
-    
     # Test 5: POST /v1/galileo/experiments/{id}/run (operator-gated)
     print(
         "\n[5/6] Testing POST /v1/galileo/experiments/{id}/run (authorization gate)..."
@@ -90,7 +89,7 @@ def test_galileo_endpoints():
             f"{BASE_URL}/v1/galileo/experiments/test_exp_id/run", timeout=10
         )
         result = response.json()
-        if not result.get('ok') and 'authorization' in result.get('error', '').lower():
+        if not result.get("ok") and "authorization" in result.get("error", "").lower():
             print("  OK: Operator gate working (denied as expected)")
         else:
             print(
@@ -129,7 +128,6 @@ def test_galileo_endpoints():
     else:
         print("  Storage dir does not exist")
 
-    
     return True
 
 

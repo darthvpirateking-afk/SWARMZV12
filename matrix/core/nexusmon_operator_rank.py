@@ -27,7 +27,7 @@ RANK_THRESHOLDS = {
     "B": 400,
     "A": 800,
     "S": 1500,
-    "N": 3000, # NEXUS
+    "N": 3000,  # NEXUS
 }
 
 # XP awarded per action (called internally by other subsystems)
@@ -38,7 +38,7 @@ XP_TABLE = {
     "complete_mission_B": 100,
     "complete_mission_A": 200,
     "complete_mission_S": 500,
-    "complete_mission_N": 1000, # NEXUS XP
+    "complete_mission_N": 1000,  # NEXUS XP
     "approve_artifact": 5,
     "reject_artifact": 5,
     "log_prediction": 5,
@@ -57,7 +57,7 @@ RANK_TRAITS = {
     "B": ["Module Activation", "Multi-Worker Coordination"],
     "A": ["Full Governance", "System-Level Reasoning"],
     "S": ["Organism Override", "Evolution Tier Unlock"],
-    "N": ["Singularity Logic", "Omnipresence", "Self-Healing"], # Rank N traits
+    "N": ["Singularity Logic", "Omnipresence", "Self-Healing"],  # Rank N traits
 }
 
 # Permission matrix: minimum rank required for each action
@@ -76,11 +76,12 @@ PERMISSION_MATRIX = {
     "activate_module": "B",
     "evolution_sync": "C",
     "full_organism_control": "S",
-    "singularity_override": "N", # NEXUS command
+    "singularity_override": "N",  # NEXUS command
 }
 
 
 # ─── Storage ─────────────────────────────────────────────────────────────────
+
 
 def _default_state():
     return {
@@ -110,6 +111,7 @@ def _save_state(state: dict):
 
 
 # ─── Core Logic ──────────────────────────────────────────────────────────────
+
 
 def rank_from_xp(xp: int) -> str:
     """Derive rank from XP. Rank is always computed, never stored directly."""
@@ -168,12 +170,14 @@ def award_xp(action: str, detail: str = "") -> dict:
     state["xp"] += amount
 
     # Keep last 100 XP events
-    state["xp_history"].append({
-        "action": action,
-        "xp": amount,
-        "detail": detail,
-        "timestamp": time.time(),
-    })
+    state["xp_history"].append(
+        {
+            "action": action,
+            "xp": amount,
+            "detail": detail,
+            "timestamp": time.time(),
+        }
+    )
     state["xp_history"] = state["xp_history"][-100:]
 
     new_rank = rank_from_xp(state["xp"])
@@ -194,10 +198,12 @@ def award_xp(action: str, detail: str = "") -> dict:
         result["new_traits"] = RANK_TRAITS.get(new_rank, [])
     return result
 
+
 def get_current_rank() -> str:
     """Quick helper to get just the rank code (E, D, C, B, A, S, N)."""
     state = _load_state()
     return rank_from_xp(state.get("xp", 0))
+
 
 def get_operator_rank_state() -> dict:
     """Full operator rank state for API responses."""
@@ -213,14 +219,14 @@ def get_operator_rank_state() -> dict:
         "progress": nri["progress"],
         "traits": traits_for_xp(xp),
         "permissions": {
-            action: has_permission(xp, action)
-            for action in PERMISSION_MATRIX
+            action: has_permission(xp, action) for action in PERMISSION_MATRIX
         },
         "updated_at": state.get("updated_at"),
     }
 
 
 # ─── Rank Gate Middleware ────────────────────────────────────────────────────
+
 
 def rank_gate(action: str):
     """
@@ -247,7 +253,7 @@ def rank_gate(action: str):
                     "required_rank": required,
                     "current_xp": xp,
                     "xp_needed": RANK_THRESHOLDS.get(required, 0) - xp,
-                }
+                },
             )
         return {"rank": current, "xp": xp, "action": action}
 
@@ -255,6 +261,7 @@ def rank_gate(action: str):
 
 
 # ─── Request Models ──────────────────────────────────────────────────────────
+
 
 class AwardXPRequest(BaseModel):
     action: str
@@ -274,6 +281,7 @@ async def get_rank():
     try:
         from datetime import datetime, timezone
         from nexusmon_mission_engine import list_missions, mission_xp_total
+
         today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
         all_missions = list_missions()
         running = [m for m in all_missions if m.get("status") == "RUNNING"]
@@ -285,21 +293,34 @@ async def get_rank():
                 done = sum(1 for t in tasks if t.get("status") == "COMPLETED")
                 progress_pct = round(done / len(tasks) * 100, 1)
         elif all_missions:
-            completed_count = sum(1 for m in all_missions if m.get("status") == "COMPLETED")
+            completed_count = sum(
+                1 for m in all_missions if m.get("status") == "COMPLETED"
+            )
             progress_pct = round(completed_count / len(all_missions) * 100, 1)
         data["missions"] = {
             "active_missions": len(running),
-            "completed_today": len([m for m in all_missions if m.get("completed_at", "").startswith(today)]),
+            "completed_today": len(
+                [m for m in all_missions if m.get("completed_at", "").startswith(today)]
+            ),
             "total_xp_from_missions": mission_xp_total(),
             "latest_completed_goal": next(
-                (m["goal"] for m in reversed(all_missions) if m.get("status") == "COMPLETED"), None
+                (
+                    m["goal"]
+                    for m in reversed(all_missions)
+                    if m.get("status") == "COMPLETED"
+                ),
+                None,
             ),
             "progress_pct": progress_pct,
         }
     except Exception:
-        data["missions"] = {"active_missions": 0, "completed_today": 0,
-                            "total_xp_from_missions": 0, "latest_completed_goal": None,
-                            "progress_pct": 0.0}
+        data["missions"] = {
+            "active_missions": 0,
+            "completed_today": 0,
+            "total_xp_from_missions": 0,
+            "latest_completed_goal": None,
+            "progress_pct": 0.0,
+        }
     return data
 
 
@@ -323,8 +344,7 @@ async def get_permissions():
     return {
         "rank": rank,
         "permissions": {
-            action: has_permission(xp, action)
-            for action in PERMISSION_MATRIX
+            action: has_permission(xp, action) for action in PERMISSION_MATRIX
         },
     }
 
@@ -344,11 +364,14 @@ async def get_xp_history():
 async def post_award_xp(req: AwardXPRequest):
     """Award XP for an action. Called internally by mission engine, vault, cognition, etc."""
     if req.action not in XP_TABLE:
-        raise HTTPException(status_code=400, detail={
-            "error": "invalid_action",
-            "message": f"Unknown XP action: {req.action}",
-            "valid_actions": list(XP_TABLE.keys()),
-        })
+        raise HTTPException(
+            status_code=400,
+            detail={
+                "error": "invalid_action",
+                "message": f"Unknown XP action: {req.action}",
+                "valid_actions": list(XP_TABLE.keys()),
+            },
+        )
     result = award_xp(req.action, req.detail)
     return result
 
@@ -380,35 +403,68 @@ async def get_leaderboard():
 EVOLUTION_TIERS = ["DORMANT", "INITIATED", "ACTIVE", "EVOLVED", "ASCENDED"]
 
 RANK_TO_TIER = {
-    "E": "DORMANT", "D": "INITIATED", "C": "ACTIVE",
-    "B": "EVOLVED", "A": "ASCENDED", "S": "ASCENDED",
+    "E": "DORMANT",
+    "D": "INITIATED",
+    "C": "ACTIVE",
+    "B": "EVOLVED",
+    "A": "ASCENDED",
+    "S": "ASCENDED",
 }
 
 TIER_MODULES = {
-    "DORMANT":   [],
+    "DORMANT": [],
     "INITIATED": ["Worker Node v1"],
-    "ACTIVE":    ["Worker Node v1", "Vault Indexer", "Cognition Calibrator"],
-    "EVOLVED":   ["Worker Node v1", "Vault Indexer", "Cognition Calibrator", "Parallel Worker Node v2"],
-    "ASCENDED":  ["Worker Node v1", "Vault Indexer", "Cognition Calibrator", "Parallel Worker Node v2", "Evolution Engine v2"],
+    "ACTIVE": ["Worker Node v1", "Vault Indexer", "Cognition Calibrator"],
+    "EVOLVED": [
+        "Worker Node v1",
+        "Vault Indexer",
+        "Cognition Calibrator",
+        "Parallel Worker Node v2",
+    ],
+    "ASCENDED": [
+        "Worker Node v1",
+        "Vault Indexer",
+        "Cognition Calibrator",
+        "Parallel Worker Node v2",
+        "Evolution Engine v2",
+    ],
 }
 
 TIER_TRAITS = {
-    "DORMANT":   [],
+    "DORMANT": [],
     "INITIATED": ["Stable Execution", "Basic Parallelism"],
-    "ACTIVE":    ["Stable Execution", "Basic Parallelism", "Artifact Awareness", "Mission Memory"],
-    "EVOLVED":   ["Stable Execution", "Basic Parallelism", "Artifact Awareness", "Mission Memory",
-                  "Autonomous Draft Mode", "Multi-Worker Coordination"],
-    "ASCENDED":  ["Stable Execution", "Basic Parallelism", "Artifact Awareness", "Mission Memory",
-                  "Autonomous Draft Mode", "Multi-Worker Coordination",
-                  "System-Level Reasoning", "Governance Reflex"],
+    "ACTIVE": [
+        "Stable Execution",
+        "Basic Parallelism",
+        "Artifact Awareness",
+        "Mission Memory",
+    ],
+    "EVOLVED": [
+        "Stable Execution",
+        "Basic Parallelism",
+        "Artifact Awareness",
+        "Mission Memory",
+        "Autonomous Draft Mode",
+        "Multi-Worker Coordination",
+    ],
+    "ASCENDED": [
+        "Stable Execution",
+        "Basic Parallelism",
+        "Artifact Awareness",
+        "Mission Memory",
+        "Autonomous Draft Mode",
+        "Multi-Worker Coordination",
+        "System-Level Reasoning",
+        "Governance Reflex",
+    ],
 }
 
 TIER_UNLOCK_REQUIREMENTS = {
-    "DORMANT":   "Starting tier",
+    "DORMANT": "Starting tier",
     "INITIATED": "Complete 5 E-rank missions",
-    "ACTIVE":    "Complete 3 D-rank missions",
-    "EVOLVED":   "Complete 2 C-rank missions",
-    "ASCENDED":  "Complete 1 B-rank + 1 A-rank mission",
+    "ACTIVE": "Complete 3 D-rank missions",
+    "EVOLVED": "Complete 2 C-rank missions",
+    "ASCENDED": "Complete 1 B-rank + 1 A-rank mission",
 }
 
 
@@ -442,6 +498,7 @@ async def get_operator_evolution():
 
 
 # ─── Fusion ──────────────────────────────────────────────────────────────────
+
 
 def fuse_operator_rank(app):
     """Mount operator rank routes into the FastAPI app."""

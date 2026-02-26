@@ -24,6 +24,7 @@ router = APIRouter(prefix="/v1/governance", tags=["governance"])
 
 try:
     from core.sovereign import get_override_history as _get_override_history
+
     _sovereign_available = True
 except Exception:
     _sovereign_available = False
@@ -31,6 +32,7 @@ except Exception:
 
 try:
     from core.shadow_channel import query_shadow_log as _query_shadow_log
+
     _shadow_available = True
 except Exception:
     _shadow_available = False
@@ -38,6 +40,7 @@ except Exception:
 
 try:
     from core.emergence import _emergence  # module-level singleton
+
     _emergence_available = True
 except Exception:
     _emergence_available = False
@@ -49,6 +52,7 @@ try:
         get_unlocked_capabilities as _get_unlocked,
         _uplift,
     )
+
     _uplift_available = True
 except Exception:
     _uplift_available = False
@@ -57,6 +61,7 @@ except Exception:
 # ---------------------------------------------------------------------------
 # /v1/governance/status
 # ---------------------------------------------------------------------------
+
 
 @router.get("/status")
 async def governance_status() -> Dict[str, Any]:
@@ -104,6 +109,7 @@ async def governance_status() -> Dict[str, Any]:
 # /v1/governance/perf
 # ---------------------------------------------------------------------------
 
+
 @router.get("/perf")
 async def governance_perf() -> Dict[str, Any]:
     """Return full P50/P95/P99 latency profile for every governance layer."""
@@ -114,26 +120,39 @@ async def governance_perf() -> Dict[str, Any]:
 # /v1/governance/sovereign/log
 # ---------------------------------------------------------------------------
 
+
 @router.get("/sovereign/log")
 async def sovereign_log(limit: int = Query(default=50, ge=1, le=500)) -> Dict[str, Any]:
     """Return the last *limit* sovereign override events."""
     if not _sovereign_available:
-        return {"available": False, "entries": [], "message": "sovereign module not loaded"}
+        return {
+            "available": False,
+            "entries": [],
+            "message": "sovereign module not loaded",
+        }
 
     try:
         history = _get_override_history(limit=limit)
         entries = []
         for ev in history:
             try:
-                entries.append({
-                    "timestamp": ev.timestamp.isoformat() if hasattr(ev.timestamp, "isoformat") else str(ev.timestamp),
-                    "rule_name": getattr(ev, "rule_name", "unknown"),
-                    "layer": getattr(ev, "layer", "unknown"),
-                    "action": getattr(ev, "action_type", getattr(ev, "action", "unknown")),
-                    "original_decision": getattr(ev, "original_decision", None),
-                    "override_decision": getattr(ev, "override_decision", None),
-                    "reason": getattr(ev, "reason", ""),
-                })
+                entries.append(
+                    {
+                        "timestamp": (
+                            ev.timestamp.isoformat()
+                            if hasattr(ev.timestamp, "isoformat")
+                            else str(ev.timestamp)
+                        ),
+                        "rule_name": getattr(ev, "rule_name", "unknown"),
+                        "layer": getattr(ev, "layer", "unknown"),
+                        "action": getattr(
+                            ev, "action_type", getattr(ev, "action", "unknown")
+                        ),
+                        "original_decision": getattr(ev, "original_decision", None),
+                        "override_decision": getattr(ev, "override_decision", None),
+                        "reason": getattr(ev, "reason", ""),
+                    }
+                )
             except Exception:
                 entries.append({"raw": str(ev)})
         return {"available": True, "count": len(entries), "entries": entries}
@@ -145,6 +164,7 @@ async def sovereign_log(limit: int = Query(default=50, ge=1, le=500)) -> Dict[st
 # /v1/governance/shadow/log
 # ---------------------------------------------------------------------------
 
+
 @router.get("/shadow/log")
 async def shadow_log(
     layer: Optional[str] = Query(default=None),
@@ -154,7 +174,11 @@ async def shadow_log(
 ) -> Dict[str, Any]:
     """Return shadow-channel decision log with optional filters."""
     if not _shadow_available:
-        return {"available": False, "entries": [], "message": "shadow_channel module not loaded"}
+        return {
+            "available": False,
+            "entries": [],
+            "message": "shadow_channel module not loaded",
+        }
 
     try:
         result = _query_shadow_log(
@@ -173,10 +197,12 @@ async def shadow_log(
         if isinstance(raw, list):
             for item in raw:
                 if hasattr(item, "__dict__"):
-                    entries.append({
-                        k: (v.isoformat() if hasattr(v, "isoformat") else v)
-                        for k, v in item.__dict__.items()
-                    })
+                    entries.append(
+                        {
+                            k: (v.isoformat() if hasattr(v, "isoformat") else v)
+                            for k, v in item.__dict__.items()
+                        }
+                    )
                 elif isinstance(item, dict):
                     entries.append(item)
                 else:
@@ -188,7 +214,11 @@ async def shadow_log(
             "available": True,
             "count": len(entries),
             "entries": entries,
-            "shadow_log_size": result.metadata.get("shadow_log_size", 0) if hasattr(result, "metadata") and isinstance(result.metadata, dict) else 0,
+            "shadow_log_size": (
+                result.metadata.get("shadow_log_size", 0)
+                if hasattr(result, "metadata") and isinstance(result.metadata, dict)
+                else 0
+            ),
         }
     except Exception as exc:
         return {"available": False, "entries": [], "message": str(exc)}
@@ -198,11 +228,16 @@ async def shadow_log(
 # /v1/governance/emergence
 # ---------------------------------------------------------------------------
 
+
 @router.get("/emergence")
 async def emergence_patterns() -> Dict[str, Any]:
     """Return current emergence pattern analysis."""
     if not _emergence_available:
-        return {"available": False, "patterns": [], "message": "emergence module not loaded"}
+        return {
+            "available": False,
+            "patterns": [],
+            "message": "emergence module not loaded",
+        }
 
     try:
         result = _emergence.analyze_emergence()
@@ -212,12 +247,14 @@ async def emergence_patterns() -> Dict[str, Any]:
 
         patterns_out = []
         for p in detected:
-            patterns_out.append({
-                "pattern_id": getattr(p, "pattern_id", "unknown"),
-                "pattern_type": getattr(p, "pattern_type", "unknown"),
-                "confidence": getattr(p, "confidence", 0.0),
-                "description": getattr(p, "description", ""),
-            })
+            patterns_out.append(
+                {
+                    "pattern_id": getattr(p, "pattern_id", "unknown"),
+                    "pattern_type": getattr(p, "pattern_type", "unknown"),
+                    "confidence": getattr(p, "confidence", 0.0),
+                    "description": getattr(p, "description", ""),
+                }
+            )
 
         return {
             "available": True,
@@ -235,6 +272,7 @@ async def emergence_patterns() -> Dict[str, Any]:
 # ---------------------------------------------------------------------------
 # /v1/governance/uplift
 # ---------------------------------------------------------------------------
+
 
 @router.get("/uplift")
 async def uplift_status() -> Dict[str, Any]:
@@ -254,13 +292,21 @@ async def uplift_status() -> Dict[str, Any]:
                 "failure_count": getattr(maturity, "failure_count", 0),
                 "rollback_count": getattr(maturity, "rollback_count", 0),
                 "avg_confidence": getattr(maturity, "avg_confidence", 0.0),
-                "success_rate": maturity.success_rate() if callable(getattr(maturity, "success_rate", None)) else None,
+                "success_rate": (
+                    maturity.success_rate()
+                    if callable(getattr(maturity, "success_rate", None))
+                    else None
+                ),
             }
 
         def _cap_dict(cap: Any) -> Dict[str, Any]:
             return {
                 "name": getattr(cap, "name", str(cap)),
-                "tier": getattr(cap.tier, "value", str(getattr(cap, "tier", "unknown"))) if hasattr(cap, "tier") else "unknown",
+                "tier": (
+                    getattr(cap.tier, "value", str(getattr(cap, "tier", "unknown")))
+                    if hasattr(cap, "tier")
+                    else "unknown"
+                ),
                 "description": getattr(cap, "description", ""),
                 "unlocked": getattr(cap, "unlocked", False),
             }

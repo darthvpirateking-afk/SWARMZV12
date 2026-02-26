@@ -755,34 +755,44 @@ class VerificationRunner:
                 continue
 
             # Deadline reached – evaluate
-            actual = self._state.get_value(vspec["metric"])
-            passed = False
-            if actual is not None:
-                passed = evaluate(vspec["operator"], actual, vspec["threshold"])
+            result = self._evaluator.evaluate(job)
+            passed = result["passed"]
+            outcome_status = STATUS_PASSED if passed else STATUS_FAILED
+            event_type = "VERIFY_PASSED" if passed else "VERIFY_FAILED"
+            payload = self._build_outcome_payload(job, result, outcome_status)
 
-            log_entry = {
-                "action_id": action["action_id"],
-                "metric": vspec["metric"],
-                "baseline": item["baseline"],
-                "actual": actual,
-                "threshold": vspec["threshold"],
-                "operator": vspec["operator"],
-                "passed": passed,
-            }
+            finalized = self._jobs.finalize(
+                str(job["job_id"]),
+                self._runner_id,
+                outcome_status,
+                event_type,
+                error=result.get("failure_reason"),
+            )
+            if not finalized:
+                continue
+
+            self._jobs.append_outcome(
+                {
+                    "job_id": str(job["job_id"]),
+                    "decision_id": job["decision_id"],
+                    "action_id": job["action_id"],
+                    "status": outcome_status,
+                    "payload": payload,
+                }
+            )
+
+            self._bus.publish(event_type, payload)
+            self._vstore.log(payload)
+            self._log_decision(job, payload, outcome_status)
+            self._emit_calibration(job, payload, outcome_status)
 
             if passed:
-                log_entry["outcome"] = "VERIFY_PASSED"
-                self._bus.publish("VERIFY_PASSED", log_entry)
-                print(f"[verify] PASSED: {action['action_id']}")
+                self._metrics["passed"] += 1
+                print(f"[verify] PASSED: {job['action_id']}")
             else:
-                log_entry["outcome"] = "VERIFY_FAILED"
-                self._bus.publish("VERIFY_FAILED", log_entry)
-                print(f"[verify] FAILED: {action['action_id']} – triggering rollback")
-                self._do_rollback(action)
-
-            self._vstore.log(log_entry)
-
-        self._pending = still_pending
+                self._metrics["failed"] += 1
+                print(f"[verify] FAILED: {job['action_id']} – triggering rollback")
+                self._do_rollback(job)
 
     def _do_rollback(self, job: dict):
         """Trigger rollback (exactly-once guard)."""
@@ -1004,6 +1014,20 @@ class VerificationRunner:
         else:
             self._metrics["failed"] += 1
             self._do_rollback(job)
+
+    def _do_dead_letter(self, job: dict, reason: str):
+        success = self._jobs.dead_letter(str(job["job_id"]), self._runner_id, reason)
+        if not success:
+            return
+        self._metrics["deadlettered"] += 1
+        self._bus.publish(
+            "DEADLETTERED",
+            {
+                "job_id": str(job["job_id"]),
+                "action_id": job["action_id"],
+                "reason": reason,
+            },
+        )
 
     async def _async_dead_letter(self, job: dict):
         reason = "max_attempts_exceeded"

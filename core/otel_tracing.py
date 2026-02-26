@@ -51,7 +51,9 @@ def configure_otel_providers(
     global _tracer, _enabled
 
     if not OTEL_AVAILABLE:
-        print("[OTEL] OpenTelemetry not available. Install: pip install opentelemetry-api opentelemetry-sdk opentelemetry-exporter-otlp")
+        print(
+            "[OTEL] OpenTelemetry not available. Install: pip install opentelemetry-api opentelemetry-sdk opentelemetry-exporter-otlp"
+        )
         return False
 
     # Allow disabling via environment
@@ -61,11 +63,13 @@ def configure_otel_providers(
 
     try:
         # Configure resource with service info
-        resource = Resource(attributes={
-            SERVICE_NAME: "swarmz",
-            "service.version": "1.0",
-            "deployment.environment": os.getenv("SWARMZ_ENV", "development"),
-        })
+        resource = Resource(
+            attributes={
+                SERVICE_NAME: "swarmz",
+                "service.version": "1.0",
+                "deployment.environment": os.getenv("SWARMZ_ENV", "development"),
+            }
+        )
 
         # Create tracer provider
         provider = TracerProvider(resource=resource)
@@ -77,7 +81,9 @@ def configure_otel_providers(
                 insecure=True,  # Local development
             )
             provider.add_span_processor(BatchSpanProcessor(otlp_exporter))
-            print(f"[OTEL] Configured OTLP exporter to localhost:{vs_code_extension_port}")
+            print(
+                f"[OTEL] Configured OTLP exporter to localhost:{vs_code_extension_port}"
+            )
         except Exception as e:
             print(f"[OTEL] Warning: Could not configure OTLP exporter: {e}")
 
@@ -166,9 +172,17 @@ def _should_capture_sensitive() -> bool:
 def _is_sensitive_key(key: str) -> bool:
     """Check if a key contains sensitive data."""
     sensitive_keys = {
-        "prompt", "completion", "message", "messages",
-        "system", "user_input", "assistant_response",
-        "api_key", "token", "password", "secret"
+        "prompt",
+        "completion",
+        "message",
+        "messages",
+        "system",
+        "user_input",
+        "assistant_response",
+        "api_key",
+        "token",
+        "password",
+        "secret",
     }
     return any(s in key.lower() for s in sensitive_keys)
 
@@ -176,10 +190,7 @@ def _is_sensitive_key(key: str) -> bool:
 # Convenience function for tracing LLM calls
 @contextmanager
 def trace_llm_call(
-    provider: str,
-    model: str,
-    operation: str = "chat.completion",
-    **kwargs
+    provider: str, model: str, operation: str = "chat.completion", **kwargs
 ):
     """
     Specialized context manager for tracing LLM API calls.

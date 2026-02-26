@@ -34,8 +34,8 @@ from nexusmon_operator_rank import (
     _default_state,
 )
 
-
 # ─── Fixtures ────────────────────────────────────────────────────────────────
+
 
 @pytest.fixture(autouse=True)
 def reset_state():
@@ -47,6 +47,7 @@ def reset_state():
 
 
 # ─── rank_from_xp ───────────────────────────────────────────────────────────
+
 
 class TestRankFromXP:
     def test_zero_xp_is_rank_e(self):
@@ -91,6 +92,7 @@ class TestRankFromXP:
 
 # ─── next_rank_info ──────────────────────────────────────────────────────────
 
+
 class TestNextRankInfo:
     def test_rank_e_next_is_d(self):
         info = next_rank_info(0)
@@ -116,6 +118,7 @@ class TestNextRankInfo:
 
 # ─── traits_for_xp ──────────────────────────────────────────────────────────
 
+
 class TestTraits:
     def test_rank_e_no_traits(self):
         assert traits_for_xp(0) == []
@@ -127,8 +130,8 @@ class TestTraits:
 
     def test_rank_c_includes_d_traits(self):
         traits = traits_for_xp(150)
-        assert "Worker Control" in traits   # from D
-        assert "Evolution Sync" in traits   # from C
+        assert "Worker Control" in traits  # from D
+        assert "Evolution Sync" in traits  # from C
 
     def test_rank_s_has_all_traits(self):
         traits = traits_for_xp(1500)
@@ -137,6 +140,7 @@ class TestTraits:
 
 
 # ─── has_permission ──────────────────────────────────────────────────────────
+
 
 class TestPermissions:
     def test_rank_e_can_run_e_mission(self):
@@ -166,6 +170,7 @@ class TestPermissions:
 
 
 # ─── award_xp ───────────────────────────────────────────────────────────────
+
 
 class TestAwardXP:
     def test_award_basic_xp(self):
@@ -209,6 +214,7 @@ class TestAwardXP:
 
 # ─── get_operator_rank_state ─────────────────────────────────────────────────
 
+
 class TestGetState:
     def test_initial_state(self):
         state = get_operator_rank_state()
@@ -230,6 +236,7 @@ class TestGetState:
 
 
 # ─── Evolution tier ──────────────────────────────────────────────────────────
+
 
 class TestEvolutionTier:
     def test_rank_e_is_dormant(self):
@@ -260,6 +267,7 @@ class TestEvolutionTier:
 
 # ─── Storage resilience ──────────────────────────────────────────────────────
 
+
 class TestStorage:
     def test_corrupted_file_returns_default(self):
         with open(RANK_FILE, "w") as f:
@@ -276,6 +284,7 @@ class TestStorage:
 
 # ─── XP table completeness ──────────────────────────────────────────────────
 
+
 class TestXPTable:
     def test_all_mission_ranks_have_xp(self):
         for rank in RANKS:
@@ -289,4 +298,6 @@ class TestXPTable:
     def test_all_permission_actions_exist(self):
         for action in PERMISSION_MATRIX:
             required_rank = PERMISSION_MATRIX[action]
-            assert required_rank in RANKS, f"{action} maps to unknown rank {required_rank}"
+            assert (
+                required_rank in RANKS
+            ), f"{action} maps to unknown rank {required_rank}"

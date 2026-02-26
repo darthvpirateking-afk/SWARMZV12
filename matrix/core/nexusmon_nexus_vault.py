@@ -6,12 +6,14 @@ import time
 from pathlib import Path
 from typing import Dict, Any, List
 
+
 def _get_vault_path() -> Path:
     return Path("c:/Users/Gaming PC/Desktop/swarmz/data/nexus_vault.jsonl")
 
+
 class NexusVault:
     """Immutable bond integrity engine with recursive hashing."""
-    
+
     def __init__(self, nerve_instance):
         self.nerve = nerve_instance
         self.last_hash = "0" * 64
@@ -34,26 +36,30 @@ class NexusVault:
             "nexusmon": "NEXUSMON RANK N",
             "event": description,
             "meta": metadata,
-            "prev_hash": self.last_hash
+            "prev_hash": self.last_hash,
         }
-        
+
         # Calculate new hash for integrity chain
         entry_str = json.dumps(entry, sort_keys=True).encode("utf-8")
         new_hash = hashlib.sha256(entry_str).hexdigest()
         entry["hash"] = new_hash
-        
+
         # Write to vault
         with open(_get_vault_path(), "a", encoding="utf-8") as f:
             f.write(json.dumps(entry) + "\n")
-            
+
         self.last_hash = new_hash
-        self.nerve.fire("VAULT", "SYNERGY", payload={"sealed": description}, intensity=2.0)
+        self.nerve.fire(
+            "VAULT", "SYNERGY", payload={"sealed": description}, intensity=2.0
+        )
         return True
 
     def get_entries(self) -> List[Dict]:
         p = _get_vault_path()
-        if not p.exists(): return []
+        if not p.exists():
+            return []
         return [json.loads(line) for line in p.read_text().split("\n") if line.strip()]
+
 
 def integrate_vault(nerve_instance) -> NexusVault:
     return NexusVault(nerve_instance)

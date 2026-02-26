@@ -8,6 +8,7 @@ can be executed in a valid topological order without circular dependencies.
 
 from typing import List, Dict, Any
 
+
 def is_dag(nodes: List[Dict[str, Any]]) -> bool:
     """
     Checks if the provided graph structure is a Directed Acyclic Graph (DAG).
@@ -23,14 +24,14 @@ def is_dag(nodes: List[Dict[str, Any]]) -> bool:
         return True
 
     # Create an adjacency list and an in-degree count for each node
-    adj = {node['id']: [] for node in nodes}
-    in_degree = {node['id']: 0 for node in nodes}
-    node_map = {node['id']: node for node in nodes}
+    adj = {node["id"]: [] for node in nodes}
+    in_degree = {node["id"]: 0 for node in nodes}
+    node_map = {node["id"]: node for node in nodes}
 
     # Build the graph
     for node in nodes:
-        node_id = node['id']
-        for dep_id in node.get('dependencies', []):
+        node_id = node["id"]
+        for dep_id in node.get("dependencies", []):
             # Check for dependencies that don't exist in the provided node list
             if dep_id not in node_map:
                 return False  # Invalid dependency points to a non-existent node
@@ -43,15 +44,15 @@ def is_dag(nodes: List[Dict[str, Any]]) -> bool:
     # Initialize a queue with all nodes that have an in-degree of 0
     # (i.e., nodes with no dependencies)
     queue = [node_id for node_id in in_degree if in_degree[node_id] == 0]
-    
+
     # Count of visited nodes
     count = 0
-    
+
     # Process nodes in the queue (Kahn's algorithm for topological sort)
     while queue:
         u = queue.pop(0)
         count += 1
-        
+
         # For each neighbor of the current node, decrement its in-degree
         for v in adj.get(u, []):
             in_degree[v] -= 1

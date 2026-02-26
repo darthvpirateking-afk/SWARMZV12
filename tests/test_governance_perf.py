@@ -22,6 +22,7 @@ def fresh_ledger():
 
 # ── LayerPerf unit tests ──────────────────────────────────────────────────────
 
+
 def test_layer_perf_records_pass(fresh_ledger):
     fresh_ledger.record("geometry", 1.5, True)
     lp = fresh_ledger._layers["geometry"]
@@ -92,6 +93,7 @@ def test_to_dict_structure(fresh_ledger):
 
 # ── GovernancePerfLedger tests ────────────────────────────────────────────────
 
+
 def test_summary_includes_recorded_layers(fresh_ledger):
     fresh_ledger.record("geometry", 1.0, True)
     fresh_ledger.record("integrity", 2.0, True)
@@ -141,9 +143,11 @@ def test_unknown_layer_auto_created(fresh_ledger):
 
 # ── timed_layer context manager tests ────────────────────────────────────────
 
+
 def test_timed_layer_records_elapsed(fresh_ledger):
     # Temporarily swap module-level ledger via monkeypatching
     import core.governance_perf as gp
+
     orig = gp.perf_ledger
     gp.perf_ledger = fresh_ledger
     try:
@@ -157,9 +161,11 @@ def test_timed_layer_records_elapsed(fresh_ledger):
 
 # ── Integration: perf_ledger wired into tool_gate ────────────────────────────
 
+
 def test_gate_call_populates_perf_ledger():
     """After gate(), perf_ledger should have entries for at least geometry."""
     from core.tool_gate import gate
+
     perf_ledger.reset()
     gate("command", {"cmd": "echo hello"})
     summary = perf_ledger.summary()

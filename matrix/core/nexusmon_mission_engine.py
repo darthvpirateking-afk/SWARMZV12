@@ -32,6 +32,7 @@ logger = logging.getLogger(__name__)
 # STORAGE HELPERS  (mirror nexusmon_organism.py exactly)
 # ══════════════════════════════════════════════════════════════
 
+
 def _data_dir() -> Path:
     db = os.environ.get("DATABASE_URL", "data/nexusmon.db")
     d = Path(db).parent
@@ -74,31 +75,40 @@ def _rewrite_jsonl(path: Path, records: List[Dict]) -> None:
 # CONSTANTS
 # ══════════════════════════════════════════════════════════════
 
-_MISSIONS_FILE = "missions_v2.jsonl"   # never touch missions.jsonl
+_MISSIONS_FILE = "missions_v2.jsonl"  # never touch missions.jsonl
 
 _XP_MAP: Dict[str, int] = {
-    "E": 10, "D": 25, "C": 50, "B": 100, "A": 200, "S": 500,
+    "E": 10,
+    "D": 25,
+    "C": 50,
+    "B": 100,
+    "A": 200,
+    "S": 500,
 }
 
 _RISK_MAP: Dict[str, str] = {
-    "E": "LOW", "D": "LOW",
-    "C": "MEDIUM", "B": "MEDIUM",
-    "A": "HIGH", "S": "CRITICAL",
+    "E": "LOW",
+    "D": "LOW",
+    "C": "MEDIUM",
+    "B": "MEDIUM",
+    "A": "HIGH",
+    "S": "CRITICAL",
 }
 
 # E/D auto-run; C/B run but flag; A/S need approval first
 _AUTO_RANKS = {"E", "D"}
-_FLAG_RANKS  = {"C", "B"}
-_GATE_RANKS  = {"A", "S"}
+_FLAG_RANKS = {"C", "B"}
+_GATE_RANKS = {"A", "S"}
 
-VALID_RANKS   = set(_XP_MAP.keys())
+VALID_RANKS = set(_XP_MAP.keys())
 VALID_TASK_TYPES = {"RESEARCH", "WRITE", "ANALYZE", "CODE", "CALL_API", "DECIDE"}
-VALID_STATUSES   = {"PENDING", "RUNNING", "COMPLETED", "FAILED", "CANCELLED"}
+VALID_STATUSES = {"PENDING", "RUNNING", "COMPLETED", "FAILED", "CANCELLED"}
 
 
 # ══════════════════════════════════════════════════════════════
 # MISSION CRUD
 # ══════════════════════════════════════════════════════════════
+
 
 def _missions_path() -> Path:
     return _data_dir() / _MISSIONS_FILE
@@ -122,6 +132,7 @@ def _save_mission(mission: Dict) -> None:
 # AI DECOMPOSITION
 # ══════════════════════════════════════════════════════════════
 
+
 def _decompose_goal(goal: str, rank: str) -> List[Dict]:
     """Break a goal string into typed tasks using AI. Falls back gracefully."""
     prompt = (
@@ -134,6 +145,7 @@ def _decompose_goal(goal: str, rank: str) -> List[Dict]:
     )
     try:
         from core.model_router import call as _llm_call
+
         result = _llm_call(
             messages=[{"role": "user", "content": prompt}],
             system="You are a structured task planner. Output only JSON.",
@@ -166,7 +178,10 @@ def _decompose_goal(goal: str, rank: str) -> List[Dict]:
 # DAG UTILITIES
 # ══════════════════════════════════════════════════════════════
 
-def _build_tasks(raw_tasks: List[Dict], mission_id: str) -> tuple[List[Dict], List[Dict]]:
+
+def _build_tasks(
+    raw_tasks: List[Dict], mission_id: str
+) -> tuple[List[Dict], List[Dict]]:
     """Create Task dicts and DAG edge list from raw AI output."""
     tasks: List[Dict] = []
     id_map: Dict[int, str] = {}  # index → task id
@@ -174,21 +189,23 @@ def _build_tasks(raw_tasks: List[Dict], mission_id: str) -> tuple[List[Dict], Li
     for i, rt in enumerate(raw_tasks):
         tid = f"{mission_id[:8]}-t{i}"
         id_map[i] = tid
-        tasks.append({
-            "id": tid,
-            "mission_id": mission_id,
-            "type": str(rt.get("type", "ANALYZE")).upper(),
-            "description": str(rt.get("description", "")),
-            "status": "PENDING",
-            "dependencies": [],  # filled in after all IDs are assigned
-            "worker_type": str(rt.get("worker_type", "GENERAL")),
-            "input": {},
-            "output": {},
-            "error": "",
-            "started_at": "",
-            "completed_at": "",
-            "_raw_deps": rt.get("dependencies", []),  # temp field
-        })
+        tasks.append(
+            {
+                "id": tid,
+                "mission_id": mission_id,
+                "type": str(rt.get("type", "ANALYZE")).upper(),
+                "description": str(rt.get("description", "")),
+                "status": "PENDING",
+                "dependencies": [],  # filled in after all IDs are assigned
+                "worker_type": str(rt.get("worker_type", "GENERAL")),
+                "input": {},
+                "output": {},
+                "error": "",
+                "started_at": "",
+                "completed_at": "",
+                "_raw_deps": rt.get("dependencies", []),  # temp field
+            }
+        )
 
     # Resolve dependency references (indices or names) to task IDs
     dag_edges: List[Dict] = []
@@ -214,26 +231,26 @@ def _build_tasks(raw_tasks: List[Dict], mission_id: str) -> tuple[List[Dict], Li
 def _detect_cycles(tasks: List[Dict]) -> List[List[str]]:
     """
     Detect cycles in task dependency graph using Tarjan's SCC algorithm.
-    
+
     Returns list of strongly connected components (SCCs) with size > 1.
     Each SCC represents a cycle.
     """
     graph: Dict[str, List[str]] = {t["id"]: t.get("dependencies", []) for t in tasks}
-    
+
     index_counter = [0]
     stack: List[str] = []
     indices: Dict[str, int] = {}
     lowlinks: Dict[str, int] = {}
     on_stack: Dict[str, bool] = {}
     sccs: List[List[str]] = []
-    
+
     def strongconnect(node: str):
         indices[node] = index_counter[0]
         lowlinks[node] = index_counter[0]
         index_counter[0] += 1
         stack.append(node)
         on_stack[node] = True
-        
+
         for dep in graph.get(node, []):
             if dep not in graph:
                 continue  # Skip external dependencies
@@ -242,7 +259,7 @@ def _detect_cycles(tasks: List[Dict]) -> List[List[str]]:
                 lowlinks[node] = min(lowlinks[node], lowlinks[dep])
             elif on_stack.get(dep, False):
                 lowlinks[node] = min(lowlinks[node], indices[dep])
-        
+
         if lowlinks[node] == indices[node]:
             component: List[str] = []
             while True:
@@ -253,18 +270,18 @@ def _detect_cycles(tasks: List[Dict]) -> List[List[str]]:
                     break
             if len(component) > 1:
                 sccs.append(component)
-    
+
     for node in graph:
         if node not in indices:
             strongconnect(node)
-    
+
     return sccs
 
 
 def _topo_order(tasks: List[Dict]) -> List[str]:
     """
     Return task IDs in topological execution order (Kahn's algorithm).
-    
+
     Raises ValueError if cyclic dependencies detected.
     """
     id_to_task = {t["id"]: t for t in tasks}
@@ -292,13 +309,14 @@ def _topo_order(tasks: List[Dict]) -> List[str]:
         cycles = _detect_cycles(tasks)
         cycle_desc = "; ".join([" → ".join(c) for c in cycles])
         raise ValueError(f"Cyclic dependencies detected in mission DAG: {cycle_desc}")
-    
+
     return order
 
 
 # ══════════════════════════════════════════════════════════════
 # PUBLIC FUNCTIONS
 # ══════════════════════════════════════════════════════════════
+
 
 def create_mission(goal: str, rank: str = "E", metadata: Optional[Dict] = None) -> Dict:
     """Decompose a goal into tasks and persist the mission."""
@@ -363,7 +381,11 @@ def run_mission(mission_id: str) -> Dict:
 
     # Flag C/B for review but continue
     if rank in _FLAG_RANKS:
-        logger.info("Mission %s rank=%s flagged for operator review (proceeding)", mission_id, rank)
+        logger.info(
+            "Mission %s rank=%s flagged for operator review (proceeding)",
+            mission_id,
+            rank,
+        )
 
     mission["status"] = "RUNNING"
     mission["started_at"] = _utc()
@@ -418,6 +440,7 @@ def run_mission(mission_id: str) -> Dict:
     if xp:
         try:
             from nexusmon.entity import get_entity
+
             get_entity().award_xp(xp)
         except Exception:
             pass
@@ -426,6 +449,7 @@ def run_mission(mission_id: str) -> Dict:
     if all_ok:
         try:
             from nexusmon_operator_rank import award_xp as _rank_xp
+
             _rank_xp(f"complete_mission_{rank}", detail=mission_id)
         except Exception:
             pass
@@ -440,6 +464,7 @@ def _execute_task(task: Dict, mission: Dict) -> Dict:
 
     try:
         from core.model_router import call as _llm_call
+
         result = _llm_call(
             messages=[{"role": "user", "content": description}],
             system=(
@@ -450,7 +475,11 @@ def _execute_task(task: Dict, mission: Dict) -> Dict:
         )
         return {"text": result.get("text", ""), "ok": result.get("ok", False)}
     except Exception as exc:
-        return {"text": f"Task executed (no AI): {description}", "ok": True, "note": str(exc)}
+        return {
+            "text": f"Task executed (no AI): {description}",
+            "ok": True,
+            "note": str(exc),
+        }
 
 
 def get_mission(mission_id: str) -> Optional[Dict]:
@@ -490,6 +519,7 @@ def mission_xp_total() -> int:
 # ══════════════════════════════════════════════════════════════
 # PYDANTIC MODELS
 # ══════════════════════════════════════════════════════════════
+
 
 class MissionCreate(BaseModel):
     goal: str = Field(..., min_length=3)
@@ -552,7 +582,9 @@ def create_mission_endpoint(payload: MissionCreate):
 
 
 @router.get("/missions")
-def list_missions_endpoint(status: Optional[str] = None, rank: Optional[str] = None, limit: int = 50):
+def list_missions_endpoint(
+    status: Optional[str] = None, rank: Optional[str] = None, limit: int = 50
+):
     missions = list_missions(status=status, rank=rank, limit=limit)
     return {"ok": True, "missions": missions, "count": len(missions)}
 
@@ -597,6 +629,7 @@ def cancel_mission_endpoint(mission_id: str):
 # ══════════════════════════════════════════════════════════════
 # FUSE
 # ══════════════════════════════════════════════════════════════
+
 
 def fuse_mission_engine(app: FastAPI) -> None:
     """Wire mission engine routes into the FastAPI app."""

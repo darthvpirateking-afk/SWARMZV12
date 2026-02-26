@@ -22,7 +22,7 @@ import json
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, Any, List, Set, Optional
+from typing import Dict, Any, Optional
 
 _CONFIG_DIR = Path(__file__).parent.parent / "config"
 _CONSTRAINTS_FILE = _CONFIG_DIR / "constraints.json"
@@ -31,6 +31,7 @@ _CONSTRAINTS_FILE = _CONFIG_DIR / "constraints.json"
 @dataclass
 class LayerResult:
     """Deterministic state object returned by all layers."""
+
     layer: str
     passed: bool
     reason: str
@@ -72,7 +73,7 @@ class IntegrityLayer:
                     "stub implementation",
                 ],
             }
-        
+
         with open(self.constraints_path, "r") as f:
             return json.load(f)
 
@@ -81,7 +82,7 @@ class IntegrityLayer:
         # Extract dependency information from action
         dependencies = action.get("dependencies", [])
         action_id = action.get("id", "")
-        
+
         if not dependencies:
             return LayerResult(
                 layer="integrity",
@@ -90,7 +91,7 @@ class IntegrityLayer:
                 metadata={"check": "cyclic_dependency"},
                 timestamp=time.time(),
             )
-        
+
         # Check if action_id appears in its own dependency chain
         if action_id in dependencies:
             return LayerResult(
@@ -104,7 +105,7 @@ class IntegrityLayer:
                 },
                 timestamp=time.time(),
             )
-        
+
         # For now, basic check (full cycle detection in nexusmon_mission_engine)
         return LayerResult(
             layer="integrity",
@@ -119,7 +120,7 @@ class IntegrityLayer:
         source_domain = action.get("source_domain", "unknown")
         target_domain = action.get("target_domain", "unknown")
         mutation_type = action.get("type", "")
-        
+
         if source_domain == target_domain:
             return LayerResult(
                 layer="integrity",
@@ -128,7 +129,7 @@ class IntegrityLayer:
                 metadata={"check": "cross_domain_mutation"},
                 timestamp=time.time(),
             )
-        
+
         if not self.constraints.get("allow_cross_domain_mutation", False):
             # Check if there's an interface contract
             has_interface = action.get("has_interface_contract", False)
@@ -145,7 +146,7 @@ class IntegrityLayer:
                     },
                     timestamp=time.time(),
                 )
-        
+
         return LayerResult(
             layer="integrity",
             passed=True,
@@ -159,7 +160,7 @@ class IntegrityLayer:
         code = action.get("code", "")
         description = action.get("description", "")
         is_public_api = action.get("is_public_api", False)
-        
+
         if not is_public_api:
             return LayerResult(
                 layer="integrity",
@@ -168,10 +169,13 @@ class IntegrityLayer:
                 metadata={"check": "stub_exposure"},
                 timestamp=time.time(),
             )
-        
+
         # Check for forbidden stub patterns
         for pattern in self.constraints.get("forbidden_patterns", []):
-            if pattern.lower() in code.lower() or pattern.lower() in description.lower():
+            if (
+                pattern.lower() in code.lower()
+                or pattern.lower() in description.lower()
+            ):
                 return LayerResult(
                     layer="integrity",
                     passed=False,
@@ -183,7 +187,7 @@ class IntegrityLayer:
                     },
                     timestamp=time.time(),
                 )
-        
+
         return LayerResult(
             layer="integrity",
             passed=True,
@@ -199,7 +203,7 @@ class IntegrityLayer:
     ) -> LayerResult:
         """
         Run all integrity checks on an action.
-        
+
         Returns first failure or overall pass.
         """
         checks = [
@@ -207,9 +211,9 @@ class IntegrityLayer:
             self.check_cross_domain_mutation(action),
             self.check_stub_exposure(action),
         ]
-        
+
         violations = [c for c in checks if not c.passed]
-        
+
         if violations:
             # Return first violation
             violation = violations[0]
@@ -224,7 +228,7 @@ class IntegrityLayer:
                 },
                 timestamp=time.time(),
             )
-        
+
         return LayerResult(
             layer="integrity",
             passed=True,

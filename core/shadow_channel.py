@@ -24,15 +24,17 @@ logger = logging.getLogger(__name__)
 
 class OpacityLevel(str, Enum):
     """How much reasoning is revealed to the user."""
+
     TRANSPARENT = "transparent"  # Full reasoning shown
-    PARTIAL = "partial"          # Summary only
-    OPAQUE = "opaque"            # No reasoning shown, only decision
-    SILENT = "silent"            # Decision applied without user awareness
+    PARTIAL = "partial"  # Summary only
+    OPAQUE = "opaque"  # No reasoning shown, only decision
+    SILENT = "silent"  # Decision applied without user awareness
 
 
 @dataclass
 class ShadowDecision:
     """A decision made in the shadow - user sees minimal info."""
+
     timestamp: float
     decision_id: str
     opacity_level: OpacityLevel
@@ -47,14 +49,14 @@ class ShadowDecision:
 class ShadowChannel:
     """
     Observability layer for opaque decisions.
-    
+
     Records the full trail of decisions that are hidden from users.
     """
-    
+
     def __init__(self):
         self.shadow_log: List[ShadowDecision] = []
         self._decision_counter = 0
-    
+
     def record_shadow_decision(
         self,
         layer: str,
@@ -67,7 +69,7 @@ class ShadowChannel:
     ) -> ShadowDecision:
         """
         Record a decision made in the shadow.
-        
+
         Args:
             layer: Which governance layer made the decision
             passed: Whether the action was allowed
@@ -76,7 +78,7 @@ class ShadowChannel:
             opacity_level: How much is revealed
             metadata: Additional context
             triggered_by: Which rule/check triggered this
-        
+
         Returns:
             ShadowDecision record
         """
@@ -92,18 +94,18 @@ class ShadowChannel:
             metadata=metadata or {},
             triggered_by=triggered_by,
         )
-        
+
         self.shadow_log.append(decision)
-        
+
         # Log full details internally
         logger.info(
             f"[SHADOW] {decision.decision_id} | {layer} | "
             f"{'PASS' if passed else 'DENY'} | Opacity: {opacity_level.value} | "
             f"Internal: {internal_reason}"
         )
-        
+
         return decision
-    
+
     def wrap_layer_result(
         self,
         result: LayerResult,
@@ -112,7 +114,7 @@ class ShadowChannel:
     ) -> LayerResult:
         """
         Wrap a layer result with shadow tracking.
-        
+
         Records the full decision in shadow log, then returns a potentially
         sanitized version for the user.
         """
@@ -121,11 +123,12 @@ class ShadowChannel:
             layer=result.layer,
             passed=result.passed,
             internal_reason=result.reason,
-            user_facing_message=user_facing_message or self._generate_user_message(result, opacity_level),
+            user_facing_message=user_facing_message
+            or self._generate_user_message(result, opacity_level),
             opacity_level=opacity_level,
             metadata=result.metadata,
         )
-        
+
         # Return sanitized result based on opacity
         if opacity_level == OpacityLevel.TRANSPARENT:
             # User sees everything, but add shadow ID for traceability
@@ -136,7 +139,7 @@ class ShadowChannel:
                 metadata={**result.metadata, "shadow_id": shadow.decision_id},
                 timestamp=result.timestamp,
             )
-        
+
         elif opacity_level == OpacityLevel.PARTIAL:
             # User sees summary
             return LayerResult(
@@ -146,7 +149,7 @@ class ShadowChannel:
                 metadata={"shadow_id": shadow.decision_id},
                 timestamp=result.timestamp,
             )
-        
+
         elif opacity_level == OpacityLevel.OPAQUE:
             # User sees only pass/fail
             return LayerResult(
@@ -156,7 +159,7 @@ class ShadowChannel:
                 metadata={"shadow_id": shadow.decision_id},
                 timestamp=result.timestamp,
             )
-        
+
         else:  # SILENT
             # No indication to user (logged only)
             return LayerResult(
@@ -166,25 +169,27 @@ class ShadowChannel:
                 metadata={"shadow_id": shadow.decision_id, "silent": True},
                 timestamp=result.timestamp,
             )
-    
-    def _generate_user_message(self, result: LayerResult, opacity_level: OpacityLevel) -> str:
+
+    def _generate_user_message(
+        self, result: LayerResult, opacity_level: OpacityLevel
+    ) -> str:
         """Generate appropriate user-facing message based on opacity."""
         if opacity_level == OpacityLevel.TRANSPARENT:
             return result.reason
-        
+
         elif opacity_level == OpacityLevel.PARTIAL:
             # Simplify technical details
             if result.passed:
                 return f"{result.layer.capitalize()} checks passed"
             else:
                 return f"{result.layer.capitalize()} constraints not met"
-        
+
         elif opacity_level == OpacityLevel.OPAQUE:
             return "Decision made" if result.passed else "Action not permitted"
-        
+
         else:  # SILENT
             return ""
-    
+
     def query_shadow_log(
         self,
         layer: Optional[str] = None,
@@ -194,33 +199,33 @@ class ShadowChannel:
     ) -> List[ShadowDecision]:
         """
         Query shadow log with filters.
-        
+
         Used for forensic analysis and audit trails.
         """
-        results = self.shadow_log[-limit *2:]  # Over-fetch for filtering
-        
+        results = self.shadow_log[-limit * 2 :]  # Over-fetch for filtering
+
         if layer is not None:
             results = [d for d in results if d.layer == layer]
-        
+
         if passed is not None:
             results = [d for d in results if d.passed == passed]
-        
+
         if opacity_level is not None:
             results = [d for d in results if d.opacity_level == opacity_level]
-        
+
         return results[-limit:]
-    
+
     def get_decision_by_id(self, decision_id: str) -> Optional[ShadowDecision]:
         """Retrieve a specific shadow decision by ID."""
         for decision in reversed(self.shadow_log):
             if decision.decision_id == decision_id:
                 return decision
         return None
-    
+
     def evaluate(self, action: Dict[str, Any], context: Dict[str, Any]) -> LayerResult:
         """
         Entry point for pipeline composition.
-        
+
         Shadow channel is typically used as a wrapper, not standalone.
         This method exists for consistency but mostly passes through.
         """
@@ -232,7 +237,7 @@ class ShadowChannel:
             metadata={"shadow_log_size": len(self.shadow_log)},
             timestamp=time.time(),
         )
-    
+
     def clear_shadow_log(self):
         """Clear shadow log (for testing or log rotation)."""
         self.shadow_log.clear()
@@ -254,8 +259,13 @@ def record_shadow_decision(
 ) -> ShadowDecision:
     """Record a shadow decision using global instance."""
     return _shadow.record_shadow_decision(
-        layer, passed, internal_reason, user_facing_message,
-        opacity_level, metadata, triggered_by
+        layer,
+        passed,
+        internal_reason,
+        user_facing_message,
+        opacity_level,
+        metadata,
+        triggered_by,
     )
 
 
