@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: swarmzv10
+    runtime: docker
+    rootDir: .
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    autoDeployTrigger: commit
+    envVars:
+      - key: ALLOWED_ORIGINS
+        value: https://swarmz-frontend.onrender.com

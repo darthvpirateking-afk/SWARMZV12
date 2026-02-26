@@ -193,6 +193,19 @@ def chat(user_text: str) -> Dict[str, Any]:
     key_env = prov_cfg.get("apiKeyEnv", "")
     has_key = bool(os.environ.get(key_env)) if key_env else False
 
+    # Ollama doesn't need an API key — but probe the /api/version endpoint
+    # to verify it's actually responding (avoids 120-second hangs in tests)
+    if prov == "ollama":
+        endpoint = cfg.get("ollama", {}).get("endpoint", "http://localhost:11434")
+        probe_url = endpoint.rstrip("/") + "/api/version"
+        try:
+            import urllib.request as _ureq
+            _req = _ureq.Request(probe_url, method="GET")
+            with _ureq.urlopen(_req, timeout=2):
+                has_key = True
+        except Exception:
+            has_key = False  # Ollama not reachable — fall back to rule engine
+
     if not has_key:
         reply = _rule_engine(user_text, mem)
         _audit_companion(now, user_text, reply, "rule_engine")

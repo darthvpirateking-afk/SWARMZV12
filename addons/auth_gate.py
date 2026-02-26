@@ -17,9 +17,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
 
-from fastapi import Request, HTTPException
+from fastapi import Request
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
-from starlette.responses import Response
+from starlette.responses import Response, JSONResponse
 
 from addons.config_ext import get_config
 
@@ -91,8 +91,9 @@ class LANAuthMiddleware(BaseHTTPMiddleware):
                     "method": request.method,
                 },
             )
-            raise HTTPException(
-                status_code=403, detail="Operator key required for LAN writes"
+            return JSONResponse(
+                status_code=403,
+                content={"detail": "Operator key required for LAN writes"},
             )
 
         return await call_next(request)

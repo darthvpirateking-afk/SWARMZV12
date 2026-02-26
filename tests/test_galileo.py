@@ -70,7 +70,6 @@ def test_galileo_endpoints():
                 f"{BASE_URL}/v1/galileo/runs/{test_run_id}", timeout=10
             )
             result = response.json()
-            if result.get("ok"):
             if result.get('ok'):
                 print("  OK: Retrieved run details")
             else:
@@ -91,7 +90,6 @@ def test_galileo_endpoints():
             f"{BASE_URL}/v1/galileo/experiments/test_exp_id/run", timeout=10
         )
         result = response.json()
-        if not result.get("ok") and "authorization" in result.get("error", "").lower():
         if not result.get('ok') and 'authorization' in result.get('error', '').lower():
             print("  OK: Operator gate working (denied as expected)")
         else:

@@ -1,0 +1,14 @@
+{
+  "mission_id": "cat_test_schedule",
+  "category": "schedules",
+  "action": {
+    "action_type": "schedule",
+    "payload": {
+      "time": "10:00"
+    },
+    "gated_at": "2026-02-26T08:35:00.230216Z"
+  },
+  "risk_level": "low",
+  "prepared_at": "2026-02-26T08:35:00.231216Z",
+  "executed": false
+}

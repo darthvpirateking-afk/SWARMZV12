@@ -75,7 +75,7 @@ def _append_jsonl(path: Path, obj: Dict[str, Any]) -> None:
         f.write(json.dumps(obj, separators=(",", ":")) + "\n")
 
 
-@app.get("/health")
+@app.get("/health", operation_id="legacy_health")
 async def health():
     return {"status": "ok"}
 
@@ -541,7 +541,7 @@ try:
         """Serve the Hologram Evolution Ladder UI."""
         return _HoloFileResponse("web/hologram.html", media_type="text/html")
 
-    @app.get("/avatar")
+    @app.get("/avatar", operation_id="avatar_page_legacy")
     async def avatar_page():
         """Serve the MASTER SWARMZ interactive avatar + chat UI."""
         return _HoloFileResponse("web/avatar.html", media_type="text/html")

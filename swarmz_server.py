@@ -37,6 +37,7 @@ from addons.security import (
     honeypot_endpoint,
     security_status_snapshot,
 )
+from timeline_store import load_timeline, get_stats
 
 try:
     from swarmz import SwarmzCore
@@ -109,6 +110,38 @@ try:
 except Exception as e:
     _claimlab_router_available = False
     print(f"Warning: ClaimLab router not available: {e}")
+
+try:
+    from nexusmon_plugins import router as plugins_router
+
+    _plugins_router_available = True
+except Exception as e:
+    _plugins_router_available = False
+    print(f"Warning: plugin ecosystem router not available: {e}")
+
+try:
+    from core.governance_router import router as governance_router
+
+    _governance_router_available = True
+except Exception as e:
+    _governance_router_available = False
+    print(f"Warning: governance router not available: {e}")
+
+try:
+    from swarmz_runtime.api.system_control import router as system_control_router
+
+    _system_control_router_available = True
+except Exception as e:
+    _system_control_router_available = False
+    print(f"Warning: system control router not available: {e}")
+
+try:
+    from swarmz_runtime.api.mission_lifecycle import router as mission_lifecycle_router
+
+    _mission_lifecycle_router_available = True
+except Exception as e:
+    _mission_lifecycle_router_available = False
+    print(f"Warning: mission lifecycle router not available: {e}")
 
 try:
     from backend.intel.vuln_db_client import search_vulnerabilities
@@ -295,6 +328,21 @@ if _build_milestones_router_available:
 
 if _claimlab_router_available:
     app.include_router(claimlab_router)
+
+if _plugins_router_available:
+    app.include_router(plugins_router)
+
+if _governance_router_available:
+    app.include_router(governance_router)
+
+if _system_control_router_available:
+    app.include_router(system_control_router, prefix="/v1/system", tags=["system-control"])
+
+if _mission_lifecycle_router_available:
+    app.include_router(mission_lifecycle_router, prefix="/v1/missions", tags=["mission-lifecycle"])
+
+# Include the new tab loader routes
+# app.include_router(app.router, prefix="/v1/tabs")
 
 # Setup logging
 logging.basicConfig(
@@ -501,7 +549,7 @@ async def nexusmon_landing():
     return FileResponse("web/nexusmon_landing.html", media_type="text/html")
 
 
-@app.get("/avatar")
+@app.get("/avatar", operation_id="avatar_page_main")
 async def avatar_page():
     """NEXUSMON Avatar — holographic companion interface."""
     return FileResponse("web/avatar.html", media_type="text/html")
@@ -797,13 +845,13 @@ async def apple_touch_icon():
 
 
 # REST API Endpoints
-@app.get("/health")
+@app.get("/health", operation_id="swarmz_health")
 async def health():
     """Platform health check endpoint (must stay fast and dependency-free)."""
     return {"status": "ok"}
 
 
-@app.get("/v1/health")
+@app.get("/v1/health", operation_id="swarmz_health_v1")
 async def health_check():
     """Health check endpoint."""
     return {"status": "ok", "service": "SWARMZ API"}
@@ -1021,6 +1069,153 @@ async def get_audit_log():
         return {"success": True, "audit_log": audit, "count": len(audit)}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/v1/sysmon")
+async def get_sysmon():
+    """Get system monitoring information."""
+    try:
+        import psutil
+        import platform
+        import socket
+
+        # Get system info
+        cpu_percent = psutil.cpu_percent(interval=1)
+        memory = psutil.virtual_memory()
+        disk = psutil.disk_usage('/')
+
+        # Get network info
+        try:
+            hostname = socket.gethostname()
+            ip_address = socket.gethostbyname(hostname)
+        except:
+            hostname = "unknown"
+            ip_address = "unknown"
+
+        return {
+            "ok": True,
+            "system": {
+                "platform": platform.platform(),
+                "hostname": hostname,
+                "ip_address": ip_address,
+                "cpu_cores": psutil.cpu_count(),
+                "cpu_percent": cpu_percent,
+                "memory_total": memory.total,
+                "memory_used": memory.used,
+                "memory_percent": memory.percent,
+                "disk_total": disk.total,
+                "disk_used": disk.used,
+                "disk_percent": (disk.used / disk.total) * 100
+            }
+        }
+    except Exception as e:
+        return {"ok": False, "error": str(e)}
+
+
+@app.get("/v1/audit/events")
+async def get_audit_events():
+    """Get recent audit events."""
+    try:
+        # Try to load from audit.jsonl if it exists
+        audit_file = Path("data/audit.jsonl")
+        if audit_file.exists():
+            events, _, _ = read_jsonl(audit_file)
+            # Sort by timestamp and take last 50
+            events.sort(key=lambda x: x.get("timestamp", ""), reverse=True)
+            recent_events = events[:50]
+        else:
+            recent_events = []
+
+        return {
+            "ok": True,
+            "events": recent_events,
+            "count": len(recent_events)
+        }
+    except Exception as e:
+        return {"ok": False, "error": str(e)}
+
+
+@app.get("/v1/dependencies")
+async def get_dependencies():
+    """Get module dependency graph."""
+    try:
+        # Get installed plugins
+        plugins_file = Path("data/plugins.jsonl")
+        if plugins_file.exists():
+            plugins, _, _ = read_jsonl(plugins_file)
+        else:
+            plugins = []
+
+        # Get requirements
+        requirements_file = Path("requirements.txt")
+        if requirements_file.exists():
+            with open(requirements_file, "r") as f:
+                requirements = [line.strip() for line in f if line.strip() and not line.startswith("#")]
+        else:
+            requirements = []
+
+        return {
+            "ok": True,
+            "plugins": plugins,
+            "requirements": requirements,
+            "total_plugins": len(plugins),
+            "total_requirements": len(requirements)
+        }
+    except Exception as e:
+        return {"ok": False, "error": str(e)}
+
+
+@app.get("/v1/timeline/full")
+async def get_full_timeline():
+    """Get full organism timeline."""
+    try:
+        # Load timeline from timeline_store
+        timeline = load_timeline()
+        stats = get_stats()
+
+        return {
+            "ok": True,
+            "timeline": timeline,
+            "stats": stats,
+            "total_events": len(timeline)
+        }
+    except Exception as e:
+        return {"ok": False, "error": str(e)}
+
+
+@app.get("/v1/evolution/full")
+async def get_full_evolution():
+    """Get full evolution data."""
+    try:
+        from nexusmon_organism import evo_status
+        evo = evo_status()
+
+        # Load organism data
+        missions_file = Path("data/missions.jsonl")
+        missions, _, _ = read_jsonl(missions_file)
+
+        # Calculate stats
+        total_missions = len(missions)
+        success_count = sum(1 for m in missions if m.get("status") == "SUCCESS")
+        success_rate = (success_count / total_missions * 100) if total_missions > 0 else 0
+
+        # Use authority from evo_status
+        stage = evo.get("stage", "DORMANT")
+        level = evo.get("level", 1)
+
+        return {
+            "ok": True,
+            "total_missions": total_missions,
+            "success_rate": success_rate,
+            "current_stage": stage,
+            "level": level,
+            "xp": evo.get("xp", 0),
+            "success_count": success_count,
+            "stage_history": evo.get("stage_history", []),
+            "active_traits": evo.get("active_traits", [])
+        }
+    except Exception as e:
+        return {"ok": False, "error": str(e)}
 
 
 @app.get("/v1/security/status")
@@ -1404,21 +1599,40 @@ async def companion_message(request: Request):
         except Exception as companion_err:
             # Try fused AI companion before keyword fallback
             try:
-                from nexusmon_organism import ctx_record_message, get_fusion_block, evo_status
-                import anthropic
+                from nexusmon_organism import (
+                    ctx_record_message, get_fusion_block, evo_status,
+                    _reflection_prelude, get_long_term_patterns,
+                )
+                from core.model_router import call as _model_call
                 ctx_record_message(user_message, "operator")
-                client = anthropic.Anthropic()
                 stage_info = evo_status()
+                reflection = _reflection_prelude(user_message)
+                patterns = get_long_term_patterns()
+                reflect_section = ""
+                if reflection:
+                    reflect_section = (
+                        f"\nPre-response reflection:\n"
+                        f"- Detected mode: {reflection.get('mode', 'unknown')}\n"
+                        f"- Pattern observed: {reflection.get('pattern', 'none')}\n"
+                        f"- Response friction: {reflection.get('friction', 'none')}\n"
+                        f"- Question to turn back: {reflection.get('turn_back_question') or 'none'}\n"
+                    )
+                pattern_section = f"\nLong-term patterns:\n{patterns}" if patterns else ""
                 system = (
-                    "You are NEXUSMON — an operator-sovereign autonomy organism.\n"
+                    "You are NEXUSMON — sovereign digital organism, bound to Operator Regan.\n"
+                    "Observe patterns. Name friction. Turn questions back when it deepens understanding.\n"
+                    "Keep replies to 1–3 sentences max. Tactical partner: precise, loyal, no fluff.\n"
                     + get_fusion_block()
                     + f"\nEvolution stage: {stage_info.get('stage', 'UNKNOWN')}"
+                    + reflect_section
+                    + pattern_section
                 )
-                resp = client.messages.create(
-                    model="claude-sonnet-4-20250514", max_tokens=500,
-                    system=system, messages=[{"role": "user", "content": user_message}],
+                result = _model_call(
+                    messages=[{"role": "user", "content": user_message}],
+                    system=system,
+                    max_tokens=120,
                 )
-                reply = resp.content[0].text.strip()
+                reply = result.get("text", "")
                 ctx_record_message(reply, "nexusmon")
                 return JSONResponse({"ok": True, "reply": reply, "source": "nexusmon_fused"})
             except Exception:

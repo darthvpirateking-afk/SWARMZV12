@@ -40,6 +40,11 @@ env/
 .DS_Store
 Thumbs.db
 
+# Environment variables
+.env
+.env.local
+.env.*.local
+
 # Logs
 *.log
 
@@ -50,6 +55,9 @@ htmlcov/
 
 # Temporary files
 *.tmp
+.tmp*
+.tmp*.py
+.tmp*.json
 /tmp/
 tmpclaude-*
 

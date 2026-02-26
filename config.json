@@ -20,28 +20,28 @@
     "auto_mode": false,
     "brains": {
       "commander": {
-        "model": "claude-opus-4.6",
-        "provider": "anthropic",
+        "model": "llama3.1:8b-instruct-q5_K_M",
+        "provider": "ollama",
         "purpose": "thinking, companion, reasoning, planning",
-        "description": "Largest context stability + coherent long reasoning"
+        "description": "Local Ollama inference — offline capable, cost-free"
       },
       "builder": {
-        "model": "gpt-5.3-codex",
-        "provider": "openai",
+        "model": "llama3.1:8b-instruct-q5_K_M",
+        "provider": "ollama",
         "purpose": "coding, refactoring, writing files",
-        "description": "Strongest structured code generation + patch accuracy"
+        "description": "Local Ollama inference — offline capable, cost-free"
       },
       "utility": {
-        "model": "claude-sonnet-4.5",
-        "provider": "anthropic",
+        "model": "llama3.1:8b-instruct-q5_K_M",
+        "provider": "ollama",
         "purpose": "small tasks, classification, routing, intent detection",
-        "description": "Cheap + fast + reliable classification"
+        "description": "Local Ollama inference — offshore capable, cost-free"
       },
       "safety": {
-        "model": "gpt-5.1-codex-max",
-        "provider": "openai",
+        "model": "llama3.1:8b-instruct-q5_K_M",
+        "provider": "ollama",
         "purpose": "diff inspection, bug spotting, edge-case checking, verification",
-        "description": "Best at diff inspection and edge-case checking"
+        "description": "Local Ollama inference — offline capable, cost-free"
       }
     },
     "task_routing": {
@@ -65,5 +65,15 @@
       "pre_commit": "safety",
       "edge_case_check": "safety"
     }
+  },
+  "models": {
+    "provider": "ollama",
+    "ollama": {
+      "endpoint": "http://localhost:11434",
+      "model": "llama3.1:8b-instruct-q5_K_M",
+      "apiKeyEnv": ""
+    },
+    "timeoutMs": 120000,
+    "maxTokens": 1500
   }
 }

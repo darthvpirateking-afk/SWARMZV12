@@ -1,0 +1,87 @@
+{
+  "_comment": "Boundaries Layer (P1.4) — Domain crossing rules. Set allowed=false to block a crossing; requires_interface=true to enforce contract.",
+  "domains": ["data", "control", "observation", "execution", "security", "external"],
+  "rules": [
+    {
+      "name": "all_to_observation",
+      "from_domain": "*",
+      "to_domain": "observation",
+      "allowed": true,
+      "requires_interface": false,
+      "audit": true,
+      "description": "Any domain may emit telemetry/metrics (read-only push)"
+    },
+    {
+      "name": "control_to_execution",
+      "from_domain": "control",
+      "to_domain": "execution",
+      "allowed": true,
+      "requires_interface": true,
+      "audit": true,
+      "description": "Control plane may dispatch execution via defined interface only"
+    },
+    {
+      "name": "execution_to_data",
+      "from_domain": "execution",
+      "to_domain": "data",
+      "allowed": true,
+      "requires_interface": true,
+      "audit": true,
+      "description": "Execution may persist results but must use data interface"
+    },
+    {
+      "name": "security_to_any",
+      "from_domain": "security",
+      "to_domain": "*",
+      "allowed": true,
+      "requires_interface": false,
+      "audit": true,
+      "description": "Security layer has full read-inspect access across all domains"
+    },
+    {
+      "name": "data_to_control_blocked",
+      "from_domain": "data",
+      "to_domain": "control",
+      "allowed": false,
+      "requires_interface": false,
+      "audit": true,
+      "description": "Raw data CANNOT directly trigger control decisions — must pass through evaluation"
+    },
+    {
+      "name": "execution_to_external",
+      "from_domain": "execution",
+      "to_domain": "external",
+      "allowed": true,
+      "requires_interface": true,
+      "audit": true,
+      "description": "Outbound external calls must use declared connector interfaces"
+    },
+    {
+      "name": "external_to_data",
+      "from_domain": "external",
+      "to_domain": "data",
+      "allowed": true,
+      "requires_interface": true,
+      "audit": true,
+      "description": "Inbound external data must be routed through validated ingestion interface"
+    },
+    {
+      "name": "data_to_data",
+      "from_domain": "data",
+      "to_domain": "data",
+      "allowed": true,
+      "requires_interface": false,
+      "audit": false,
+      "description": "Intra-data operations freely allowed"
+    },
+    {
+      "name": "external_to_control_blocked",
+      "from_domain": "external",
+      "to_domain": "control",
+      "allowed": false,
+      "requires_interface": false,
+      "audit": true,
+      "description": "External systems CANNOT directly influence control decisions"
+    }
+  ]
+}

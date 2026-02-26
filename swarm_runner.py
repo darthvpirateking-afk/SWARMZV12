@@ -21,6 +21,14 @@ from pathlib import Path
 from typing import Dict, Any
 
 from jsonl_utils import read_jsonl, write_jsonl
+from core.dag_validation import is_dag
+from core.governor import governor
+from core.mission_engine import MissionEngine
+from core.nexusmon.decomposer import NexusmonDecomposer
+from core.telemetry import telemetry
+
+mission_engine_v2 = MissionEngine()
+nexusmon_decomposer = NexusmonDecomposer()
 
 DATA_DIR = Path("data")
 MISSIONS_FILE = DATA_DIR / "missions.jsonl"
@@ -44,7 +52,7 @@ def _rewrite_missions(missions):
 
 
 def _audit(event: str, **kwargs):
-    now = datetime.utcnow().isoformat() + "Z"
+    now = datetime.now(datetime.UTC).isoformat()
     entry = {"timestamp": now, "event": event}
     entry.update(kwargs)
     write_jsonl(AUDIT_FILE, entry)
@@ -105,6 +113,21 @@ def _worker_ai_solve(mission: Dict[str, Any]) -> Dict[str, Any]:
         }
 
 
+def _worker_nexusmon_mission(mission: Dict[str, Any]) -> Dict[str, Any]:
+    """Execute a mission via the Nexusmon Mission Engine (DAG + Sovereign)."""
+    # If the mission doesn't have tasks yet, we decompose it ourselves.
+    if "tasks" not in mission:
+        mission_id = mission.get("mission_id", "unknown")
+        intent = mission.get("intent", mission.get("goal", "unknown"))
+        spec = mission.get("spec", {})
+        
+        # Decompose the high-level intent into a DAG of tasks
+        mission["tasks"] = nexusmon_decomposer.decompose(mission_id, intent, spec)
+    
+    result = mission_engine_v2.execute(mission)
+    return result
+
+
 # Categories that should go through AI solver when available
 AI_ELIGIBLE_CATEGORIES = {"build", "solve", "plan", "analyze", "research"}
 
@@ -113,6 +136,7 @@ WORKERS = {
     "test_mission": _worker_test_mission,
     "galileo_run": _worker_galileo_run,
     "ai_solve": _worker_ai_solve,
+    "nexusmon_mission": _worker_nexusmon_mission,
 }
 
 
@@ -122,6 +146,12 @@ WORKERS = {
 def _process_one():
     """Find first PENDING mission, run it, write results."""
     missions, _, _ = read_jsonl(MISSIONS_FILE)
+
+    # --- Governor: Concurrency Check ---
+    running_missions = sum(1 for m in missions if m.get("status") == "RUNNING")
+    if not governor.check_concurrency(running_missions):
+        _audit("governor_concurrency_blocked", running_count=running_missions, limit=governor.concurrency_limit)
+        return # Block execution if concurrency limit is reached
 
     # Check QUARANTINE â€” if active, block execution and log
     success_count = sum(1 for m in missions if m.get("status") == "SUCCESS")
@@ -148,6 +178,15 @@ def _process_one():
     if target is None:
         return  # nothing to do
 
+    # --- Governor: Rate Limit Check ---
+    action_type = target.get("intent", "default")
+    if not governor.admit_action({"type": action_type}):
+        _audit("governor_rate_limit_blocked", mission_id=target.get("mission_id"), intent=action_type)
+        # Optional: Mark as HELD instead of just skipping, to avoid re-picking immediately
+        # target["status"] = "HELD"
+        # _rewrite_missions(missions)
+        return # Skip this tick if rate limited
+
     mission_id = target.get("mission_id", "unknown")
     intent = target.get("intent", target.get("goal", "unknown"))
     pack_dir = PACKS_DIR / mission_id
@@ -166,7 +205,7 @@ def _process_one():
     candidates = pre_ctx.get("candidates", [])
 
     # Mark RUNNING
-    started_at = datetime.utcnow().isoformat() + "Z"
+    started_at = datetime.now(datetime.UTC).isoformat()
     target["status"] = "RUNNING"
     target["started_at"] = started_at
     _rewrite_missions(missions)
@@ -176,6 +215,12 @@ def _process_one():
     t0 = time.monotonic()
     try:
         worker_fn = WORKERS.get(intent, None)
+        
+        # Route certain triggers/categories to Nexusmon Engine (P2.3 Legacy Retrieval)
+        if worker_fn is None:
+            if "sovereign" in intent.lower() or "nexusmon" in intent.lower() or target.get("v2") is True:
+                worker_fn = _worker_nexusmon_mission
+
         # Route AI-eligible missions through ai_solve if no explicit worker
         if worker_fn is None:
             category = target.get("category", "")
@@ -209,6 +254,25 @@ def _process_one():
 
         # â”€â”€ Afterâ€‘mission: update ALL engines â”€â”€
         try:
+            # If the mission was an AI solve that produced a plan, validate the plan's structure.
+            if result.get("type") == "ai_solve" and result.get("ok"):
+                prepared_actions_dir = result.get("prepared_actions_dir")
+                if prepared_actions_dir:
+                    plan_file = Path(prepared_actions_dir) / "plan.json"
+                    if plan_file.exists():
+                        try:
+                            plan_data = json.loads(plan_file.read_text())
+                            # Assuming the plan is a list of nodes under a 'nodes' key
+                            if "nodes" in plan_data and not is_dag(plan_data["nodes"]):
+                                _audit("dag_validation_failed", mission_id=mission_id, plan_file=str(plan_file))
+                                # Optionally, mark the mission as failed due to invalid plan
+                                target["status"] = "FAILURE"
+                                target["error_details"] = "Generated plan contains a cycle."
+                                _rewrite_missions(missions)
+                        except (json.JSONDecodeError, KeyError) as e:
+                            _audit("plan_validation_error", mission_id=mission_id, error=str(e))
+
+
             from core.context_pack import after_mission
 
             after_mission(
@@ -233,7 +297,7 @@ def _process_one():
         )
 
         target["status"] = "FAILURE"
-        target["finished_at"] = datetime.utcnow().isoformat() + "Z"
+        target["finished_at"] = datetime.now(datetime.UTC).isoformat()
         target["duration_ms"] = duration_ms
         _rewrite_missions(missions)
         _audit(

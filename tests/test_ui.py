@@ -17,6 +17,52 @@ from addons.api.ui_router import router
 from fastapi import FastAPI
 
 app = FastAPI()
+
+
+class _FakeCore:
+    def __init__(self):
+        self._audit = []
+
+    def list_capabilities(self):
+        return {
+            "echo": {
+                "description": "Echo a message back",
+                "params": {"message": "string"},
+            },
+            "system_info": {
+                "description": "Return system information",
+                "params": {},
+            },
+        }
+
+    def execute(self, task, **params):
+        if task == "echo":
+            message = params.get("message", "")
+            result = f"Echo: {message}"
+        elif task == "system_info":
+            result = {"platform": "test", "python": "test"}
+        else:
+            raise ValueError(f"Unknown task: {task}")
+
+        self._audit.append(
+            {
+                "action": task,
+                "approved": True,
+                "context": params,
+            }
+        )
+        return result
+
+    def get_audit_log(self):
+        return list(self._audit)
+
+
+class _FakeOrchestrator:
+    def __init__(self):
+        self.core = _FakeCore()
+
+
+app.state.orchestrator = _FakeOrchestrator()
 app.include_router(router)
 client = TestClient(app)
 

@@ -3,7 +3,7 @@ from fastapi import APIRouter
 router = APIRouter(prefix="/v1/observability", tags=["observability"])
 
 
-@router.get("/health")
+@router.get("/health", operation_id="observability_health")
 def health():
     # Liveness: must be fast and side-effect free
     return {"status": "ok"}

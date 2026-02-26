@@ -300,7 +300,7 @@ async def revise_belief(belief_id: str, payload: BeliefReviseRequest):
     }
 
 
-@router.get("/health")
+@router.get("/health", operation_id="claimlab_health")
 async def claimlab_health():
     """ClaimLab subsystem health check."""
     try:

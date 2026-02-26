@@ -61,15 +61,16 @@ class AutoLoopManager:
             if self._thread is None:
                 self._running = True
                 self._tick_interval = tick_interval
-                self._thread = threading.Thread(target=self._loop)
+                self._thread = threading.Thread(target=self._loop, daemon=True)
                 self._thread.start()
 
     def stop(self) -> None:
         with self._lock:
             self._running = False
-            if self._thread is not None:
-                self._thread.join()
-                self._thread = None
+            thread = self._thread
+            self._thread = None
+        if thread is not None:
+            thread.join(timeout=5)  # don't block forever; thread is daemon anyway
         self._persist_state()
 
     def single_step(

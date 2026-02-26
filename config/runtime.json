@@ -5,7 +5,7 @@
   "port": 8012,
   "offlineMode": false,
   "models": {
-    "provider": "anthropic",
+    "provider": "ollama",
     "anthropic": {
       "model": "claude-sonnet-4-20250514",
       "apiKeyEnv": "ANTHROPIC_API_KEY"
@@ -14,8 +14,18 @@
       "model": "gpt-4.1",
       "apiKeyEnv": "OPENAI_API_KEY"
     },
-    "timeoutMs": 60000,
-    "maxTokens": 1500
+    "ollama": {
+      "model": "llama3.1:8b",
+      "endpoint": "http://localhost:11434",
+      "apiKeyEnv": ""
+    },
+    "gemini": {
+      "model": "gemini-2.0-flash",
+      "apiKeyEnv": "GEMINI_API_KEY",
+      "endpoint": "https://generativelanguage.googleapis.com/v1beta"
+    },
+    "timeoutMs": 120000,
+    "maxTokens": 150
   },
   "companion": {
     "enabled": true,
