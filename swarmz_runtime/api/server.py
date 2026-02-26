@@ -26,6 +26,7 @@ from jsonl_utils import read_jsonl
 from kernel_runtime.orchestrator import SwarmzOrchestrator
 from swarmz_runtime.api import system, admin, ecosystem
 from . import arena as arena_api
+from .ecosystem import router as ecosystem_router
 from .missions import router as missions_router
 from .system import router as system_router
 from .admin import router as admin_router
@@ -40,6 +41,7 @@ from .fusion_routes import router as fusion_routes_router
 from .primal_routes import router as primal_routes_router
 from .template_sync_routes import router as template_sync_routes_router
 from .system_primitives_routes import router as system_primitives_routes_router
+from .infra import router as infra_router
 from swarmz_runtime.core.system_primitives import SystemPrimitivesRuntime
 from addons.api.addons_router import router as addons_router
 from addons.api.guardrails_router import router as guardrails_router
@@ -91,6 +93,7 @@ def create_app() -> FastAPI:
     app.include_router(system_router, prefix="/v1/system", tags=["system"])
     app.include_router(admin_router, prefix="/v1/admin", tags=["admin"])
     app.include_router(arena_router, prefix="/v1/arena", tags=["arena"])
+    app.include_router(ecosystem_router, prefix="/v1/ecosystem", tags=["ecosystem"])
     app.include_router(factory_routes_router, prefix="/v1/factory", tags=["factory"])
     app.include_router(meta_routes_router, prefix="/v1/meta", tags=["meta"])
     app.include_router(operational_routes_router, prefix="/v1", tags=["operational"])
@@ -107,6 +110,7 @@ def create_app() -> FastAPI:
     app.include_router(
         system_primitives_routes_router, prefix="/v1", tags=["system-primitives"]
     )
+    app.include_router(infra_router)
     app.include_router(addons_router, prefix="/v1/addons", tags=["addons"])
     app.include_router(guardrails_router, prefix="/v1/guardrails", tags=["guardrails"])
 

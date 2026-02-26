@@ -559,7 +559,7 @@ async def avatar_page():
 @app.get("/")
 async def home_page():
     """NEXUSMON wakes up here."""
-    html_path = "web/nexusmon_console.html"
+    html_path = "web/nexusmon_cockpit.html"
 
     # Check if file exists, otherwise return a basic landing page
     if os.path.exists(html_path):
@@ -1742,6 +1742,55 @@ try:
     fuse_signal_modules(app)
 except Exception as _signal_modules_err:
     print(f"[WARN] Signal modules not loaded: {_signal_modules_err}")
+
+
+# --- Agent Manifest Genome API ---
+try:
+    from core.agent_manifest import (
+        register_manifest as _register_manifest,
+        get_agent as _get_agent,
+        list_agents as _list_agents,
+        validate_dict as _validate_manifest_dict,
+        load_manifests_from_dir as _load_manifests_from_dir,
+    )
+
+    # Auto-load any .json manifests from config/manifests/ at startup
+    _manifests_dir = Path("config/manifests")
+    if _manifests_dir.exists():
+        _load_manifests_from_dir(str(_manifests_dir))
+
+    @app.get("/v1/agents", tags=["agent-manifest"])
+    async def list_agent_manifests():
+        """List all registered agent manifests."""
+        return {"ok": True, "agents": [a.model_dump() for a in _list_agents()], "count": len(_list_agents())}
+
+    @app.get("/v1/agents/{agent_id}", tags=["agent-manifest"])
+    async def get_agent_manifest(agent_id: str):
+        """Get a single agent manifest by id."""
+        agent = _get_agent(agent_id)
+        if agent is None:
+            from fastapi import HTTPException
+            raise HTTPException(status_code=404, detail=f"Agent '{agent_id}' not found")
+        return {"ok": True, "agent": agent.model_dump()}
+
+    @app.post("/v1/agents", tags=["agent-manifest"])
+    async def register_agent_manifest(data: dict):
+        """Register a new agent manifest from a JSON body."""
+        errors = _validate_manifest_dict(data)
+        if errors:
+            return {"ok": False, "errors": errors}
+        agent = _register_manifest(data)
+        return {"ok": True, "agent": agent.model_dump()}
+
+    @app.post("/v1/agents/validate", tags=["agent-manifest"])
+    async def validate_agent_manifest(data: dict):
+        """Validate a manifest dict against the genome schema."""
+        errors = _validate_manifest_dict(data)
+        return {"ok": len(errors) == 0, "valid": len(errors) == 0, "errors": errors}
+
+    print("[NEXUSMON] Agent manifest genome API online — /v1/agents")
+except Exception as _manifest_err:
+    print(f"[WARN] Agent manifest API not loaded: {_manifest_err}")
 
 
 # --- Static file mount for HUD assets (CSS, JS) ---

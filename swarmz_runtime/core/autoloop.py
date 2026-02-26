@@ -17,6 +17,7 @@ Responsibilities:
 import json
 import threading
 import time
+from collections import deque
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, Optional
@@ -49,21 +50,27 @@ class AutoLoopManager:
         # counters (loaded from state.json on init)
         self._tick_count = 0
         self._last_tick_ts: Optional[str] = None
-        self._recent_tick_times: list = []  # timestamps for rate-limiting
+        self._recent_tick_times: deque = deque()  # timestamps for rate-limiting
 
         self._load_state()
 
     # â”€â”€ public API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     def start(self, tick_interval: int = 30) -> None:
-        if self._thread is None:
-            self._thread = threading.Thread(target=self._loop)
-            self._thread.start()
+        with self._lock:
+            if self._thread is None:
+                self._running = True
+                self._tick_interval = tick_interval
+                self._thread = threading.Thread(target=self._loop, daemon=True)
+                self._thread.start()
 
     def stop(self) -> None:
-        if self._thread is not None:
-            self._thread.join()
+        with self._lock:
+            self._running = False
+            thread = self._thread
             self._thread = None
+        if thread is not None:
+            thread.join(timeout=5)  # don't block forever; thread is daemon anyway
         self._persist_state()
 
     def single_step(
@@ -153,26 +160,20 @@ class AutoLoopManager:
             self._recent_tick_times.append(time.monotonic())
 
         self._log_audit(
-            "ecosystem_tick",
+            "tick_completed",
             mission_id=mission_id,
             details={
-                "tick_count": self._tick_count,
                 "operator_goal": operator_goal,
-                "run_result_status": run_result.get(
-                    "status", run_result.get("error", "unknown")
-                ),
+                "category": category,
+                "tick_count": self._tick_count,
                 "ts": now_iso,
+                "result_ok": bool(run_result.get("ok", False)),
             },
         )
         self._persist_state()
 
-        return {
-            "mission_id": mission_id,
-            "tick_count": self._tick_count,
-            "create": create_result,
-            "run": run_result,
-            "ts": now_iso,
-        }
+        # Include mission_id and tick_count in the result
+        return {"mission_id": mission_id, "tick_count": self._tick_count, **run_result}
 
     # â”€â”€ helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
@@ -192,7 +193,9 @@ class AutoLoopManager:
     def _rate_limit_ok(self) -> bool:
         now = time.monotonic()
         cutoff = now - 60
-        self._recent_tick_times = [t for t in self._recent_tick_times if t > cutoff]
+        # Remove old entries using deque operations
+        while self._recent_tick_times and self._recent_tick_times[0] <= cutoff:
+            self._recent_tick_times.popleft()
         return len(self._recent_tick_times) < self.MAX_TICKS_PER_MINUTE
 
     def _log_audit(
@@ -216,11 +219,13 @@ class AutoLoopManager:
             "last_tick_ts": self._last_tick_ts,
             "tick_interval": self._tick_interval,
         }
+        # Ensure the directory exists
+        self._state_file.parent.mkdir(parents=True, exist_ok=True)
         try:
             with open(self._state_file, "w") as f:
                 json.dump(state, f, indent=2)
-        except OSError:
-            pass  # best-effort
+        except OSError as e:
+            print(f"Failed to persist state: {e}")  # Log the error
 
     def _load_state(self) -> None:
         if self._state_file.exists():

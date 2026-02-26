@@ -76,22 +76,19 @@ def last_event() -> Optional[Dict[str, Any]]:
     if not TELEMETRY_FILE.exists():
         return None
     try:
-        with TELEMETRY_FILE.open("rb") as f:
-            f.seek(0, os.SEEK_END)
-            pos = f.tell()
-            buf = b""
-            while pos > 0:
-                pos -= 1
-                f.seek(pos)
-                ch = f.read(1)
-                if ch == b"\n" and buf:
-                    break
-                buf = ch + buf
-            if buf:
-                return json.loads(buf.decode("utf-8"))
+        with TELEMETRY_FILE.open("r", encoding="utf-8") as f:
+            # Read last few lines efficiently instead of byte-by-byte
+            lines = f.readlines()
+            if not lines:
+                return None
+            # Get the last non-empty line
+            for line in reversed(lines):
+                line = line.strip()
+                if line:
+                    return json.loads(line)
+            return None
     except Exception:
         return None
-    return None
 
 
 def avg_duration(name: str, max_samples: int = 100) -> Optional[float]:

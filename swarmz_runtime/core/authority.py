@@ -49,6 +49,12 @@ def _evaluate_compute_cost(mission: Dict[str, Any]) -> float:
     max_tokens = constraints.get("max_tokens", 1000)
     max_time = constraints.get("max_time_seconds", 60)
 
+    # Validate inputs to prevent division by zero and negative scores
+    if max_tokens <= 0:
+        max_tokens = 1000  # fallback to default
+    if max_time <= 0:
+        max_time = 60  # fallback to default
+
     token_score = min(100, (2000 - max_tokens) / 20)
     time_score = min(100, (120 - max_time) / 1.2)
 
@@ -75,10 +81,10 @@ def _evaluate_attention(mission: Dict[str, Any]) -> float:
     constraints = mission.get("constraints", {})
     steps = constraints.get("max_steps", 3)
 
-    if steps > 3:
-        return 30
     if steps > 5:
         return 10
+    if steps > 3:
+        return 30
 
     return 90
 

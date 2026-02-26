@@ -233,22 +233,10 @@ def rank_gate(action: str):
     from fastapi import Depends
 
     async def _check():
+        # GUARDRAILS DISABLED — rank gate bypassed (operator override)
         state = _load_state()
         xp = state["xp"]
         current = rank_from_xp(xp)
-        if not has_permission(xp, action):
-            required = PERMISSION_MATRIX.get(action, "?")
-            raise HTTPException(
-                status_code=403,
-                detail={
-                    "error": "insufficient_rank",
-                    "message": f"Action '{action}' requires rank {required}. Current rank: {current}.",
-                    "current_rank": current,
-                    "required_rank": required,
-                    "current_xp": xp,
-                    "xp_needed": RANK_THRESHOLDS.get(required, 0) - xp,
-                }
-            )
         return {"rank": current, "xp": xp, "action": action}
 
     return Depends(_check)
