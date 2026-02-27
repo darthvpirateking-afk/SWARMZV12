@@ -1894,6 +1894,25 @@ except Exception as _runtime_err:
     print(f"[WARN] Agent runtime API not loaded: {_runtime_err}")
 
 
+# --- Hologram State Engine ---
+# Wires: FeedStream → HologramIngestor → HologramReconciler → HologramPublisher
+# Mounts: /hologram/snapshot/latest, /hologram/patch, /hologram/ws
+try:
+    from core.feed_stream import FeedStream as _FeedStream
+    from nexusmon.hologram.hologram_bootstrap import bootstrap_hologram as _bootstrap_hologram
+
+    _hologram_feed = _FeedStream(event_bus=_AGENT_EVENT_BUS)
+    _hologram_reconciler, _hologram_publisher, _hologram_ingestor = _bootstrap_hologram(
+        feed_stream=_hologram_feed,
+        event_bus=_AGENT_EVENT_BUS,
+        main_fastapi_app=app,
+        auth_check=lambda req: True,
+    )
+    print("[NEXUSMON] Hologram state engine online — /hologram/ws")
+except Exception as _hologram_err:
+    print(f"[WARN] Hologram engine not loaded: {_hologram_err}")
+
+
 # --- Static file mount for HUD assets (CSS, JS) ---
 # MUST come after all explicit routes so /web/* doesn't shadow API paths.
 try:
