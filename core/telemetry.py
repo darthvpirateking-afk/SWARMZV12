@@ -16,11 +16,9 @@ This module provides a unified logging interface that captures rich metadata
 for every system event, facilitating audit trails and Sovereign integration.
 """
 
-
 @dataclass
 class LogEntry:
     """Represents a single telemetry event with rich metadata."""
-
     timestamp: float
     level: str  # INFO, WARNING, ERROR, CRITICAL
     component: str
@@ -35,22 +33,20 @@ class LogEntry:
 class TelemetrySystem:
     """
     Main telemetry engine for NEXUSMON.
-
+    
     Wraps the standard logging module to ensure metadata is captured.
     Stores recent logs in a JSON-serializable list and persists to disk.
     """
-
-    def __init__(
-        self, max_recent_logs: int = 500, persist_path: str = "data/telemetry.jsonl"
-    ):
+    
+    def __init__(self, max_recent_logs: int = 500, persist_path: str = "data/telemetry.jsonl"):
         self.max_recent_logs = max_recent_logs
         self.recent_logs: List[LogEntry] = []
         self.persist_path = Path(persist_path)
         self._lock = Lock()
-
+        
         # Ensure data directory exists
         self.persist_path.parent.mkdir(parents=True, exist_ok=True)
-
+        
         # Configure standard logging to integrate with TelemetrySystem
         self.logger = logging.getLogger("NEXUSMON.telemetry")
         self.logger.setLevel(logging.INFO)
@@ -64,19 +60,18 @@ class TelemetrySystem:
             level=level.upper(),
             component=component,
             message=message,
-            metadata=metadata,
+            metadata=metadata
         )
-
+        
         # Thread-safe storage for cockpit consumption
         with self._lock:
             self.recent_logs.append(entry)
             if len(self.recent_logs) > self.max_recent_logs:
                 self.recent_logs.pop(0)
-
+        
         # Persist to JSONL for audit trail
         try:
             import json
-
             with open(self.persist_path, "a", encoding="utf-8") as f:
                 f.write(json.dumps(entry.to_dict()) + "\n")
         except Exception:
@@ -87,22 +82,25 @@ class TelemetrySystem:
             "INFO": logging.INFO,
             "WARNING": logging.WARNING,
             "ERROR": logging.ERROR,
-            "CRITICAL": logging.CRITICAL,
+            "CRITICAL": logging.CRITICAL
         }
         numeric_level = log_level_map.get(level.upper(), logging.INFO)
-
+        
         # Standard Logging Integration
         self.logger.log(
-            numeric_level,
-            f"[{component}] {message}",
-            extra={"component": component, "metadata": metadata},
+            numeric_level, 
+            f"[{component}] {message}", 
+            extra={
+                'component': component, 
+                'metadata': metadata
+            }
         )
 
     def log_escalation(self, component: str, rule_name: str, reason: str, **metadata):
         """
         Specialized escalation logging for Sovereign integration.
-
-        This method ensures high-priority visibility for governance overrides and
+        
+        This method ensures high-priority visibility for governance overrides and 
         policy escalations.
         """
         escalation_metadata = {
@@ -110,13 +108,13 @@ class TelemetrySystem:
             "reason": reason,
             "integration_layer": "SovereignCore",
             "escalation_event": True,
-            **metadata,
+            **metadata
         }
         self.log_action(
-            "CRITICAL",
-            component,
-            f"GOVERNANCE ESCALATION: Rule '{rule_name}' triggered. Reason: {reason}",
-            **escalation_metadata,
+            "CRITICAL", 
+            component, 
+            f"GOVERNANCE ESCALATION: Rule '{rule_name}' triggered. Reason: {reason}", 
+            **escalation_metadata
         )
 
     def get_recent_logs(self) -> List[Dict[str, Any]]:

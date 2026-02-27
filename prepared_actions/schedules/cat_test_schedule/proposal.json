@@ -6,9 +6,9 @@
     "payload": {
       "time": "10:00"
     },
-    "gated_at": "2026-02-26T16:00:53.606899Z"
+    "gated_at": "2026-02-27T00:09:04.460468Z"
   },
   "risk_level": "low",
-  "prepared_at": "2026-02-26T16:00:53.607026Z",
+  "prepared_at": "2026-02-27T00:09:04.461339Z",
   "executed": false
 }

@@ -212,9 +212,7 @@ class SovereignClassifier:
 
         return False
 
-    def classify(
-        self, layer_result: LayerResult, context: Dict[str, Any]
-    ) -> SovereignDecision:
+    def classify(self, layer_result: LayerResult, context: Dict[str, Any]) -> SovereignDecision:
         """Classify a layer result to sovereign outcome bands."""
         eval_context = {
             **context,

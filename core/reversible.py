@@ -19,6 +19,7 @@ Doctrine: Reversible = Universal safeguard enabling maximum velocity under uncer
 from __future__ import annotations
 
 import json
+import os
 import time
 import uuid
 from dataclasses import dataclass, asdict
@@ -32,7 +33,6 @@ _SNAPSHOTS_FILE = _DATA_DIR / "reversible_snapshots.jsonl"
 @dataclass
 class LayerResult:
     """Deterministic state object returned by all layers."""
-
     layer: str
     passed: bool
     reason: str
@@ -43,7 +43,6 @@ class LayerResult:
 @dataclass
 class Snapshot:
     """Reversible transaction snapshot."""
-
     snapshot_id: str
     action_id: str
     state_description: str
@@ -87,13 +86,13 @@ class ReversibleLayer:
     ) -> str:
         """
         Create snapshot before risky action.
-
+        
         Args:
             action_id: Unique identifier for the action
             state_description: Human-readable state context
             artifacts: List of artifact IDs to track
             metrics: Baseline metrics dict
-
+            
         Returns:
             snapshot_id for commit/rollback
         """
@@ -122,7 +121,7 @@ class ReversibleLayer:
                 metadata={"snapshot_id": snapshot_id},
                 timestamp=time.time(),
             )
-
+        
         snapshot = self._snapshots[snapshot_id]
         if snapshot.rolled_back:
             return LayerResult(
@@ -132,10 +131,10 @@ class ReversibleLayer:
                 metadata={"snapshot_id": snapshot_id},
                 timestamp=time.time(),
             )
-
+        
         snapshot.committed = True
         self._append_snapshot(snapshot)
-
+        
         return LayerResult(
             layer="reversible",
             passed=True,
@@ -150,7 +149,7 @@ class ReversibleLayer:
     def rollback(self, snapshot_id: str) -> LayerResult:
         """
         Restore state to snapshot (exactly-once guarantee).
-
+        
         Returns LayerResult with rollback status.
         """
         if snapshot_id not in self._snapshots:
@@ -161,9 +160,9 @@ class ReversibleLayer:
                 metadata={"snapshot_id": snapshot_id},
                 timestamp=time.time(),
             )
-
+        
         snapshot = self._snapshots[snapshot_id]
-
+        
         if snapshot.rolled_back:
             return LayerResult(
                 layer="reversible",
@@ -172,7 +171,7 @@ class ReversibleLayer:
                 metadata={"snapshot_id": snapshot_id},
                 timestamp=time.time(),
             )
-
+        
         if snapshot.committed:
             return LayerResult(
                 layer="reversible",
@@ -181,10 +180,10 @@ class ReversibleLayer:
                 metadata={"snapshot_id": snapshot_id},
                 timestamp=time.time(),
             )
-
+        
         snapshot.rolled_back = True
         self._append_snapshot(snapshot)
-
+        
         return LayerResult(
             layer="reversible",
             passed=True,
@@ -205,13 +204,14 @@ class ReversibleLayer:
     def list_active_snapshots(self) -> List[Snapshot]:
         """Return all uncommitted, non-rolled-back snapshots."""
         return [
-            s for s in self._snapshots.values() if not s.committed and not s.rolled_back
+            s for s in self._snapshots.values()
+            if not s.committed and not s.rolled_back
         ]
 
     def evaluate(self, action: Dict[str, Any], context: Dict[str, Any]) -> LayerResult:
         """
         Reversible layer evaluation: always passes (safety is opt-in).
-
+        
         Returns metadata indicating rollback_available=True.
         """
         return LayerResult(
@@ -237,9 +237,7 @@ def begin_transaction(
     metrics: Optional[Dict[str, Any]] = None,
 ) -> str:
     """Module-level convenience function."""
-    return _reversible.begin_transaction(
-        action_id, state_description, artifacts, metrics
-    )
+    return _reversible.begin_transaction(action_id, state_description, artifacts, metrics)
 
 
 def commit(snapshot_id: str) -> LayerResult:

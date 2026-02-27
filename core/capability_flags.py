@@ -5,7 +5,6 @@ from typing import Dict, Optional
 
 class CapabilityStatus(Enum):
     """Defines the possible states of a system capability."""
-
     AVAILABLE = "AVAILABLE"
     EXPERIMENTAL = "EXPERIMENTAL"
     DISABLED = "DISABLED"
@@ -14,7 +13,6 @@ class CapabilityStatus(Enum):
 @dataclass
 class Capability:
     """Represents a specific NEXUSMON system capability."""
-
     id: str
     name: str
     status: CapabilityStatus
@@ -39,35 +37,35 @@ class CapabilityRegistry:
                 name="Kernel Base",
                 status=CapabilityStatus.AVAILABLE,
                 version_required="1.0.0",
-                governance_lock=True,
+                governance_lock=True
             ),
             Capability(
                 id="rollback_system",
                 name="Rollback System",
                 status=CapabilityStatus.AVAILABLE,
                 version_required="1.0.0",
-                governance_lock=True,
+                governance_lock=True
             ),
             Capability(
                 id="bio_lab_api",
                 name="Bio Lab API",
                 status=CapabilityStatus.EXPERIMENTAL,
                 version_required="0.5.0",
-                governance_lock=False,
+                governance_lock=False
             ),
             Capability(
                 id="space_mission_control",
                 name="Space Mission Control",
                 status=CapabilityStatus.DISABLED,
                 version_required="0.8.0",
-                governance_lock=False,
+                governance_lock=False
             ),
             Capability(
                 id="sovereign_classifier",
                 name="Sovereign Classifier",
                 status=CapabilityStatus.AVAILABLE,
                 version_required="1.0.0",
-                governance_lock=True,
+                governance_lock=True
             ),
         ]
         for cap in defaults:
@@ -99,11 +97,11 @@ class CapabilityRegistry:
         cap = self._capabilities.get(capability_id)
         if not cap:
             return False
-
+        
         if cap.governance_lock:
             # Cannot change status of governance-locked capabilities at runtime
             return False
-
+            
         cap.status = new_status
         return True
 
