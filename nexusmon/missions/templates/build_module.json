@@ -1,0 +1,14 @@
+{
+  "inputs": [
+    "module_name",
+    "requirements"
+  ],
+  "mission": "build_module",
+  "steps": [
+    "Generate plugin folder and manifest",
+    "Create files under /plugins/<module_name>",
+    "Run validators (no core mutation)",
+    "Return artifact summary"
+  ],
+  "worker": "vsc-nexusmon-builder"
+}

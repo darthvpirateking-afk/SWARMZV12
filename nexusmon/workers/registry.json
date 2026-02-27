@@ -1,0 +1,14 @@
+[
+  {
+    "capabilities": [
+      "build",
+      "repair",
+      "connect",
+      "optimize"
+    ],
+    "description": "VS Code agent that performs build and repair missions.",
+    "entrypoint": "vscode://continue/agent/nexusmon-builder",
+    "id": "vsc-nexusmon-builder",
+    "type": "local-agent"
+  }
+]

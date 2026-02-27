@@ -1,0 +1,13 @@
+{
+  "status": "planned",
+  "summary": "Prepared scaffold plan for plugin 'hello_world'.",
+  "generated_files": [
+    "plugins/hello_world/manifest.json",
+    "plugins/hello_world/index.js",
+    "plugins/hello_world/README.md"
+  ],
+  "requirements": [
+    "prints hello"
+  ],
+  "timestamp": "2026-02-27T16:37:12.272315Z"
+}

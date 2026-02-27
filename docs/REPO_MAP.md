@@ -2,6 +2,11 @@
 - Generated: Mon Feb 16 19:32:04 2026
 - Files: 1353
 
+## Workspace Manifest Regeneration
+
+- Command: `rg --files -uu | Sort-Object | Set-Content -Path "workspace_file_manifest.txt" -Encoding utf8`
+- Purpose: deterministic regeneration of `workspace_file_manifest.txt` from repository contents.
+
 ## Key entrypoint candidates (auto hints)
 
 - package.json

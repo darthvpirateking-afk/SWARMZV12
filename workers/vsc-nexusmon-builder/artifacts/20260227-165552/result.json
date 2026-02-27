@@ -1,0 +1,13 @@
+{
+  "status": "planned",
+  "summary": "Prepared scaffold plan for plugin 'nexusmo_demo'.",
+  "generated_files": [
+    "plugins/nexusmo_demo/manifest.json",
+    "plugins/nexusmo_demo/index.js",
+    "plugins/nexusmo_demo/README.md"
+  ],
+  "requirements": [
+    "demo run"
+  ],
+  "timestamp": "2026-02-27T16:55:52.912770Z"
+}

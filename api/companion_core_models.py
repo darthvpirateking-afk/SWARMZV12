@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Optional
 
 from pydantic import BaseModel
 
@@ -14,6 +15,7 @@ class CompanionCoreStatusResponse(BaseModel):
 
 class CompanionCoreMessageRequest(BaseModel):
     text: str
+    operator_id: Optional[str] = None
 
 
 class CompanionCoreMessageResponse(BaseModel):

@@ -20,4 +20,4 @@ async def companion_core_status() -> CompanionCoreStatusResponse:
 async def companion_core_message(
     payload: CompanionCoreMessageRequest,
 ) -> CompanionCoreMessageResponse:
-    return _service.message(payload.text)
+    return _service.message(payload.text, operator_id=payload.operator_id)

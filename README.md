@@ -87,6 +87,17 @@ All under your control.
 
 ## Quick Start
 
+### NEXUSMON Space Pivot (Week 1)
+
+Moon transit worker runbook:
+- [docs/NEXUSMON_SPACE_WEEK1_RUNBOOK.md](docs/NEXUSMON_SPACE_WEEK1_RUNBOOK.md)
+
+Optional dependency for high-fidelity orbit math:
+
+```powershell
+pip install -r requirements-space.txt
+```
+
 ## Ship Now Status (2026-02-23)
 
 - **Go** for normal development release (core API/UI/mission-path regression coverage is green).

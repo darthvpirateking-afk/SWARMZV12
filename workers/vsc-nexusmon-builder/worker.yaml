@@ -1,0 +1,16 @@
+{
+  "description": "Local builder worker for deterministic plugin scaffolding.",
+  "id": "vsc-nexusmon-builder",
+  "inputs": [
+    "module_name",
+    "requirements"
+  ],
+  "outputs": [
+    "status",
+    "summary",
+    "generated_files",
+    "requirements",
+    "timestamp"
+  ],
+  "type": "local-agent"
+}

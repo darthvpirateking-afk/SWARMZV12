@@ -25,7 +25,8 @@ from pathlib import Path
 from typing import Optional, Dict, Any
 
 from fastapi import Depends, Header, HTTPException, Request
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse, HTMLResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from swarmz_server import app, _swarmz_core  # reuse the existing app instance
@@ -37,6 +38,17 @@ MISSIONS_FILE = DATA_DIR / "missions.jsonl"
 AUDIT_FILE = DATA_DIR / "audit.jsonl"
 STATE_FILE = DATA_DIR / "state.json"
 HEARTBEAT_FILE = DATA_DIR / "runner_heartbeat.json"
+UI_DIST_DIR = Path(__file__).parent / "ui" / "dist"
+FRONTEND_DIST_DIR = Path(__file__).parent / "frontend" / "dist"
+
+if (UI_DIST_DIR / "assets").exists():
+    app.mount("/ui-react/assets", StaticFiles(directory=str(UI_DIST_DIR / "assets")), name="ui-react-assets")
+if (FRONTEND_DIST_DIR / "assets").exists():
+    app.mount(
+        "/frontend-react/assets",
+        StaticFiles(directory=str(FRONTEND_DIST_DIR / "assets")),
+        name="frontend-react-assets",
+    )
 
 
 class DispatchRequest(BaseModel):
@@ -78,6 +90,54 @@ def _append_jsonl(path: Path, obj: Dict[str, Any]) -> None:
 @app.get("/health")
 async def health():
     return {"status": "ok"}
+
+
+@app.get("/ui-react")
+async def ui_react():
+    """Serve compiled React cockpit UI from ui/dist."""
+    index_file = UI_DIST_DIR / "index.html"
+    if not index_file.exists():
+        return JSONResponse(
+            {
+                "ok": False,
+                "error": "ui/dist not found. Build it with: npm --prefix ui run build",
+            },
+            status_code=503,
+        )
+    html = index_file.read_text(encoding="utf-8")
+    html = html.replace('src="/assets/', 'src="/ui-react/assets/')
+    html = html.replace('href="/assets/', 'href="/ui-react/assets/')
+    return HTMLResponse(content=html, media_type="text/html")
+
+
+@app.get("/ui-latest")
+async def ui_latest():
+    """Alias for newest compiled cockpit UI."""
+    return await ui_react()
+
+
+@app.get("/frontend-react")
+async def frontend_react():
+    """Serve compiled frontend cockpit UI from frontend/dist."""
+    index_file = FRONTEND_DIST_DIR / "index.html"
+    if not index_file.exists():
+        return JSONResponse(
+            {
+                "ok": False,
+                "error": "frontend/dist not found. Build it with: npm --prefix frontend run build",
+            },
+            status_code=503,
+        )
+    html = index_file.read_text(encoding="utf-8")
+    html = html.replace('src="/assets/', 'src="/frontend-react/assets/')
+    html = html.replace('href="/assets/', 'href="/frontend-react/assets/')
+    return HTMLResponse(content=html, media_type="text/html")
+
+
+@app.get("/frontend-latest")
+async def frontend_latest():
+    """Alias for newest compiled frontend UI."""
+    return await frontend_react()
 
 
 @app.post("/v1/sovereign/dispatch")

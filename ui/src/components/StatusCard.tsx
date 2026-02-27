@@ -1,4 +1,9 @@
-export default function StatusCard({ title, data }) {
+type StatusCardProps = {
+  title: string;
+  data: unknown;
+};
+
+export default function StatusCard({ title, data }: StatusCardProps) {
   return (
     <div
       style={{

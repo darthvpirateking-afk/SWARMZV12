@@ -17,13 +17,16 @@ import os
 import hashlib
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Dict, Any
+from typing import Dict, Any, Optional, List
 
 ROOT = Path(__file__).resolve().parent.parent
 CONFIG_FILE = ROOT / "config" / "runtime.json"
 DATA_DIR = ROOT / "data"
 AUDIT_FILE = DATA_DIR / "audit.jsonl"
 PROMPT_DIR = Path(__file__).resolve().parent / "prompt_templates"
+DEFAULT_OPERATOR_ID = "op-001"
+MEMORY_COMPACTION_INTERVAL = 6
+MEMORY_CONTEXT_TURNS = 10
 
 # import sibling
 from core.model_router import (
@@ -61,6 +64,27 @@ def _load_config() -> Dict[str, Any]:
 
 def _companion_config() -> Dict[str, Any]:
     return _load_config().get("companion", {})
+
+
+def _resolve_operator_id(operator_id: Optional[str] = None) -> str:
+    """Resolve operator_id from arg or config with deterministic fallback."""
+    if operator_id:
+        clean = str(operator_id).strip()
+        if clean:
+            return clean
+    cfg = _companion_config()
+    configured = str(cfg.get("operatorId", "")).strip()
+    return configured or DEFAULT_OPERATOR_ID
+
+
+def _memory_engine_or_none():
+    """Return a file-backed memory engine instance if available."""
+    try:
+        from core.memory_engine import MemoryEngine
+
+        return MemoryEngine(DATA_DIR)
+    except Exception:
+        return None
 
 
 # â”€â”€ Memory file â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -147,17 +171,41 @@ def _load_system_prompt() -> str:
     return "You are MASTER SWARMZ, the AI companion. Policy: active."
 
 
-def _build_context_block(mem: Dict[str, Any]) -> str:
+def _build_context_block(
+    mem: Dict[str, Any],
+    operator_id: str = "",
+    recent_turns: Optional[List[Any]] = None,
+    recent_turns_summary: str = "",
+    operator_memory_summary: str = "",
+) -> str:
     """Build a short context block from memory for the system prompt."""
     parts = []
+    if operator_id:
+        parts.append(f"OPERATOR_ID: {operator_id}")
     parts.append(f"SESSION: {mem.get('sessionId', '?')}")
     parts.append(f"SUMMARY: {mem.get('summary', 'none')}")
+    if operator_memory_summary:
+        parts.append(f"LEARNED MEMORY: {operator_memory_summary}")
+    if recent_turns_summary:
+        parts.append(f"RECENT TURN SUMMARY: {recent_turns_summary}")
+
+    turns = recent_turns or []
+    if turns:
+        transcript_lines = []
+        for turn in turns[-MEMORY_CONTEXT_TURNS:]:
+            message = str(getattr(turn, "message", "")).strip().replace("\n", " ")
+            reply = str(getattr(turn, "reply", "")).strip().replace("\n", " ")
+            if message:
+                transcript_lines.append(f"U: {message[:140]}")
+            if reply:
+                transcript_lines.append(f"A: {reply[:140]}")
+        if transcript_lines:
+            parts.append("RECENT TRANSCRIPT:\n" + "\n".join(transcript_lines))
+
     outcomes = mem.get("mission_outcomes", [])
     if outcomes:
         recent = outcomes[-5:]
-        lines = [
-            f"  - {o.get('intent', '?')} â†’ {o.get('status', '?')}" for o in recent
-        ]
+        lines = [f"  - {o.get('intent', '?')} -> {o.get('status', '?')}" for o in recent]
         parts.append("RECENT OUTCOMES:\n" + "\n".join(lines))
     constraints = mem.get("learned_constraints", [])
     if constraints:
@@ -168,7 +216,7 @@ def _build_context_block(mem: Dict[str, Any]) -> str:
 # â”€â”€ Main chat function â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 
-def chat(user_text: str) -> Dict[str, Any]:
+def chat(user_text: str, operator_id: Optional[str] = None) -> Dict[str, Any]:
     """
     Send a message to the companion and get a reply.
 
@@ -179,13 +227,30 @@ def chat(user_text: str) -> Dict[str, Any]:
               "provider"?: str, "model"?: str, "latencyMs"?: int}
     """
     now = datetime.now(timezone.utc).isoformat()
+    operator_id = _resolve_operator_id(operator_id)
     mem = load_memory()
 
-    # â”€â”€ Offline / no-key fallback â”€â”€
+    memory_engine = _memory_engine_or_none()
+    recent_turns: List[Any] = []
+    recent_turns_summary = ""
+    operator_memory_summary = ""
+    if memory_engine is not None:
+        try:
+            recent_turns = memory_engine.get_recent_turns(operator_id, limit=25)
+            recent_turns_summary = memory_engine.summarize_turns(recent_turns)
+            operator_memory_summary = memory_engine.get_memory_summary_for_context(operator_id)
+        except Exception:
+            recent_turns = []
+            recent_turns_summary = ""
+            operator_memory_summary = ""
+
+    # Offline / no-key fallback
     if is_offline():
         reply = _rule_engine(user_text, mem)
-        _audit_companion(now, user_text, reply, "offline")
-        return {"ok": True, "reply": reply, "source": "offline"}
+        save_memory(mem)
+        _persist_conversation_memory(memory_engine, operator_id, user_text, reply)
+        _audit_companion(now, user_text, reply, "offline", operator_id=operator_id)
+        return {"ok": True, "reply": reply, "source": "offline", "operator_id": operator_id}
 
     cfg = get_model_config()
     prov = cfg.get("provider", "anthropic")
@@ -195,11 +260,19 @@ def chat(user_text: str) -> Dict[str, Any]:
 
     if not has_key:
         reply = _rule_engine(user_text, mem)
-        _audit_companion(now, user_text, reply, "rule_engine")
-        return {"ok": True, "reply": reply, "source": "rule_engine"}
+        save_memory(mem)
+        _persist_conversation_memory(memory_engine, operator_id, user_text, reply)
+        _audit_companion(now, user_text, reply, "rule_engine", operator_id=operator_id)
+        return {"ok": True, "reply": reply, "source": "rule_engine", "operator_id": operator_id}
 
-    # â”€â”€ AI call â”€â”€
-    system = _load_system_prompt() + "\n\n--- CONTEXT ---\n" + _build_context_block(mem)
+    # AI call
+    system = _load_system_prompt() + "\n\n--- CONTEXT ---\n" + _build_context_block(
+        mem,
+        operator_id=operator_id,
+        recent_turns=recent_turns,
+        recent_turns_summary=recent_turns_summary,
+        operator_memory_summary=operator_memory_summary,
+    )
     messages = [{"role": "user", "content": user_text}]
 
     result = model_call(messages, system=system)
@@ -210,7 +283,8 @@ def chat(user_text: str) -> Dict[str, Any]:
 
     if result.get("ok"):
         reply_text = result.get("text", "(empty)")
-        _audit_companion(now, user_text, reply_text, "ai")
+        _persist_conversation_memory(memory_engine, operator_id, user_text, reply_text)
+        _audit_companion(now, user_text, reply_text, "ai", operator_id=operator_id)
         return {
             "ok": True,
             "reply": reply_text,
@@ -218,20 +292,71 @@ def chat(user_text: str) -> Dict[str, Any]:
             "provider": result.get("provider"),
             "model": result.get("model"),
             "latencyMs": result.get("latencyMs"),
+            "operator_id": operator_id,
         }
-    else:
-        # AI failed â€” fall back to rule engine
-        reply = (
-            _rule_engine(user_text, mem)
-            + "\n[AI unavailable: "
-            + (result.get("error", "?"))[:100]
-            + "]"
-        )
-        _audit_companion(now, user_text, reply, "rule_engine_fallback")
-        return {"ok": True, "reply": reply, "source": "rule_engine_fallback"}
+
+    # AI failed -> fall back to rule engine
+    reply = (
+        _rule_engine(user_text, mem)
+        + "\n[AI unavailable: "
+        + (result.get("error", "?"))[:100]
+        + "]"
+    )
+    save_memory(mem)
+    _persist_conversation_memory(memory_engine, operator_id, user_text, reply)
+    _audit_companion(now, user_text, reply, "rule_engine_fallback", operator_id=operator_id)
+    return {"ok": True, "reply": reply, "source": "rule_engine_fallback", "operator_id": operator_id}
 
 
 # ── Rule engine (enhanced deterministic fallback) ────
+
+
+def _infer_chat_mode(text: str) -> str:
+    """Infer a compatible ChatModeType value from freeform companion input."""
+    lower = (text or "").lower()
+    if any(word in lower for word in ("status", "health", "uptime")):
+        return "Status"
+    if any(word in lower for word in ("plan", "build", "create", "mission", "do this")):
+        return "Plan"
+    if any(word in lower for word in ("why", "how", "explain", "what is")):
+        return "Explain"
+    if any(word in lower for word in ("should", "recommend", "suggest", "next step")):
+        return "Nudge"
+    return "Reflect"
+
+
+def _persist_conversation_memory(
+    memory_engine: Any,
+    operator_id: str,
+    user_text: str,
+    reply: str,
+) -> None:
+    """Persist short-term turns and periodically compact into long-term memory."""
+    if memory_engine is None:
+        return
+    try:
+        memory_engine.store_conversation_turn(
+            operator_id=operator_id,
+            message=user_text,
+            reply=reply,
+            mode=_infer_chat_mode(user_text),
+            tags=["companion"],
+        )
+        turns = memory_engine.get_recent_turns(operator_id, limit=60)
+        if len(turns) >= MEMORY_COMPACTION_INTERVAL and (
+            len(turns) % MEMORY_COMPACTION_INTERVAL == 0
+        ):
+            summary = memory_engine.summarize_turns(turns)
+            patterns = memory_engine.extract_patterns(turns)
+            memory_engine.update_operator_memory(
+                operator_id=operator_id,
+                summary=summary[:1500],
+                tags=["companion", "conversation", "long_term"],
+                patterns=patterns,
+            )
+    except Exception:
+        # Memory write failures must never block replies.
+        return
 
 
 def _rule_engine(text: str, mem: Dict[str, Any]) -> str:
@@ -823,7 +948,13 @@ def _extract_topic(text: str) -> str:
         return "general"
 
 
-def _audit_companion(timestamp: str, user_text: str, reply: str, source: str) -> None:
+def _audit_companion(
+    timestamp: str,
+    user_text: str,
+    reply: str,
+    source: str,
+    operator_id: str = "",
+) -> None:
     text_hash = hashlib.sha256(user_text.encode("utf-8")).hexdigest()[:16]
     write_jsonl(
         AUDIT_FILE,
@@ -831,6 +962,7 @@ def _audit_companion(timestamp: str, user_text: str, reply: str, source: str) ->
             "timestamp": timestamp,
             "event": "companion_message",
             "source": source,
+            "operator_id": operator_id or DEFAULT_OPERATOR_ID,
             "text_sha256": text_hash,
             "reply_len": len(reply),
         },

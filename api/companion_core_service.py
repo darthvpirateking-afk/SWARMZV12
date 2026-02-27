@@ -24,7 +24,7 @@ class CompanionCoreService:
             generated_at=datetime.now(timezone.utc),
         )
 
-    def message(self, text: str) -> CompanionCoreMessageResponse:
+    def message(self, text: str, operator_id: str | None = None) -> CompanionCoreMessageResponse:
         text = text.strip()
         if not text:
             return CompanionCoreMessageResponse(
@@ -37,7 +37,7 @@ class CompanionCoreService:
         try:
             from core.companion import chat as companion_chat
 
-            result: Dict[str, Any] = companion_chat(text)
+            result: Dict[str, Any] = companion_chat(text, operator_id=operator_id)
             return CompanionCoreMessageResponse(
                 ok=bool(result.get("ok", True)),
                 reply=str(result.get("reply", "(empty)")),

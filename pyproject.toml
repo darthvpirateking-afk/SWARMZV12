@@ -42,10 +42,3 @@ ignore = [
     "F821",  # undefined name (many false positives from dynamic patterns)
     "F841",  # local variable assigned but never used
 ]
-
-[tool.black]
-extend-exclude = '''
-(
-  tools/vscode-scaffold-bot/templates
-)
-'''

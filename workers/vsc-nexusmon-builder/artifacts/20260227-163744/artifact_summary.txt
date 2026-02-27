@@ -1,0 +1,3 @@
+status: planned
+summary: Prepared scaffold plan for plugin 'hello_world'.
+timestamp: 2026-02-27T16:37:44.032123Z

@@ -1,0 +1,14 @@
+{
+  "status": "planned",
+  "summary": "Prepared scaffold plan for plugin 'hello_world_wire'.",
+  "generated_files": [
+    "plugins/hello_world_wire/manifest.json",
+    "plugins/hello_world_wire/index.js",
+    "plugins/hello_world_wire/README.md"
+  ],
+  "requirements": [
+    "print hello",
+    "no core mutation"
+  ],
+  "timestamp": "2026-02-27T16:53:08.748718Z"
+}

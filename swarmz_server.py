@@ -447,14 +447,20 @@ async def traceback_last():
 # --- Console UI Route (redirects to NEXUSMON) ---
 @app.get("/console")
 async def console_page():
-    """Serve the NEXUSMON Console UI."""
-    return FileResponse("web/nexusmon_console.html", media_type="text/html")
+    """Serve the MASTER SWARMZ avatar UI."""
+    return FileResponse("web/avatar.html", media_type="text/html")
 
 
 # --- Home route — NEXUSMON is the face of this system ---
 @app.get("/")
 async def home_page():
-    """NEXUSMON wakes up here."""
+    """MASTER SWARMZ avatar is the default home surface."""
+    return FileResponse("web/avatar.html", media_type="text/html")
+
+
+@app.get("/nexusmon-console")
+async def nexusmon_console_page():
+    """Serve the legacy NEXUSMON console UI."""
     return FileResponse("web/nexusmon_console.html", media_type="text/html")
 
 
@@ -527,7 +533,7 @@ async def pwa_manifest():
 async def service_worker():
     """Serve the service worker script."""
     sw_js = """
-const CACHE_NAME = 'swarmz-v1';
+const CACHE_NAME = 'swarmz-v2';
 const CACHE_ASSETS = [
     '/',
     '/manifest.webmanifest',
@@ -603,7 +609,7 @@ self.addEventListener('fetch', (event) => {
 async def pwa_service_worker():
     """Phone-mode service worker for offline shell cache."""
     sw_js = """
-const CACHE_NAME = 'swarmz-shell-v1';
+const CACHE_NAME = 'swarmz-shell-v2';
 const SHELL = [
     '/',
     '/console',
@@ -1272,6 +1278,7 @@ async def companion_message(request: Request):
     try:
         data = await request.json()
         user_message = data.get("text", "").strip()
+        operator_id = str(data.get("operator_id", "op-001")).strip() or "op-001"
         if not user_message:
             return JSONResponse(
                 {"ok": False, "error": "Empty message."}, status_code=400
@@ -1281,11 +1288,12 @@ async def companion_message(request: Request):
         try:
             from core.companion import chat as companion_chat
 
-            result = companion_chat(user_message)
+            result = companion_chat(user_message, operator_id=operator_id)
             resp = {
                 "ok": True,
                 "reply": result.get("reply", "(empty)"),
                 "source": result.get("source", "unknown"),
+                "operator_id": result.get("operator_id", operator_id),
             }
             if result.get("provider"):
                 resp["provider"] = result["provider"]

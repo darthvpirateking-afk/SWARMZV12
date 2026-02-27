@@ -2,8 +2,6 @@ const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL ?? "").replace(
   /\/+$/,
   "",
 );
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL ?? "https://swarmzv10.onrender.com";
 
 function buildHeaders(): HeadersInit {
   const headers: HeadersInit = { "Content-Type": "application/json" };
