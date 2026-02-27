@@ -1,4 +1,4 @@
-# Python Module Symbol Index
+﻿# Python Module Symbol Index
 
 Generated: 2026-02-20T02:43:00.758979+00:00
 
@@ -11,8 +11,8 @@ Generated: 2026-02-20T02:43:00.758979+00:00
 
 ## Modules
 
-### FIX_SWARMZ_LAUNCHERS
-- Path: FIX_SWARMZ_LAUNCHERS.py
+### FIX_NEXUSMON_LAUNCHERS
+- Path: FIX_NEXUSMON_LAUNCHERS.py
 - Functions (4): _lan_ip, main, patch_typo, write_file
 - Classes (0): -
 - Constants (1): ROOT
@@ -25,8 +25,8 @@ Generated: 2026-02-20T02:43:00.758979+00:00
 - Constants (0): -
 - Exports (0): -
 
-### ONE_BUTTON_SWARMZ_OWNERSHIP_PACK
-- Path: ONE_BUTTON_SWARMZ_OWNERSHIP_PACK.py
+### ONE_BUTTON_NEXUSMON_OWNERSHIP_PACK
+- Path: ONE_BUTTON_NEXUSMON_OWNERSHIP_PACK.py
 - Functions (7): atomic_write_new, ensure_dir, main, now_utc_iso, prompt_default, rel, sanitize_single_line
 - Classes (0): -
 - Constants (1): ROOT
@@ -329,7 +329,7 @@ Generated: 2026-02-20T02:43:00.758979+00:00
 ### companion
 - Path: companion.py
 - Functions (1): main
-- Classes (19): BuilderWorker, CommitEngine, CommitState, CompanionMode, EvolutionMechanism, ExecutionLog, IntelligenceLayer, Memory, ModeManager, OperatorMode, ScoutWorker, SwarmzCompanion, SystemMode, TaskContext, VerifyWorker, Worker, WorkerResult, WorkerSwarm, WorkerType
+- Classes (19): BuilderWorker, CommitEngine, CommitState, CompanionMode, EvolutionMechanism, ExecutionLog, IntelligenceLayer, Memory, ModeManager, OperatorMode, ScoutWorker, NexusmonCompanion, SystemMode, TaskContext, VerifyWorker, Worker, WorkerResult, WorkerSwarm, WorkerType
 - Constants (0): -
 - Exports (0): -
 
@@ -342,7 +342,7 @@ Generated: 2026-02-20T02:43:00.758979+00:00
 
 ### companion_examples
 - Path: companion_examples.py
-- Functions (10): example_basic_interaction, example_commit_states, example_custom_workers, example_evolution_mechanism, example_intelligence_learning, example_memory_persistence, example_usage, example_with_swarmz_core, example_worker_swarm, main
+- Functions (10): example_basic_interaction, example_commit_states, example_custom_workers, example_evolution_mechanism, example_intelligence_learning, example_memory_persistence, example_usage, example_with_nexusmon_core, example_worker_swarm, main
 - Classes (0): -
 - Constants (0): -
 - Exports (0): -
@@ -466,10 +466,10 @@ Generated: 2026-02-20T02:43:00.758979+00:00
 - Constants (3): _DATA_PATH, _DIR, _SCHEMA_PATH
 - Exports (0): -
 
-### control_plane.layer_weaver.swarmz_adapter
-- Path: control_plane/layer_weaver/swarmz_adapter.py
+### control_plane.layer_weaver.nexusmon_adapter
+- Path: control_plane/layer_weaver/nexusmon_adapter.py
 - Functions (0): -
-- Classes (2): InProcessSwarmzBus, SwarmzAdapter
+- Classes (2): InProcessNexusmonBus, NexusmonAdapter
 - Constants (0): -
 - Exports (0): -
 
@@ -571,10 +571,10 @@ Generated: 2026-02-20T02:43:00.758979+00:00
 - Constants (3): _DATA_PATH, _DIR, _SCHEMA_PATH
 - Exports (0): -
 
-### control_plane.swarmz_adapter
-- Path: control_plane/swarmz_adapter.py
+### control_plane.nexusmon_adapter
+- Path: control_plane/nexusmon_adapter.py
 - Functions (0): -
-- Classes (1): SwarmzAdapter
+- Classes (1): NexusmonAdapter
 - Constants (0): -
 - Exports (0): -
 
@@ -1239,12 +1239,12 @@ Generated: 2026-02-20T02:43:00.758979+00:00
 ### kernel_runtime.orchestrator
 - Path: kernel_runtime/orchestrator.py
 - Functions (0): -
-- Classes (1): SwarmzOrchestrator
+- Classes (1): NexusmonOrchestrator
 - Constants (0): -
 - Exports (0): -
 
-### mobile.swarmz_client
-- Path: mobile/swarmz_client.py
+### mobile.nexusmon_client
+- Path: mobile/nexusmon_client.py
 - Functions (1): send_request
 - Classes (0): -
 - Constants (1): SERVER_URL
@@ -1341,8 +1341,8 @@ Generated: 2026-02-20T02:43:00.758979+00:00
 - Constants (2): ROOT, RUNTIME_CONFIG
 - Exports (0): -
 
-### run_swarmz
-- Path: run_swarmz.py
+### run_nexusmon
+- Path: run_nexusmon.py
 - Functions (2): _lan_ip, run_tool
 - Classes (0): -
 - Constants (0): -
@@ -1418,988 +1418,988 @@ Generated: 2026-02-20T02:43:00.758979+00:00
 - Constants (8): AI_ELIGIBLE_CATEGORIES, AUDIT_FILE, DATA_DIR, HEARTBEAT_FILE, MISSIONS_FILE, PACKS_DIR, TICK_INTERVAL, WORKERS
 - Exports (0): -
 
-### swarmz
-- Path: swarmz.py
+### nexusmon
+- Path: nexusmon.py
 - Functions (1): main
-- Classes (3): OperatorSovereignty, SwarmzCore, TaskExecutor
+- Classes (3): OperatorSovereignty, NexusmonCore, TaskExecutor
 - Constants (0): -
 - Exports (0): -
 
-### swarmz
-- Path: swarmz/__init__.py
+### nexusmon
+- Path: nexusmon/__init__.py
 - Functions (0): -
 - Classes (0): -
 - Constants (0): -
-- Exports (3): OperatorSovereignty, SwarmzCore, TaskExecutor
+- Exports (3): OperatorSovereignty, NexusmonCore, TaskExecutor
 
-### swarmz.backend
-- Path: swarmz/backend/__init__.py
-- Functions (0): -
-- Classes (0): -
-- Constants (0): -
-- Exports (0): -
-
-### swarmz.backend.core
-- Path: swarmz/backend/core/__init__.py
+### nexusmon.backend
+- Path: nexusmon/backend/__init__.py
 - Functions (0): -
 - Classes (0): -
 - Constants (0): -
 - Exports (0): -
 
-### swarmz.backend.core.avatar.avatar
-- Path: swarmz/backend/core/avatar/avatar.py
+### nexusmon.backend.core
+- Path: nexusmon/backend/core/__init__.py
+- Functions (0): -
+- Classes (0): -
+- Constants (0): -
+- Exports (0): -
+
+### nexusmon.backend.core.avatar.avatar
+- Path: nexusmon/backend/core/avatar/avatar.py
 - Functions (0): -
 - Classes (3): AvatarBrain, AvatarPresence, AvatarState
 - Constants (0): -
 - Exports (0): -
 
-### swarmz.backend.core.avatar.brain
-- Path: swarmz/backend/core/avatar/brain.py
+### nexusmon.backend.core.avatar.brain
+- Path: nexusmon/backend/core/avatar/brain.py
 - Functions (0): -
 - Classes (1): AvatarBrain
 - Constants (0): -
 - Exports (0): -
 
-### swarmz.backend.core.avatar.controller
-- Path: swarmz/backend/core/avatar/controller.py
+### nexusmon.backend.core.avatar.controller
+- Path: nexusmon/backend/core/avatar/controller.py
 - Functions (0): -
 - Classes (1): AvatarController
 - Constants (0): -
 - Exports (0): -
 
-### swarmz.backend.core.avatar.models
-- Path: swarmz/backend/core/avatar/models.py
+### nexusmon.backend.core.avatar.models
+- Path: nexusmon/backend/core/avatar/models.py
 - Functions (0): -
 - Classes (1): Avatar
 - Constants (0): -
 - Exports (0): -
 
-### swarmz.backend.core.avatar.presence
-- Path: swarmz/backend/core/avatar/presence.py
+### nexusmon.backend.core.avatar.presence
+- Path: nexusmon/backend/core/avatar/presence.py
 - Functions (0): -
 - Classes (1): AvatarPresence
 - Constants (0): -
 - Exports (0): -
 
-### swarmz.backend.core.avatar.renderer
-- Path: swarmz/backend/core/avatar/renderer.py
+### nexusmon.backend.core.avatar.renderer
+- Path: nexusmon/backend/core/avatar/renderer.py
 - Functions (0): -
 - Classes (1): AvatarRenderer
 - Constants (0): -
 - Exports (0): -
 
-### swarmz.backend.core.avatar.state
-- Path: swarmz/backend/core/avatar/state.py
+### nexusmon.backend.core.avatar.state
+- Path: nexusmon/backend/core/avatar/state.py
 - Functions (0): -
 - Classes (1): AvatarState
 - Constants (0): -
 - Exports (0): -
 
-### swarmz.backend.core.cockpit.controller
-- Path: swarmz/backend/core/cockpit/controller.py
+### nexusmon.backend.core.cockpit.controller
+- Path: nexusmon/backend/core/cockpit/controller.py
 - Functions (0): -
 - Classes (1): CockpitController
 - Constants (0): -
 - Exports (0): -
 
-### swarmz.backend.core.cockpit.dashboard
-- Path: swarmz/backend/core/cockpit/dashboard.py
+### nexusmon.backend.core.cockpit.dashboard
+- Path: nexusmon/backend/core/cockpit/dashboard.py
 - Functions (0): -
 - Classes (1): CockpitDashboard
 - Constants (0): -
 - Exports (0): -
 
-### swarmz.backend.core.cockpit.models
-- Path: swarmz/backend/core/cockpit/models.py
+### nexusmon.backend.core.cockpit.models
+- Path: nexusmon/backend/core/cockpit/models.py
 - Functions (0): -
 - Classes (1): Cockpit
 - Constants (0): -
 - Exports (0): -
 
-### swarmz.backend.core.cosmology
-- Path: swarmz/backend/core/cosmology/__init__.py
+### nexusmon.backend.core.cosmology
+- Path: nexusmon/backend/core/cosmology/__init__.py
 - Functions (0): -
 - Classes (0): -
 - Constants (0): -
 - Exports (0): -
 
-### swarmz.backend.core.cosmology.link
-- Path: swarmz/backend/core/cosmology/link.py
+### nexusmon.backend.core.cosmology.link
+- Path: nexusmon/backend/core/cosmology/link.py
 - Functions (0): -
 - Classes (1): Link
 - Constants (0): -
 - Exports (0): -
 
-### swarmz.backend.core.cosmology.mesh
-- Path: swarmz/backend/core/cosmology/mesh.py
+### nexusmon.backend.core.cosmology.mesh
+- Path: nexusmon/backend/core/cosmology/mesh.py
 - Functions (0): -
 - Classes (3): Link, MeshRouter, Node
 - Constants (0): -
 - Exports (0): -
 
-### swarmz.backend.core.cosmology.mesh_router
-- Path: swarmz/backend/core/cosmology/mesh_router.py
+### nexusmon.backend.core.cosmology.mesh_router
+- Path: nexusmon/backend/core/cosmology/mesh_router.py
 - Functions (0): -
 - Classes (1): MeshRouter
 - Constants (0): -
 - Exports (0): -
 
-### swarmz.backend.core.cosmology.node
-- Path: swarmz/backend/core/cosmology/node.py
+### nexusmon.backend.core.cosmology.node
+- Path: nexusmon/backend/core/cosmology/node.py
 - Functions (0): -
 - Classes (1): Node
 - Constants (0): -
 - Exports (0): -
 
-### swarmz.backend.core.governor.governor
-- Path: swarmz/backend/core/governor/governor.py
+### nexusmon.backend.core.governor.governor
+- Path: nexusmon/backend/core/governor/governor.py
 - Functions (0): -
 - Classes (1): Governor
 - Constants (0): -
 - Exports (0): -
 
-### swarmz.backend.core.mission.executor
-- Path: swarmz/backend/core/mission/executor.py
+### nexusmon.backend.core.mission.executor
+- Path: nexusmon/backend/core/mission/executor.py
 - Functions (0): -
 - Classes (1): MissionExecutor
 - Constants (0): -
 - Exports (0): -
 
-### swarmz.backend.core.mission.mission
-- Path: swarmz/backend/core/mission/mission.py
+### nexusmon.backend.core.mission.mission
+- Path: nexusmon/backend/core/mission/mission.py
 - Functions (0): -
 - Classes (4): MissionExecutor, MissionParser, MissionPlanner, MissionReporter
 - Constants (0): -
 - Exports (0): -
 
-### swarmz.backend.core.mission.models
-- Path: swarmz/backend/core/mission/models.py
+### nexusmon.backend.core.mission.models
+- Path: nexusmon/backend/core/mission/models.py
 - Functions (0): -
 - Classes (2): Mission, Models
 - Constants (0): -
 - Exports (0): -
 
-### swarmz.backend.core.mission.parser
-- Path: swarmz/backend/core/mission/parser.py
+### nexusmon.backend.core.mission.parser
+- Path: nexusmon/backend/core/mission/parser.py
 - Functions (0): -
 - Classes (2): MissionParser, Parser
 - Constants (0): -
 - Exports (0): -
 
-### swarmz.backend.core.mission.planner
-- Path: swarmz/backend/core/mission/planner.py
+### nexusmon.backend.core.mission.planner
+- Path: nexusmon/backend/core/mission/planner.py
 - Functions (0): -
 - Classes (2): MissionPlanner, Planner
 - Constants (0): -
 - Exports (0): -
 
-### swarmz.backend.core.mission.reporter
-- Path: swarmz/backend/core/mission/reporter.py
+### nexusmon.backend.core.mission.reporter
+- Path: nexusmon/backend/core/mission/reporter.py
 - Functions (0): -
 - Classes (1): MissionReporter
 - Constants (0): -
 - Exports (0): -
 
-### swarmz.backend.core.patchpack.patchpack
-- Path: swarmz/backend/core/patchpack/patchpack.py
+### nexusmon.backend.core.patchpack.patchpack
+- Path: nexusmon/backend/core/patchpack/patchpack.py
 - Functions (0): -
 - Classes (1): Patchpack
 - Constants (0): -
 - Exports (0): -
 
-### swarmz.backend.core.session.session
-- Path: swarmz/backend/core/session/session.py
+### nexusmon.backend.core.session.session
+- Path: nexusmon/backend/core/session/session.py
 - Functions (0): -
 - Classes (1): Session
 - Constants (0): -
 - Exports (0): -
 
-### swarmz.backend.core.swarm.behavior
-- Path: swarmz/backend/core/swarm/behavior.py
+### nexusmon.backend.core.swarm.behavior
+- Path: nexusmon/backend/core/swarm/behavior.py
 - Functions (0): -
 - Classes (1): BehaviorEngine
 - Constants (0): -
 - Exports (0): -
 
-### swarmz.backend.core.swarm.formation
-- Path: swarmz/backend/core/swarm/formation.py
+### nexusmon.backend.core.swarm.formation
+- Path: nexusmon/backend/core/swarm/formation.py
 - Functions (0): -
 - Classes (1): FormationEngine
 - Constants (0): -
 - Exports (0): -
 
-### swarmz.backend.core.swarm.manager
-- Path: swarmz/backend/core/swarm/manager.py
+### nexusmon.backend.core.swarm.manager
+- Path: nexusmon/backend/core/swarm/manager.py
 - Functions (0): -
 - Classes (1): SwarmManager
 - Constants (0): -
 - Exports (0): -
 
-### swarmz.backend.core.swarm.models
-- Path: swarmz/backend/core/swarm/models.py
+### nexusmon.backend.core.swarm.models
+- Path: nexusmon/backend/core/swarm/models.py
 - Functions (0): -
 - Classes (1): SwarmTask
 - Constants (0): -
 - Exports (0): -
 
-### swarmz.backend.core.swarm.monitor
-- Path: swarmz/backend/core/swarm/monitor.py
+### nexusmon.backend.core.swarm.monitor
+- Path: nexusmon/backend/core/swarm/monitor.py
 - Functions (0): -
 - Classes (1): SwarmMonitor
 - Constants (0): -
 - Exports (0): -
 
-### swarmz.backend.core.swarm.registry
-- Path: swarmz/backend/core/swarm/registry.py
+### nexusmon.backend.core.swarm.registry
+- Path: nexusmon/backend/core/swarm/registry.py
 - Functions (0): -
 - Classes (1): UnitRegistry
 - Constants (0): -
 - Exports (0): -
 
-### swarmz.backend.core.swarm.swarm
-- Path: swarmz/backend/core/swarm/swarm.py
+### nexusmon.backend.core.swarm.swarm
+- Path: nexusmon/backend/core/swarm/swarm.py
 - Functions (0): -
 - Classes (4): BehaviorEngine, FormationEngine, Unit, UnitRegistry
 - Constants (0): -
 - Exports (0): -
 
-### swarmz.backend.core.swarm.unit
-- Path: swarmz/backend/core/swarm/unit.py
+### nexusmon.backend.core.swarm.unit
+- Path: nexusmon/backend/core/swarm/unit.py
 - Functions (0): -
 - Classes (1): Unit
 - Constants (0): -
 - Exports (0): -
 
-### swarmz.backend.core.swarm.worker
-- Path: swarmz/backend/core/swarm/worker.py
+### nexusmon.backend.core.swarm.worker
+- Path: nexusmon/backend/core/swarm/worker.py
 - Functions (0): -
 - Classes (1): SwarmWorker
 - Constants (0): -
 - Exports (0): -
 
-### swarmz.backend.runtime.bootstrap
-- Path: swarmz/backend/runtime/bootstrap.py
+### nexusmon.backend.runtime.bootstrap
+- Path: nexusmon/backend/runtime/bootstrap.py
 - Functions (1): bootstrap
 - Classes (0): -
 - Constants (0): -
 - Exports (0): -
 
-### swarmz.backend.runtime.engine
-- Path: swarmz/backend/runtime/engine.py
+### nexusmon.backend.runtime.engine
+- Path: nexusmon/backend/runtime/engine.py
 - Functions (0): -
 - Classes (1): Engine
 - Constants (0): -
 - Exports (0): -
 
-### swarmz.runtime
-- Path: swarmz/runtime/__init__.py
+### nexusmon.runtime
+- Path: nexusmon/runtime/__init__.py
 - Functions (0): -
 - Classes (0): -
 - Constants (0): -
 - Exports (0): -
 
-### swarmz.runtime.ignition
-- Path: swarmz/runtime/ignition.py
+### nexusmon.runtime.ignition
+- Path: nexusmon/runtime/ignition.py
 - Functions (4): build_default_ignition, step_load_kernels, step_load_missions, step_load_patchpacks
 - Classes (3): IgnitionEvent, RuntimeIgnition, RuntimeIgnitionState
 - Constants (0): -
 - Exports (0): -
 
-### swarmz.ui.cockpit.layout
-- Path: swarmz/ui/cockpit/layout/__init__.py
+### nexusmon.ui.cockpit.layout
+- Path: nexusmon/ui/cockpit/layout/__init__.py
 - Functions (0): -
 - Classes (0): -
 - Constants (0): -
 - Exports (0): -
 
-### swarmz.ui.cockpit.panels
-- Path: swarmz/ui/cockpit/panels.py
+### nexusmon.ui.cockpit.panels
+- Path: nexusmon/ui/cockpit/panels.py
 - Functions (0): -
 - Classes (6): AvatarPanel, CosmologyPanel, MissionsPanel, PatchpackPanel, SwarmPanel, SystemPanel
 - Constants (0): -
 - Exports (0): -
 
-### swarmz.ui.cockpit.panels.avatar
-- Path: swarmz/ui/cockpit/panels/avatar/__init__.py
+### nexusmon.ui.cockpit.panels.avatar
+- Path: nexusmon/ui/cockpit/panels/avatar/__init__.py
 - Functions (0): -
 - Classes (0): -
 - Constants (0): -
 - Exports (0): -
 
-### swarmz.ui.cockpit.panels.cosmology
-- Path: swarmz/ui/cockpit/panels/cosmology/__init__.py
+### nexusmon.ui.cockpit.panels.cosmology
+- Path: nexusmon/ui/cockpit/panels/cosmology/__init__.py
 - Functions (0): -
 - Classes (0): -
 - Constants (0): -
 - Exports (0): -
 
-### swarmz.ui.cockpit.panels.missions
-- Path: swarmz/ui/cockpit/panels/missions/__init__.py
+### nexusmon.ui.cockpit.panels.missions
+- Path: nexusmon/ui/cockpit/panels/missions/__init__.py
 - Functions (0): -
 - Classes (0): -
 - Constants (0): -
 - Exports (0): -
 
-### swarmz.ui.cockpit.panels.patchpack
-- Path: swarmz/ui/cockpit/panels/patchpack/__init__.py
+### nexusmon.ui.cockpit.panels.patchpack
+- Path: nexusmon/ui/cockpit/panels/patchpack/__init__.py
 - Functions (0): -
 - Classes (0): -
 - Constants (0): -
 - Exports (0): -
 
-### swarmz.ui.cockpit.panels.swarm
-- Path: swarmz/ui/cockpit/panels/swarm/__init__.py
+### nexusmon.ui.cockpit.panels.swarm
+- Path: nexusmon/ui/cockpit/panels/swarm/__init__.py
 - Functions (0): -
 - Classes (0): -
 - Constants (0): -
 - Exports (0): -
 
-### swarmz.ui.cockpit.panels.system
-- Path: swarmz/ui/cockpit/panels/system/__init__.py
+### nexusmon.ui.cockpit.panels.system
+- Path: nexusmon/ui/cockpit/panels/system/__init__.py
 - Functions (0): -
 - Classes (0): -
 - Constants (0): -
 - Exports (0): -
 
-### swarmz.ui.cockpit.state
-- Path: swarmz/ui/cockpit/state/__init__.py
+### nexusmon.ui.cockpit.state
+- Path: nexusmon/ui/cockpit/state/__init__.py
 - Functions (0): -
 - Classes (0): -
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_app.api.hologram
-- Path: swarmz_app/api/hologram.py
+### nexusmon_app.api.hologram
+- Path: nexusmon_app/api/hologram.py
 - Functions (1): hologram
 - Classes (0): -
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_app.core.hologram_presence
-- Path: swarmz_app/core/hologram_presence.py
+### nexusmon_app.core.hologram_presence
+- Path: nexusmon_app/core/hologram_presence.py
 - Functions (8): get_current_phase, get_entropy_level, get_hologram_payload, get_hologram_state, get_last_mission_summary, get_operator_binding_status, get_personality_vector, get_trajectory_info
 - Classes (0): -
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_cli
-- Path: swarmz_cli.py
+### nexusmon_cli
+- Path: nexusmon_cli.py
 - Functions (1): cli_main
 - Classes (0): -
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime
-- Path: swarmz_runtime/__init__.py
+### nexusmon_runtime
+- Path: nexusmon_runtime/__init__.py
 - Functions (0): -
 - Classes (0): -
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.api
-- Path: swarmz_runtime/api/__init__.py
+### nexusmon_runtime.api
+- Path: nexusmon_runtime/api/__init__.py
 - Functions (0): -
 - Classes (0): -
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.api.admin
-- Path: swarmz_runtime/api/admin.py
+### nexusmon_runtime.api.admin
+- Path: nexusmon_runtime/api/admin.py
 - Functions (4): check_operator_sovereignty, execute_operator_command, get_sovereignty_status, schedule_maintenance
 - Classes (2): OperatorCommand, SovereigntyCheck
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.api.arena
-- Path: swarmz_runtime/api/arena.py
+### nexusmon_runtime.api.arena
+- Path: nexusmon_runtime/api/arena.py
 - Functions (5): arena_self_check, get_arena_config, get_arena_run, list_arena_runs, start_arena_run
 - Classes (1): ArenaRunRequest
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.api.companion_state
-- Path: swarmz_runtime/api/companion_state.py
+### nexusmon_runtime.api.companion_state
+- Path: nexusmon_runtime/api/companion_state.py
 - Functions (1): companion_state
 - Classes (0): -
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.api.debug
-- Path: swarmz_runtime/api/debug.py
+### nexusmon_runtime.api.debug
+- Path: nexusmon_runtime/api/debug.py
 - Functions (1): storage_check
 - Classes (0): -
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.api.ecosystem
-- Path: swarmz_runtime/api/ecosystem.py
+### nexusmon_runtime.api.ecosystem
+- Path: nexusmon_runtime/api/ecosystem.py
 - Functions (8): _get_loop, auto_start, auto_stop, ecosystem_run, ecosystem_status, ecosystem_verify, get_pack, set_engine_provider
 - Classes (2): AutoStartRequest, EcosystemRunRequest
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.api.factory_routes
-- Path: swarmz_runtime/api/factory_routes.py
+### nexusmon_runtime.api.factory_routes
+- Path: nexusmon_runtime/api/factory_routes.py
 - Functions (6): decisions_latest, execute_artifact, factory_graph, factory_intake, factory_mission, factory_missions
 - Classes (1): ArtifactExecutionRequest
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.api.galileo_routes
-- Path: swarmz_runtime/api/galileo_routes.py
+### nexusmon_runtime.api.galileo_routes
+- Path: nexusmon_runtime/api/galileo_routes.py
 - Functions (4): galileo_experiments, galileo_hypotheses, galileo_run, galileo_run_get
 - Classes (1): GalileoRunBody
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.api.galileo_storage_shim
-- Path: swarmz_runtime/api/galileo_storage_shim.py
+### nexusmon_runtime.api.galileo_storage_shim
+- Path: nexusmon_runtime/api/galileo_storage_shim.py
 - Functions (4): _read_jsonl, read_experiments, read_hypotheses, read_runs
 - Classes (0): -
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.api.infra
-- Path: swarmz_runtime/api/infra.py
+### nexusmon_runtime.api.infra
+- Path: nexusmon_runtime/api/infra.py
 - Functions (8): _infra_enabled, infra_autoscale_plan, infra_backup_plan, infra_events, infra_overview, infra_plan_missions, infra_state, ingest_metrics
 - Classes (1): InfraMetricSample
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.api.meta_routes
-- Path: swarmz_runtime/api/meta_routes.py
+### nexusmon_runtime.api.meta_routes
+- Path: nexusmon_runtime/api/meta_routes.py
 - Functions (13): apply_sovereign_control, create_mission, execute_kernel_ignition, get_cosmology, get_ignition_status, get_lattice_status, get_missions, get_patchpack, get_sovereign_status, get_swarm, get_system, make_sovereign_decision, process_task_matrix
 - Classes (0): -
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.api.missions
-- Path: swarmz_runtime/api/missions.py
+### nexusmon_runtime.api.missions
+- Path: nexusmon_runtime/api/missions.py
 - Functions (4): approve_mission, create_mission, list_missions, run_mission
 - Classes (3): ApproveMissionRequest, CreateMissionRequest, RunMissionRequest
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.api.observability
-- Path: swarmz_runtime/api/observability.py
+### nexusmon_runtime.api.observability
+- Path: nexusmon_runtime/api/observability.py
 - Functions (2): health, ready
 - Classes (0): -
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.api.perf_routes
-- Path: swarmz_runtime/api/perf_routes.py
+### nexusmon_runtime.api.perf_routes
+- Path: nexusmon_runtime/api/perf_routes.py
 - Functions (3): _require_operator, perf_bench, perf_snapshot
 - Classes (0): -
 - Constants (2): DATA_DIR, PERF_DIR
 - Exports (0): -
 
-### swarmz_runtime.api.runtime_endpoints
-- Path: swarmz_runtime/api/runtime_endpoints.py
+### nexusmon_runtime.api.runtime_endpoints
+- Path: nexusmon_runtime/api/runtime_endpoints.py
 - Functions (1): runtime_scoreboard
 - Classes (0): -
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.api.server
-- Path: swarmz_runtime/api/server.py
+### nexusmon_runtime.api.server
+- Path: nexusmon_runtime/api/server.py
 - Functions (38): _append_jsonl, _file_in_ui, _lan_ip, _load_operator_pin, _load_runtime_config, _resolve_offline_mode, _tail_jsonl, ai_status, app_js_file, app_js_head, audit_tail, build_orchestrator, companion_history, companion_state, config_runtime, create_app, dispatch, get_engine, health, health_v1, icon_file, lifespan, manifest, observability_health, observability_ready, pairing_info, pairing_pair, prepared_pending, root, runs, runtime_scoreboard_view, runtime_status, service_worker, service_worker_head, sovereign_dispatch, styles_file, styles_head, system_log
 - Classes (3): DispatchRequest, PairRequest, SovereignDispatch
 - Constants (12): BASE_DIR, DATA_DIR, OFFLINE_MODE, OPERATOR_PIN, ROOT_DIR, START_TIME, UI_DIR, VERBOSE, _ICON_SVG, _MANIFEST, _PWA_SHELL, _SW_JS
 - Exports (0): -
 
-### swarmz_runtime.api.system
-- Path: swarmz_runtime/api/system.py
+### nexusmon_runtime.api.system
+- Path: nexusmon_runtime/api/system.py
 - Functions (4): get_health, get_omens, get_predictions, get_templates
 - Classes (0): -
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.api.v1_stubs
-- Path: swarmz_runtime/api/v1_stubs.py
+### nexusmon_runtime.api.v1_stubs
+- Path: nexusmon_runtime/api/v1_stubs.py
 - Functions (2): get_ai_status, get_prepared_pending
 - Classes (0): -
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.api.verify_routes
-- Path: swarmz_runtime/api/verify_routes.py
+### nexusmon_runtime.api.verify_routes
+- Path: nexusmon_runtime/api/verify_routes.py
 - Functions (8): _require_operator, patchpack_apply, patchpack_generate, patchpack_rollback, verify_kernel, verify_replay, verify_run, verify_status
 - Classes (0): -
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.arena
-- Path: swarmz_runtime/arena/__init__.py
+### nexusmon_runtime.arena
+- Path: nexusmon_runtime/arena/__init__.py
 - Functions (0): -
 - Classes (0): -
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.arena.config
-- Path: swarmz_runtime/arena/config.py
+### nexusmon_runtime.arena.config
+- Path: nexusmon_runtime/arena/config.py
 - Functions (3): load_config, save_config, self_check
 - Classes (0): -
 - Constants (3): _CONFIG_PATH, _DATA_DIR, _DEFAULT_CONFIG
 - Exports (0): -
 
-### swarmz_runtime.arena.engine
-- Path: swarmz_runtime/arena/engine.py
+### nexusmon_runtime.arena.engine
+- Path: nexusmon_runtime/arena/engine.py
 - Functions (1): _generate_response
 - Classes (1): ArenaEngine
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.arena.schema
-- Path: swarmz_runtime/arena/schema.py
+### nexusmon_runtime.arena.schema
+- Path: nexusmon_runtime/arena/schema.py
 - Functions (0): -
 - Classes (5): ArenaCandidate, ArenaConfig, ArenaRun, ArenaRunStatus, CandidateStatus
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.arena.scoring
-- Path: swarmz_runtime/arena/scoring.py
+### nexusmon_runtime.arena.scoring
+- Path: nexusmon_runtime/arena/scoring.py
 - Functions (4): _score_length, _score_length_quality, rank_candidates, score_candidate
 - Classes (0): -
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.arena.store
-- Path: swarmz_runtime/arena/store.py
+### nexusmon_runtime.arena.store
+- Path: nexusmon_runtime/arena/store.py
 - Functions (0): -
 - Classes (1): ArenaStore
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.arena.ui
-- Path: swarmz_runtime/arena/ui.py
+### nexusmon_runtime.arena.ui
+- Path: nexusmon_runtime/arena/ui.py
 - Functions (1): arena_ui
 - Classes (0): -
 - Constants (1): _ARENA_HTML
 - Exports (0): -
 
-### swarmz_runtime.avatar.avatar_omega
-- Path: swarmz_runtime/avatar/avatar_omega.py
+### nexusmon_runtime.avatar.avatar_omega
+- Path: nexusmon_runtime/avatar/avatar_omega.py
 - Functions (0): -
 - Classes (3): AvatarInfinity, AvatarOmega, AvatarOmegaPlus
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.avatar.operator_link
-- Path: swarmz_runtime/avatar/operator_link.py
+### nexusmon_runtime.avatar.operator_link
+- Path: nexusmon_runtime/avatar/operator_link.py
 - Functions (0): -
 - Classes (1): OperatorLink
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.core
-- Path: swarmz_runtime/core/__init__.py
+### nexusmon_runtime.core
+- Path: nexusmon_runtime/core/__init__.py
 - Functions (0): -
 - Classes (0): -
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.core.authority
-- Path: swarmz_runtime/core/authority.py
+### nexusmon_runtime.core.authority
+- Path: nexusmon_runtime/core/authority.py
 - Functions (7): _evaluate_attention, _evaluate_compute_cost, _evaluate_economic_value, _evaluate_maintainability, _evaluate_prediction_confidence, _evaluate_trust, validate_transaction
 - Classes (0): -
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.core.autoloop
-- Path: swarmz_runtime/core/autoloop.py
+### nexusmon_runtime.core.autoloop
+- Path: nexusmon_runtime/core/autoloop.py
 - Functions (0): -
 - Classes (1): AutoLoopManager
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.core.brain
-- Path: swarmz_runtime/core/brain.py
+### nexusmon_runtime.core.brain
+- Path: nexusmon_runtime/core/brain.py
 - Functions (0): -
 - Classes (2): BrainMapping, BrainRole
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.core.cadence
-- Path: swarmz_runtime/core/cadence.py
+### nexusmon_runtime.core.cadence
+- Path: nexusmon_runtime/core/cadence.py
 - Functions (0): -
 - Classes (1): CadenceEngine
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.core.engine
-- Path: swarmz_runtime/core/engine.py
+### nexusmon_runtime.core.engine
+- Path: nexusmon_runtime/core/engine.py
 - Functions (0): -
-- Classes (1): SwarmzEngine
+- Classes (1): NexusmonEngine
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.core.infra_autoscale
-- Path: swarmz_runtime/core/infra_autoscale.py
+### nexusmon_runtime.core.infra_autoscale
+- Path: nexusmon_runtime/core/infra_autoscale.py
 - Functions (1): compute_autoscale_recommendations
 - Classes (0): -
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.core.infra_backup
-- Path: swarmz_runtime/core/infra_backup.py
+### nexusmon_runtime.core.infra_backup
+- Path: nexusmon_runtime/core/infra_backup.py
 - Functions (2): _extract_resources, compute_backup_plan
 - Classes (0): -
 - Constants (1): _RESOURCE_KEYS
 - Exports (0): -
 
-### swarmz_runtime.core.infra_metrics
-- Path: swarmz_runtime/core/infra_metrics.py
+### nexusmon_runtime.core.infra_metrics
+- Path: nexusmon_runtime/core/infra_metrics.py
 - Functions (2): build_infra_overview, record_infra_metrics
 - Classes (0): -
 - Constants (1): _METRIC_FIELDS
 - Exports (0): -
 
-### swarmz_runtime.core.infra_missions
-- Path: swarmz_runtime/core/infra_missions.py
+### nexusmon_runtime.core.infra_missions
+- Path: nexusmon_runtime/core/infra_missions.py
 - Functions (3): _new_mission_id, _save_mission, emit_infra_missions
 - Classes (0): -
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.core.infra_model
-- Path: swarmz_runtime/core/infra_model.py
+### nexusmon_runtime.core.infra_model
+- Path: nexusmon_runtime/core/infra_model.py
 - Functions (0): -
 - Classes (18): BackupJob, BlockchainNode, CloudSubscription, ColoAllocation, ContainerInstance, CoolingZone, DRPlan, DataCenter, GPUCluster, GPUNode, MiningJob, NetworkSegment, PowerFeed, Rack, ServerNode, StorageArray, Tenant, VMInstance
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.core.learning
-- Path: swarmz_runtime/core/learning.py
+### nexusmon_runtime.core.learning
+- Path: nexusmon_runtime/core/learning.py
 - Functions (0): -
 - Classes (1): LearningEngine
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.core.maintenance
-- Path: swarmz_runtime/core/maintenance.py
+### nexusmon_runtime.core.maintenance
+- Path: nexusmon_runtime/core/maintenance.py
 - Functions (0): -
 - Classes (1): MaintenanceScheduler
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.core.mission_engine_v4
-- Path: swarmz_runtime/core/mission_engine_v4.py
+### nexusmon_runtime.core.mission_engine_v4
+- Path: nexusmon_runtime/core/mission_engine_v4.py
 - Functions (0): -
 - Classes (4): DSLExecutor, DSLParser, DSLReporter, DSLValidator
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.core.operator_forge_v4
-- Path: swarmz_runtime/core/operator_forge_v4.py
+### nexusmon_runtime.core.operator_forge_v4
+- Path: nexusmon_runtime/core/operator_forge_v4.py
 - Functions (0): -
 - Classes (2): DomainBlueprint, OperatorForgeV4
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.core.prediction
-- Path: swarmz_runtime/core/prediction.py
+### nexusmon_runtime.core.prediction
+- Path: nexusmon_runtime/core/prediction.py
 - Functions (0): -
 - Classes (1): ProphetEngine
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.core.reality_engine_v4
-- Path: swarmz_runtime/core/reality_engine_v4.py
+### nexusmon_runtime.core.reality_engine_v4
+- Path: nexusmon_runtime/core/reality_engine_v4.py
 - Functions (0): -
 - Classes (2): PhysicsLayer, RealityEngineV4
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.core.resonance
-- Path: swarmz_runtime/core/resonance.py
+### nexusmon_runtime.core.resonance
+- Path: nexusmon_runtime/core/resonance.py
 - Functions (0): -
 - Classes (1): ResonanceDetector
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.core.scoring
-- Path: swarmz_runtime/core/scoring.py
+### nexusmon_runtime.core.scoring
+- Path: nexusmon_runtime/core/scoring.py
 - Functions (4): calculate_expected_value, calculate_leverage_score, rank_missions, should_execute
 - Classes (0): -
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.core.swarm_engine_v3
-- Path: swarmz_runtime/core/swarm_engine_v3.py
+### nexusmon_runtime.core.swarm_engine_v3
+- Path: nexusmon_runtime/core/swarm_engine_v3.py
 - Functions (0): -
 - Classes (1): SwarmEngineV3
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.core.swarm_engine_v4
-- Path: swarmz_runtime/core/swarm_engine_v4.py
+### nexusmon_runtime.core.swarm_engine_v4
+- Path: nexusmon_runtime/core/swarm_engine_v4.py
 - Functions (0): -
 - Classes (4): FormationExecutor, FormationMonitor, FormationRuleset, FormationSynthesizer
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.core.telemetry
-- Path: swarmz_runtime/core/telemetry.py
+### nexusmon_runtime.core.telemetry
+- Path: nexusmon_runtime/core/telemetry.py
 - Functions (8): _append, avg_duration, last_event, record_duration, record_event, record_failure, set_verbose, verbose_log
 - Classes (0): -
 - Constants (3): DATA_DIR, RUNTIME_METRICS_FILE, TELEMETRY_FILE
 - Exports (0): -
 
-### swarmz_runtime.core.universe_mesh_v2
-- Path: swarmz_runtime/core/universe_mesh_v2.py
+### nexusmon_runtime.core.universe_mesh_v2
+- Path: nexusmon_runtime/core/universe_mesh_v2.py
 - Functions (0): -
 - Classes (4): CosmicMap, CosmicRouter, CosmologyNode, InterCosmicLink
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.core.visibility
-- Path: swarmz_runtime/core/visibility.py
+### nexusmon_runtime.core.visibility
+- Path: nexusmon_runtime/core/visibility.py
 - Functions (0): -
 - Classes (1): VisibilityManager
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.cosmology.cosmology_v3
-- Path: swarmz_runtime/cosmology/cosmology_v3.py
+### nexusmon_runtime.cosmology.cosmology_v3
+- Path: nexusmon_runtime/cosmology/cosmology_v3.py
 - Functions (0): -
 - Classes (2): CosmologyTicker, DynamicNode
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.cosmology.energy_model
-- Path: swarmz_runtime/cosmology/energy_model.py
+### nexusmon_runtime.cosmology.energy_model
+- Path: nexusmon_runtime/cosmology/energy_model.py
 - Functions (0): -
 - Classes (1): EnergyModel
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.cosmology.entropy_model
-- Path: swarmz_runtime/cosmology/entropy_model.py
+### nexusmon_runtime.cosmology.entropy_model
+- Path: nexusmon_runtime/cosmology/entropy_model.py
 - Functions (0): -
 - Classes (1): EntropyModel
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.cosmology.kernel_types
-- Path: swarmz_runtime/cosmology/kernel_types.py
+### nexusmon_runtime.cosmology.kernel_types
+- Path: nexusmon_runtime/cosmology/kernel_types.py
 - Functions (0): -
 - Classes (1): KernelTypes
 - Constants (1): COSMOLOGY_STATES
 - Exports (0): -
 
-### swarmz_runtime.factory.engine
-- Path: swarmz_runtime/factory/engine.py
+### nexusmon_runtime.factory.engine
+- Path: nexusmon_runtime/factory/engine.py
 - Functions (10): _append, _read_jsonl, _update_mission, execute_artifact, get_mission, intake, latest_decision, list_missions, mermaid_graph, record_decision
 - Classes (0): -
 - Constants (4): DATA_DIR, DECISIONS_FILE, FACTORY_FILE, GUILDS
 - Exports (0): -
 
-### swarmz_runtime.hyper_fabric_engine_v1
-- Path: swarmz_runtime/hyper_fabric_engine_v1.py
+### nexusmon_runtime.hyper_fabric_engine_v1
+- Path: nexusmon_runtime/hyper_fabric_engine_v1.py
 - Functions (0): -
 - Classes (1): HyperFabricEngineV1
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.integration.integration_map
-- Path: swarmz_runtime/integration/integration_map.py
+### nexusmon_runtime.integration.integration_map
+- Path: nexusmon_runtime/integration/integration_map.py
 - Functions (0): -
 - Classes (1): IntegrationMap
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.kernel.federation
-- Path: swarmz_runtime/kernel/federation.py
+### nexusmon_runtime.kernel.federation
+- Path: nexusmon_runtime/kernel/federation.py
 - Functions (0): -
 - Classes (2): FederationRouter, KernelRegistry
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.meta
-- Path: swarmz_runtime/meta/__init__.py
+### nexusmon_runtime.meta
+- Path: nexusmon_runtime/meta/__init__.py
 - Functions (0): -
 - Classes (0): -
 - Constants (0): -
 - Exports (2): LatticeFlow, MetaSelector
 
-### swarmz_runtime.meta.selector
-- Path: swarmz_runtime/meta/selector.py
+### nexusmon_runtime.meta.selector
+- Path: nexusmon_runtime/meta/selector.py
 - Functions (2): get_engine, set_engine_provider
 - Classes (8): ArchitecturalRestraint, LatticeFlow, MagicWay, MetaSelector, MythicalWay, PreEvaluated, SovereignOverride, SpaceShaping
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.meta.task_matrix
-- Path: swarmz_runtime/meta/task_matrix.py
+### nexusmon_runtime.meta.task_matrix
+- Path: nexusmon_runtime/meta/task_matrix.py
 - Functions (2): get_engine, set_engine_provider
 - Classes (10): ArchitecturalRestraintLayer, HiddenWayLayer, MagicWayLayer, MythicalWayLayer, NextTaskMatrix, PreEvaluatedLayer, SovereignArbitrationLayer, SpaceShapingLayer, StabilizingLayer, UniversalGiftLayer
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.mission_engine.mission_engine
-- Path: swarmz_runtime/mission_engine/mission_engine.py
+### nexusmon_runtime.mission_engine.mission_engine
+- Path: nexusmon_runtime/mission_engine/mission_engine.py
 - Functions (0): -
 - Classes (1): MissionEngine
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.mission_engine.mission_engine_v3
-- Path: swarmz_runtime/mission_engine/mission_engine_v3.py
+### nexusmon_runtime.mission_engine.mission_engine_v3
+- Path: nexusmon_runtime/mission_engine/mission_engine_v3.py
 - Functions (0): -
 - Classes (4): GraphBuilder, GraphExecutor, GraphMonitor, GraphReporter
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.mission_engine_v1
-- Path: swarmz_runtime/mission_engine_v1.py
+### nexusmon_runtime.mission_engine_v1
+- Path: nexusmon_runtime/mission_engine_v1.py
 - Functions (0): -
 - Classes (1): MissionEngineV1
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.omni_fabric_engine_v5
-- Path: swarmz_runtime/omni_fabric_engine_v5.py
+### nexusmon_runtime.omni_fabric_engine_v5
+- Path: nexusmon_runtime/omni_fabric_engine_v5.py
 - Functions (0): -
 - Classes (1): OmniFabricEngineV5
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.orchestrator.orchestrator
-- Path: swarmz_runtime/orchestrator/orchestrator.py
+### nexusmon_runtime.orchestrator.orchestrator
+- Path: nexusmon_runtime/orchestrator/orchestrator.py
 - Functions (2): _extract_output_text, crew_from_config
 - Classes (5): Agent, Crew, CrewResult, OpenAIResponsesClient, Task
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.session.operator_session
-- Path: swarmz_runtime/session/operator_session.py
+### nexusmon_runtime.session.operator_session
+- Path: nexusmon_runtime/session/operator_session.py
 - Functions (0): -
 - Classes (1): OperatorSession
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.session.session_router
-- Path: swarmz_runtime/session/session_router.py
+### nexusmon_runtime.session.session_router
+- Path: nexusmon_runtime/session/session_router.py
 - Functions (3): end_session, get_session_state, start_session
 - Classes (0): -
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.session.session_store
-- Path: swarmz_runtime/session/session_store.py
+### nexusmon_runtime.session.session_store
+- Path: nexusmon_runtime/session/session_store.py
 - Functions (0): -
 - Classes (1): SessionStore
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.shadow_ledger.shadow_ledger
-- Path: swarmz_runtime/shadow_ledger/shadow_ledger.py
+### nexusmon_runtime.shadow_ledger.shadow_ledger
+- Path: nexusmon_runtime/shadow_ledger/shadow_ledger.py
 - Functions (0): -
 - Classes (1): ShadowLedger
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.storage
-- Path: swarmz_runtime/storage/__init__.py
+### nexusmon_runtime.storage
+- Path: nexusmon_runtime/storage/__init__.py
 - Functions (0): -
 - Classes (0): -
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.storage.db
-- Path: swarmz_runtime/storage/db.py
+### nexusmon_runtime.storage.db
+- Path: nexusmon_runtime/storage/db.py
 - Functions (0): -
 - Classes (1): Database
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.storage.infra_state
-- Path: swarmz_runtime/storage/infra_state.py
+### nexusmon_runtime.storage.infra_state
+- Path: nexusmon_runtime/storage/infra_state.py
 - Functions (5): _to_dict, append_infra_event, load_infra_events, load_infra_state, save_infra_state
 - Classes (0): -
 - Constants (3): DATA_DIR, INFRA_EVENTS_PATH, INFRA_STATE_PATH
 - Exports (0): -
 
-### swarmz_runtime.storage.jsonl_utils
-- Path: swarmz_runtime/storage/jsonl_utils.py
+### nexusmon_runtime.storage.jsonl_utils
+- Path: nexusmon_runtime/storage/jsonl_utils.py
 - Functions (4): _quarantine_log, append_jsonl, read_jsonl, write_jsonl
 - Classes (0): -
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.storage.schema
-- Path: swarmz_runtime/storage/schema.py
+### nexusmon_runtime.storage.schema
+- Path: nexusmon_runtime/storage/schema.py
 - Functions (0): -
 - Classes (11): AuditEntry, CrossLayerScores, MaintenanceTask, Mission, MissionCategory, MissionStatus, Omen, Prophecy, Rune, TransactionValidation, VisibilityLevel
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.supra_fabric_engine_v1
-- Path: swarmz_runtime/supra_fabric_engine_v1.py
+### nexusmon_runtime.supra_fabric_engine_v1
+- Path: nexusmon_runtime/supra_fabric_engine_v1.py
 - Functions (0): -
 - Classes (1): SupraFabricEngineV1
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.swarm_engine.behaviors
-- Path: swarmz_runtime/swarm_engine/behaviors.py
+### nexusmon_runtime.swarm_engine.behaviors
+- Path: nexusmon_runtime/swarm_engine/behaviors.py
 - Functions (0): -
 - Classes (4): Guardian, Navigator, Scout, Worker
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.swarm_engine.formations
-- Path: swarmz_runtime/swarm_engine/formations.py
+### nexusmon_runtime.swarm_engine.formations
+- Path: nexusmon_runtime/swarm_engine/formations.py
 - Functions (0): -
 - Classes (5): ClusterFormation, Formation, GridFormation, LineFormation, ThreadFormation
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.ui.cockpit
-- Path: swarmz_runtime/ui/cockpit.py
+### nexusmon_runtime.ui.cockpit
+- Path: nexusmon_runtime/ui/cockpit.py
 - Functions (2): get_cockpit_layout, get_cockpit_panels
 - Classes (0): -
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.universe_mesh.universe_mesh
-- Path: swarmz_runtime/universe_mesh/universe_mesh.py
+### nexusmon_runtime.universe_mesh.universe_mesh
+- Path: nexusmon_runtime/universe_mesh/universe_mesh.py
 - Functions (0): -
 - Classes (3): MeshLink, MeshRouter, WorldNode
 - Constants (0): -
 - Exports (0): -
 
-### swarmz_runtime.verify.patchpacks
-- Path: swarmz_runtime/verify/patchpacks.py
+### nexusmon_runtime.verify.patchpacks
+- Path: nexusmon_runtime/verify/patchpacks.py
 - Functions (3): apply_patchpack, generate_patchpack, rollback_patchpack
 - Classes (0): -
 - Constants (1): PACK_ROOT
 - Exports (0): -
 
-### swarmz_runtime.verify.provenance
-- Path: swarmz_runtime/verify/provenance.py
+### nexusmon_runtime.verify.provenance
+- Path: nexusmon_runtime/verify/provenance.py
 - Functions (4): _hash_entry, _last_hash, append_audit, verify_chain
 - Classes (0): -
 - Constants (2): AUDIT_FILE, SEAL_KEY_ENV
 - Exports (0): -
 
-### swarmz_runtime.verify.runner
-- Path: swarmz_runtime/verify/runner.py
+### nexusmon_runtime.verify.runner
+- Path: nexusmon_runtime/verify/runner.py
 - Functions (6): _read_jsonl, replay_audit, run_status, run_verify, verify_invariants, verify_kernel_integrity
 - Classes (0): -
 - Constants (2): DATA_DIR, VERIFY_DIR
 - Exports (0): -
 
-### swarmz_runtime.verify.scheduler
-- Path: swarmz_runtime/verify/scheduler.py
+### nexusmon_runtime.verify.scheduler
+- Path: nexusmon_runtime/verify/scheduler.py
 - Functions (6): _append_run, _load_state, _save_state, pause, resume, tick
 - Classes (0): -
 - Constants (3): DATA_DIR, RUNS_FILE, SCHED_FILE
 - Exports (0): -
 
-### swarmz_server
-- Path: swarmz_server.py
+### nexusmon_server
+- Path: nexusmon_server.py
 - Functions (35): _utc_now_iso_z, admin_honeypot, admin_secret_honeypot, apple_touch_icon, auth_login, auth_me, companion_message, compute_phase, console_page, create_mission, execute_task, galileo_experiments, galileo_hypotheses, galileo_run, galileo_run_details, galileo_run_experiment, galileo_selfcheck, get_audit_log, get_lan_ip, health_check, home_page, icon_svg, json_exception_handler, list_missions, list_tasks, main, manifest, pwa_manifest, pwa_service_worker, run_mission, security_status, service_worker, system_info, traceback_last, ui_state
 - Classes (4): LoginRequest, MissionCreateRequest, TaskExecuteRequest, TaskExecuteResponse
 - Constants (2): LAN_IP, SERVER_PORT
@@ -2415,7 +2415,7 @@ Generated: 2026-02-20T02:43:00.758979+00:00
 ### test_companion
 - Path: test_companion.py
 - Functions (1): run_companion_tests
-- Classes (10): TestCommitEngine, TestCompanionMode, TestEvolutionMechanism, TestIntelligenceLayer, TestModeManager, TestOperatorMode, TestSwarmzCompanion, TestSystemModes, TestTaskContext, TestWorkerSwarm
+- Classes (10): TestCommitEngine, TestCompanionMode, TestEvolutionMechanism, TestIntelligenceLayer, TestModeManager, TestOperatorMode, TestNexusmonCompanion, TestSystemModes, TestTaskContext, TestWorkerSwarm
 - Constants (0): -
 - Exports (0): -
 
@@ -2468,16 +2468,16 @@ Generated: 2026-02-20T02:43:00.758979+00:00
 - Constants (0): -
 - Exports (0): -
 
-### test_swarmz
-- Path: test_swarmz.py
+### test_nexusmon
+- Path: test_nexusmon.py
 - Functions (1): run_tests
-- Classes (5): TestBrainMapping, TestOperatorSovereignty, TestPlugins, TestSwarmzCore, TestTaskExecutor
+- Classes (5): TestBrainMapping, TestOperatorSovereignty, TestPlugins, TestNexusmonCore, TestTaskExecutor
 - Constants (0): -
 - Exports (0): -
 
-### test_swarmz_server
-- Path: test_swarmz_server.py
-- Functions (2): main, test_swarmz_server
+### test_nexusmon_server
+- Path: test_nexusmon_server.py
+- Functions (2): main, test_nexusmon_server
 - Classes (1): TestWebServer
 - Constants (0): -
 - Exports (0): -
@@ -2547,7 +2547,7 @@ Generated: 2026-02-20T02:43:00.758979+00:00
 
 ### tests.test_e2e
 - Path: tests/test_e2e.py
-- Functions (35): _get_test_client, test_addons_import, test_api_audit_tail, test_api_companion_state, test_api_dispatch_requires_key, test_api_dispatch_with_key, test_api_health, test_api_pairing_flow, test_api_pairing_info, test_api_runs_list, test_api_runtime_config, test_api_runtime_scoreboard, test_api_runtime_status, test_api_sovereign_dispatch, test_api_system_log, test_api_v1_health, test_commit_engine_evaluate, test_companion_conversation_mode, test_companion_import, test_core_engine_import, test_core_orchestrator_import, test_core_swarmz_import, test_crew_from_config, test_crew_kickoff_simulation, test_dispatch_roundtrip, test_engine_instantiation, test_engine_subsystems_present, test_master_ai_simulation, test_operator_sovereignty, test_plugins_import, test_swarmz_core_capabilities, test_task_executor, test_ui_config_runtime, test_ui_root, test_worker_swarm_workflow
+- Functions (35): _get_test_client, test_addons_import, test_api_audit_tail, test_api_companion_state, test_api_dispatch_requires_key, test_api_dispatch_with_key, test_api_health, test_api_pairing_flow, test_api_pairing_info, test_api_runs_list, test_api_runtime_config, test_api_runtime_scoreboard, test_api_runtime_status, test_api_sovereign_dispatch, test_api_system_log, test_api_v1_health, test_commit_engine_evaluate, test_companion_conversation_mode, test_companion_import, test_core_engine_import, test_core_orchestrator_import, test_core_nexusmon_import, test_crew_from_config, test_crew_kickoff_simulation, test_dispatch_roundtrip, test_engine_instantiation, test_engine_subsystems_present, test_master_ai_simulation, test_operator_sovereignty, test_plugins_import, test_nexusmon_core_capabilities, test_task_executor, test_ui_config_runtime, test_ui_root, test_worker_swarm_workflow
 - Classes (0): -
 - Constants (1): ROOT
 - Exports (0): -
@@ -2597,7 +2597,7 @@ Generated: 2026-02-20T02:43:00.758979+00:00
 ### tests.test_orchestrator
 - Path: tests/test_orchestrator.py
 - Functions (0): -
-- Classes (1): TestSwarmzOrchestrator
+- Classes (1): TestNexusmonOrchestrator
 - Constants (0): -
 - Exports (0): -
 
@@ -2675,7 +2675,7 @@ Generated: 2026-02-20T02:43:00.758979+00:00
 - Path: tools/doctor.py
 - Functions (5): _section, get_runtime_status, main, run_cmd, tail_file
 - Classes (0): -
-- Constants (8): AUDIT_PATH, DATA_DIR, ENABLE_PROFILING, PROFILE_PATH, ROOT, RUNTIME_CHECK, RUN_SWARMZ, STATUS_URL
+- Constants (8): AUDIT_PATH, DATA_DIR, ENABLE_PROFILING, PROFILE_PATH, ROOT, RUNTIME_CHECK, RUN_NEXUSMON, STATUS_URL
 - Exports (0): -
 
 ### tools.doctor.doctor
@@ -2811,15 +2811,15 @@ Generated: 2026-02-20T02:43:00.758979+00:00
 - Constants (2): CONFIG, ROOT
 - Exports (0): -
 
-### tools.swarmz_doctor
-- Path: tools/swarmz_doctor.py
+### tools.nexusmon_doctor
+- Path: tools/nexusmon_doctor.py
 - Functions (14): _load_runtime_config, _ports_in_use, _print_header, check_bom, check_env_and_config, check_health, check_ports, check_scripts, check_shadow_dirs, check_workdir, check_writable_dirs, main, print_result, run_self_check
 - Classes (1): CheckResult
 - Constants (5): CONFIG_DIR, DATA_DIR, DEFAULT_PORTS, ROOT, RUNTIME_CONFIG
 - Exports (0): -
 
-### tools.swarmz_onboard
-- Path: tools/swarmz_onboard.py
+### tools.nexusmon_onboard
+- Path: tools/nexusmon_onboard.py
 - Functions (10): _lan_ip, ensure_anchor, main, prompt_bind, prompt_offline, prompt_port, run_doctor, start_server_once, wait_for_health, write_runtime_config
 - Classes (0): -
 - Constants (3): CONFIG_PATH, DATA_DIR, ROOT
@@ -2873,3 +2873,5 @@ Generated: 2026-02-20T02:43:00.758979+00:00
 - Classes (0): -
 - Constants (0): -
 - Exports (0): -
+
+

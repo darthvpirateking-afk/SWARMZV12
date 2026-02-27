@@ -1,4 +1,4 @@
-# Integration TODOs
+﻿# Integration TODOs
 
 This file tracks integration hooks that were skipped due to risk.
 
@@ -19,7 +19,7 @@ This file tracks integration hooks that were skipped due to risk.
 ## Trials — Integration Points Not Yet Connected
 
 ### 1. Gate enforcement in mission dispatch
-- **File**: `swarmz_server.py` `/v1/missions/create`
+- **File**: `nexusmon_server.py` `/v1/missions/create`
 - **What**: Call `require_trial()` before executing meaningful changes
 - **Risk**: Low — fail-open gate
 
@@ -59,3 +59,4 @@ This file tracks integration hooks that were skipped due to risk.
 
 - Implement macOS and Linux service installers in `tools/install_service.py`.
 - Add SFTP and rsync support to `tools/sync_logs.py`.
+

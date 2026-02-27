@@ -5,17 +5,17 @@
  * Primary output: artifact packs saved under ./packs/
  */
 
-import { TaskPacket, WorkerResult, ArtifactPack } from '../types';
-import { IntentParser, ParsedIntent } from '../interface/intent_parser';
-import { TaskStructurer } from '../cognition/task_structurer';
-import { Planner } from '../cognition/planner';
-import { DecisionEngine } from '../cognition/decision_engine';
-import { RiskGate } from '../cognition/risk_gate';
-import { BuilderWorker } from '../workers/builder.worker';
-import { VerifyWorker } from '../workers/verify.worker';
-import { PerformanceIndex } from '../metrics/performance_index';
-import { OutcomeLogger } from '../metrics/outcome_logger';
-import { Archiver } from '../archive/archiver';
+import { TaskPacket, WorkerResult, ArtifactPack } from "../types";
+import { IntentParser, ParsedIntent } from "../interface/intent_parser";
+import { TaskStructurer } from "../cognition/task_structurer";
+import { Planner } from "../cognition/planner";
+import { DecisionEngine } from "../cognition/decision_engine";
+import { RiskGate } from "../cognition/risk_gate";
+import { BuilderWorker } from "../workers/builder.worker";
+import { VerifyWorker } from "../workers/verify.worker";
+import { PerformanceIndex } from "../metrics/performance_index";
+import { OutcomeLogger } from "../metrics/outcome_logger";
+import { Archiver } from "../archive/archiver";
 
 export interface FactoryCycleResult {
   pack: ArtifactPack;
@@ -37,7 +37,7 @@ export class ArtifactFactory {
   private running = false;
   private cycleCount = 0;
 
-  constructor(packsDir: string = './packs') {
+  constructor(packsDir: string = "./packs") {
     this.parser = new IntentParser();
     this.structurer = new TaskStructurer();
     this.planner = new Planner();
@@ -53,7 +53,10 @@ export class ArtifactFactory {
   /**
    * Run a single DETECT -> DECIDE -> BUILD -> VERIFY -> ARCHIVE -> RANK cycle
    */
-  async runCycle(input: string, sessionId: string = 'factory'): Promise<FactoryCycleResult> {
+  async runCycle(
+    input: string,
+    sessionId: string = "factory",
+  ): Promise<FactoryCycleResult> {
     const cycleStart = Date.now();
     this.cycleCount++;
 
@@ -68,15 +71,16 @@ export class ArtifactFactory {
 
     // The factory acts as autonomous operator: auto-approve tasks that
     // need confirmation but are not blocked by the risk gate.
-    const canProceed = risk.can_proceed &&
-      (decision.should_execute || task.safety_level === 'needs_confirm');
+    const canProceed =
+      risk.can_proceed &&
+      (decision.should_execute || task.safety_level === "needs_confirm");
 
     if (!canProceed) {
       const skippedPack = this.buildPack(task, [], false, [], 0, cycleStart);
       return {
         pack: skippedPack,
         skipped: true,
-        reason: decision.rationale
+        reason: decision.rationale,
       };
     }
 
@@ -85,36 +89,35 @@ export class ArtifactFactory {
 
     // --- VERIFY ---
     const verifyResult: WorkerResult = await this.verifier.execute(task);
-    const passed = verifyResult.status === 'success';
+    const passed = verifyResult.status === "success";
     const errors = verifyResult.errors ?? [];
 
     // --- ARCHIVE ---
     const artifacts = buildResult.artifacts;
     const rank = this.computeRank(buildResult, verifyResult);
-    const pack = this.buildPack(task, artifacts, passed, errors, rank, cycleStart);
+    const pack = this.buildPack(
+      task,
+      artifacts,
+      passed,
+      errors,
+      rank,
+      cycleStart,
+    );
     this.archiver.save(pack);
 
     // --- RANK ---
-    this.perfIndex.record(
-      'success_rate',
-      passed ? 1.0 : 0.0,
-      task.action
-    );
-    this.perfIndex.record(
-      'latency',
-      Date.now() - cycleStart,
-      task.action
-    );
+    this.perfIndex.record("success_rate", passed ? 1.0 : 0.0, task.action);
+    this.perfIndex.record("latency", Date.now() - cycleStart, task.action);
     this.outcomeLogger.log(
       {
         timestamp: Date.now(),
         action: task.action,
         duration_ms: Date.now() - cycleStart,
         cost: 0,
-        success: passed
+        success: passed,
       },
-      passed ? 'success' : 'failure',
-      { pack_id: pack.id }
+      passed ? "success" : "failure",
+      { pack_id: pack.id },
     );
 
     return { pack, skipped: false };
@@ -124,7 +127,10 @@ export class ArtifactFactory {
    * Run the factory loop continuously over an array of intents.
    * Stops after processing all intents or when stop() is called.
    */
-  async run(intents: string[], sessionId: string = 'factory'): Promise<ArtifactPack[]> {
+  async run(
+    intents: string[],
+    sessionId: string = "factory",
+  ): Promise<ArtifactPack[]> {
     this.running = true;
     const packs: ArtifactPack[] = [];
 
@@ -188,7 +194,7 @@ export class ArtifactFactory {
     passed: boolean,
     errors: string[],
     rank: number,
-    cycleStart: number
+    cycleStart: number,
   ): ArtifactPack {
     return {
       id: `pack_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`,
@@ -198,19 +204,22 @@ export class ArtifactFactory {
       verification: {
         passed,
         checks: passed ? 3 : 0,
-        errors
+        errors,
       },
       rank,
       created_at: Date.now(),
-      cycle_ms: Date.now() - cycleStart
+      cycle_ms: Date.now() - cycleStart,
     };
   }
 
-  private computeRank(buildResult: WorkerResult, verifyResult: WorkerResult): number {
+  private computeRank(
+    buildResult: WorkerResult,
+    verifyResult: WorkerResult,
+  ): number {
     let score = 50; // baseline
 
-    if (buildResult.status === 'success') score += 25;
-    if (verifyResult.status === 'success') score += 25;
+    if (buildResult.status === "success") score += 25;
+    if (verifyResult.status === "success") score += 25;
 
     // Penalize slow builds
     if (buildResult.cost.time_ms > 5000) score -= 10;

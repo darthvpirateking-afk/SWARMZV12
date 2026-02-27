@@ -3,8 +3,8 @@
  * Part of Cognition Core - decides what should happen but never performs actions
  */
 
-import { TaskPacket } from '../types';
-import { ParsedIntent } from '../interface/intent_parser';
+import { TaskPacket } from "../types";
+import { ParsedIntent } from "../interface/intent_parser";
 
 export class TaskStructurer {
   /**
@@ -12,7 +12,7 @@ export class TaskStructurer {
    */
   structure(intent: ParsedIntent, session_id: string): TaskPacket {
     const task_id = this.generateTaskId();
-    
+
     return {
       id: task_id,
       intent: intent.raw_input,
@@ -20,49 +20,51 @@ export class TaskStructurer {
       parameters: this.buildParameters(intent),
       context: {
         session_id,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       },
       safety_level: this.assessSafetyLevel(intent),
-      priority: this.calculatePriority(intent)
+      priority: this.calculatePriority(intent),
     };
   }
 
   private inferAction(intent: ParsedIntent): string {
-    if (intent.type === 'question') {
-      return 'query';
-    } else if (intent.type === 'command') {
-      return 'execute';
+    if (intent.type === "question") {
+      return "query";
+    } else if (intent.type === "command") {
+      return "execute";
     }
-    return 'clarify';
+    return "clarify";
   }
 
   private buildParameters(intent: ParsedIntent): Record<string, any> {
     return {
       ...intent.entities,
       intent_type: intent.type,
-      confidence: intent.confidence
+      confidence: intent.confidence,
     };
   }
 
-  private assessSafetyLevel(intent: ParsedIntent): 'safe' | 'needs_confirm' | 'blocked' {
+  private assessSafetyLevel(
+    intent: ParsedIntent,
+  ): "safe" | "needs_confirm" | "blocked" {
     // Questions are safe
-    if (intent.type === 'question') {
-      return 'safe';
+    if (intent.type === "question") {
+      return "safe";
     }
-    
+
     // Commands need confirmation by default
-    if (intent.type === 'command') {
+    if (intent.type === "command") {
       const action = intent.extracted_action?.toLowerCase();
-      
+
       // Dangerous actions are blocked
-      if (action && ['delete', 'remove', 'destroy'].includes(action)) {
-        return 'needs_confirm';
+      if (action && ["delete", "remove", "destroy"].includes(action)) {
+        return "needs_confirm";
       }
-      
-      return 'needs_confirm';
+
+      return "needs_confirm";
     }
-    
-    return 'safe';
+
+    return "safe";
   }
 
   private calculatePriority(intent: ParsedIntent): number {

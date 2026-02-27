@@ -149,10 +149,14 @@ class PhaseEngine:
             "failure_clusters": lambda e: e.get("success_rate_recent", 0.0) < 0.25,
             "abandoned": lambda e: e.get("divergence_score", 0.0) > 0.5,
             "slowdowns": lambda e: e.get("work_intensity", 0.0) > 8000,
-            "recoveries": lambda e: e.get("success_rate_recent", 0.0) > 0.6
-            and e.get("entropy_level", 0.0) < 0.4,
-            "bursts": lambda e: e.get("success_rate_recent", 0.0) > 0.7
-            and e.get("entropy_level", 0.0) > 0.4,
+            "recoveries": lambda e: (
+                e.get("success_rate_recent", 0.0) > 0.6
+                and e.get("entropy_level", 0.0) < 0.4
+            ),
+            "bursts": lambda e: (
+                e.get("success_rate_recent", 0.0) > 0.7
+                and e.get("entropy_level", 0.0) > 0.4
+            ),
         }
         for i in range(len(entries)):
             window = entries[max(0, i - self._sequence_window + 1) : i + 1]

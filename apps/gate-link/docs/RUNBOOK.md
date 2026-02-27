@@ -1,4 +1,4 @@
-# GATE//LINK MVP Runbook
+﻿# GATE//LINK MVP Runbook
 
 ## Purpose
 
@@ -47,5 +47,6 @@ npm run preview
 ## Scope boundary
 
 - This is an isolated game prototype under `apps/gate-link`
-- No backend coupling to main SWARMZ runtime
+- No backend coupling to main NEXUSMON runtime
 - In-game currency is fictional local state only
+

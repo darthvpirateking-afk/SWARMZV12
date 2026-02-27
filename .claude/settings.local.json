@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(xargs grep -l \"app\\\\|router\\\\|FastAPI\")",
+      "Bash(python -c \"from nexusmon_organism import fuse_into, ctx_record_mission, ctx_record_message, ctx_record_belief_revision; print\\(''OK''\\)\")",
+      "Bash(git add .env.example .github/workflows/ci.yml NEXUSMON_INTEGRATION_AUDIT.md NEXUSMON_INTEGRATION_REPORT.md README.md SWARMZ_UP.cmd SWARMZ_UP.ps1 core/model_router.py nexusmon/entity.py nexusmon/memory/__init__.py nexusmon/operator.py render.yaml run.py run_server.py swarmz.py tests/test_openapi_operation_ids.py tests/test_v3_features.py tools/termux/start-swarmz.sh server.py)",
+      "Bash(git add swarmz_server.py)",
+      "Bash(git commit -m \"debug: add FUSE markers with flush to trace mission/vault loading on Railway:*)",
+      "Bash(git push origin main)"
+    ]
+  }
+}

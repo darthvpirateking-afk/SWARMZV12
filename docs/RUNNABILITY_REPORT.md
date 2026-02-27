@@ -1,4 +1,4 @@
-# SWARMZ — Runnability Report
+﻿# NEXUSMON — Runnability Report
 
 > Auto-generated context document. Describes what runs, what fails, and where
 > the known edges are.
@@ -9,14 +9,14 @@
 
 | Script | Method | Status |
 |--------|--------|--------|
-| `SWARMZ_UP.ps1` | PowerShell launcher (venv, deps, port check, uvicorn) | **WORKS** |
-| `SWARMZ_UP.cmd` | CMD launcher (same logic) | **WORKS** |
+| `NEXUSMON_UP.ps1` | PowerShell launcher (venv, deps, port check, uvicorn) | **WORKS** |
+| `NEXUSMON_UP.cmd` | CMD launcher (same logic) | **WORKS** |
 | `uvicorn server:app --host 0.0.0.0 --port 8012` | Direct uvicorn | **WORKS** |
-| `run_swarmz.py` | CLI launcher | **BROKEN** — imports `swarmz_runtime.api.server` which doesn't match the actual layout. Use `server.py` instead. |
+| `run_nexusmon.py` | CLI launcher | **BROKEN** — imports `nexusmon_runtime.api.server` which doesn't match the actual layout. Use `server.py` instead. |
 
 ## What Runs
 
-- **FastAPI app** via `server.py` → imports `app` from `swarmz_server.py`, layers control endpoints
+- **FastAPI app** via `server.py` → imports `app` from `nexusmon_server.py`, layers control endpoints
 - **Port 8012**, bind `0.0.0.0` (configurable in `config/runtime.json`)
 - **LAN access** confirmed — phone on same Wi-Fi can reach `http://<LAN_IP>:8012`
 - **Modules loaded** (all fail-open):
@@ -34,10 +34,10 @@
 
 | Issue | Impact | Workaround |
 |-------|--------|------------|
-| `run_swarmz.py` imports `swarmz_runtime.api.server` | Crashes on startup | Use `SWARMZ_UP.ps1` or `uvicorn server:app` directly |
+| `run_nexusmon.py` imports `nexusmon_runtime.api.server` | Crashes on startup | Use `NEXUSMON_UP.ps1` or `uvicorn server:app` directly |
 | Zapier `shared_secret` is placeholder | Security | Change in `config/runtime.json` |
 | No HTTPS | LAN only, not internet-safe | Use ngrok/cloudflared for remote access |
-| `swarmz_runtime/` package incomplete | `run_swarmz.py` broken | Does not affect `server.py` path |
+| `nexusmon_runtime/` package incomplete | `run_nexusmon.py` broken | Does not affect `server.py` path |
 
 ## Dependencies
 
@@ -67,3 +67,4 @@ All persistent data in **`data/`** — append-only JSONL files:
 - `data/audit.jsonl` — audit trail
 - `data/zapier/inbound.jsonl` — Zapier inbound events
 - `data/zapier/outbound.jsonl` — Zapier outbound events
+

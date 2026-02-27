@@ -3,8 +3,8 @@
  * Part of Swarm Orchestrator - routes work, never thinks or talks to user
  */
 
-import { TaskPacket, WorkerResult } from '../types';
-import { ExecutionPlan } from '../cognition/planner';
+import { TaskPacket, WorkerResult } from "../types";
+import { ExecutionPlan } from "../cognition/planner";
 
 export interface WorkerTask {
   id: string;
@@ -22,15 +22,21 @@ export class SwarmController {
   /**
    * Dispatch workers for an execution plan
    */
-  async dispatch(plan: ExecutionPlan, task: TaskPacket): Promise<WorkerResult[]> {
+  async dispatch(
+    plan: ExecutionPlan,
+    task: TaskPacket,
+  ): Promise<WorkerResult[]> {
     const results: WorkerResult[] = [];
-    
+
     for (const step of plan.steps) {
       const workerTask = this.createWorkerTask(step, task);
       this.activeWorkers.set(workerTask.id, workerTask);
-      
+
       try {
-        const result = await this.executeWorkerTask(workerTask, step.timeout_ms);
+        const result = await this.executeWorkerTask(
+          workerTask,
+          step.timeout_ms,
+        );
         results.push(result);
         this.completedTasks.set(workerTask.id, result);
       } catch (error) {
@@ -39,7 +45,7 @@ export class SwarmController {
         this.activeWorkers.delete(workerTask.id);
       }
     }
-    
+
     return results;
   }
 
@@ -49,43 +55,49 @@ export class SwarmController {
       worker_type: step.worker_type,
       plan_step: step,
       task_packet: task,
-      started_at: Date.now()
+      started_at: Date.now(),
     };
   }
 
-  private async executeWorkerTask(workerTask: WorkerTask, timeout_ms: number): Promise<WorkerResult> {
+  private async executeWorkerTask(
+    workerTask: WorkerTask,
+    timeout_ms: number,
+  ): Promise<WorkerResult> {
     const startTime = Date.now();
-    
+
     // This would dispatch to actual worker implementation
     // For now, simulate worker execution
-    await new Promise(resolve => setTimeout(resolve, 100));
-    
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
     const endTime = Date.now();
-    
+
     return {
       task_id: workerTask.task_packet.id,
-      status: 'success',
+      status: "success",
       data: {
         worker_type: workerTask.worker_type,
-        action: workerTask.plan_step.action
+        action: workerTask.plan_step.action,
       },
       artifacts: [],
       cost: {
-        time_ms: endTime - startTime
-      }
+        time_ms: endTime - startTime,
+      },
     };
   }
 
-  private createErrorResult(workerTask: WorkerTask, error: Error): WorkerResult {
+  private createErrorResult(
+    workerTask: WorkerTask,
+    error: Error,
+  ): WorkerResult {
     return {
       task_id: workerTask.task_packet.id,
-      status: 'failure',
+      status: "failure",
       data: null,
       artifacts: [],
       cost: {
-        time_ms: Date.now() - (workerTask.started_at || Date.now())
+        time_ms: Date.now() - (workerTask.started_at || Date.now()),
       },
-      errors: [error.message]
+      errors: [error.message],
     };
   }
 

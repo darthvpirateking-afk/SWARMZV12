@@ -1,4 +1,4 @@
-# SWARMZ v1.0 → v2.0 ROADMAP
+﻿# NEXUSMON v1.0 → v2.0 ROADMAP
 
 ## v1.0 (Baseline)
 ### Components:
@@ -33,6 +33,6 @@
 - Shadow-Ledger v2 (predictive restrictions)
 
 ## Operator Value:
-- SWARMZ evolves with operator direction.
+- NEXUSMON evolves with operator direction.
 - Deterministic, additive-only growth.
 - Unified, scalable system for advanced missions.

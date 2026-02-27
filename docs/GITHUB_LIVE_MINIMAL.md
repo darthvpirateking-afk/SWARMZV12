@@ -1,4 +1,4 @@
-# SWARMZ GitHub Minimal Live Guide
+﻿# NEXUSMON GitHub Minimal Live Guide
 
 ## Frontend (where it is)
 - Main web UI: [web_ui/index.html](web_ui/index.html)
@@ -8,16 +8,16 @@
 
 ## Server + runtime entrypoints
 - Launcher: [run_server.py](run_server.py)
-- FastAPI app: [swarmz_runtime/api/server.py](swarmz_runtime/api/server.py)
+- FastAPI app: [nexusmon_runtime/api/server.py](nexusmon_runtime/api/server.py)
 - API docs at runtime: `/docs`
 
 ## API surfaces (what each does)
-- Core missions/system/admin/meta/factory: [swarmz_runtime/api/server.py](swarmz_runtime/api/server.py)
-- Operational pipeline (blueprint -> offer -> checkout -> fulfillment -> ledger): [swarmz_runtime/api/operational_routes.py](swarmz_runtime/api/operational_routes.py)
-- Operator OS + Artifact Vault + Identity: [swarmz_runtime/api/operator_ecosystem_routes.py](swarmz_runtime/api/operator_ecosystem_routes.py)
-- Federation mode: [swarmz_runtime/api/federation_routes.py](swarmz_runtime/api/federation_routes.py)
-- Charter + Prime Directive: [swarmz_runtime/api/charter_routes.py](swarmz_runtime/api/charter_routes.py)
-- Fusion provenance registry: [swarmz_runtime/api/fusion_routes.py](swarmz_runtime/api/fusion_routes.py)
+- Core missions/system/admin/meta/factory: [nexusmon_runtime/api/server.py](nexusmon_runtime/api/server.py)
+- Operational pipeline (blueprint -> offer -> checkout -> fulfillment -> ledger): [nexusmon_runtime/api/operational_routes.py](nexusmon_runtime/api/operational_routes.py)
+- Operator OS + Artifact Vault + Identity: [nexusmon_runtime/api/operator_ecosystem_routes.py](nexusmon_runtime/api/operator_ecosystem_routes.py)
+- Federation mode: [nexusmon_runtime/api/federation_routes.py](nexusmon_runtime/api/federation_routes.py)
+- Charter + Prime Directive: [nexusmon_runtime/api/charter_routes.py](nexusmon_runtime/api/charter_routes.py)
+- Fusion provenance registry: [nexusmon_runtime/api/fusion_routes.py](nexusmon_runtime/api/fusion_routes.py)
 
 ## Live run (desktop + phone)
 1. `python run_server.py`
@@ -34,6 +34,7 @@
 - Repository docs and runtime should reference the same license text to avoid drift.
 
 ## Product positioning (minimal truth)
-- SWARMZ is production-capable for operator-governed automation and orchestration.
+- NEXUSMON is production-capable for operator-governed automation and orchestration.
 - It is not equivalent to frontier foundation-model scale (e.g., xAI/Grok/OpenAI) by default.
 - It can become highly competitive in your target domain through focused tooling, data, and operator workflows.
+

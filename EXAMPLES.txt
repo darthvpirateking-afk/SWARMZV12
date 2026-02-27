@@ -1,10 +1,10 @@
-================================================================================
-                    SWARMZ - EXAMPLES AND USAGE GUIDE
+﻿================================================================================
+                    NEXUSMON - EXAMPLES AND USAGE GUIDE
 ================================================================================
 
-SWARMZ is an Operator-Sovereign "Do Anything" System with a REST API and 
+NEXUSMON is an Operator-Sovereign "Do Anything" System with a REST API and 
 Progressive Web App (PWA) interface. This guide covers installation, running,
-and using SWARMZ on various platforms.
+and using NEXUSMON on various platforms.
 
 ================================================================================
                         INSTALLATION INSTRUCTIONS
@@ -19,20 +19,20 @@ and using SWARMZ on various platforms.
    These scripts will:
    - Create a virtual environment
    - Install dependencies
-   - Start the SWARMZ server
+   - Start the NEXUSMON server
    
    Manual installation:
    > python -m venv venv
    > venv\Scripts\activate
    > pip install -r requirements.txt
-   > python swarmz_server.py
+   > python nexusmon_server.py
 
 2. LINUX / macOS
    -------------
    $ python3 -m venv venv
    $ source venv/bin/activate
    $ pip install -r requirements.txt
-   $ python swarmz_server.py
+   $ python nexusmon_server.py
 
 3. ANDROID (Termux)
    -----------------
@@ -40,7 +40,7 @@ and using SWARMZ on various platforms.
    b) Open Termux and run:
       $ pkg install git python
       $ git clone <repository-url>
-      $ cd swarmz
+      $ cd nexusmon
       $ chmod +x termux_setup.sh termux_run.sh
       $ ./termux_setup.sh
       $ ./termux_run.sh
@@ -51,7 +51,7 @@ and using SWARMZ on various platforms.
    - Double-click PACK_EXE.ps1
    - Or run: powershell -ExecutionPolicy Bypass -File PACK_EXE.ps1
    - The executable will be in the dist/ folder
-   - Run dist\SWARMZ.exe to start the server
+   - Run dist\NEXUSMON.exe to start the server
 
 ================================================================================
                             ACCESS URLS
@@ -69,7 +69,7 @@ Once the server starts, you'll see:
    http://localhost:8000/docs
    http://192.168.x.x:8000/docs
 
-💡 TIP: Use the LAN URL to access SWARMZ from:
+💡 TIP: Use the LAN URL to access NEXUSMON from:
    - Your phone/tablet
    - Another computer on the network
    - Any device connected to the same WiFi/network
@@ -78,19 +78,19 @@ Once the server starts, you'll see:
                       PWA INSTALLATION (Mobile/Desktop)
 ================================================================================
 
-SWARMZ can be installed as a Progressive Web App for native-like experience:
+NEXUSMON can be installed as a Progressive Web App for native-like experience:
 
 📱 ON MOBILE (Chrome/Safari):
    1. Open http://192.168.x.x:8000 in your mobile browser
    2. Look for "Install" banner or "Add to Home Screen" prompt
    3. Tap "Install" or "Add"
-   4. SWARMZ will appear on your home screen like a native app
+   4. NEXUSMON will appear on your home screen like a native app
    5. Open it anytime - works offline for cached content!
 
 💻 ON DESKTOP (Chrome/Edge):
    1. Open http://localhost:8000 in Chrome or Edge
    2. Look for install icon (⊕) in the address bar
-   3. Click "Install SWARMZ"
+   3. Click "Install NEXUSMON"
    4. The app will open in its own window
 
 🔋 PWA FEATURES:
@@ -111,7 +111,7 @@ SWARMZ can be installed as a Progressive Web App for native-like experience:
    Response:
    {
      "status": "healthy",
-     "service": "SWARMZ API",
+     "service": "NEXUSMON API",
      "version": "1.0.0"
    }
 
@@ -134,12 +134,12 @@ SWARMZ can be installed as a Progressive Web App for native-like experience:
    -----------------
    $ curl -X POST http://localhost:8000/v1/execute \
      -H "Content-Type: application/json" \
-     -d '{"task": "echo", "params": {"message": "Hello SWARMZ!"}}'
+     -d '{"task": "echo", "params": {"message": "Hello NEXUSMON!"}}'
 
    Response:
    {
      "success": true,
-     "result": "Echo: Hello SWARMZ!"
+     "result": "Echo: Hello NEXUSMON!"
    }
 
 4. GET SYSTEM INFO
@@ -198,15 +198,15 @@ SWARMZ can be installed as a Progressive Web App for native-like experience:
 ================================================================================
 
 SCENARIO 1: Run on Desktop, Access from Phone
-   1. Start SWARMZ on your desktop computer
+   1. Start NEXUSMON on your desktop computer
    2. Note the LAN IP address (e.g., 192.168.1.50:8000)
    3. On your phone (connected to same WiFi):
       - Open browser: http://192.168.1.50:8000
       - Install as PWA: "Add to Home Screen"
-   4. Now you can control SWARMZ from your phone!
+   4. Now you can control NEXUSMON from your phone!
 
 SCENARIO 2: Run on Android (Termux), Access from Desktop
-   1. Start SWARMZ in Termux on your Android phone
+   1. Start NEXUSMON in Termux on your Android phone
    2. Note the LAN IP address shown on startup
    3. On your desktop computer:
       - Open browser: http://192.168.1.75:8000
@@ -214,7 +214,7 @@ SCENARIO 2: Run on Android (Termux), Access from Desktop
    4. Your phone is now a server!
 
 SCENARIO 3: Multiple Devices
-   1. Start SWARMZ on any device
+   1. Start NEXUSMON on any device
    2. All devices on same network can access it:
       - Tablets
       - Laptops
@@ -285,7 +285,7 @@ SCENARIO 3: Multiple Devices
 
 ISSUE: "Address already in use"
    SOLUTION: Another process is using port 8000
-   - Change port: set PORT=8080 && python swarmz_server.py
+   - Change port: set PORT=8080 && python nexusmon_server.py
    - Or kill the existing process
 
 ISSUE: "Cannot access from other devices"
@@ -314,13 +314,13 @@ ISSUE: PWA not installing
 
 ⚠️  IMPORTANT SECURITY CONSIDERATIONS:
 
-1. OPERATOR SOVEREIGNTY: SWARMZ is designed for trusted operators
+1. OPERATOR SOVEREIGNTY: NEXUSMON is designed for trusted operators
    - The execute_python task allows arbitrary code execution
-   - Only run SWARMZ in trusted environments
+   - Only run NEXUSMON in trusted environments
    - Don't expose to untrusted networks
 
 2. NETWORK ACCESS: When binding to 0.0.0.0:
-   - Anyone on your local network can access SWARMZ
+   - Anyone on your local network can access NEXUSMON
    - This is intentional for LAN access
    - Use firewall rules if needed to restrict access
    - Consider authentication for production use
@@ -357,7 +357,7 @@ ISSUE: PWA not installing
 
 Start Server:
   Windows:  RUN.cmd or RUN.ps1
-  Linux:    python swarmz_server.py
+  Linux:    python nexusmon_server.py
   Termux:   ./termux_run.sh
 
 Access:
@@ -376,3 +376,4 @@ Key Endpoints:
 ================================================================================
                             END OF EXAMPLES
 ================================================================================
+

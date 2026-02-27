@@ -290,7 +290,7 @@ def main():
         print_result(c)
 
     _print_header("SUMMARY")
-    print(f"PASS: {len([c for c in checks if c.status=='PASS'])}")
+    print(f"PASS: {len([c for c in checks if c.status == 'PASS'])}")
     print(f"WARN: {len(warns)}")
     print(f"FAIL: {len(fails)}")
 

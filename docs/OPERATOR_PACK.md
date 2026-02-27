@@ -1,10 +1,10 @@
-# SWARMZ OPERATOR PACK — COMPLETE WORKFLOW
+﻿# NEXUSMON OPERATOR PACK — COMPLETE WORKFLOW
 
 ## DAILY START (RITUAL A)
 1. Run:
        python tools/verify_activity_stream.py
 2. If entries appear → continue working.
-   If empty → restart SWARMZ.
+   If empty → restart NEXUSMON.
 
 ---
 
@@ -39,4 +39,4 @@
 - Only:
   start → work → run 3 commands → create 1 macro.
 
-This ensures SWARMZ learns from real behavior, not theory.
+This ensures NEXUSMON learns from real behavior, not theory.

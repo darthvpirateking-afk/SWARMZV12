@@ -162,7 +162,7 @@ class CounterfactualEngine:
             entries[-50:], key=lambda e: e.get("surprise_score", 0.0), reverse=True
         )
         return [
-            f"{e.get('mission_id')}:{e.get('selected_strategy')} surprise={round(e.get('surprise_score', 0.0),3)}"
+            f"{e.get('mission_id')}:{e.get('selected_strategy')} surprise={round(e.get('surprise_score', 0.0), 3)}"
             for e in sorted_entries[:3]
         ]
 
@@ -178,7 +178,7 @@ class CounterfactualEngine:
         lines = []
         for item in ranked[:3]:
             lines.append(
-                f"{item[1]} accuracy={round(item[2],3)} overconfidence={round(item[3],3)}"
+                f"{item[1]} accuracy={round(item[2], 3)} overconfidence={round(item[3], 3)}"
             )
         return lines
 

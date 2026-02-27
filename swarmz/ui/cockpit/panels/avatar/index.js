@@ -1,3 +1,3 @@
-// Avatar panel for SWARMZ cockpit
+﻿// Avatar panel for NEXUSMON cockpit
 
 console.log("Avatar panel loaded");

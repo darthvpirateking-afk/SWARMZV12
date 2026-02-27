@@ -1,0 +1,10 @@
+{
+  "name": "mission_contract",
+  "version": "1.0.0",
+  "description": "Converts 12 laws into hard preflight validation. Enforces minimum required fields and external signal requirements.",
+  "entry_point": "mission_contract.py",
+  "capabilities": ["validate_mission", "check_twelve_laws", "preflight_check"],
+  "category": "governance",
+  "author": "SWARMZ",
+  "license": "SWARMZ-SAL"
+}

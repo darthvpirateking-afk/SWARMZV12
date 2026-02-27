@@ -1,6 +1,6 @@
-# PRIMAL_READY_SLATE
+﻿# PRIMAL_READY_SLATE
 
-- COMMAND: `SWARMZ_OP: POST_IGNITE_LOCK`
+- COMMAND: `NEXUSMON_OP: POST_IGNITE_LOCK`
 - BASELINE_DATE: `2026-02-20`
 - BASELINE_STATE: `CANONICAL_IGNITION_READY`
 
@@ -29,7 +29,7 @@
   - `deterministic sequencing subset`
 - WARNINGS: `NON_BLOCKING`
   - hygiene warnings
-  - robustness-suite issues outside core Build SWARMZ System gate
+  - robustness-suite issues outside core Build NEXUSMON System gate
 
 ## LEGACY_TO_PRIMAL_MAPPING
 - `PARTNER_CORE -> PARTNER_PRIME`
@@ -50,3 +50,4 @@
   - `SEEDRUN` (build-phase)
   - `RIFT_SCAN` (deep diagnostic)
 - CURRENT_STATE: `AWAITING_OPERATOR_MISSION`
+

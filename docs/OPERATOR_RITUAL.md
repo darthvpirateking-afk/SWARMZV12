@@ -1,7 +1,7 @@
-# SWARMZ — DAILY OPERATOR RITUAL (MINIMAL + ADD‑ONLY)
+﻿# NEXUSMON — DAILY OPERATOR RITUAL (MINIMAL + ADD‑ONLY)
 
 ## ONE‑TIME SETUP
-1. Start SWARMZ normally.
+1. Start NEXUSMON normally.
 2. Confirm file exists:
    data/activity/events.jsonl
 3. Run any mission or command.
@@ -15,7 +15,7 @@ Run:
     python tools/verify_activity_stream.py
 
 If entries appear → continue working.
-If empty → restart SWARMZ.
+If empty → restart NEXUSMON.
 
 ---
 
@@ -55,4 +55,4 @@ Not two. Not redesign. One.
 - Only:
   start → work → run 3 commands → create 1 macro.
 
-This trains SWARMZ using real behavior, not theory.
+This trains NEXUSMON using real behavior, not theory.

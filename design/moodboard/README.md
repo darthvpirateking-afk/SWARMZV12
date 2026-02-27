@@ -1,7 +1,7 @@
-# SWARMZ Moodboard — Reference Pack
+﻿# NEXUSMON Moodboard — Reference Pack
 
 Place your reference images in this folder with the filenames listed below.
-These images define the canonical visual language for all SWARMZ UI and assets.
+These images define the canonical visual language for all NEXUSMON UI and assets.
 
 ## Required Files
 
@@ -26,3 +26,4 @@ These images define the canonical visual language for all SWARMZ UI and assets.
 
 If anything conflicts: **the reference images win**.
 Match their vibe, spacing, glow, density, and "glass HUD" feel.
+

@@ -1,4 +1,4 @@
-# What SWARMZ Does
+﻿# What NEXUSMON Does
 
 > Plain-English explanation. No jargon. Current as of schema_version 2.
 
@@ -6,13 +6,13 @@
 
 ## One-Sentence Summary
 
-SWARMZ is a **local-first AI mission control system** that runs on your Windows PC,
+NEXUSMON is a **local-first AI mission control system** that runs on your Windows PC,
 lets you dispatch tasks through a REST API or web UI, and can connect to any external
 service (email, Slack, sheets, etc.) through a Zapier bridge.
 
 ## How It Works
 
-1. **You start the server** by double-clicking `SWARMZ_UP.cmd` (or running `SWARMZ_UP.ps1`).
+1. **You start the server** by double-clicking `NEXUSMON_UP.cmd` (or running `NEXUSMON_UP.ps1`).
 2. A **FastAPI web server** starts on port 8012 and binds to `0.0.0.0`
    (all network interfaces).
 3. You can access it from:
@@ -31,8 +31,8 @@ service (email, Slack, sheets, etc.) through a Zapier bridge.
 | Component | What It Does |
 |-----------|-------------|
 | `server.py` | Main entry. Layers control endpoints on top of the core API. |
-| `swarmz_server.py` | Core FastAPI app with missions, auth, middleware. |
-| `swarmz.py` | Core logic: task planning, execution, model calls. |
+| `nexusmon_server.py` | Core FastAPI app with missions, auth, middleware. |
+| `nexusmon.py` | Core logic: task planning, execution, model calls. |
 | `companion.py` | AI companion that reviews/assists with tasks. |
 | `config/runtime.json` | All settings (port, models, integrations). |
 | `data/` | Append-only storage (missions, audit, Zapier logs). |
@@ -54,3 +54,4 @@ service (email, Slack, sheets, etc.) through a Zapier bridge.
 
 Anyone who wants a **personal AI operations center** they fully control,
 running on their own hardware, accessible from any device on their network.
+

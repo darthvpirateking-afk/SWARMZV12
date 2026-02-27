@@ -178,7 +178,7 @@ def dashboard():
     return _DASHBOARD_HTML
 
 
-@router.get("/pwa/manifest.json")
+@router.get("/pwa/manifest.json", operation_id="dashboard_pwa_manifest_get")
 def pwa_manifest():
     return JSONResponse(_MANIFEST)
 

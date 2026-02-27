@@ -1,6 +1,6 @@
-# SWARMZ STYLE CANON — v1.0
+﻿# NEXUSMON STYLE CANON — v1.0
 
-> **Purpose:** Lock the visual language so every UI/asset matches the same "SWARMZ" look.
+> **Purpose:** Lock the visual language so every UI/asset matches the same "NEXUSMON" look.
 
 ## 0) IMMUTABLE RULE
 
@@ -136,7 +136,7 @@ Text always all caps, compact.
 
 **Base prompt (UI mock / dashboard / panel):**
 
-> SWARMZ command HUD interface, dark space background with subtle star dust and faint vertical data rain, frosted glass panels, thin neon cyan and electric violet outlines, circular radar rings, orbit lines, node lattice network visualization, microtext labels, numeric readouts, crisp sci-fi typography, controlled glow, cinematic high detail, symmetrical layout, ultra clean instrument panel, no cartoon, no flat design
+> NEXUSMON command HUD interface, dark space background with subtle star dust and faint vertical data rain, frosted glass panels, thin neon cyan and electric violet outlines, circular radar rings, orbit lines, node lattice network visualization, microtext labels, numeric readouts, crisp sci-fi typography, controlled glow, cinematic high detail, symmetrical layout, ultra clean instrument panel, no cartoon, no flat design
 
 **Negative prompt:**
 
@@ -144,8 +144,8 @@ Text always all caps, compact.
 
 ## 7) AGENT INSTRUCTION
 
-You are implementing SWARMZ UI and assets.
-You must obey the SWARMZ STYLE CANON v1.0.
+You are implementing NEXUSMON UI and assets.
+You must obey the NEXUSMON STYLE CANON v1.0.
 Do not invent a new aesthetic. Reuse tokens + components.
 When producing UI, always specify:
 - background layer
@@ -164,3 +164,4 @@ A screen is valid only if:
 - [ ] Accents are limited to 2–3 hues (violet/cyan/teal)
 - [ ] Borders are thin and crisp
 - [ ] Glow is present but not flooding the page
+

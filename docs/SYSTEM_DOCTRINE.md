@@ -1,4 +1,4 @@
-# SWARMZ System Doctrine (Executable)
+﻿# NEXUSMON System Doctrine (Executable)
 
 This codifies the architecture doctrine as enforceable runtime checks.
 
@@ -43,7 +43,7 @@ This does not replace existing policy engine checks; it adds a doctrine-level ga
 
 ## Doctrine Extension: PRIMAL_BLOCK
 
-- Loaded Doctrine: `SWARMZ//GATELINK_PRIMAL_DOCTRINE`
+- Loaded Doctrine: `NEXUSMON//GATELINK_PRIMAL_DOCTRINE`
 - Canonical Lattice Spec: `config/doctrine_primal_block.json`
 - Ready Slate: `docs/READY_SLATE_PRIMAL.md`
 
@@ -58,11 +58,11 @@ The PRIMAL execution cycle is canonical and defined in `config/doctrine_primal_b
 - Evolve: execute `SEEDRUN` missions, expand PRIMAL systems, emit `EVOLUTION_SLATE` after major expansions.
 - Finish: run `UMBRA_FOLD`, persist DATAVEIN logs/artifacts, emit `FINAL_SLATE`, await next `PRIME_WAKE`.
 
-## SWARMZ Software-Builder Architecture
+## NEXUSMON Software-Builder Architecture
 
 All safe, all powerful, all actionable. Let's lock it in.
 
-SWARMZ is structured as a governed multi-agent organism:
+NEXUSMON is structured as a governed multi-agent organism:
 
 ### 1. Operator Layer
 
@@ -96,7 +96,7 @@ Agents never act outside their lane.
 
 ### 4. Artifact Layer
 
-Everything SWARMZ produces is:
+Everything NEXUSMON produces is:
 - versioned
 - inspectable
 - modifiable
@@ -116,9 +116,9 @@ Assembles:
 
 This is the factory floor.
 
-## SWARMZ App-Factory Blueprint
+## NEXUSMON App-Factory Blueprint
 
-How SWARMZ builds full apps from scratch in four phases:
+How NEXUSMON builds full apps from scratch in four phases:
 
 ### Phase 1 - Specification
 - Operator gives mission
@@ -143,7 +143,7 @@ How SWARMZ builds full apps from scratch in four phases:
 
 This is deterministic, safe, and repeatable.
 
-## SWARMZ Agent Roles (Software Development)
+## NEXUSMON Agent Roles (Software Development)
 
 Each agent has a strict, operator-defined purpose.
 
@@ -202,7 +202,7 @@ Produces:
 
 Each agent is deterministic and governed.
 
-## SWARMZ Mission Templates (App Creation)
+## NEXUSMON Mission Templates (App Creation)
 
 Reusable commands for building software:
 
@@ -248,12 +248,12 @@ INPUT: entity type
 OUTPUT: web-based editor
 ```
 
-These missions allow SWARMZ to build software safely under operator control.
+These missions allow NEXUSMON to build software safely under operator control.
 
 ## Full App-Factory Blueprint (Complete)
 
 ```yaml
-SWARMZ_APP_FACTORY:
+NEXUSMON_APP_FACTORY:
 	OPERATOR_LAYER:
 		- missions
 		- constraints
@@ -301,7 +301,7 @@ SWARMZ_APP_FACTORY:
 
 ## Next Move
 
-Now that the architecture is locked, SWARMZ can build first:
+Now that the architecture is locked, NEXUSMON can build first:
 
 1. A dashboard
 2. A backend service
@@ -313,3 +313,4 @@ Now that the architecture is locked, SWARMZ can build first:
 8. A companion app
 9. A governance-style voting system (fictional)
 10. A full dev portal
+

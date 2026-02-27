@@ -1,7 +1,7 @@
-# SWARMZ Operator Playbook
+﻿# NEXUSMON Operator Playbook
 
 ## Purpose
-Document how SWARMZ interprets operator behavior, makes predictions, detects intent, and provides coaching.
+Document how NEXUSMON interprets operator behavior, makes predictions, detects intent, and provides coaching.
 
 ## Sections
 1. Behavior Interpretation

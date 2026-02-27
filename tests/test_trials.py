@@ -523,11 +523,10 @@ def test_worker_start_stop():
 
 def test_auto_baseline_locked_at_lv0(monkeypatch: pytest.MonkeyPatch):
     """LV0 should not auto-capture baselines (power locked)."""
-    import core.hologram as holo
     from core import trials as trials_mod
 
-    # Force hologram level 0 regardless of existing trials.
-    monkeypatch.setattr(holo, "compute_level", lambda: {"level": 0}, raising=False)
+    # Simulate fewer than 5 verified trials so LV1 is not reached.
+    monkeypatch.setattr(trials_mod, "load_all_trials", lambda: [], raising=False)
 
     # Stub metric resolver so if it is called we notice via metric_before.
     monkeypatch.setattr(
@@ -545,16 +544,19 @@ def test_auto_baseline_locked_at_lv0(monkeypatch: pytest.MonkeyPatch):
         check_after_sec=60,
     )
 
-    # With LV0, auto-baseline capture should be disabled.
+    # With LV0 (0 verified trials < 5), auto-baseline capture should be disabled.
     assert t["metric_before"] is None
 
 
 def test_auto_baseline_unlocked_at_lv1(monkeypatch: pytest.MonkeyPatch):
     """LV1+ should auto-capture baselines via resolver."""
-    import core.hologram as holo
     from core import trials as trials_mod
 
-    monkeypatch.setattr(holo, "compute_level", lambda: {"level": 1}, raising=False)
+    # Simulate 5 verified trials (checked_at set) to reach LV1.
+    verified_trials = [{"checked_at": "2024-01-01T00:00:00Z"} for _ in range(5)]
+    monkeypatch.setattr(
+        trials_mod, "load_all_trials", lambda: verified_trials, raising=False
+    )
     monkeypatch.setattr(
         trials_mod,
         "resolve_metric",

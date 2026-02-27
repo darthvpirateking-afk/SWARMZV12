@@ -23,9 +23,9 @@ export class SessionManager {
       user_id,
       created_at: Date.now(),
       last_active: Date.now(),
-      context: new Map()
+      context: new Map(),
     };
-    
+
     this.sessions.set(session.id, session);
     return session;
   }

@@ -341,11 +341,13 @@ class TrajectoryEngine:
         lines.append(f"  Entropy mode: {entropy_state.get('mode')}")
         lines.append("High value actions:")
         for v in high_value:
-            lines.append(f"  {v.get('project','?')} +{v.get('future_option_value',0)}")
+            lines.append(
+                f"  {v.get('project', '?')} +{v.get('future_option_value', 0)}"
+            )
         lines.append("Wasted effort patterns:")
         for v in wasted[-3:]:
             lines.append(
-                f"  {v.get('project','?')} delta {v.get('direct_money_change',0)}"
+                f"  {v.get('project', '?')} delta {v.get('direct_money_change', 0)}"
             )
         lines.append("Recommended focus shift:")
         if entropy_state.get("mode") == "CONSOLIDATE":

@@ -1,0 +1,16 @@
+{
+  "name": "data_analysis",
+  "version": "1.0.0",
+  "description": "Analyze structured data, compute statistics, and identify patterns.",
+  "category": "analytics",
+  "inputs": [
+    { "name": "data", "type": "array", "required": true, "description": "Array of data objects to analyze" },
+    { "name": "operation", "type": "string", "required": true, "description": "Analysis operation: count|sum|average|filter" }
+  ],
+  "outputs": [
+    { "name": "result", "type": "any", "description": "Analysis result" },
+    { "name": "summary", "type": "string", "description": "Human-readable summary" }
+  ],
+  "author": "SWARMZ",
+  "tags": ["data", "analytics", "statistics"]
+}
