@@ -1,0 +1,84 @@
+# Combinatorics
+
+**80 theorems**
+
+- **2-factor theorem** -- graph theory
+- **Abel's binomial theorem** -- combinatorics
+- **Alspach's theorem** -- graph theory
+- **Aztec diamond theorem** -- combinatorics
+- **Baranyai's theorem** -- combinatorics
+- **Berge's theorem** -- graph theory
+- **BEST theorem** -- graph theory
+- **Binomial theorem** -- algebra, combinatorics
+- **Bondy's theorem** -- graph theory, combinatorics
+- **Bondy-Chvatal theorem** -- graph theory
+- **Brooks's theorem** -- graph theory
+- **Bruck-Chowla-Ryser theorem** -- combinatorics
+- **Cameron-Erdos theorem** -- discrete mathematics
+- **Corners theorem** -- arithmetic combinatorics
+- **Courcelle's theorem** -- graph theory
+- **De Bruijn-Erdos theorem** -- graph theory
+- **Dirac's theorems** -- graph theory
+- **Erdos-Gallai theorem** -- graph theory
+- **Erdos-Ginzburg-Ziv theorem** -- number theory
+- **Erdos-Ko-Rado theorem** -- combinatorics
+- **Erdos-Posa theorem** -- graph theory
+- **Erdos-Stone theorem** -- graph theory
+- **Euler's partition theorem** -- number theory
+- **Fermat polygonal number theorem** -- number theory
+- **Five color theorem** -- graph theory
+- **Four color theorem** -- graph theory
+- **Freiman's theorem** -- number theory
+- **Friendship theorem** -- graph theory
+- **Galvin's theorem** -- combinatorics
+- **Gomory's theorem** -- combinatorics
+- **Graph structure theorem** -- graph theory
+- **Grinberg's theorem** -- graph theory
+- **Grotzsch's theorem** -- graph theory
+- **Hajnal-Szemeredi theorem** -- graph theory
+- **Hales-Jewett theorem** -- combinatorics
+- **Hall's marriage theorem** -- combinatorics
+- **Halpern-Lauchli theorem** -- Ramsey theory
+- **Hindman's theorem** -- Ramsey theory
+- **Kirchhoff's theorem** -- graph theory
+- **Kneser's theorem** -- combinatorics
+- **Konig's theorem** -- bipartite graphs
+- **Kovari-Sos-Turan theorem** -- graph theory
+- **Kruskal-Katona theorem** -- combinatorics
+- **Kuratowski's theorem** -- graph theory
+- **Lambek-Moser theorem** -- combinatorics
+- **MacMahon's master theorem** -- enumerative combinatorics
+- **Menger's theorem** -- graph theory
+- **Milliken's tree theorem** -- Ramsey theory
+- **Milliken-Taylor theorem** -- Ramsey theory
+- **Multinomial theorem** -- algebra, combinatorics
+- **Mycielski's theorem** -- graph theory
+- **Nicomachus's theorem** -- number theory
+- **Ore's theorem** -- graph theory
+- **Paley's theorem** -- algebra
+- **Perfect graph theorem** -- graph theory
+- **Perlis theorem** -- graph theory
+- **Planar separator theorem** -- graph theory
+- **Polya enumeration theorem** -- combinatorics
+- **Ramsey's theorem** -- graph theory, combinatorics
+- **Ringel-Youngs theorem** -- graph theory
+- **Robbins' theorem** -- graph theory
+- **Robertson-Seymour theorem** -- graph theory
+- **Schnyder's theorem** -- graph theory
+- **Schur's theorem** -- Ramsey theory
+- **Schwenk's theorem** -- graph theory
+- **Sensitivity theorem** -- computational complexity theory
+- **Sperner's theorem** -- combinatorics
+- **Stanley's reciprocity theorem** -- combinatorics
+- **Star of David theorem** -- combinatorics
+- **Stirling's theorem** -- mathematical analysis
+- **Strong perfect graph theorem** -- graph theory
+- **Symmetric hypergraph theorem** -- graph theory
+- **Szemeredi's theorem** -- combinatorics
+- **Theorem on friends and strangers** -- Ramsey theory
+- **Turan's theorem** -- graph theory
+- **Tutte's theorem on perfect matchings** -- graph theory
+- **Van der Waerden's theorem** -- combinatorics
+- **Vizing's theorem** -- graph theory
+- **Wagner's theorem** -- graph theory
+- **Zeilberger-Bressoud theorem** -- combinatorics

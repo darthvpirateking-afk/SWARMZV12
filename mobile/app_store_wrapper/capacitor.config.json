@@ -1,0 +1,11 @@
+{
+  "appId": "com.swarmz.app",
+  "appName": "SWARMZ",
+  "webDir": "www",
+  "bundledWebRuntime": false,
+  "server": {
+    "url": "https://swarmzV10-.onrender.com",
+    "cleartext": false,
+    "androidScheme": "https"
+  }
+}

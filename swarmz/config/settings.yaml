@@ -1,0 +1,12 @@
+# SWARMZ Configuration
+# Add your settings here
+
+logging:
+  level: INFO
+
+runtime:
+  max_threads: 4
+
+mesh:
+  nodes_file: "../mesh/nodes.json"
+  links_file: "../mesh/links.json"

@@ -1,0 +1,76 @@
+{
+  "_description": "Google Gemini provider extension for SWARMZ/NEXUSMON. Merge the 'models_patch' block into the 'models' section of config/runtime.json, then set provider to 'gemini'.",
+  "version": "1.0.0",
+  "provider": "gemini",
+
+  "setup": {
+    "steps": [
+      "1. Obtain a Google Gemini API key from https://aistudio.google.com/app/apikey",
+      "2. Set the environment variable: GEMINI_API_KEY=<your-key>",
+      "3. Add the 'gemini' block from 'models_patch' into config/runtime.json under 'models'",
+      "4. Set 'models.provider' to 'gemini' in config/runtime.json (or set env var MODEL_PROVIDER=gemini)"
+    ],
+    "envVars": {
+      "GEMINI_API_KEY": "Your Google Gemini API key (required)",
+      "MODEL_PROVIDER": "Set to 'gemini' to activate this provider at runtime"
+    }
+  },
+
+  "models_patch": {
+    "provider": "gemini",
+    "gemini": {
+      "model": "gemini-2.0-flash",
+      "apiKeyEnv": "GEMINI_API_KEY",
+      "endpoint": "https://generativelanguage.googleapis.com/v1beta"
+    }
+  },
+
+  "available_models": [
+    {
+      "id": "gemini-2.0-flash",
+      "description": "Fast, efficient — recommended for most tasks",
+      "contextWindow": 1048576
+    },
+    {
+      "id": "gemini-2.0-flash-lite",
+      "description": "Lightest / cheapest Gemini 2.0 variant",
+      "contextWindow": 1048576
+    },
+    {
+      "id": "gemini-1.5-pro",
+      "description": "Large context, high capability",
+      "contextWindow": 2097152
+    },
+    {
+      "id": "gemini-1.5-flash",
+      "description": "Fast and versatile",
+      "contextWindow": 1048576
+    }
+  ],
+
+  "runtime_json_example": {
+    "models": {
+      "provider": "gemini",
+      "gemini": {
+        "model": "gemini-2.0-flash",
+        "apiKeyEnv": "GEMINI_API_KEY",
+        "endpoint": "https://generativelanguage.googleapis.com/v1beta"
+      },
+      "anthropic": {
+        "model": "claude-sonnet-4-20250514",
+        "apiKeyEnv": "ANTHROPIC_API_KEY"
+      },
+      "openai": {
+        "model": "gpt-4.1",
+        "apiKeyEnv": "OPENAI_API_KEY"
+      },
+      "ollama": {
+        "model": "llama3.1:8b",
+        "endpoint": "http://localhost:11434",
+        "apiKeyEnv": ""
+      },
+      "timeoutMs": 120000,
+      "maxTokens": 1500
+    }
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "_comment": "Geometry Layer (P0.1) — Context transform parameters. Adjust normalization ranges, clamp bounds, scale factors.",
+  "transforms": [
+    {
+      "name": "normalize_budget",
+      "type": "normalize",
+      "target_field": "budget_remaining",
+      "parameters": {
+        "min": -1000.0,
+        "max": 10000.0,
+        "description": "Normalizes agent budget to 0-1 range for scoring downstream"
+      }
+    },
+    {
+      "name": "clamp_risk",
+      "type": "clamp",
+      "target_field": "risk_score",
+      "parameters": {
+        "min": 0.0,
+        "max": 100.0,
+        "description": "Prevents out-of-range risk scores from skewing decisions"
+      }
+    },
+    {
+      "name": "scale_complexity_by_rank",
+      "type": "scale",
+      "target_field": "complexity",
+      "parameters": {
+        "scale_field": "mission_rank",
+        "base_scale": 1.0,
+        "description": "Adjusts perceived complexity proportional to mission rank"
+      }
+    }
+  ],
+  "projection_subspaces": {
+    "security_review": ["risk_score", "trust_level", "source_domain"],
+    "budget_review": ["budget_remaining", "estimated_cost", "complexity"],
+    "mission_review": ["mission_rank", "missions_completed", "success_rate"]
+  }
+}

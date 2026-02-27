@@ -1,0 +1,64 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "OBJECTIVES",
+  "type": "object",
+  "required": ["global", "objectives"],
+  "properties": {
+    "global": {
+      "type": "object",
+      "required": ["lambdas", "target_ranges"],
+      "properties": {
+        "lambdas": {
+          "type": "object",
+          "required": ["risk", "coupling_damage", "irreversibility", "uncertainty"],
+          "properties": {
+            "risk": { "type": "number" },
+            "coupling_damage": { "type": "number" },
+            "irreversibility": { "type": "number" },
+            "uncertainty": { "type": "number" }
+          }
+        },
+        "target_ranges": {
+          "type": "object",
+          "additionalProperties": { "type": "number" }
+        }
+      }
+    },
+    "objectives": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "priority", "activation_condition", "weights", "guardrails", "hysteresis"],
+        "properties": {
+          "id": { "type": "string" },
+          "priority": { "type": "integer" },
+          "activation_condition": { "type": "string" },
+          "weights": {
+            "type": "object",
+            "additionalProperties": { "type": "number" }
+          },
+          "guardrails": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["variable", "op", "value"],
+              "properties": {
+                "variable": { "type": "string" },
+                "op": { "type": "string", "enum": [">=", "<=", ">", "<", "==", "!="] },
+                "value": { "type": "number" }
+              }
+            }
+          },
+          "hysteresis": {
+            "type": "object",
+            "required": ["min_duration_active", "cooldown_after_exit"],
+            "properties": {
+              "min_duration_active": { "type": "integer", "minimum": 0 },
+              "cooldown_after_exit": { "type": "integer", "minimum": 0 }
+            }
+          }
+        }
+      }
+    }
+  }
+}

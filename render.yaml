@@ -1,0 +1,38 @@
+services:
+  # ── Python / FastAPI backend ──────────────────────────────────────────────
+  - type: web
+    name: nexusmon-api
+    runtime: python
+    region: oregon
+    autoDeploy: true
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn swarmz_runtime.api.server:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /v1/health
+    envVars:
+      # Python version used during the build
+      - key: PYTHON_VERSION
+        value: "3.11"
+      # Comma-separated list of allowed CORS origins.
+      # Update after you know the frontend URL, or set to * for open access.
+      - key: ALLOWED_ORIGINS
+        value: https://nexusmon-web.onrender.com
+      # Operator API key — Render auto-generates a secure random value.
+      # Copy this from the dashboard and share it with authorised clients.
+      - key: OPERATOR_KEY
+        generateValue: true
+      # HS256 secret used to sign / verify JWT tokens.
+      # A fresh random value is generated automatically on first deploy.
+      - key: JWT_SECRET
+        generateValue: true
+    disk:
+      name: nexusmon-data
+      # Matches the working directory Render uses for Python services.
+      mountPath: /opt/render/project/src/data
+      sizeGB: 1
+
+  # ── Static frontend (web/) ────────────────────────────────────────────────
+  - type: web
+    name: nexusmon-web
+    runtime: static
+    region: oregon
+    autoDeploy: true

@@ -1,0 +1,36 @@
+{
+  "apiBaseUrl": "https://swarmzV10-.onrender.com",
+  "uiBaseUrl": "https://swarmzV10-.onrender.com/app",
+  "bind": "0.0.0.0",
+  "port": 8012,
+  "offlineMode": false,
+  "models": {
+    "provider": "anthropic",
+    "anthropic": {
+      "model": "claude-sonnet-4-20250514",
+      "apiKeyEnv": "ANTHROPIC_API_KEY"
+    },
+    "openai": {
+      "model": "gpt-4.1",
+      "apiKeyEnv": "OPENAI_API_KEY"
+    },
+    "timeoutMs": 60000,
+    "maxTokens": 1500
+  },
+  "companion": {
+    "enabled": true,
+    "sessionId": "main_companion",
+    "memoryFile": "data/companion_memory.json",
+    "policy": "active"
+  },
+  "integrations": {
+    "zapier": {
+      "enabled": true,
+      "shared_secret": "change-me-to-a-real-secret",
+      "inbound_path": "/v1/zapier/inbound",
+      "emit_path": "/v1/zapier/emit",
+      "zapier_catch_hook_url": ""
+    }
+  },
+  "schema_version": 2
+}

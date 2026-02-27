@@ -1,0 +1,45 @@
+{
+  "name": "swarmz",
+  "version": "1.0.0",
+  "description": "[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "marketplace:generate": "node scripts/generate-marketplace.js",
+    "typecheck": "tsc --noEmit",
+    "test": "jest",
+    "test:ci": "jest --ci",
+    "clean": "rm -rf dist",
+    "dev": "tsc --watch",
+    "start": "node dist/index.js",
+    "plugin:validate": "node scripts/validate-plugins.js",
+    "skill:validate": "node scripts/validate-skills.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/darthvpirateking-afk/swarmz.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/darthvpirateking-afk/swarmz/issues"
+  },
+  "homepage": "https://github.com/darthvpirateking-afk/swarmz#readme",
+  "overrides": {
+    "glob": "^10.5.0",
+    "minimatch": "^10.2.1",
+    "test-exclude": "^7.0.1",
+    "babel-plugin-istanbul": "^7.0.1"
+  },
+  "devDependencies": {
+    "@swc/core": "^1.13.5",
+    "@swc/jest": "^0.2.39",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^25.2.3",
+    "jest": "^30.2.0",
+    "typescript": "^5.9.3"
+  }
+}

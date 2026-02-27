@@ -1,0 +1,70 @@
+# Functions of a complex variable
+
+**66 theorems**
+
+- **Akhiezer's theorem** -- complex analysis
+- **Arakelyan's theorem** -- complex analysis
+- **Area theorem (conformal mapping)** -- complex analysis
+- **Beurling-Lax theorem** -- Hardy spaces
+- **Bloch's theorem** -- complex analysis
+- **Bocher's theorem** -- complex analysis
+- **Borel-Caratheodory theorem** -- complex analysis
+- **Branching theorem** -- complex manifold
+- **Caratheodory's theorem** -- complex analysis
+- **Carleson-Jacobs theorem** -- complex analysis
+- **Carlson's theorem** -- complex analysis
+- **Cauchy integral theorem** -- complex analysis
+- **Cauchy-Hadamard theorem** -- complex analysis
+- **Clifford's theorem on special divisors** -- algebraic curves
+- **Corona theorem** -- complex analysis
+- **de Branges's theorem** -- complex analysis
+- **De Franchis theorem** -- Riemann surfaces
+- **Edge-of-the-wedge theorem** -- complex analysis
+- **Farrell-Markushevich theorem** -- complex analysis
+- **Fatou's theorem** -- complex analysis
+- **Fundamental theorem of algebra** -- complex analysis
+- **Gauss-Lucas theorem** -- complex analysis
+- **Grunsky's theorem** -- complex analysis
+- **Hadamard three-circle theorem** -- complex analysis
+- **Hadamard three-lines theorem** -- complex analysis
+- **Hardy's theorem** -- complex analysis
+- **Harnack's theorem** -- complex analysis
+- **Hartogs-Rosenthal theorem** -- complex analysis
+- **Hurwitz's automorphisms theorem** -- algebraic curves
+- **Hurwitz's theorem** -- complex analysis
+- **Identity theorem** -- complex analysis
+- **Identity theorem for Riemann surfaces** -- Riemann surfaces
+- **Koebe 1/4 theorem** -- complex analysis
+- **Lagrange inversion theorem** -- mathematical analysis, combinatorics
+- **Lagrange reversion theorem** -- mathematical analysis, combinatorics
+- **Laurent expansion theorem** -- complex analysis
+- **Lindelof's theorem** -- complex analysis
+- **Liouville's theorem** -- complex analysis, entire functions
+- **Liouville's theorem** -- conformal mappings
+- **Looman-Menchoff theorem** -- complex analysis
+- **Marden's theorem** -- polynomials
+- **Measurable Riemann mapping theorem** -- conformal mapping
+- **Mergelyan's theorem** -- complex analysis
+- **Mittag-Leffler's theorem** -- complex analysis
+- **Monodromy theorem** -- complex analysis
+- **Montel's theorem** -- complex analysis
+- **Morera's theorem** -- complex analysis
+- **Nachbin's theorem** -- complex analysis
+- **Open mapping theorem** -- complex analysis
+- **Ostrowski-Hadamard gap theorem** -- complex analysis
+- **Phragmen-Lindelof theorem** -- complex analysis
+- **Picard theorem** -- complex analysis
+- **Residue theorem** -- complex analysis
+- **Riemann mapping theorem** -- complex analysis
+- **Riemann's existence theorem** -- algebraic geometry
+- **Riemann's theorem on removable singularities** -- complex analysis
+- **Riemann-Roch theorem** -- Riemann surfaces, algebraic curves
+- **Rouche's theorem** -- complex analysis
+- **Routh-Hurwitz theorem** -- polynomials
+- **Runge's theorem** -- complex analysis
+- **Siu's semicontinuity theorem** -- complex analysis
+- **Sokhatsky-Weierstrass theorem** -- complex analysis
+- **Uniformization theorem** -- complex analysis, differential geometry
+- **Van Vleck's theorem** -- mathematical analysis
+- **Weierstrass factorization theorem** -- complex analysis
+- **Weierstrass-Casorati theorem** -- complex analysis

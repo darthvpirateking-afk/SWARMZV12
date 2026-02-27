@@ -1,0 +1,27 @@
+{
+  "models": [
+    {
+      "title": "DeepSeek Coder V2",
+      "provider": "ollama",
+      "model": "deepseek-coder-v2",
+      "apiBase": "http://localhost:11434"
+    },
+    {
+      "title": "Qwen2.5 Coder",
+      "provider": "ollama",
+      "model": "qwen2.5-coder",
+      "apiBase": "http://localhost:11434"
+    },
+    {
+      "title": "Llama3.1",
+      "provider": "ollama",
+      "model": "llama3.1",
+      "apiBase": "http://localhost:11434"
+    }
+  ],
+  "defaultModel": "DeepSeek Coder V2",
+  "tabAutocompleteModel": "DeepSeek Coder V2",
+  "embeddingsProvider": "ollama",
+  "embeddingsModel": "nomic-embed-text",
+  "allowAnonymousTelemetry": false
+}

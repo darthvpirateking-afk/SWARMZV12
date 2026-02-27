@@ -1,0 +1,76 @@
+{
+  "doctrineId": "SWARMZ//GATELINK_PRIMAL_DOCTRINE",
+  "loadCommand": "LOAD_DOCTRINE: PRIMAL_BLOCK",
+  "status": "READY",
+  "systems": {
+    "PARTNER_PRIME": "partner intelligence core",
+    "LEGION_UMBRA": "shadow legion execution core",
+    "FORGE_HEARTH": "base and build progression core",
+    "RIFTWALK": "gate and mission traversal core",
+    "SIGILSTACK": "chip and ability composition core",
+    "NEXUSFRAME": "interface and presentation core",
+    "DATAVEIN": "data storage and schema continuity core"
+  },
+  "channels": {
+    "MINDLINE": "partner cognition + planning channel",
+    "CODELINE": "logic and execution channel",
+    "SIGHTLINE": "ui and observability channel",
+    "PATHLINE": "mission and routing channel",
+    "GHOSTLINE": "shadow and tactical fallback channel"
+  },
+  "artifacts": {
+    "PRIME_SHARDS": "primary progression shard artifact",
+    "UMBRA_MARKS": "shadow progression mark artifact",
+    "GRID_RUINS": "gate-map residue artifact",
+    "ARCHON_SLATES": "doctrine and command tablet artifact"
+  },
+  "opsCommands": {
+    "PRIME_WAKE": "initialize partner prime state",
+    "UMBRA_FOLD": "compact shadow pathways and rebind",
+    "VOID_CYCLE": "full maintenance + reset cycle",
+    "SEEDRUN": "bootstrap deterministic seed run",
+    "RIFT_SCAN": "scan gate lattice integrity"
+  },
+  "operationalLattice": {
+    "binding": [
+      "PARTNER_PRIME->MINDLINE",
+      "LEGION_UMBRA->GHOSTLINE",
+      "FORGE_HEARTH->CODELINE",
+      "RIFTWALK->PATHLINE",
+      "SIGILSTACK->CODELINE",
+      "NEXUSFRAME->SIGHTLINE",
+      "DATAVEIN->CODELINE"
+    ],
+    "latticeMode": "single_operational_lattice",
+    "deterministicSequencing": true,
+    "doctrineAligned": true
+  },
+  "executionCycleRule": {
+    "ruleId": "PRIMAL_RULE: EXECUTION_CYCLE",
+    "start": [
+      "Load PRIMAL_BLOCK doctrine",
+      "Bind PRIMAL identifiers to runtime modules",
+      "Run PRIME_WAKE (IGNITE_LINK) to clean, sync, test, and align",
+      "Emit PRIMAL_READY_SLATE",
+      "Run PRIMAL_INTROSPECTION to map the organism"
+    ],
+    "operate": [
+      "Accept Operator directives only (SEEDRUN, RIFT_SCAN, VOID_CYCLE, UMBRA_FOLD)",
+      "Maintain CHANNEL integrity (MINDLINE -> GHOSTLINE)",
+      "Maintain SYSTEM integrity (PARTNER_PRIME -> DATAVEIN)",
+      "Maintain ARTIFACT integrity (PRIME_SHARDS -> ARCHON_SLATES)"
+    ],
+    "evolve": [
+      "Execute SEEDRUN missions to build new surfaces",
+      "Expand PARTNER_PRIME, LEGION_UMBRA, RIFTWALK, SIGILSTACK, FORGE_HEARTH, NEXUSFRAME, DATAVEIN",
+      "Update doctrine only through PRIMAL_BLOCK revisions",
+      "Emit EVOLUTION_SLATE after each major expansion"
+    ],
+    "finish": [
+      "Run UMBRA_FOLD to suspend safely",
+      "Persist all DATAVEIN logs and artifacts",
+      "Emit FINAL_SLATE",
+      "Await next PRIME_WAKE"
+    ]
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "VERIFY_OUTCOME",
+  "description": "Schema for VERIFY_PASSED / VERIFY_FAILED / EXPIRED events emitted by the VerificationRunner.",
+  "type": "object",
+  "required": [
+    "job_id",
+    "decision_id",
+    "action_id",
+    "action_type",
+    "outcome",
+    "verify_spec_hash",
+    "config_hash",
+    "baseline",
+    "actual",
+    "delta",
+    "threshold",
+    "operator",
+    "deadline_at",
+    "evaluated_at"
+  ],
+  "properties": {
+    "job_id":           { "type": "string", "format": "uuid" },
+    "decision_id":      { "type": "string" },
+    "action_id":        { "type": "string" },
+    "action_type":      { "type": "string" },
+    "outcome":          { "type": "string", "enum": ["PASSED", "FAILED", "EXPIRED"] },
+    "verify_spec_hash": { "type": "string" },
+    "config_hash":      { "type": "string" },
+    "baseline":         {},
+    "actual":           {},
+    "delta":            {},
+    "threshold":        { "type": "number" },
+    "operator":         { "type": "string", "enum": [">=", "<=", ">", "<", "==", "!="] },
+    "deadline_at":      { "type": "string", "format": "date-time" },
+    "evaluated_at":     { "type": "string", "format": "date-time" },
+    "failure_reason":   { "type": "string" },
+    "trace_id":         { "type": ["string", "null"] },
+    "attempts":         { "type": "integer", "minimum": 0 }
+  },
+  "additionalProperties": false
+}

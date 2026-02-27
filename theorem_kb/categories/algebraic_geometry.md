@@ -1,0 +1,53 @@
+# Algebraic geometry
+
+**49 theorems**
+
+- **Abel-Jacobi theorem** -- algebraic geometry
+- **Abhyankar-Moh theorem** -- algebraic geometry
+- **Addition theorem** -- algebraic geometry
+- **AF+BG theorem** -- algebraic geometry
+- **Andreotti-Frankel theorem** -- algebraic geometry
+- **Arithmetic Riemann-Roch theorem** -- algebraic geometry
+- **Base change theorems** -- algebraic geometry
+- **BBD decomposition theorem** -- algebraic geometry
+- **Beauville-Laszlo theorem** -- vector bundles
+- **Belyi's theorem** -- algebraic geometry
+- **Bertini's theorem** -- algebraic geometry
+- **Bezout's theorem** -- algebraic geometry
+- **Borel fixed-point theorem** -- algebraic geometry
+- **Castelnuovo theorem** -- algebraic geometry
+- **Cayley-Salmon theorem** -- algebraic surfaces
+- **Chasles' theorem** -- algebraic geometry
+- **Chevalley's structure theorem** -- algebraic geometry
+- **Faltings's theorem** -- Diophantine geometry
+- **Fulton-Hansen connectedness theorem** -- algebraic geometry
+- **Grauert-Riemenschneider vanishing theorem** -- algebraic geometry
+- **Grothendieck's connectedness theorem** -- algebraic geometry
+- **Grothendieck-Hirzebruch-Riemann-Roch theorem** -- algebraic geometry
+- **Haboush's theorem** -- algebraic groups, representation theory, invariant theory
+- **Harnack's curve theorem** -- real algebraic geometry
+- **Hasse's theorem on elliptic curves** -- number theory
+- **Hilbert's Nullstellensatz** -- commutative algebra, algebraic geometry
+- **Hironaka theorem** -- algebraic geometry
+- **Hodge index theorem** -- algebraic surfaces
+- **Katz-Lang finiteness theorem** -- number theory
+- **Lefschetz hyperplane theorem** -- algebraic topology
+- **Leray's theorem** -- algebraic geometry
+- **Manin-Drinfeld theorem** -- number theory
+- **Max Noether's theorem** -- algebraic geometry
+- **Mazur's torsion theorem** -- algebraic geometry
+- **Mumford vanishing theorem** -- algebraic geometry
+- **Nagata's compactification theorem** -- algebraic geometry
+- **Noether's theorem on rationality for surfaces** -- algebraic surfaces
+- **Proper base change theorem** -- algebraic geometry
+- **Puiseux's theorem** -- algebraic geometry
+- **Ramanujam vanishing theorem** -- algebraic geometry
+- **Reider's theorem** -- algebraic surfaces
+- **Riemann-Roch theorem for surfaces** -- algebraic surfaces
+- **Sylvester pentahedral theorem** -- invariant theory
+- **Theorem of the cube** -- algebraic varieties
+- **Torelli theorem** -- algebraic geometry
+- **Tsen's theorem** -- algebraic geometry
+- **Weber's theorem** -- algebraic curves
+- **Zariski's connectedness theorem** -- algebraic geometry
+- **Zariski's main theorem** -- algebraic geometry

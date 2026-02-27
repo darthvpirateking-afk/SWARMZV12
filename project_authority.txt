@@ -1,0 +1,2 @@
+﻿NEXUSMON_AUTHORITY=official
+

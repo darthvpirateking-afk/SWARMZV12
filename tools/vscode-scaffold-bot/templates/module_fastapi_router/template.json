@@ -1,0 +1,18 @@
+{
+  "id": "module_fastapi_router",
+  "title": "FastAPI Router Module",
+  "description": "Scaffold a new FastAPI router module with init, router, and test files.",
+  "version": "1.0.0",
+  "variables": [
+    {
+      "name": "name",
+      "prompt": "Module name (e.g. users, orders, billing)",
+      "default": "example"
+    }
+  ],
+  "output": {
+    "root": ".",
+    "path": "{{kebabName}}",
+    "conflict": "fail"
+  }
+}

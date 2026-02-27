@@ -1,0 +1,34 @@
+version: "3.8"
+
+services:
+  nexusmon:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: nexusmon/hologram:local
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - HLOG_SNAPSHOT_DIR=/var/lib/nexusmon/hologram_snapshots
+      - LOG_LEVEL=info
+      # Set secrets via .env file or external secret store — never commit plaintext
+      # - OPERATOR_KEY=${OPERATOR_KEY}
+      # - SWARMZ_JWT_SECRET=${SWARMZ_JWT_SECRET}
+    volumes:
+      - ./hologram_snapshots:/var/lib/nexusmon/hologram_snapshots
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 512M
+        reservations:
+          cpus: "0.25"
+          memory: 128M
+    restart: on-failure

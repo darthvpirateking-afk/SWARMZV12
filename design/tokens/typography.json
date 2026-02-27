@@ -1,0 +1,32 @@
+{
+  "swarmz": {
+    "typography": {
+      "families": {
+        "title": {
+          "value": "'Orbitron', 'Rajdhani', 'Oxanium', sans-serif",
+          "description": "Sci-fi display / heading typeface (all caps)"
+        },
+        "body": {
+          "value": "'Inter', 'IBM Plex Sans', sans-serif",
+          "description": "Primary readable body text"
+        },
+        "mono": {
+          "value": "'IBM Plex Mono', 'JetBrains Mono', monospace",
+          "description": "Numeric readouts and code"
+        }
+      },
+      "rules": {
+        "title-letter-spacing": { "value": "0.08em", "description": "Titles letter-spacing" },
+        "label-size-min": { "value": "10px", "description": "Small labels minimum size" },
+        "label-size-max": { "value": "12px", "description": "Small labels maximum size" },
+        "label-opacity-min": { "value": "0.70", "description": "Small labels minimum opacity" },
+        "label-opacity-max": { "value": "0.80", "description": "Small labels maximum opacity" }
+      },
+      "constraints": [
+        "No serif fonts",
+        "No decorative or playful typefaces",
+        "Titles must be all caps"
+      ]
+    }
+  }
+}

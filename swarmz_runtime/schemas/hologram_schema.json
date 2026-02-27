@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "name": { "type": "string" },
+    "state": { "type": "string" },
+    "personality": { "type": "string" },
+    "phase": { "type": "string" },
+    "entropy": { "type": "number" },
+    "operator_binding": { "type": "string" },
+    "trajectory": { "type": "string" },
+    "last_mission": { "type": "string" }
+  },
+  "required": ["name", "state", "personality", "phase", "entropy", "operator_binding", "trajectory", "last_mission"]
+}

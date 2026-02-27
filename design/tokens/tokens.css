@@ -1,0 +1,55 @@
+﻿/*
+ * NEXUSMON Design Tokens — CSS Custom Properties
+ * Style Canon v1.0
+ *
+ * Import this file to consume all NEXUSMON design tokens in any web context.
+ */
+
+:root {
+  /* ── Base colors ─────────────────────────────────── */
+  --nexusmon-void:             #05070C;
+  --nexusmon-deep-slate:       #0B1017;
+  --nexusmon-panel-shadow:     rgba(0, 0, 0, 0.55);
+  --nexusmon-glass-fill:       rgba(18, 24, 32, 0.55);
+  --nexusmon-glass-fill-2:     rgba(10, 14, 20, 0.35);
+
+  /* ── Accent colors ──────────────────────────────── */
+  --nexusmon-neon-violet:      #A855F7;
+  --nexusmon-electric-purple:  #7C3AED;
+  --nexusmon-plasma-magenta:   #D946EF;
+  --nexusmon-neon-cyan:        #22D3EE;
+  --nexusmon-teal-scan:        #14B8A6;
+  --nexusmon-mint-status:      #86EFAC;
+  --nexusmon-warning-amber:    #F59E0B;
+  --nexusmon-error-red:        #EF4444;
+
+  /* ── Typography ─────────────────────────────────── */
+  --nexusmon-font-title:       'Orbitron', 'Rajdhani', 'Oxanium', sans-serif;
+  --nexusmon-font-body:        'Inter', 'IBM Plex Sans', sans-serif;
+  --nexusmon-font-mono:        'IBM Plex Mono', 'JetBrains Mono', monospace;
+  --nexusmon-title-spacing:    0.08em;
+  --nexusmon-label-size-min:   10px;
+  --nexusmon-label-size-max:   12px;
+  --nexusmon-label-opacity:    0.75;
+
+  /* ── Layout ─────────────────────────────────────── */
+  --nexusmon-grid-unit:        8px;
+  --nexusmon-spacing-sm:       16px;
+  --nexusmon-spacing-md:       24px;
+  --nexusmon-spacing-lg:       32px;
+  --nexusmon-radius-min:       14px;
+  --nexusmon-radius-max:       18px;
+
+  /* ── Glow + stroke ──────────────────────────────── */
+  --nexusmon-border-min:       1px;
+  --nexusmon-border-max:       2px;
+  --nexusmon-glow-outer-blur:  12px;
+  --nexusmon-glow-inner-blur:  6px;
+
+  /* ── Glass panel ────────────────────────────────── */
+  --nexusmon-panel-bg:         rgba(18, 24, 32, 0.55);
+  --nexusmon-panel-blur:       16px;
+  --nexusmon-panel-border-cyan:   1px solid rgba(34, 211, 238, 0.25);
+  --nexusmon-panel-border-violet: 1px solid rgba(168, 85, 247, 0.22);
+}
+

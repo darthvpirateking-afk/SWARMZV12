@@ -1,0 +1,21 @@
+{
+  "name": "claude-code-setup",
+  "version": "1.0.0",
+  "description": "Project scaffolding and code setup capabilities including environment detection, dependency management, project initialization, and development environment configuration.",
+  "entry_point": "code_setup.py",
+  "capabilities": [
+    "detect_project_type",
+    "check_dependencies",
+    "init_python_project",
+    "init_node_project",
+    "install_python_requirements",
+    "create_virtualenv",
+    "scaffold_env_file",
+    "list_project_structure",
+    "run_setup_command"
+  ],
+  "category": "development",
+  "author": "claude-plugins-official",
+  "license": "SWARMZ-SAL",
+  "source": "claude-code-setup@claude-plugins-official"
+}

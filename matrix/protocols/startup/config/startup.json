@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "timeouts": {
+    "python_validation": 10,
+    "venv_creation": 30,
+    "pip_install": 300,
+    "npm_install": 120,
+    "npm_build": 120,
+    "ollama_startup": 15,
+    "ollama_model_pull": 600,
+    "server_readiness": 30,
+    "server_health_check_interval_ms": 1000
+  },
+  "ollama": {
+    "model": "llama3.1:8b-instruct-q5_K_M",
+    "endpoint": "http://localhost:11434",
+    "auto_pull": true,
+    "required": false
+  },
+  "server": {
+    "port": 8012,
+    "host": "0.0.0.0",
+    "entry_point": "run_server.py",
+    "fallback_entry_point": "swarmz_server:app",
+    "health_check_path": "/health"
+  },
+  "features": {
+    "auto_browser_launch": true,
+    "frontend_build": true,
+    "ollama_management": true,
+    "colored_output": true,
+    "progress_bars": true,
+    "lan_ip_detection": true
+  }
+}

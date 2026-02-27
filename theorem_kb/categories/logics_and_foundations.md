@@ -1,0 +1,54 @@
+# Logics and foundations
+
+**50 theorems**
+
+- **Ax-Grothendieck theorem** -- model theory
+- **Barwise compactness theorem** -- mathematical logic
+- **Borel determinacy theorem** -- set theory
+- **Buchi-Elgot-Trakhtenbrot theorem** -- mathematical logic
+- **Cantor's theorem** -- set theory
+- **Cantor-Bernstein-Schroder theorem** -- set theory, cardinal numbers
+- **Church-Rosser theorem** -- lambda calculus
+- **Compactness theorem** -- mathematical logic
+- **Conservativity theorem** -- mathematical logic
+- **Craig's interpolation theorem** -- mathematical logic
+- **Craig's theorem** -- mathematical logic
+- **Cut-elimination theorem** -- proof theory
+- **Deduction theorem** -- logic
+- **Diaconescu's theorem** -- mathematical logic
+- **Easton's theorem** -- set theory
+- **Erdos-Dushnik-Miller theorem** -- set theory
+- **Erdos-Rado theorem** -- set theory
+- **Feferman-Vaught theorem** -- model theory
+- **Friedberg-Muchnik theorem** -- mathematical logic
+- **Fundamental theorem of equivalence relations** -- set theory
+- **Gentzen's consistency proof** -- proof theory
+- **Glivenko's theorem** -- mathematical logic
+- **Godel's completeness theorem** -- mathematical logic
+- **Godel's incompleteness theorem** -- mathematical logic
+- **Goodstein's theorem** -- mathematical logic
+- **Herbrand's theorem** -- logic
+- **Independence of the axiom of choice** -- mathematical logic
+- **Independence of the continuum hypothesis** -- mathematical logic
+- **Kanamori-McAloon theorem** -- mathematical logic
+- **Kirby-Paris theorem** -- proof theory
+- **Kleene's recursion theorem** -- recursion theory
+- **Konig's theorem** -- set theory, mathematical logic
+- **Lindstrom's theorem** -- mathematical logic
+- **Lob's theorem** -- mathematical logic
+- **Los' theorem** -- model theory
+- **Lowenheim-Skolem theorem** -- mathematical logic
+- **Matiyasevich's theorem** -- mathematical logic
+- **Morley's categoricity theorem** -- model theory
+- **Paris-Harrington theorem** -- mathematical logic
+- **Post's theorem** -- mathematical logic
+- **Richardson's theorem** -- mathematical logic
+- **Robinson's joint consistency theorem** -- mathematical logic
+- **Sahlqvist correspondence theorem** -- modal logic
+- **Soundness theorem** -- mathematical logic
+- **Tarski's indefinability theorem** -- mathematical logic
+- **Tennenbaum's theorem** -- model theory
+- **Uncountability of the continuum** -- set theory
+- **Well-ordering theorem** -- mathematical logic
+- **Wilkie's theorem** -- model theory
+- **Zorn's lemma** -- set theory

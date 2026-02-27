@@ -1,0 +1,46 @@
+# Convex and discrete geometry
+
+**42 theorems**
+
+- **Alexandrov's uniqueness theorem** -- discrete geometry
+- **Balinski's theorem** -- combinatorics
+- **Bang's theorem** -- geometry
+- **Besicovitch covering theorem** -- mathematical analysis
+- **Blaschke selection theorem** -- geometric topology
+- **Bolyai-Gerwien theorem** -- discrete geometry
+- **Busemann's theorem** -- Euclidean geometry
+- **Caratheodory's theorem** -- convex geometry
+- **Cauchy's theorem** -- geometry
+- **Classification of Platonic solids** -- geometry
+- **de Bruijn's theorem** -- discrete geometry
+- **Descartes's theorem on total angular defect** -- polyhedra
+- **Erdos-Anning theorem** -- discrete geometry
+- **Erdos-Nagy theorem** -- discrete geometry
+- **Erdos-Szekeres theorem** -- discrete geometry
+- **Fary's theorem** -- graph theory
+- **Fenchel's duality theorem** -- convex analysis
+- **Fenchel-Moreau theorem** -- mathematical analysis
+- **Hadwiger's theorem** -- geometry, measure theory
+- **Helly's theorem** -- convex sets
+- **Holditch's theorem** -- plane geometry
+- **John ellipsoid** -- geometry
+- **Jung's theorem** -- geometry
+- **Kepler conjecture** -- discrete geometry
+- **Kirchberger's theorem** -- discrete geometry
+- **Krein-Milman theorem** -- mathematical analysis, discrete geometry
+- **Minkowski's second theorem** -- geometry of numbers
+- **Minkowski's theorem** -- geometry of numbers
+- **Minkowski-Hlawka theorem** -- geometry of numbers
+- **Monsky's theorem** -- discrete geometry
+- **Pick's theorem** -- geometry
+- **Pizza theorem** -- geometry
+- **Radon's theorem** -- convex sets
+- **Separating axis theorem** -- convex geometry
+- **Steinitz theorem** -- graph theory
+- **Stewart's theorem** -- plane geometry
+- **Supporting hyperplane theorem** -- convex geometry
+- **Sylvester-Gallai theorem** -- plane geometry
+- **Szemeredi-Trotter theorem** -- combinatorics
+- **Tverberg's theorem** -- discrete geometry
+- **Vitali covering theorem** -- measure theory
+- **Wallace-Bolyai-Gerwien theorem** -- discrete geometry

@@ -1,0 +1,79 @@
+{
+  "system_name": "SWARMZ",
+  "version": "1.0.0",
+  "operator_sovereignty": {
+    "enabled": true,
+    "auto_approve": true,
+    "audit_enabled": true
+  },
+  "plugins": {
+    "auto_load": [
+      "plugins/filesystem.py",
+      "plugins/dataprocessing.py"
+    ]
+  },
+  "security": {
+    "allow_code_execution": true,
+    "require_operator_approval": false
+  },
+  "brain_mapping": {
+    "auto_mode": false,
+    "brains": {
+      "commander": {
+        "model": "llama3.1:8b-instruct-q5_K_M",
+        "provider": "ollama",
+        "purpose": "thinking, companion, reasoning, planning",
+        "description": "Local Ollama inference — offline capable, cost-free"
+      },
+      "builder": {
+        "model": "llama3.1:8b-instruct-q5_K_M",
+        "provider": "ollama",
+        "purpose": "coding, refactoring, writing files",
+        "description": "Local Ollama inference — offline capable, cost-free"
+      },
+      "utility": {
+        "model": "llama3.1:8b-instruct-q5_K_M",
+        "provider": "ollama",
+        "purpose": "small tasks, classification, routing, intent detection",
+        "description": "Local Ollama inference — offshore capable, cost-free"
+      },
+      "safety": {
+        "model": "llama3.1:8b-instruct-q5_K_M",
+        "provider": "ollama",
+        "purpose": "diff inspection, bug spotting, edge-case checking, verification",
+        "description": "Local Ollama inference — offline capable, cost-free"
+      }
+    },
+    "task_routing": {
+      "thinking": "commander",
+      "companion": "commander",
+      "reasoning": "commander",
+      "planning": "commander",
+      "conversation": "commander",
+      "coding": "builder",
+      "refactoring": "builder",
+      "writing_files": "builder",
+      "code_generation": "builder",
+      "patching": "builder",
+      "classification": "utility",
+      "routing": "utility",
+      "intent_detection": "utility",
+      "quick_decision": "utility",
+      "verification": "safety",
+      "diff_inspection": "safety",
+      "bug_check": "safety",
+      "pre_commit": "safety",
+      "edge_case_check": "safety"
+    }
+  },
+  "models": {
+    "provider": "ollama",
+    "ollama": {
+      "endpoint": "http://localhost:11434",
+      "model": "llama3.1:8b-instruct-q5_K_M",
+      "apiKeyEnv": ""
+    },
+    "timeoutMs": 120000,
+    "maxTokens": 1500
+  }
+}

@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "swarmz"
+version = "0.1.0"
+description = "SWARMZ runtime"
+readme = "README.md"
+requires-python = ">=3.10"
+
+[tool.setuptools]
+include-package-data = false
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["swarmz*", "swarmz_runtime*", "swarmz_app*", "kernel_runtime*", "addons*"]
+exclude = [
+	"swarmz-mobile*",
+	"*.node_modules*",
+	"node_modules*",
+	"tests*",
+	"build*",
+	"dist*",
+	"_backup*"
+]
+
+[tool.ruff]
+extend-exclude = ["tools/vscode-scaffold-bot/templates"]
+
+[tool.ruff.lint]
+ignore = [
+    "E402",  # module level import not at top of file
+    "E722",  # bare except
+    "E731",  # lambda assignment
+    "E741",  # ambiguous variable name
+    "F821",  # undefined name (many false positives from dynamic patterns)
+    "F841",  # local variable assigned but never used
+]
+
+[tool.black]
+extend-exclude = '''
+(
+  tools/vscode-scaffold-bot/templates
+)
+'''

@@ -1,0 +1,9122 @@
+{
+  "Logics and foundations": [
+    {
+      "name": "Ax-Grothendieck theorem",
+      "fields": [
+        "model theory"
+      ],
+      "slug": "ax_grothendieck_theorem"
+    },
+    {
+      "name": "Barwise compactness theorem",
+      "fields": [
+        "mathematical logic"
+      ],
+      "slug": "barwise_compactness_theorem"
+    },
+    {
+      "name": "Borel determinacy theorem",
+      "fields": [
+        "set theory"
+      ],
+      "slug": "borel_determinacy_theorem"
+    },
+    {
+      "name": "Buchi-Elgot-Trakhtenbrot theorem",
+      "fields": [
+        "mathematical logic"
+      ],
+      "slug": "buchi_elgot_trakhtenbrot_theorem"
+    },
+    {
+      "name": "Cantor-Bernstein-Schroder theorem",
+      "fields": [
+        "set theory",
+        "cardinal numbers"
+      ],
+      "slug": "cantor_bernstein_schroder_theorem"
+    },
+    {
+      "name": "Cantor's theorem",
+      "fields": [
+        "set theory"
+      ],
+      "slug": "cantor_s_theorem"
+    },
+    {
+      "name": "Church-Rosser theorem",
+      "fields": [
+        "lambda calculus"
+      ],
+      "slug": "church_rosser_theorem"
+    },
+    {
+      "name": "Compactness theorem",
+      "fields": [
+        "mathematical logic"
+      ],
+      "slug": "compactness_theorem"
+    },
+    {
+      "name": "Conservativity theorem",
+      "fields": [
+        "mathematical logic"
+      ],
+      "slug": "conservativity_theorem"
+    },
+    {
+      "name": "Craig's theorem",
+      "fields": [
+        "mathematical logic"
+      ],
+      "slug": "craig_s_theorem"
+    },
+    {
+      "name": "Craig's interpolation theorem",
+      "fields": [
+        "mathematical logic"
+      ],
+      "slug": "craig_s_interpolation_theorem"
+    },
+    {
+      "name": "Cut-elimination theorem",
+      "fields": [
+        "proof theory"
+      ],
+      "slug": "cut_elimination_theorem"
+    },
+    {
+      "name": "Deduction theorem",
+      "fields": [
+        "logic"
+      ],
+      "slug": "deduction_theorem"
+    },
+    {
+      "name": "Diaconescu's theorem",
+      "fields": [
+        "mathematical logic"
+      ],
+      "slug": "diaconescu_s_theorem"
+    },
+    {
+      "name": "Easton's theorem",
+      "fields": [
+        "set theory"
+      ],
+      "slug": "easton_s_theorem"
+    },
+    {
+      "name": "Erdos-Dushnik-Miller theorem",
+      "fields": [
+        "set theory"
+      ],
+      "slug": "erdos_dushnik_miller_theorem"
+    },
+    {
+      "name": "Erdos-Rado theorem",
+      "fields": [
+        "set theory"
+      ],
+      "slug": "erdos_rado_theorem"
+    },
+    {
+      "name": "Feferman-Vaught theorem",
+      "fields": [
+        "model theory"
+      ],
+      "slug": "feferman_vaught_theorem"
+    },
+    {
+      "name": "Friedberg-Muchnik theorem",
+      "fields": [
+        "mathematical logic"
+      ],
+      "slug": "friedberg_muchnik_theorem"
+    },
+    {
+      "name": "Fundamental theorem of equivalence relations",
+      "fields": [
+        "set theory"
+      ],
+      "slug": "fundamental_theorem_of_equivalence_relations"
+    },
+    {
+      "name": "Glivenko's theorem",
+      "fields": [
+        "mathematical logic"
+      ],
+      "slug": "glivenko_s_theorem"
+    },
+    {
+      "name": "Gentzen's consistency proof",
+      "fields": [
+        "proof theory"
+      ],
+      "slug": "gentzen_s_consistency_proof"
+    },
+    {
+      "name": "Godel's completeness theorem",
+      "fields": [
+        "mathematical logic"
+      ],
+      "slug": "godel_s_completeness_theorem"
+    },
+    {
+      "name": "Godel's incompleteness theorem",
+      "fields": [
+        "mathematical logic"
+      ],
+      "slug": "godel_s_incompleteness_theorem"
+    },
+    {
+      "name": "Goodstein's theorem",
+      "fields": [
+        "mathematical logic"
+      ],
+      "slug": "goodstein_s_theorem"
+    },
+    {
+      "name": "Herbrand's theorem",
+      "fields": [
+        "logic"
+      ],
+      "slug": "herbrand_s_theorem"
+    },
+    {
+      "name": "Independence of the axiom of choice",
+      "fields": [
+        "mathematical logic"
+      ],
+      "slug": "independence_of_the_axiom_of_choice"
+    },
+    {
+      "name": "Independence of the continuum hypothesis",
+      "fields": [
+        "mathematical logic"
+      ],
+      "slug": "independence_of_the_continuum_hypothesis"
+    },
+    {
+      "name": "Kanamori-McAloon theorem",
+      "fields": [
+        "mathematical logic"
+      ],
+      "slug": "kanamori_mcaloon_theorem"
+    },
+    {
+      "name": "Kirby-Paris theorem",
+      "fields": [
+        "proof theory"
+      ],
+      "slug": "kirby_paris_theorem"
+    },
+    {
+      "name": "Kleene's recursion theorem",
+      "fields": [
+        "recursion theory"
+      ],
+      "slug": "kleene_s_recursion_theorem"
+    },
+    {
+      "name": "Konig's theorem",
+      "fields": [
+        "set theory",
+        "mathematical logic"
+      ],
+      "slug": "konig_s_theorem"
+    },
+    {
+      "name": "Lindstrom's theorem",
+      "fields": [
+        "mathematical logic"
+      ],
+      "slug": "lindstrom_s_theorem"
+    },
+    {
+      "name": "Lob's theorem",
+      "fields": [
+        "mathematical logic"
+      ],
+      "slug": "lob_s_theorem"
+    },
+    {
+      "name": "Los' theorem",
+      "fields": [
+        "model theory"
+      ],
+      "slug": "los_theorem"
+    },
+    {
+      "name": "Lowenheim-Skolem theorem",
+      "fields": [
+        "mathematical logic"
+      ],
+      "slug": "lowenheim_skolem_theorem"
+    },
+    {
+      "name": "Matiyasevich's theorem",
+      "fields": [
+        "mathematical logic"
+      ],
+      "slug": "matiyasevich_s_theorem"
+    },
+    {
+      "name": "Morley's categoricity theorem",
+      "fields": [
+        "model theory"
+      ],
+      "slug": "morley_s_categoricity_theorem"
+    },
+    {
+      "name": "Paris-Harrington theorem",
+      "fields": [
+        "mathematical logic"
+      ],
+      "slug": "paris_harrington_theorem"
+    },
+    {
+      "name": "Post's theorem",
+      "fields": [
+        "mathematical logic"
+      ],
+      "slug": "post_s_theorem"
+    },
+    {
+      "name": "Richardson's theorem",
+      "fields": [
+        "mathematical logic"
+      ],
+      "slug": "richardson_s_theorem"
+    },
+    {
+      "name": "Robinson's joint consistency theorem",
+      "fields": [
+        "mathematical logic"
+      ],
+      "slug": "robinson_s_joint_consistency_theorem"
+    },
+    {
+      "name": "Sahlqvist correspondence theorem",
+      "fields": [
+        "modal logic"
+      ],
+      "slug": "sahlqvist_correspondence_theorem"
+    },
+    {
+      "name": "Soundness theorem",
+      "fields": [
+        "mathematical logic"
+      ],
+      "slug": "soundness_theorem"
+    },
+    {
+      "name": "Tarski's indefinability theorem",
+      "fields": [
+        "mathematical logic"
+      ],
+      "slug": "tarski_s_indefinability_theorem"
+    },
+    {
+      "name": "Tennenbaum's theorem",
+      "fields": [
+        "model theory"
+      ],
+      "slug": "tennenbaum_s_theorem"
+    },
+    {
+      "name": "Uncountability of the continuum",
+      "fields": [
+        "set theory"
+      ],
+      "slug": "uncountability_of_the_continuum"
+    },
+    {
+      "name": "Well-ordering theorem",
+      "fields": [
+        "mathematical logic"
+      ],
+      "slug": "well_ordering_theorem"
+    },
+    {
+      "name": "Wilkie's theorem",
+      "fields": [
+        "model theory"
+      ],
+      "slug": "wilkie_s_theorem"
+    },
+    {
+      "name": "Zorn's lemma",
+      "fields": [
+        "set theory"
+      ],
+      "slug": "zorn_s_lemma"
+    }
+  ],
+  "Combinatorics": [
+    {
+      "name": "2-factor theorem",
+      "fields": [
+        "graph theory"
+      ],
+      "slug": "2_factor_theorem"
+    },
+    {
+      "name": "Abel's binomial theorem",
+      "fields": [
+        "combinatorics"
+      ],
+      "slug": "abel_s_binomial_theorem"
+    },
+    {
+      "name": "Alspach's theorem",
+      "fields": [
+        "graph theory"
+      ],
+      "slug": "alspach_s_theorem"
+    },
+    {
+      "name": "Aztec diamond theorem",
+      "fields": [
+        "combinatorics"
+      ],
+      "slug": "aztec_diamond_theorem"
+    },
+    {
+      "name": "BEST theorem",
+      "fields": [
+        "graph theory"
+      ],
+      "slug": "best_theorem"
+    },
+    {
+      "name": "Baranyai's theorem",
+      "fields": [
+        "combinatorics"
+      ],
+      "slug": "baranyai_s_theorem"
+    },
+    {
+      "name": "Berge's theorem",
+      "fields": [
+        "graph theory"
+      ],
+      "slug": "berge_s_theorem"
+    },
+    {
+      "name": "Binomial theorem",
+      "fields": [
+        "algebra",
+        "combinatorics"
+      ],
+      "slug": "binomial_theorem"
+    },
+    {
+      "name": "Bondy's theorem",
+      "fields": [
+        "graph theory",
+        "combinatorics"
+      ],
+      "slug": "bondy_s_theorem"
+    },
+    {
+      "name": "Bondy-Chvatal theorem",
+      "fields": [
+        "graph theory"
+      ],
+      "slug": "bondy_chvatal_theorem"
+    },
+    {
+      "name": "Brooks's theorem",
+      "fields": [
+        "graph theory"
+      ],
+      "slug": "brooks_s_theorem"
+    },
+    {
+      "name": "Bruck-Chowla-Ryser theorem",
+      "fields": [
+        "combinatorics"
+      ],
+      "slug": "bruck_chowla_ryser_theorem"
+    },
+    {
+      "name": "Cameron-Erdos theorem",
+      "fields": [
+        "discrete mathematics"
+      ],
+      "slug": "cameron_erdos_theorem"
+    },
+    {
+      "name": "Corners theorem",
+      "fields": [
+        "arithmetic combinatorics"
+      ],
+      "slug": "corners_theorem"
+    },
+    {
+      "name": "Courcelle's theorem",
+      "fields": [
+        "graph theory"
+      ],
+      "slug": "courcelle_s_theorem"
+    },
+    {
+      "name": "De Bruijn-Erdos theorem",
+      "fields": [
+        "graph theory"
+      ],
+      "slug": "de_bruijn_erdos_theorem"
+    },
+    {
+      "name": "Dirac's theorems",
+      "fields": [
+        "graph theory"
+      ],
+      "slug": "dirac_s_theorems"
+    },
+    {
+      "name": "Erdos-Gallai theorem",
+      "fields": [
+        "graph theory"
+      ],
+      "slug": "erdos_gallai_theorem"
+    },
+    {
+      "name": "Erdos-Ginzburg-Ziv theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "erdos_ginzburg_ziv_theorem"
+    },
+    {
+      "name": "Erdos-Ko-Rado theorem",
+      "fields": [
+        "combinatorics"
+      ],
+      "slug": "erdos_ko_rado_theorem"
+    },
+    {
+      "name": "Erdos-Posa theorem",
+      "fields": [
+        "graph theory"
+      ],
+      "slug": "erdos_posa_theorem"
+    },
+    {
+      "name": "Erdos-Stone theorem",
+      "fields": [
+        "graph theory"
+      ],
+      "slug": "erdos_stone_theorem"
+    },
+    {
+      "name": "Euler's partition theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "euler_s_partition_theorem"
+    },
+    {
+      "name": "Fermat polygonal number theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "fermat_polygonal_number_theorem"
+    },
+    {
+      "name": "Five color theorem",
+      "fields": [
+        "graph theory"
+      ],
+      "slug": "five_color_theorem"
+    },
+    {
+      "name": "Four color theorem",
+      "fields": [
+        "graph theory"
+      ],
+      "slug": "four_color_theorem"
+    },
+    {
+      "name": "Freiman's theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "freiman_s_theorem"
+    },
+    {
+      "name": "Friendship theorem",
+      "fields": [
+        "graph theory"
+      ],
+      "slug": "friendship_theorem"
+    },
+    {
+      "name": "Galvin's theorem",
+      "fields": [
+        "combinatorics"
+      ],
+      "slug": "galvin_s_theorem"
+    },
+    {
+      "name": "Gomory's theorem",
+      "fields": [
+        "combinatorics"
+      ],
+      "slug": "gomory_s_theorem"
+    },
+    {
+      "name": "Graph structure theorem",
+      "fields": [
+        "graph theory"
+      ],
+      "slug": "graph_structure_theorem"
+    },
+    {
+      "name": "Grinberg's theorem",
+      "fields": [
+        "graph theory"
+      ],
+      "slug": "grinberg_s_theorem"
+    },
+    {
+      "name": "Grotzsch's theorem",
+      "fields": [
+        "graph theory"
+      ],
+      "slug": "grotzsch_s_theorem"
+    },
+    {
+      "name": "Hajnal-Szemeredi theorem",
+      "fields": [
+        "graph theory"
+      ],
+      "slug": "hajnal_szemeredi_theorem"
+    },
+    {
+      "name": "Hales-Jewett theorem",
+      "fields": [
+        "combinatorics"
+      ],
+      "slug": "hales_jewett_theorem"
+    },
+    {
+      "name": "Hall's marriage theorem",
+      "fields": [
+        "combinatorics"
+      ],
+      "slug": "hall_s_marriage_theorem"
+    },
+    {
+      "name": "Halpern-Lauchli theorem",
+      "fields": [
+        "Ramsey theory"
+      ],
+      "slug": "halpern_lauchli_theorem"
+    },
+    {
+      "name": "Hindman's theorem",
+      "fields": [
+        "Ramsey theory"
+      ],
+      "slug": "hindman_s_theorem"
+    },
+    {
+      "name": "Kirchhoff's theorem",
+      "fields": [
+        "graph theory"
+      ],
+      "slug": "kirchhoff_s_theorem"
+    },
+    {
+      "name": "Kneser's theorem",
+      "fields": [
+        "combinatorics"
+      ],
+      "slug": "kneser_s_theorem"
+    },
+    {
+      "name": "Konig's theorem",
+      "fields": [
+        "bipartite graphs"
+      ],
+      "slug": "konig_s_theorem"
+    },
+    {
+      "name": "Kovari-Sos-Turan theorem",
+      "fields": [
+        "graph theory"
+      ],
+      "slug": "kovari_sos_turan_theorem"
+    },
+    {
+      "name": "Kruskal-Katona theorem",
+      "fields": [
+        "combinatorics"
+      ],
+      "slug": "kruskal_katona_theorem"
+    },
+    {
+      "name": "Kuratowski's theorem",
+      "fields": [
+        "graph theory"
+      ],
+      "slug": "kuratowski_s_theorem"
+    },
+    {
+      "name": "Lambek-Moser theorem",
+      "fields": [
+        "combinatorics"
+      ],
+      "slug": "lambek_moser_theorem"
+    },
+    {
+      "name": "MacMahon's master theorem",
+      "fields": [
+        "enumerative combinatorics"
+      ],
+      "slug": "macmahon_s_master_theorem"
+    },
+    {
+      "name": "Menger's theorem",
+      "fields": [
+        "graph theory"
+      ],
+      "slug": "menger_s_theorem"
+    },
+    {
+      "name": "Milliken-Taylor theorem",
+      "fields": [
+        "Ramsey theory"
+      ],
+      "slug": "milliken_taylor_theorem"
+    },
+    {
+      "name": "Milliken's tree theorem",
+      "fields": [
+        "Ramsey theory"
+      ],
+      "slug": "milliken_s_tree_theorem"
+    },
+    {
+      "name": "Multinomial theorem",
+      "fields": [
+        "algebra",
+        "combinatorics"
+      ],
+      "slug": "multinomial_theorem"
+    },
+    {
+      "name": "Mycielski's theorem",
+      "fields": [
+        "graph theory"
+      ],
+      "slug": "mycielski_s_theorem"
+    },
+    {
+      "name": "Nicomachus's theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "nicomachus_s_theorem"
+    },
+    {
+      "name": "Ore's theorem",
+      "fields": [
+        "graph theory"
+      ],
+      "slug": "ore_s_theorem"
+    },
+    {
+      "name": "Paley's theorem",
+      "fields": [
+        "algebra"
+      ],
+      "slug": "paley_s_theorem"
+    },
+    {
+      "name": "Perfect graph theorem",
+      "fields": [
+        "graph theory"
+      ],
+      "slug": "perfect_graph_theorem"
+    },
+    {
+      "name": "Perlis theorem",
+      "fields": [
+        "graph theory"
+      ],
+      "slug": "perlis_theorem"
+    },
+    {
+      "name": "Planar separator theorem",
+      "fields": [
+        "graph theory"
+      ],
+      "slug": "planar_separator_theorem"
+    },
+    {
+      "name": "Polya enumeration theorem",
+      "fields": [
+        "combinatorics"
+      ],
+      "slug": "polya_enumeration_theorem"
+    },
+    {
+      "name": "Ramsey's theorem",
+      "fields": [
+        "graph theory",
+        "combinatorics"
+      ],
+      "slug": "ramsey_s_theorem"
+    },
+    {
+      "name": "Ringel-Youngs theorem",
+      "fields": [
+        "graph theory"
+      ],
+      "slug": "ringel_youngs_theorem"
+    },
+    {
+      "name": "Robbins' theorem",
+      "fields": [
+        "graph theory"
+      ],
+      "slug": "robbins_theorem"
+    },
+    {
+      "name": "Robertson-Seymour theorem",
+      "fields": [
+        "graph theory"
+      ],
+      "slug": "robertson_seymour_theorem"
+    },
+    {
+      "name": "Schnyder's theorem",
+      "fields": [
+        "graph theory"
+      ],
+      "slug": "schnyder_s_theorem"
+    },
+    {
+      "name": "Schur's theorem",
+      "fields": [
+        "Ramsey theory"
+      ],
+      "slug": "schur_s_theorem"
+    },
+    {
+      "name": "Schwenk's theorem",
+      "fields": [
+        "graph theory"
+      ],
+      "slug": "schwenk_s_theorem"
+    },
+    {
+      "name": "Sensitivity theorem",
+      "fields": [
+        "computational complexity theory"
+      ],
+      "slug": "sensitivity_theorem"
+    },
+    {
+      "name": "Sperner's theorem",
+      "fields": [
+        "combinatorics"
+      ],
+      "slug": "sperner_s_theorem"
+    },
+    {
+      "name": "Stanley's reciprocity theorem",
+      "fields": [
+        "combinatorics"
+      ],
+      "slug": "stanley_s_reciprocity_theorem"
+    },
+    {
+      "name": "Star of David theorem",
+      "fields": [
+        "combinatorics"
+      ],
+      "slug": "star_of_david_theorem"
+    },
+    {
+      "name": "Stirling's theorem",
+      "fields": [
+        "mathematical analysis"
+      ],
+      "slug": "stirling_s_theorem"
+    },
+    {
+      "name": "Strong perfect graph theorem",
+      "fields": [
+        "graph theory"
+      ],
+      "slug": "strong_perfect_graph_theorem"
+    },
+    {
+      "name": "Symmetric hypergraph theorem",
+      "fields": [
+        "graph theory"
+      ],
+      "slug": "symmetric_hypergraph_theorem"
+    },
+    {
+      "name": "Szemeredi's theorem",
+      "fields": [
+        "combinatorics"
+      ],
+      "slug": "szemeredi_s_theorem"
+    },
+    {
+      "name": "Theorem on friends and strangers",
+      "fields": [
+        "Ramsey theory"
+      ],
+      "slug": "theorem_on_friends_and_strangers"
+    },
+    {
+      "name": "Tutte's theorem on perfect matchings",
+      "fields": [
+        "graph theory"
+      ],
+      "slug": "tutte_s_theorem_on_perfect_matchings"
+    },
+    {
+      "name": "Turan's theorem",
+      "fields": [
+        "graph theory"
+      ],
+      "slug": "turan_s_theorem"
+    },
+    {
+      "name": "Van der Waerden's theorem",
+      "fields": [
+        "combinatorics"
+      ],
+      "slug": "van_der_waerden_s_theorem"
+    },
+    {
+      "name": "Vizing's theorem",
+      "fields": [
+        "graph theory"
+      ],
+      "slug": "vizing_s_theorem"
+    },
+    {
+      "name": "Wagner's theorem",
+      "fields": [
+        "graph theory"
+      ],
+      "slug": "wagner_s_theorem"
+    },
+    {
+      "name": "Zeilberger-Bressoud theorem",
+      "fields": [
+        "combinatorics"
+      ],
+      "slug": "zeilberger_bressoud_theorem"
+    }
+  ],
+  "Order, lattices, ordered algebraic structures": [
+    {
+      "name": "Birkhoff's representation theorem",
+      "fields": [
+        "lattice theory"
+      ],
+      "slug": "birkhoff_s_representation_theorem"
+    },
+    {
+      "name": "Boolean prime ideal theorem",
+      "fields": [
+        "mathematical logic"
+      ],
+      "slug": "boolean_prime_ideal_theorem"
+    },
+    {
+      "name": "Bourbaki-Witt theorem",
+      "fields": [
+        "order theory"
+      ],
+      "slug": "bourbaki_witt_theorem"
+    },
+    {
+      "name": "Cantor's isomorphism theorem",
+      "fields": [
+        "order theory"
+      ],
+      "slug": "cantor_s_isomorphism_theorem"
+    },
+    {
+      "name": "Dilworth's theorem",
+      "fields": [
+        "combinatorics",
+        "order theory"
+      ],
+      "slug": "dilworth_s_theorem"
+    },
+    {
+      "name": "Four functions theorem",
+      "fields": [
+        "combinatorics"
+      ],
+      "slug": "four_functions_theorem"
+    },
+    {
+      "name": "Hahn embedding theorem",
+      "fields": [
+        "ordered groups"
+      ],
+      "slug": "hahn_embedding_theorem"
+    },
+    {
+      "name": "Hausdorff maximality theorem",
+      "fields": [
+        "set theory"
+      ],
+      "slug": "hausdorff_maximality_theorem"
+    },
+    {
+      "name": "Kleene fixed-point theorem",
+      "fields": [
+        "order theory"
+      ],
+      "slug": "kleene_fixed_point_theorem"
+    },
+    {
+      "name": "Knaster-Tarski theorem",
+      "fields": [
+        "order theory"
+      ],
+      "slug": "knaster_tarski_theorem"
+    },
+    {
+      "name": "Kruskal's tree theorem",
+      "fields": [
+        "order theory"
+      ],
+      "slug": "kruskal_s_tree_theorem"
+    },
+    {
+      "name": "Shannon's expansion theorem",
+      "fields": [
+        "Boolean algebra"
+      ],
+      "slug": "shannon_s_expansion_theorem"
+    },
+    {
+      "name": "Stone's representation theorem for Boolean algebras",
+      "fields": [
+        "mathematical logic"
+      ],
+      "slug": "stone_s_representation_theorem_for_boolean_algebras"
+    },
+    {
+      "name": "Szpilrajn extension theorem",
+      "fields": [
+        "axiom of choice"
+      ],
+      "slug": "szpilrajn_extension_theorem"
+    }
+  ],
+  "General algebraic systems": [
+    {
+      "name": "Fundamental theorem on homomorphisms",
+      "fields": [
+        "abstract algebra"
+      ],
+      "slug": "fundamental_theorem_on_homomorphisms"
+    },
+    {
+      "name": "Isomorphism theorem",
+      "fields": [
+        "abstract algebra"
+      ],
+      "slug": "isomorphism_theorem"
+    },
+    {
+      "name": "Lattice theorem",
+      "fields": [
+        "abstract algebra"
+      ],
+      "slug": "lattice_theorem"
+    }
+  ],
+  "Number theory": [
+    {
+      "name": "15 and 290 theorems",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "15_and_290_theorems"
+    },
+    {
+      "name": "Albert-Brauer-Hasse-Noether theorem",
+      "fields": [
+        "algebras"
+      ],
+      "slug": "albert_brauer_hasse_noether_theorem"
+    },
+    {
+      "name": "Ankeny-Artin-Chowla theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "ankeny_artin_chowla_theorem"
+    },
+    {
+      "name": "Apery's theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "apery_s_theorem"
+    },
+    {
+      "name": "Artin-Verdier duality theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "artin_verdier_duality_theorem"
+    },
+    {
+      "name": "ATS theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "ats_theorem"
+    },
+    {
+      "name": "Auxiliary polynomial theorem",
+      "fields": [
+        "Diophantine approximation"
+      ],
+      "slug": "auxiliary_polynomial_theorem"
+    },
+    {
+      "name": "Ax-Kochen theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "ax_kochen_theorem"
+    },
+    {
+      "name": "Baker's theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "baker_s_theorem"
+    },
+    {
+      "name": "Barban-Davenport-Halberstam theorem",
+      "fields": [
+        "analytic number theory"
+      ],
+      "slug": "barban_davenport_halberstam_theorem"
+    },
+    {
+      "name": "Basel problem",
+      "fields": [
+        "mathematical analysis"
+      ],
+      "slug": "basel_problem"
+    },
+    {
+      "name": "Beatty's theorem",
+      "fields": [
+        "Diophantine approximation"
+      ],
+      "slug": "beatty_s_theorem"
+    },
+    {
+      "name": "Behrend's theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "behrend_s_theorem"
+    },
+    {
+      "name": "Bertrand's postulate",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "bertrand_s_postulate"
+    },
+    {
+      "name": "Birch's theorem",
+      "fields": [
+        "algebraic number theory"
+      ],
+      "slug": "birch_s_theorem"
+    },
+    {
+      "name": "Bombieri's theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "bombieri_s_theorem"
+    },
+    {
+      "name": "Bombieri-Friedlander-Iwaniec theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "bombieri_friedlander_iwaniec_theorem"
+    },
+    {
+      "name": "Brauer-Siegel theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "brauer_siegel_theorem"
+    },
+    {
+      "name": "Brun's theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "brun_s_theorem"
+    },
+    {
+      "name": "Brun-Titchmarsh theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "brun_titchmarsh_theorem"
+    },
+    {
+      "name": "Carmichael's theorem",
+      "fields": [
+        "Fibonacci numbers"
+      ],
+      "slug": "carmichael_s_theorem"
+    },
+    {
+      "name": "Chebotarev's density theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "chebotarev_s_density_theorem"
+    },
+    {
+      "name": "Chen's theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "chen_s_theorem"
+    },
+    {
+      "name": "Chowla-Mordell theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "chowla_mordell_theorem"
+    },
+    {
+      "name": "Cohn's irreducibility criterion",
+      "fields": [
+        "polynomials"
+      ],
+      "slug": "cohn_s_irreducibility_criterion"
+    },
+    {
+      "name": "Critical line theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "critical_line_theorem"
+    },
+    {
+      "name": "Davenport-Schmidt theorem",
+      "fields": [
+        "number theory",
+        "Diophantine approximations"
+      ],
+      "slug": "davenport_schmidt_theorem"
+    },
+    {
+      "name": "Dirichlet's approximation theorem",
+      "fields": [
+        "Diophantine approximations"
+      ],
+      "slug": "dirichlet_s_approximation_theorem"
+    },
+    {
+      "name": "Dirichlet's theorem on arithmetic progressions",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "dirichlet_s_theorem_on_arithmetic_progressions"
+    },
+    {
+      "name": "Dirichlet's unit theorem",
+      "fields": [
+        "algebraic number theory"
+      ],
+      "slug": "dirichlet_s_unit_theorem"
+    },
+    {
+      "name": "Equidistribution theorem",
+      "fields": [
+        "ergodic theory"
+      ],
+      "slug": "equidistribution_theorem"
+    },
+    {
+      "name": "Erdos-Kac theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "erdos_kac_theorem"
+    },
+    {
+      "name": "Euclid's theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "euclid_s_theorem"
+    },
+    {
+      "name": "Euclid-Euler theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "euclid_euler_theorem"
+    },
+    {
+      "name": "Euler's theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "euler_s_theorem"
+    },
+    {
+      "name": "Fermat's Last Theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "fermat_s_last_theorem"
+    },
+    {
+      "name": "Fermat's little theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "fermat_s_little_theorem"
+    },
+    {
+      "name": "Fermat's theorem on sums of two squares",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "fermat_s_theorem_on_sums_of_two_squares"
+    },
+    {
+      "name": "Ferrero-Washington theorem",
+      "fields": [
+        "algebraic number theory"
+      ],
+      "slug": "ferrero_washington_theorem"
+    },
+    {
+      "name": "Ford's theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "ford_s_theorem"
+    },
+    {
+      "name": "Franel-Landau theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "franel_landau_theorem"
+    },
+    {
+      "name": "Gelfond-Schneider theorem",
+      "fields": [
+        "transcendental number theory"
+      ],
+      "slug": "gelfond_schneider_theorem"
+    },
+    {
+      "name": "Glaisher's theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "glaisher_s_theorem"
+    },
+    {
+      "name": "Green-Tao theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "green_tao_theorem"
+    },
+    {
+      "name": "Gross-Zagier theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "gross_zagier_theorem"
+    },
+    {
+      "name": "Grunwald-Wang theorem",
+      "fields": [
+        "algebraic number theory"
+      ],
+      "slug": "grunwald_wang_theorem"
+    },
+    {
+      "name": "Hardy-Ramanujan theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "hardy_ramanujan_theorem"
+    },
+    {
+      "name": "Hasse norm theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "hasse_norm_theorem"
+    },
+    {
+      "name": "Hasse-Minkowski theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "hasse_minkowski_theorem"
+    },
+    {
+      "name": "Herbrand-Ribet theorem",
+      "fields": [
+        "cyclotomic fields"
+      ],
+      "slug": "herbrand_ribet_theorem"
+    },
+    {
+      "name": "Hilbert-Speiser theorem",
+      "fields": [
+        "cyclotomic fields"
+      ],
+      "slug": "hilbert_speiser_theorem"
+    },
+    {
+      "name": "Hilbert-Waring theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "hilbert_waring_theorem"
+    },
+    {
+      "name": "Hilbert's irreducibility theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "hilbert_s_irreducibility_theorem"
+    },
+    {
+      "name": "Hurwitz's theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "hurwitz_s_theorem"
+    },
+    {
+      "name": "Jacobi's four-square theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "jacobi_s_four_square_theorem"
+    },
+    {
+      "name": "Jurkat-Richert theorem",
+      "fields": [
+        "analytic number theory"
+      ],
+      "slug": "jurkat_richert_theorem"
+    },
+    {
+      "name": "Kaplansky's theorem on quadratic forms",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "kaplansky_s_theorem_on_quadratic_forms"
+    },
+    {
+      "name": "Khinchin's theorem",
+      "fields": [
+        "probability"
+      ],
+      "slug": "khinchin_s_theorem"
+    },
+    {
+      "name": "Kronecker's theorem",
+      "fields": [
+        "Diophantine approximation"
+      ],
+      "slug": "kronecker_s_theorem"
+    },
+    {
+      "name": "Kronecker-Weber theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "kronecker_weber_theorem"
+    },
+    {
+      "name": "Kummer's theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "kummer_s_theorem"
+    },
+    {
+      "name": "Lafforgue's theorem",
+      "fields": [
+        "algebraic number theory"
+      ],
+      "slug": "lafforgue_s_theorem"
+    },
+    {
+      "name": "Lagrange's four-square theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "lagrange_s_four_square_theorem"
+    },
+    {
+      "name": "Landau prime ideal theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "landau_prime_ideal_theorem"
+    },
+    {
+      "name": "Lindemann-Weierstrass theorem",
+      "fields": [
+        "transcendental number theory"
+      ],
+      "slug": "lindemann_weierstrass_theorem"
+    },
+    {
+      "name": "Linnik's theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "linnik_s_theorem"
+    },
+    {
+      "name": "Lochs's theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "lochs_s_theorem"
+    },
+    {
+      "name": "Lucas's theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "lucas_s_theorem"
+    },
+    {
+      "name": "Mahler's compactness theorem",
+      "fields": [
+        "geometry of numbers"
+      ],
+      "slug": "mahler_s_compactness_theorem"
+    },
+    {
+      "name": "Mahler's theorem",
+      "fields": [
+        "p-adic analysis"
+      ],
+      "slug": "mahler_s_theorem"
+    },
+    {
+      "name": "Maier's theorem",
+      "fields": [
+        "analytic number theory"
+      ],
+      "slug": "maier_s_theorem"
+    },
+    {
+      "name": "Mann's theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "mann_s_theorem"
+    },
+    {
+      "name": "Mazur's control theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "mazur_s_control_theorem"
+    },
+    {
+      "name": "Mertens's theorems",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "mertens_s_theorems"
+    },
+    {
+      "name": "Midy's theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "midy_s_theorem"
+    },
+    {
+      "name": "Mihailescu's theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "mihailescu_s_theorem"
+    },
+    {
+      "name": "Mirsky-Newman theorem",
+      "fields": [
+        "group theory"
+      ],
+      "slug": "mirsky_newman_theorem"
+    },
+    {
+      "name": "Modularity theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "modularity_theorem"
+    },
+    {
+      "name": "Mordell-Weil theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "mordell_weil_theorem"
+    },
+    {
+      "name": "Multiplicity-one theorem",
+      "fields": [
+        "group representations"
+      ],
+      "slug": "multiplicity_one_theorem"
+    },
+    {
+      "name": "Nagell-Lutz theorem",
+      "fields": [
+        "elliptic curves"
+      ],
+      "slug": "nagell_lutz_theorem"
+    },
+    {
+      "name": "Niven's theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "niven_s_theorem"
+    },
+    {
+      "name": "Ostrowski's theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "ostrowski_s_theorem"
+    },
+    {
+      "name": "Pentagonal number theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "pentagonal_number_theorem"
+    },
+    {
+      "name": "Prime number theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "prime_number_theorem"
+    },
+    {
+      "name": "Principal ideal theorem",
+      "fields": [
+        "algebraic number theory"
+      ],
+      "slug": "principal_ideal_theorem"
+    },
+    {
+      "name": "Proth's theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "proth_s_theorem"
+    },
+    {
+      "name": "Quadratic reciprocity theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "quadratic_reciprocity_theorem"
+    },
+    {
+      "name": "Ramanujan-Skolem's theorem",
+      "fields": [
+        "Diophantine equations"
+      ],
+      "slug": "ramanujan_skolem_s_theorem"
+    },
+    {
+      "name": "Reflection theorem",
+      "fields": [
+        "algebraic number theory"
+      ],
+      "slug": "reflection_theorem"
+    },
+    {
+      "name": "Ribet's theorem",
+      "fields": [
+        "elliptic curves"
+      ],
+      "slug": "ribet_s_theorem"
+    },
+    {
+      "name": "Robin's theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "robin_s_theorem"
+    },
+    {
+      "name": "Rosser's theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "rosser_s_theorem"
+    },
+    {
+      "name": "Siegel-Walfisz theorem",
+      "fields": [
+        "analytic number theory"
+      ],
+      "slug": "siegel_walfisz_theorem"
+    },
+    {
+      "name": "Six exponentials theorem",
+      "fields": [
+        "transcendental number theory"
+      ],
+      "slug": "six_exponentials_theorem"
+    },
+    {
+      "name": "Skolem-Mahler-Lech theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "skolem_mahler_lech_theorem"
+    },
+    {
+      "name": "Solutions to Pell's equation",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "solutions_to_pell_s_equation"
+    },
+    {
+      "name": "Sophie Germain's theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "sophie_germain_s_theorem"
+    },
+    {
+      "name": "Sphere packing theorems in dimensions 8 and 24",
+      "fields": [
+        "geometry",
+        "modular forms"
+      ],
+      "slug": "sphere_packing_theorems_in_dimensions_8_and_24"
+    },
+    {
+      "name": "Stark-Heegner theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "stark_heegner_theorem"
+    },
+    {
+      "name": "Subspace theorem",
+      "fields": [
+        "Diophantine approximation"
+      ],
+      "slug": "subspace_theorem"
+    },
+    {
+      "name": "Sylvester's theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "sylvester_s_theorem"
+    },
+    {
+      "name": "Takagi existence theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "takagi_existence_theorem"
+    },
+    {
+      "name": "Thabit ibn Qurra's theorem",
+      "fields": [
+        "amicable numbers"
+      ],
+      "slug": "thabit_ibn_qurra_s_theorem"
+    },
+    {
+      "name": "Thue's theorem",
+      "fields": [
+        "Diophantine equation"
+      ],
+      "slug": "thue_s_theorem"
+    },
+    {
+      "name": "Thue-Siegel-Roth theorem",
+      "fields": [
+        "Diophantine approximation"
+      ],
+      "slug": "thue_siegel_roth_theorem"
+    },
+    {
+      "name": "Tijdeman's theorem",
+      "fields": [
+        "Diophantine equations"
+      ],
+      "slug": "tijdeman_s_theorem"
+    },
+    {
+      "name": "Tunnell's theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "tunnell_s_theorem"
+    },
+    {
+      "name": "Turan-Kubilius theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "turan_kubilius_theorem"
+    },
+    {
+      "name": "Vantieghems theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "vantieghems_theorem"
+    },
+    {
+      "name": "Vinogradov's theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "vinogradov_s_theorem"
+    },
+    {
+      "name": "Von Staudt-Clausen theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "von_staudt_clausen_theorem"
+    },
+    {
+      "name": "Wilson's theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "wilson_s_theorem"
+    },
+    {
+      "name": "Wolstenholme's theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "wolstenholme_s_theorem"
+    },
+    {
+      "name": "Zeckendorf's theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "zeckendorf_s_theorem"
+    },
+    {
+      "name": "Zsigmondy's theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "zsigmondy_s_theorem"
+    }
+  ],
+  "Field theory and polynomials": [
+    {
+      "name": "Abel-Ruffini theorem",
+      "fields": [
+        "theory of equations",
+        "Galois theory"
+      ],
+      "slug": "abel_ruffini_theorem"
+    },
+    {
+      "name": "Artin-Schreier theorem",
+      "fields": [
+        "real closed fields"
+      ],
+      "slug": "artin_schreier_theorem"
+    },
+    {
+      "name": "Chevalley-Warning theorem",
+      "fields": [
+        "field theory"
+      ],
+      "slug": "chevalley_warning_theorem"
+    },
+    {
+      "name": "Diller-Dress theorem",
+      "fields": [
+        "field theory"
+      ],
+      "slug": "diller_dress_theorem"
+    },
+    {
+      "name": "Fundamental theorem of Galois theory",
+      "fields": [
+        "Galois theory"
+      ],
+      "slug": "fundamental_theorem_of_galois_theory"
+    },
+    {
+      "name": "Hasse-Arf theorem",
+      "fields": [
+        "local class field theory"
+      ],
+      "slug": "hasse_arf_theorem"
+    },
+    {
+      "name": "Hilbert's theorem 90",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "hilbert_s_theorem_90"
+    },
+    {
+      "name": "Isomorphism extension theorem",
+      "fields": [
+        "abstract algebra"
+      ],
+      "slug": "isomorphism_extension_theorem"
+    },
+    {
+      "name": "Joubert's theorem",
+      "fields": [
+        "algebra"
+      ],
+      "slug": "joubert_s_theorem"
+    },
+    {
+      "name": "Lagrange's theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "lagrange_s_theorem"
+    },
+    {
+      "name": "Mason-Stothers theorem",
+      "fields": [
+        "polynomials"
+      ],
+      "slug": "mason_stothers_theorem"
+    },
+    {
+      "name": "Polynomial remainder theorem",
+      "fields": [
+        "polynomials"
+      ],
+      "slug": "polynomial_remainder_theorem"
+    },
+    {
+      "name": "Primitive element theorem",
+      "fields": [
+        "field theory"
+      ],
+      "slug": "primitive_element_theorem"
+    },
+    {
+      "name": "Rational root theorem",
+      "fields": [
+        "algebra",
+        "polynomials"
+      ],
+      "slug": "rational_root_theorem"
+    },
+    {
+      "name": "Solutions of a general cubic equation",
+      "fields": [
+        "algebra"
+      ],
+      "slug": "solutions_of_a_general_cubic_equation"
+    },
+    {
+      "name": "Solutions of a general quartic equation",
+      "fields": [
+        "algebra"
+      ],
+      "slug": "solutions_of_a_general_quartic_equation"
+    },
+    {
+      "name": "Strassmann's theorem",
+      "fields": [
+        "field theory"
+      ],
+      "slug": "strassmann_s_theorem"
+    },
+    {
+      "name": "Sturm's theorem",
+      "fields": [
+        "theory of equations"
+      ],
+      "slug": "sturm_s_theorem"
+    },
+    {
+      "name": "Vieta's formulas",
+      "fields": [
+        "quadratics"
+      ],
+      "slug": "vieta_s_formulas"
+    }
+  ],
+  "Commutative algebra": [
+    {
+      "name": "Artin approximation theorem",
+      "fields": [
+        "commutative algebra"
+      ],
+      "slug": "artin_approximation_theorem"
+    },
+    {
+      "name": "Bezout's identity",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "bezout_s_identity"
+    },
+    {
+      "name": "Chinese remainder theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "chinese_remainder_theorem"
+    },
+    {
+      "name": "Cohen structure theorem",
+      "fields": [
+        "commutative algebra"
+      ],
+      "slug": "cohen_structure_theorem"
+    },
+    {
+      "name": "Factor theorem",
+      "fields": [
+        "polynomials"
+      ],
+      "slug": "factor_theorem"
+    },
+    {
+      "name": "Fundamental theorem of arithmetic",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "fundamental_theorem_of_arithmetic"
+    },
+    {
+      "name": "Going-up and going-down theorems",
+      "fields": [
+        "commutative algebra"
+      ],
+      "slug": "going_up_and_going_down_theorems"
+    },
+    {
+      "name": "Hilbert's basis theorem",
+      "fields": [
+        "commutative algebra",
+        "invariant theory"
+      ],
+      "slug": "hilbert_s_basis_theorem"
+    },
+    {
+      "name": "Hilbert's syzygy theorem",
+      "fields": [
+        "commutative algebra"
+      ],
+      "slug": "hilbert_s_syzygy_theorem"
+    },
+    {
+      "name": "Integral root theorem",
+      "fields": [
+        "algebra",
+        "polynomials"
+      ],
+      "slug": "integral_root_theorem"
+    },
+    {
+      "name": "Krull's principal ideal theorem",
+      "fields": [
+        "commutative algebra"
+      ],
+      "slug": "krull_s_principal_ideal_theorem"
+    },
+    {
+      "name": "Lasker-Noether theorem",
+      "fields": [
+        "commutative algebra"
+      ],
+      "slug": "lasker_noether_theorem"
+    },
+    {
+      "name": "Linear congruence theorem",
+      "fields": [
+        "number theory",
+        "modular arithmetic"
+      ],
+      "slug": "linear_congruence_theorem"
+    },
+    {
+      "name": "Quillen-Suslin theorem",
+      "fields": [
+        "abstract algebra"
+      ],
+      "slug": "quillen_suslin_theorem"
+    },
+    {
+      "name": "Redei's theorem",
+      "fields": [
+        "group theory"
+      ],
+      "slug": "redei_s_theorem"
+    },
+    {
+      "name": "Schwartz-Zippel theorem",
+      "fields": [
+        "polynomials"
+      ],
+      "slug": "schwartz_zippel_theorem"
+    },
+    {
+      "name": "Structure theorem for finitely generated modules over a principal ideal domain",
+      "fields": [
+        "abstract algebra"
+      ],
+      "slug": "structure_theorem_for_finitely_generated_modules_over_a_principal_ideal_domain"
+    },
+    {
+      "name": "Unmixedness theorem",
+      "fields": [
+        "algebraic geometry"
+      ],
+      "slug": "unmixedness_theorem"
+    }
+  ],
+  "Algebraic geometry": [
+    {
+      "name": "AF+BG theorem",
+      "fields": [
+        "algebraic geometry"
+      ],
+      "slug": "af_bg_theorem"
+    },
+    {
+      "name": "Abel-Jacobi theorem",
+      "fields": [
+        "algebraic geometry"
+      ],
+      "slug": "abel_jacobi_theorem"
+    },
+    {
+      "name": "Abhyankar-Moh theorem",
+      "fields": [
+        "algebraic geometry"
+      ],
+      "slug": "abhyankar_moh_theorem"
+    },
+    {
+      "name": "Addition theorem",
+      "fields": [
+        "algebraic geometry"
+      ],
+      "slug": "addition_theorem"
+    },
+    {
+      "name": "Andreotti-Frankel theorem",
+      "fields": [
+        "algebraic geometry"
+      ],
+      "slug": "andreotti_frankel_theorem"
+    },
+    {
+      "name": "Arithmetic Riemann-Roch theorem",
+      "fields": [
+        "algebraic geometry"
+      ],
+      "slug": "arithmetic_riemann_roch_theorem"
+    },
+    {
+      "name": "BBD decomposition theorem",
+      "fields": [
+        "algebraic geometry"
+      ],
+      "slug": "bbd_decomposition_theorem"
+    },
+    {
+      "name": "Base change theorems",
+      "fields": [
+        "algebraic geometry"
+      ],
+      "slug": "base_change_theorems"
+    },
+    {
+      "name": "Beauville-Laszlo theorem",
+      "fields": [
+        "vector bundles"
+      ],
+      "slug": "beauville_laszlo_theorem"
+    },
+    {
+      "name": "Belyi's theorem",
+      "fields": [
+        "algebraic geometry"
+      ],
+      "slug": "belyi_s_theorem"
+    },
+    {
+      "name": "Bertini's theorem",
+      "fields": [
+        "algebraic geometry"
+      ],
+      "slug": "bertini_s_theorem"
+    },
+    {
+      "name": "Bezout's theorem",
+      "fields": [
+        "algebraic geometry"
+      ],
+      "slug": "bezout_s_theorem"
+    },
+    {
+      "name": "Borel fixed-point theorem",
+      "fields": [
+        "algebraic geometry"
+      ],
+      "slug": "borel_fixed_point_theorem"
+    },
+    {
+      "name": "Castelnuovo theorem",
+      "fields": [
+        "algebraic geometry"
+      ],
+      "slug": "castelnuovo_theorem"
+    },
+    {
+      "name": "Cayley-Salmon theorem",
+      "fields": [
+        "algebraic surfaces"
+      ],
+      "slug": "cayley_salmon_theorem"
+    },
+    {
+      "name": "Chasles' theorem",
+      "fields": [
+        "algebraic geometry"
+      ],
+      "slug": "chasles_theorem"
+    },
+    {
+      "name": "Chevalley's structure theorem",
+      "fields": [
+        "algebraic geometry"
+      ],
+      "slug": "chevalley_s_structure_theorem"
+    },
+    {
+      "name": "Faltings's theorem",
+      "fields": [
+        "Diophantine geometry"
+      ],
+      "slug": "faltings_s_theorem"
+    },
+    {
+      "name": "Fulton-Hansen connectedness theorem",
+      "fields": [
+        "algebraic geometry"
+      ],
+      "slug": "fulton_hansen_connectedness_theorem"
+    },
+    {
+      "name": "Grauert-Riemenschneider vanishing theorem",
+      "fields": [
+        "algebraic geometry"
+      ],
+      "slug": "grauert_riemenschneider_vanishing_theorem"
+    },
+    {
+      "name": "Grothendieck-Hirzebruch-Riemann-Roch theorem",
+      "fields": [
+        "algebraic geometry"
+      ],
+      "slug": "grothendieck_hirzebruch_riemann_roch_theorem"
+    },
+    {
+      "name": "Grothendieck's connectedness theorem",
+      "fields": [
+        "algebraic geometry"
+      ],
+      "slug": "grothendieck_s_connectedness_theorem"
+    },
+    {
+      "name": "Haboush's theorem",
+      "fields": [
+        "algebraic groups",
+        "representation theory",
+        "invariant theory"
+      ],
+      "slug": "haboush_s_theorem"
+    },
+    {
+      "name": "Harnack's curve theorem",
+      "fields": [
+        "real algebraic geometry"
+      ],
+      "slug": "harnack_s_curve_theorem"
+    },
+    {
+      "name": "Hasse's theorem on elliptic curves",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "hasse_s_theorem_on_elliptic_curves"
+    },
+    {
+      "name": "Hilbert's Nullstellensatz",
+      "fields": [
+        "commutative algebra",
+        "algebraic geometry"
+      ],
+      "slug": "hilbert_s_nullstellensatz"
+    },
+    {
+      "name": "Hironaka theorem",
+      "fields": [
+        "algebraic geometry"
+      ],
+      "slug": "hironaka_theorem"
+    },
+    {
+      "name": "Hodge index theorem",
+      "fields": [
+        "algebraic surfaces"
+      ],
+      "slug": "hodge_index_theorem"
+    },
+    {
+      "name": "Katz-Lang finiteness theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "katz_lang_finiteness_theorem"
+    },
+    {
+      "name": "Lefschetz hyperplane theorem",
+      "fields": [
+        "algebraic topology"
+      ],
+      "slug": "lefschetz_hyperplane_theorem"
+    },
+    {
+      "name": "Leray's theorem",
+      "fields": [
+        "algebraic geometry"
+      ],
+      "slug": "leray_s_theorem"
+    },
+    {
+      "name": "Manin-Drinfeld theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "manin_drinfeld_theorem"
+    },
+    {
+      "name": "Max Noether's theorem",
+      "fields": [
+        "algebraic geometry"
+      ],
+      "slug": "max_noether_s_theorem"
+    },
+    {
+      "name": "Mazur's torsion theorem",
+      "fields": [
+        "algebraic geometry"
+      ],
+      "slug": "mazur_s_torsion_theorem"
+    },
+    {
+      "name": "Mumford vanishing theorem",
+      "fields": [
+        "algebraic geometry"
+      ],
+      "slug": "mumford_vanishing_theorem"
+    },
+    {
+      "name": "Nagata's compactification theorem",
+      "fields": [
+        "algebraic geometry"
+      ],
+      "slug": "nagata_s_compactification_theorem"
+    },
+    {
+      "name": "Noether's theorem on rationality for surfaces",
+      "fields": [
+        "algebraic surfaces"
+      ],
+      "slug": "noether_s_theorem_on_rationality_for_surfaces"
+    },
+    {
+      "name": "Proper base change theorem",
+      "fields": [
+        "algebraic geometry"
+      ],
+      "slug": "proper_base_change_theorem"
+    },
+    {
+      "name": "Puiseux's theorem",
+      "fields": [
+        "algebraic geometry"
+      ],
+      "slug": "puiseux_s_theorem"
+    },
+    {
+      "name": "Ramanujam vanishing theorem",
+      "fields": [
+        "algebraic geometry"
+      ],
+      "slug": "ramanujam_vanishing_theorem"
+    },
+    {
+      "name": "Reider's theorem",
+      "fields": [
+        "algebraic surfaces"
+      ],
+      "slug": "reider_s_theorem"
+    },
+    {
+      "name": "Riemann-Roch theorem for surfaces",
+      "fields": [
+        "algebraic surfaces"
+      ],
+      "slug": "riemann_roch_theorem_for_surfaces"
+    },
+    {
+      "name": "Sylvester pentahedral theorem",
+      "fields": [
+        "invariant theory"
+      ],
+      "slug": "sylvester_pentahedral_theorem"
+    },
+    {
+      "name": "Theorem of the cube",
+      "fields": [
+        "algebraic varieties"
+      ],
+      "slug": "theorem_of_the_cube"
+    },
+    {
+      "name": "Torelli theorem",
+      "fields": [
+        "algebraic geometry"
+      ],
+      "slug": "torelli_theorem"
+    },
+    {
+      "name": "Tsen's theorem",
+      "fields": [
+        "algebraic geometry"
+      ],
+      "slug": "tsen_s_theorem"
+    },
+    {
+      "name": "Weber's theorem",
+      "fields": [
+        "algebraic curves"
+      ],
+      "slug": "weber_s_theorem"
+    },
+    {
+      "name": "Zariski's connectedness theorem",
+      "fields": [
+        "algebraic geometry"
+      ],
+      "slug": "zariski_s_connectedness_theorem"
+    },
+    {
+      "name": "Zariski's main theorem",
+      "fields": [
+        "algebraic geometry"
+      ],
+      "slug": "zariski_s_main_theorem"
+    }
+  ],
+  "Linear and multilinear algebra; matrix theory": [
+    {
+      "name": "Amitsur-Levitzki theorem",
+      "fields": [
+        "linear algebra"
+      ],
+      "slug": "amitsur_levitzki_theorem"
+    },
+    {
+      "name": "Binomial inverse theorem",
+      "fields": [
+        "linear algebra"
+      ],
+      "slug": "binomial_inverse_theorem"
+    },
+    {
+      "name": "Birkhoff-Von Neumann theorem",
+      "fields": [
+        "linear algebra"
+      ],
+      "slug": "birkhoff_von_neumann_theorem"
+    },
+    {
+      "name": "Bregman-Minc inequality",
+      "fields": [
+        "discrete mathematics"
+      ],
+      "slug": "bregman_minc_inequality"
+    },
+    {
+      "name": "Cauchy-Binet formula",
+      "fields": [
+        "linear algebra"
+      ],
+      "slug": "cauchy_binet_formula"
+    },
+    {
+      "name": "Cayley-Hamilton theorem",
+      "fields": [
+        "linear algebra"
+      ],
+      "slug": "cayley_hamilton_theorem"
+    },
+    {
+      "name": "Dimension theorem for vector spaces",
+      "fields": [
+        "vector spaces",
+        "linear algebra"
+      ],
+      "slug": "dimension_theorem_for_vector_spaces"
+    },
+    {
+      "name": "Euler's rotation theorem",
+      "fields": [
+        "geometry"
+      ],
+      "slug": "euler_s_rotation_theorem"
+    },
+    {
+      "name": "Exchange theorem",
+      "fields": [
+        "linear algebra"
+      ],
+      "slug": "exchange_theorem"
+    },
+    {
+      "name": "Gamas's Theorem",
+      "fields": [
+        "multilinear algebra"
+      ],
+      "slug": "gamas_s_theorem"
+    },
+    {
+      "name": "Gershgorin circle theorem",
+      "fields": [
+        "matrix theory"
+      ],
+      "slug": "gershgorin_circle_theorem"
+    },
+    {
+      "name": "Inverse eigenvalues theorem",
+      "fields": [
+        "linear algebra"
+      ],
+      "slug": "inverse_eigenvalues_theorem"
+    },
+    {
+      "name": "Perron-Frobenius theorem",
+      "fields": [
+        "matrix theory"
+      ],
+      "slug": "perron_frobenius_theorem"
+    },
+    {
+      "name": "Principal axis theorem",
+      "fields": [
+        "linear algebra"
+      ],
+      "slug": "principal_axis_theorem"
+    },
+    {
+      "name": "Rank-nullity theorem",
+      "fields": [
+        "linear algebra"
+      ],
+      "slug": "rank_nullity_theorem"
+    },
+    {
+      "name": "Rouche-Capelli theorem",
+      "fields": [
+        "linear algebra"
+      ],
+      "slug": "rouche_capelli_theorem"
+    },
+    {
+      "name": "Sinkhorn's theorem",
+      "fields": [
+        "matrix theory"
+      ],
+      "slug": "sinkhorn_s_theorem"
+    },
+    {
+      "name": "Specht's theorem",
+      "fields": [
+        "matrix theory"
+      ],
+      "slug": "specht_s_theorem"
+    },
+    {
+      "name": "Spectral theorem",
+      "fields": [
+        "linear algebra",
+        "functional analysis"
+      ],
+      "slug": "spectral_theorem"
+    },
+    {
+      "name": "Sylvester's determinant theorem",
+      "fields": [
+        "determinants"
+      ],
+      "slug": "sylvester_s_determinant_theorem"
+    },
+    {
+      "name": "Sylvester's law of inertia",
+      "fields": [
+        "quadratic forms"
+      ],
+      "slug": "sylvester_s_law_of_inertia"
+    },
+    {
+      "name": "Witt's theorem",
+      "fields": [
+        "quadratic forms"
+      ],
+      "slug": "witt_s_theorem"
+    }
+  ],
+  "Associative rings and algebras": [
+    {
+      "name": "Artin-Wedderburn theorem",
+      "fields": [
+        "abstract algebra"
+      ],
+      "slug": "artin_wedderburn_theorem"
+    },
+    {
+      "name": "Artin-Zorn theorem",
+      "fields": [
+        "algebra"
+      ],
+      "slug": "artin_zorn_theorem"
+    },
+    {
+      "name": "Brauer-Cartan-Hua theorem",
+      "fields": [
+        "ring theory"
+      ],
+      "slug": "brauer_cartan_hua_theorem"
+    },
+    {
+      "name": "Frobenius theorem",
+      "fields": [
+        "abstract algebras"
+      ],
+      "slug": "frobenius_theorem"
+    },
+    {
+      "name": "Goldie's theorem",
+      "fields": [
+        "ring theory"
+      ],
+      "slug": "goldie_s_theorem"
+    },
+    {
+      "name": "Jacobson density theorem",
+      "fields": [
+        "ring theory"
+      ],
+      "slug": "jacobson_density_theorem"
+    },
+    {
+      "name": "Jacobson-Bourbaki theorem",
+      "fields": [
+        "algebra"
+      ],
+      "slug": "jacobson_bourbaki_theorem"
+    },
+    {
+      "name": "Levitzky's theorem",
+      "fields": [
+        "ring theory"
+      ],
+      "slug": "levitzky_s_theorem"
+    },
+    {
+      "name": "Regev's theorem",
+      "fields": [
+        "ring theory"
+      ],
+      "slug": "regev_s_theorem"
+    },
+    {
+      "name": "Skolem-Noether theorem",
+      "fields": [
+        "simple algebras"
+      ],
+      "slug": "skolem_noether_theorem"
+    },
+    {
+      "name": "Wedderburn's little theorem",
+      "fields": [
+        "ring theory"
+      ],
+      "slug": "wedderburn_s_little_theorem"
+    },
+    {
+      "name": "Wedderburn's theorem",
+      "fields": [
+        "abstract algebra"
+      ],
+      "slug": "wedderburn_s_theorem"
+    }
+  ],
+  "Nonassociative rings and algebras": [
+    {
+      "name": "Ado's theorem",
+      "fields": [
+        "Lie algebra"
+      ],
+      "slug": "ado_s_theorem"
+    },
+    {
+      "name": "Goddard-Thorn theorem",
+      "fields": [
+        "vertex algebras"
+      ],
+      "slug": "goddard_thorn_theorem"
+    },
+    {
+      "name": "Hurwitz's theorem",
+      "fields": [
+        "normed division algebras"
+      ],
+      "slug": "hurwitz_s_theorem"
+    },
+    {
+      "name": "Jacobson-Morozov theorem",
+      "fields": [
+        "Lie algebra"
+      ],
+      "slug": "jacobson_morozov_theorem"
+    },
+    {
+      "name": "Levi's theorem",
+      "fields": [
+        "Lie groups"
+      ],
+      "slug": "levi_s_theorem"
+    },
+    {
+      "name": "Lie's theorem",
+      "fields": [
+        "Lie algebra"
+      ],
+      "slug": "lie_s_theorem"
+    },
+    {
+      "name": "Poincare-Birkhoff-Witt theorem",
+      "fields": [
+        "universal enveloping algebras"
+      ],
+      "slug": "poincare_birkhoff_witt_theorem"
+    },
+    {
+      "name": "Shirshov-Cohn theorem",
+      "fields": [
+        "Jordan algebras"
+      ],
+      "slug": "shirshov_cohn_theorem"
+    },
+    {
+      "name": "Shirshov-Witt theorem",
+      "fields": [
+        "Lie algebras"
+      ],
+      "slug": "shirshov_witt_theorem"
+    }
+  ],
+  "Category theory and homological algebra": [
+    {
+      "name": "Beck's monadicity theorem",
+      "fields": [
+        "category theory"
+      ],
+      "slug": "beck_s_monadicity_theorem"
+    },
+    {
+      "name": "Bruguieres modularity theorem",
+      "fields": [
+        "category theory"
+      ],
+      "slug": "bruguieres_modularity_theorem"
+    },
+    {
+      "name": "Freyd's adjoint functor theorem",
+      "fields": [
+        "category theory"
+      ],
+      "slug": "freyd_s_adjoint_functor_theorem"
+    },
+    {
+      "name": "Golod-Shafarevich theorem",
+      "fields": [
+        "group theory"
+      ],
+      "slug": "golod_shafarevich_theorem"
+    },
+    {
+      "name": "Lawvere's fixed-point theorem",
+      "fields": [
+        "mathematical logic"
+      ],
+      "slug": "lawvere_s_fixed_point_theorem"
+    },
+    {
+      "name": "Mitchell's embedding theorem",
+      "fields": [
+        "category theory"
+      ],
+      "slug": "mitchell_s_embedding_theorem"
+    },
+    {
+      "name": "The duality theorem",
+      "fields": [
+        "topology"
+      ],
+      "slug": "the_duality_theorem"
+    },
+    {
+      "name": "Yoneda lemma",
+      "fields": [
+        "category theory"
+      ],
+      "slug": "yoneda_lemma"
+    }
+  ],
+  "K-theory": [
+    {
+      "name": "Atiyah-Segal completion theorem",
+      "fields": [
+        "homotopy theory"
+      ],
+      "slug": "atiyah_segal_completion_theorem"
+    },
+    {
+      "name": "Snaith's theorem",
+      "fields": [
+        "algebraic topology"
+      ],
+      "slug": "snaith_s_theorem"
+    }
+  ],
+  "Group theory and generalizations": [
+    {
+      "name": "Alperin-Brauer-Gorenstein theorem",
+      "fields": [
+        "finite groups"
+      ],
+      "slug": "alperin_brauer_gorenstein_theorem"
+    },
+    {
+      "name": "Bass-Guirvarc'h formula",
+      "fields": [
+        "group theory"
+      ],
+      "slug": "bass_guirvarc_h_formula"
+    },
+    {
+      "name": "Bass-Serre theorem",
+      "fields": [
+        "group theory"
+      ],
+      "slug": "bass_serre_theorem"
+    },
+    {
+      "name": "Borel-Bott-Weil theorem",
+      "fields": [
+        "representation theory"
+      ],
+      "slug": "borel_bott_weil_theorem"
+    },
+    {
+      "name": "Borel-Weil theorem",
+      "fields": [
+        "representation theory"
+      ],
+      "slug": "borel_weil_theorem"
+    },
+    {
+      "name": "Brauer-Nesbitt theorem",
+      "fields": [
+        "representation theory of finite groups"
+      ],
+      "slug": "brauer_nesbitt_theorem"
+    },
+    {
+      "name": "Brauer-Suzuki theorem",
+      "fields": [
+        "finite groups"
+      ],
+      "slug": "brauer_suzuki_theorem"
+    },
+    {
+      "name": "Brauer-Suzuki-Wall theorem",
+      "fields": [
+        "group theory"
+      ],
+      "slug": "brauer_suzuki_wall_theorem"
+    },
+    {
+      "name": "Brauer's theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "brauer_s_theorem"
+    },
+    {
+      "name": "Brauer's theorem on induced characters",
+      "fields": [
+        "representation theory of finite groups"
+      ],
+      "slug": "brauer_s_theorem_on_induced_characters"
+    },
+    {
+      "name": "Burnside's theorem",
+      "fields": [
+        "group theory"
+      ],
+      "slug": "burnside_s_theorem"
+    },
+    {
+      "name": "Cartan-Dieudonne theorem",
+      "fields": [
+        "group theory"
+      ],
+      "slug": "cartan_dieudonne_theorem"
+    },
+    {
+      "name": "Cauchy's theorem",
+      "fields": [
+        "finite groups"
+      ],
+      "slug": "cauchy_s_theorem"
+    },
+    {
+      "name": "Cayley's theorem",
+      "fields": [
+        "group theory"
+      ],
+      "slug": "cayley_s_theorem"
+    },
+    {
+      "name": "Chevalley-Shephard-Todd theorem",
+      "fields": [
+        "finite group"
+      ],
+      "slug": "chevalley_shephard_todd_theorem"
+    },
+    {
+      "name": "Classification of finite simple groups",
+      "fields": [
+        "group theory"
+      ],
+      "slug": "classification_of_finite_simple_groups"
+    },
+    {
+      "name": "Feit-Thompson theorem",
+      "fields": [
+        "finite groups"
+      ],
+      "slug": "feit_thompson_theorem"
+    },
+    {
+      "name": "Fitting's theorem",
+      "fields": [
+        "group theory"
+      ],
+      "slug": "fitting_s_theorem"
+    },
+    {
+      "name": "Flat torus theorem",
+      "fields": [
+        "geometric group theory"
+      ],
+      "slug": "flat_torus_theorem"
+    },
+    {
+      "name": "Focal subgroup theorem",
+      "fields": [
+        "abstract algebra"
+      ],
+      "slug": "focal_subgroup_theorem"
+    },
+    {
+      "name": "Frobenius determinant theorem",
+      "fields": [
+        "group theory"
+      ],
+      "slug": "frobenius_determinant_theorem"
+    },
+    {
+      "name": "Frobenius reciprocity theorem",
+      "fields": [
+        "group representations"
+      ],
+      "slug": "frobenius_reciprocity_theorem"
+    },
+    {
+      "name": "Frucht's theorem",
+      "fields": [
+        "graph theory"
+      ],
+      "slug": "frucht_s_theorem"
+    },
+    {
+      "name": "Great orthogonality theorem",
+      "fields": [
+        "group theory"
+      ],
+      "slug": "great_orthogonality_theorem"
+    },
+    {
+      "name": "Gromov's theorem on groups of polynomial growth",
+      "fields": [
+        "geometric group theory"
+      ],
+      "slug": "gromov_s_theorem_on_groups_of_polynomial_growth"
+    },
+    {
+      "name": "Grushko theorem",
+      "fields": [
+        "group theory"
+      ],
+      "slug": "grushko_theorem"
+    },
+    {
+      "name": "Higman's embedding theorem",
+      "fields": [
+        "group theory"
+      ],
+      "slug": "higman_s_embedding_theorem"
+    },
+    {
+      "name": "Isoperimetric gap",
+      "fields": [
+        "geometric group theory",
+        "metric geometry"
+      ],
+      "slug": "isoperimetric_gap"
+    },
+    {
+      "name": "Jordan-Holder theorem",
+      "fields": [
+        "group theory"
+      ],
+      "slug": "jordan_holder_theorem"
+    },
+    {
+      "name": "Jordan-Schur theorem",
+      "fields": [
+        "group theory"
+      ],
+      "slug": "jordan_schur_theorem"
+    },
+    {
+      "name": "Jordan's theorem (multiply transitive groups)",
+      "fields": [
+        "group theory"
+      ],
+      "slug": "jordan_s_theorem_multiply_transitive_groups"
+    },
+    {
+      "name": "Krull-Schmidt theorem",
+      "fields": [
+        "group theory"
+      ],
+      "slug": "krull_schmidt_theorem"
+    },
+    {
+      "name": "Kurosh subgroup theorem",
+      "fields": [
+        "group theory"
+      ],
+      "slug": "kurosh_subgroup_theorem"
+    },
+    {
+      "name": "L-balance theorem",
+      "fields": [
+        "finite groups"
+      ],
+      "slug": "l_balance_theorem"
+    },
+    {
+      "name": "Lagrange's theorem",
+      "fields": [
+        "group theory"
+      ],
+      "slug": "lagrange_s_theorem"
+    },
+    {
+      "name": "Lie-Kolchin theorem",
+      "fields": [
+        "algebraic groups",
+        "representation theory"
+      ],
+      "slug": "lie_kolchin_theorem"
+    },
+    {
+      "name": "Maschke's theorem",
+      "fields": [
+        "group representations"
+      ],
+      "slug": "maschke_s_theorem"
+    },
+    {
+      "name": "Moufang's theorem",
+      "fields": [
+        "loop theory"
+      ],
+      "slug": "moufang_s_theorem"
+    },
+    {
+      "name": "Nagao's theorem",
+      "fields": [
+        "group theory"
+      ],
+      "slug": "nagao_s_theorem"
+    },
+    {
+      "name": "Nielsen-Schreier theorem",
+      "fields": [
+        "free groups"
+      ],
+      "slug": "nielsen_schreier_theorem"
+    },
+    {
+      "name": "Orbit-stabilizer theorem",
+      "fields": [
+        "group theory"
+      ],
+      "slug": "orbit_stabilizer_theorem"
+    },
+    {
+      "name": "Schreier refinement theorem",
+      "fields": [
+        "group theory"
+      ],
+      "slug": "schreier_refinement_theorem"
+    },
+    {
+      "name": "Schur's lemma",
+      "fields": [
+        "representation theory"
+      ],
+      "slug": "schur_s_lemma"
+    },
+    {
+      "name": "Schur-Zassenhaus theorem",
+      "fields": [
+        "group theory"
+      ],
+      "slug": "schur_zassenhaus_theorem"
+    },
+    {
+      "name": "Sela's theorem",
+      "fields": [
+        "hyperbolic groups"
+      ],
+      "slug": "sela_s_theorem"
+    },
+    {
+      "name": "Stallings theorem about ends of groups",
+      "fields": [
+        "group theory"
+      ],
+      "slug": "stallings_theorem_about_ends_of_groups"
+    },
+    {
+      "name": "Superrigidity theorem",
+      "fields": [
+        "algebraic groups"
+      ],
+      "slug": "superrigidity_theorem"
+    },
+    {
+      "name": "Svarc-Milnor lemma",
+      "fields": [
+        "geometric group theory"
+      ],
+      "slug": "svarc_milnor_lemma"
+    },
+    {
+      "name": "Sylow theorems",
+      "fields": [
+        "group theory"
+      ],
+      "slug": "sylow_theorems"
+    },
+    {
+      "name": "Thompson transitivity theorem",
+      "fields": [
+        "finite groups"
+      ],
+      "slug": "thompson_transitivity_theorem"
+    },
+    {
+      "name": "Thompson uniqueness theorem",
+      "fields": [
+        "finite groups"
+      ],
+      "slug": "thompson_uniqueness_theorem"
+    },
+    {
+      "name": "Tits alternative",
+      "fields": [
+        "geometric group theory"
+      ],
+      "slug": "tits_alternative"
+    },
+    {
+      "name": "Trichotomy theorem",
+      "fields": [
+        "finite groups"
+      ],
+      "slug": "trichotomy_theorem"
+    },
+    {
+      "name": "Walter theorem",
+      "fields": [
+        "finite groups"
+      ],
+      "slug": "walter_theorem"
+    },
+    {
+      "name": "Z* theorem",
+      "fields": [
+        "finite groups"
+      ],
+      "slug": "z_theorem"
+    },
+    {
+      "name": "ZJ theorem",
+      "fields": [
+        "finite groups"
+      ],
+      "slug": "zj_theorem"
+    }
+  ],
+  "Topological groups, Lie groups": [
+    {
+      "name": "Cartan's theorem",
+      "fields": [
+        "Lie group"
+      ],
+      "slug": "cartan_s_theorem"
+    },
+    {
+      "name": "Harish-Chandra theorem",
+      "fields": [
+        "representation theory"
+      ],
+      "slug": "harish_chandra_theorem"
+    },
+    {
+      "name": "Harish-Chandra's regularity theorem",
+      "fields": [
+        "representation theory"
+      ],
+      "slug": "harish_chandra_s_regularity_theorem"
+    },
+    {
+      "name": "Iwasawa decomposition",
+      "fields": [
+        "Lie theory"
+      ],
+      "slug": "iwasawa_decomposition"
+    },
+    {
+      "name": "Kempf-Ness theorem",
+      "fields": [
+        "algebraic geometry"
+      ],
+      "slug": "kempf_ness_theorem"
+    },
+    {
+      "name": "Lie's third theorem",
+      "fields": [
+        "Lie group"
+      ],
+      "slug": "lie_s_third_theorem"
+    },
+    {
+      "name": "Montgomery-Zippin-Gleason theorem",
+      "fields": [
+        "transformation groups"
+      ],
+      "slug": "montgomery_zippin_gleason_theorem"
+    },
+    {
+      "name": "Plancherel theorem for spherical functions",
+      "fields": [
+        "representation theory"
+      ],
+      "slug": "plancherel_theorem_for_spherical_functions"
+    },
+    {
+      "name": "Trombi-Varadarajan theorem",
+      "fields": [
+        "Lie group"
+      ],
+      "slug": "trombi_varadarajan_theorem"
+    }
+  ],
+  "Real functions": [
+    {
+      "name": "Anderson's theorem",
+      "fields": [
+        "real analysis"
+      ],
+      "slug": "anderson_s_theorem"
+    },
+    {
+      "name": "Bernstein's theorem",
+      "fields": [
+        "functional analysis"
+      ],
+      "slug": "bernstein_s_theorem"
+    },
+    {
+      "name": "Bohr-Mollerup theorem",
+      "fields": [
+        "gamma function"
+      ],
+      "slug": "bohr_mollerup_theorem"
+    },
+    {
+      "name": "Bolzano's theorem",
+      "fields": [
+        "real analysis",
+        "calculus"
+      ],
+      "slug": "bolzano_s_theorem"
+    },
+    {
+      "name": "Constant rank theorem",
+      "fields": [
+        "multivariate calculus"
+      ],
+      "slug": "constant_rank_theorem"
+    },
+    {
+      "name": "Cousin's lemma",
+      "fields": [
+        "real analysis"
+      ],
+      "slug": "cousin_s_lemma"
+    },
+    {
+      "name": "Danskin's theorem",
+      "fields": [
+        "convex analysis"
+      ],
+      "slug": "danskin_s_theorem"
+    },
+    {
+      "name": "Darboux's theorem",
+      "fields": [
+        "real analysis"
+      ],
+      "slug": "darboux_s_theorem"
+    },
+    {
+      "name": "Denjoy-Carleman theorem",
+      "fields": [
+        "functional analysis"
+      ],
+      "slug": "denjoy_carleman_theorem"
+    },
+    {
+      "name": "Denjoy-Young-Saks theorem",
+      "fields": [
+        "real analysis"
+      ],
+      "slug": "denjoy_young_saks_theorem"
+    },
+    {
+      "name": "Dini's theorem",
+      "fields": [
+        "analysis"
+      ],
+      "slug": "dini_s_theorem"
+    },
+    {
+      "name": "Divergence theorem",
+      "fields": [
+        "vector calculus"
+      ],
+      "slug": "divergence_theorem"
+    },
+    {
+      "name": "Fermat's theorem (stationary points)",
+      "fields": [
+        "real analysis"
+      ],
+      "slug": "fermat_s_theorem_stationary_points"
+    },
+    {
+      "name": "Frankova-Helly selection theorem",
+      "fields": [
+        "mathematical analysis"
+      ],
+      "slug": "frankova_helly_selection_theorem"
+    },
+    {
+      "name": "Froda's theorem",
+      "fields": [
+        "mathematical analysis"
+      ],
+      "slug": "froda_s_theorem"
+    },
+    {
+      "name": "Fubini's theorem on differentiation",
+      "fields": [
+        "real analysis"
+      ],
+      "slug": "fubini_s_theorem_on_differentiation"
+    },
+    {
+      "name": "Fundamental theorem of calculus",
+      "fields": [
+        "calculus"
+      ],
+      "slug": "fundamental_theorem_of_calculus"
+    },
+    {
+      "name": "Gauss theorem",
+      "fields": [
+        "vector calculus"
+      ],
+      "slug": "gauss_theorem"
+    },
+    {
+      "name": "Gradient theorem",
+      "fields": [
+        "vector calculus"
+      ],
+      "slug": "gradient_theorem"
+    },
+    {
+      "name": "Green's theorem",
+      "fields": [
+        "vector calculus"
+      ],
+      "slug": "green_s_theorem"
+    },
+    {
+      "name": "Helly's selection theorem",
+      "fields": [
+        "mathematical analysis"
+      ],
+      "slug": "helly_s_selection_theorem"
+    },
+    {
+      "name": "Implicit function theorem",
+      "fields": [
+        "vector calculus"
+      ],
+      "slug": "implicit_function_theorem"
+    },
+    {
+      "name": "Increment theorem",
+      "fields": [
+        "mathematical analysis"
+      ],
+      "slug": "increment_theorem"
+    },
+    {
+      "name": "Intermediate value theorem",
+      "fields": [
+        "calculus"
+      ],
+      "slug": "intermediate_value_theorem"
+    },
+    {
+      "name": "Inverse function theorem",
+      "fields": [
+        "vector calculus"
+      ],
+      "slug": "inverse_function_theorem"
+    },
+    {
+      "name": "Kolmogorov-Arnold representation theorem",
+      "fields": [
+        "real analysis",
+        "approximation theory"
+      ],
+      "slug": "kolmogorov_arnold_representation_theorem"
+    },
+    {
+      "name": "Lebesgue differentiation theorem",
+      "fields": [
+        "real analysis"
+      ],
+      "slug": "lebesgue_differentiation_theorem"
+    },
+    {
+      "name": "Luzin's theorem",
+      "fields": [
+        "real analysis"
+      ],
+      "slug": "luzin_s_theorem"
+    },
+    {
+      "name": "Malgrange preparation theorem",
+      "fields": [
+        "singularity theory"
+      ],
+      "slug": "malgrange_preparation_theorem"
+    },
+    {
+      "name": "Mean value theorem",
+      "fields": [
+        "calculus"
+      ],
+      "slug": "mean_value_theorem"
+    },
+    {
+      "name": "Monotone convergence theorem",
+      "fields": [
+        "mathematical analysis"
+      ],
+      "slug": "monotone_convergence_theorem"
+    },
+    {
+      "name": "Muntz-Szasz theorem",
+      "fields": [
+        "functional analysis"
+      ],
+      "slug": "muntz_szasz_theorem"
+    },
+    {
+      "name": "Rademacher's theorem",
+      "fields": [
+        "mathematical analysis"
+      ],
+      "slug": "rademacher_s_theorem"
+    },
+    {
+      "name": "Rising sun lemma",
+      "fields": [
+        "real analysis"
+      ],
+      "slug": "rising_sun_lemma"
+    },
+    {
+      "name": "Rolle's theorem",
+      "fields": [
+        "calculus"
+      ],
+      "slug": "rolle_s_theorem"
+    },
+    {
+      "name": "Squeeze theorem",
+      "fields": [
+        "mathematical analysis"
+      ],
+      "slug": "squeeze_theorem"
+    },
+    {
+      "name": "Stokes's theorem",
+      "fields": [
+        "vector calculus",
+        "differential topology"
+      ],
+      "slug": "stokes_s_theorem"
+    },
+    {
+      "name": "Titchmarsh convolution theorem",
+      "fields": [
+        "complex analysis"
+      ],
+      "slug": "titchmarsh_convolution_theorem"
+    },
+    {
+      "name": "Whitney extension theorem",
+      "fields": [
+        "mathematical analysis"
+      ],
+      "slug": "whitney_extension_theorem"
+    },
+    {
+      "name": "Zahorski theorem",
+      "fields": [
+        "real analysis"
+      ],
+      "slug": "zahorski_theorem"
+    }
+  ],
+  "Measure and integration": [
+    {
+      "name": "Banach-Tarski theorem",
+      "fields": [
+        "measure theory"
+      ],
+      "slug": "banach_tarski_theorem"
+    },
+    {
+      "name": "Brunn-Minkowski theorem",
+      "fields": [
+        "Riemannian geometry"
+      ],
+      "slug": "brunn_minkowski_theorem"
+    },
+    {
+      "name": "Cameron-Martin theorem",
+      "fields": [
+        "measure theory"
+      ],
+      "slug": "cameron_martin_theorem"
+    },
+    {
+      "name": "Caratheodory's extension theorem",
+      "fields": [
+        "measure theory"
+      ],
+      "slug": "caratheodory_s_extension_theorem"
+    },
+    {
+      "name": "Cramer-Wold theorem",
+      "fields": [
+        "measure theory"
+      ],
+      "slug": "cramer_wold_theorem"
+    },
+    {
+      "name": "Disintegration theorem",
+      "fields": [
+        "measure theory"
+      ],
+      "slug": "disintegration_theorem"
+    },
+    {
+      "name": "Dominated convergence theorem",
+      "fields": [
+        "Lebesgue integration"
+      ],
+      "slug": "dominated_convergence_theorem"
+    },
+    {
+      "name": "Egorov's theorem",
+      "fields": [
+        "measure theory"
+      ],
+      "slug": "egorov_s_theorem"
+    },
+    {
+      "name": "Fatou-Lebesgue theorem",
+      "fields": [
+        "real analysis"
+      ],
+      "slug": "fatou_lebesgue_theorem"
+    },
+    {
+      "name": "Fubini's theorem",
+      "fields": [
+        "integration"
+      ],
+      "slug": "fubini_s_theorem"
+    },
+    {
+      "name": "Hahn decomposition theorem",
+      "fields": [
+        "measure theory"
+      ],
+      "slug": "hahn_decomposition_theorem"
+    },
+    {
+      "name": "Hahn-Kolmogorov theorem",
+      "fields": [
+        "measure theory"
+      ],
+      "slug": "hahn_kolmogorov_theorem"
+    },
+    {
+      "name": "Ham sandwich theorem",
+      "fields": [
+        "topology"
+      ],
+      "slug": "ham_sandwich_theorem"
+    },
+    {
+      "name": "Hobby-Rice theorem",
+      "fields": [
+        "mathematical analysis"
+      ],
+      "slug": "hobby_rice_theorem"
+    },
+    {
+      "name": "Komura's theorem",
+      "fields": [
+        "measure theory"
+      ],
+      "slug": "komura_s_theorem"
+    },
+    {
+      "name": "Lebesgue's decomposition theorem",
+      "fields": [
+        "measure theory"
+      ],
+      "slug": "lebesgue_s_decomposition_theorem"
+    },
+    {
+      "name": "Lebesgue's density theorem",
+      "fields": [
+        "measure theory"
+      ],
+      "slug": "lebesgue_s_density_theorem"
+    },
+    {
+      "name": "Maharam's theorem",
+      "fields": [
+        "measure theory"
+      ],
+      "slug": "maharam_s_theorem"
+    },
+    {
+      "name": "Minlos's theorem",
+      "fields": [
+        "functional analysis"
+      ],
+      "slug": "minlos_s_theorem"
+    },
+    {
+      "name": "Monotone class theorem",
+      "fields": [
+        "measure theory"
+      ],
+      "slug": "monotone_class_theorem"
+    },
+    {
+      "name": "Prokhorov's theorem",
+      "fields": [
+        "measure theory"
+      ],
+      "slug": "prokhorov_s_theorem"
+    },
+    {
+      "name": "Radon-Nikodym theorem",
+      "fields": [
+        "measure theory"
+      ],
+      "slug": "radon_nikodym_theorem"
+    },
+    {
+      "name": "Schilder's theorem",
+      "fields": [
+        "stochastic processes"
+      ],
+      "slug": "schilder_s_theorem"
+    },
+    {
+      "name": "Schroder-Bernstein theorem for measurable spaces",
+      "fields": [
+        "measure theory"
+      ],
+      "slug": "schroder_bernstein_theorem_for_measurable_spaces"
+    },
+    {
+      "name": "Stein-Stromberg theorem",
+      "fields": [
+        "measure theory"
+      ],
+      "slug": "stein_stromberg_theorem"
+    },
+    {
+      "name": "Steinhaus theorem",
+      "fields": [
+        "measure theory"
+      ],
+      "slug": "steinhaus_theorem"
+    },
+    {
+      "name": "Stone-Tukey theorem",
+      "fields": [
+        "topology"
+      ],
+      "slug": "stone_tukey_theorem"
+    },
+    {
+      "name": "Structure theorem for Gaussian measures",
+      "fields": [
+        "measure theory"
+      ],
+      "slug": "structure_theorem_for_gaussian_measures"
+    },
+    {
+      "name": "Vitali convergence theorem",
+      "fields": [
+        "measure theory"
+      ],
+      "slug": "vitali_convergence_theorem"
+    },
+    {
+      "name": "Vitali theorem",
+      "fields": [
+        "measure theory"
+      ],
+      "slug": "vitali_theorem"
+    },
+    {
+      "name": "Vitali-Hahn-Saks theorem",
+      "fields": [
+        "measure theory"
+      ],
+      "slug": "vitali_hahn_saks_theorem"
+    }
+  ],
+  "Functions of a complex variable": [
+    {
+      "name": "Akhiezer's theorem",
+      "fields": [
+        "complex analysis"
+      ],
+      "slug": "akhiezer_s_theorem"
+    },
+    {
+      "name": "Arakelyan's theorem",
+      "fields": [
+        "complex analysis"
+      ],
+      "slug": "arakelyan_s_theorem"
+    },
+    {
+      "name": "Area theorem (conformal mapping)",
+      "fields": [
+        "complex analysis"
+      ],
+      "slug": "area_theorem_conformal_mapping"
+    },
+    {
+      "name": "Beurling-Lax theorem",
+      "fields": [
+        "Hardy spaces"
+      ],
+      "slug": "beurling_lax_theorem"
+    },
+    {
+      "name": "Bloch's theorem",
+      "fields": [
+        "complex analysis"
+      ],
+      "slug": "bloch_s_theorem"
+    },
+    {
+      "name": "Bocher's theorem",
+      "fields": [
+        "complex analysis"
+      ],
+      "slug": "bocher_s_theorem"
+    },
+    {
+      "name": "Borel-Caratheodory theorem",
+      "fields": [
+        "complex analysis"
+      ],
+      "slug": "borel_caratheodory_theorem"
+    },
+    {
+      "name": "Branching theorem",
+      "fields": [
+        "complex manifold"
+      ],
+      "slug": "branching_theorem"
+    },
+    {
+      "name": "Caratheodory's theorem",
+      "fields": [
+        "complex analysis"
+      ],
+      "slug": "caratheodory_s_theorem"
+    },
+    {
+      "name": "Carleson-Jacobs theorem",
+      "fields": [
+        "complex analysis"
+      ],
+      "slug": "carleson_jacobs_theorem"
+    },
+    {
+      "name": "Carlson's theorem",
+      "fields": [
+        "complex analysis"
+      ],
+      "slug": "carlson_s_theorem"
+    },
+    {
+      "name": "Cauchy integral theorem",
+      "fields": [
+        "complex analysis"
+      ],
+      "slug": "cauchy_integral_theorem"
+    },
+    {
+      "name": "Cauchy-Hadamard theorem",
+      "fields": [
+        "complex analysis"
+      ],
+      "slug": "cauchy_hadamard_theorem"
+    },
+    {
+      "name": "Clifford's theorem on special divisors",
+      "fields": [
+        "algebraic curves"
+      ],
+      "slug": "clifford_s_theorem_on_special_divisors"
+    },
+    {
+      "name": "Corona theorem",
+      "fields": [
+        "complex analysis"
+      ],
+      "slug": "corona_theorem"
+    },
+    {
+      "name": "de Branges's theorem",
+      "fields": [
+        "complex analysis"
+      ],
+      "slug": "de_branges_s_theorem"
+    },
+    {
+      "name": "De Franchis theorem",
+      "fields": [
+        "Riemann surfaces"
+      ],
+      "slug": "de_franchis_theorem"
+    },
+    {
+      "name": "Edge-of-the-wedge theorem",
+      "fields": [
+        "complex analysis"
+      ],
+      "slug": "edge_of_the_wedge_theorem"
+    },
+    {
+      "name": "Farrell-Markushevich theorem",
+      "fields": [
+        "complex analysis"
+      ],
+      "slug": "farrell_markushevich_theorem"
+    },
+    {
+      "name": "Fatou's theorem",
+      "fields": [
+        "complex analysis"
+      ],
+      "slug": "fatou_s_theorem"
+    },
+    {
+      "name": "Fundamental theorem of algebra",
+      "fields": [
+        "complex analysis"
+      ],
+      "slug": "fundamental_theorem_of_algebra"
+    },
+    {
+      "name": "Gauss-Lucas theorem",
+      "fields": [
+        "complex analysis"
+      ],
+      "slug": "gauss_lucas_theorem"
+    },
+    {
+      "name": "Grunsky's theorem",
+      "fields": [
+        "complex analysis"
+      ],
+      "slug": "grunsky_s_theorem"
+    },
+    {
+      "name": "Hadamard three-circle theorem",
+      "fields": [
+        "complex analysis"
+      ],
+      "slug": "hadamard_three_circle_theorem"
+    },
+    {
+      "name": "Hadamard three-lines theorem",
+      "fields": [
+        "complex analysis"
+      ],
+      "slug": "hadamard_three_lines_theorem"
+    },
+    {
+      "name": "Hardy's theorem",
+      "fields": [
+        "complex analysis"
+      ],
+      "slug": "hardy_s_theorem"
+    },
+    {
+      "name": "Hartogs-Rosenthal theorem",
+      "fields": [
+        "complex analysis"
+      ],
+      "slug": "hartogs_rosenthal_theorem"
+    },
+    {
+      "name": "Harnack's theorem",
+      "fields": [
+        "complex analysis"
+      ],
+      "slug": "harnack_s_theorem"
+    },
+    {
+      "name": "Hurwitz's automorphisms theorem",
+      "fields": [
+        "algebraic curves"
+      ],
+      "slug": "hurwitz_s_automorphisms_theorem"
+    },
+    {
+      "name": "Hurwitz's theorem",
+      "fields": [
+        "complex analysis"
+      ],
+      "slug": "hurwitz_s_theorem"
+    },
+    {
+      "name": "Identity theorem",
+      "fields": [
+        "complex analysis"
+      ],
+      "slug": "identity_theorem"
+    },
+    {
+      "name": "Identity theorem for Riemann surfaces",
+      "fields": [
+        "Riemann surfaces"
+      ],
+      "slug": "identity_theorem_for_riemann_surfaces"
+    },
+    {
+      "name": "Koebe 1/4 theorem",
+      "fields": [
+        "complex analysis"
+      ],
+      "slug": "koebe_1_4_theorem"
+    },
+    {
+      "name": "Lagrange inversion theorem",
+      "fields": [
+        "mathematical analysis",
+        "combinatorics"
+      ],
+      "slug": "lagrange_inversion_theorem"
+    },
+    {
+      "name": "Lagrange reversion theorem",
+      "fields": [
+        "mathematical analysis",
+        "combinatorics"
+      ],
+      "slug": "lagrange_reversion_theorem"
+    },
+    {
+      "name": "Laurent expansion theorem",
+      "fields": [
+        "complex analysis"
+      ],
+      "slug": "laurent_expansion_theorem"
+    },
+    {
+      "name": "Lindelof's theorem",
+      "fields": [
+        "complex analysis"
+      ],
+      "slug": "lindelof_s_theorem"
+    },
+    {
+      "name": "Liouville's theorem",
+      "fields": [
+        "complex analysis",
+        "entire functions"
+      ],
+      "slug": "liouville_s_theorem"
+    },
+    {
+      "name": "Liouville's theorem",
+      "fields": [
+        "conformal mappings"
+      ],
+      "slug": "liouville_s_theorem"
+    },
+    {
+      "name": "Looman-Menchoff theorem",
+      "fields": [
+        "complex analysis"
+      ],
+      "slug": "looman_menchoff_theorem"
+    },
+    {
+      "name": "Marden's theorem",
+      "fields": [
+        "polynomials"
+      ],
+      "slug": "marden_s_theorem"
+    },
+    {
+      "name": "Mergelyan's theorem",
+      "fields": [
+        "complex analysis"
+      ],
+      "slug": "mergelyan_s_theorem"
+    },
+    {
+      "name": "Measurable Riemann mapping theorem",
+      "fields": [
+        "conformal mapping"
+      ],
+      "slug": "measurable_riemann_mapping_theorem"
+    },
+    {
+      "name": "Mittag-Leffler's theorem",
+      "fields": [
+        "complex analysis"
+      ],
+      "slug": "mittag_leffler_s_theorem"
+    },
+    {
+      "name": "Monodromy theorem",
+      "fields": [
+        "complex analysis"
+      ],
+      "slug": "monodromy_theorem"
+    },
+    {
+      "name": "Montel's theorem",
+      "fields": [
+        "complex analysis"
+      ],
+      "slug": "montel_s_theorem"
+    },
+    {
+      "name": "Morera's theorem",
+      "fields": [
+        "complex analysis"
+      ],
+      "slug": "morera_s_theorem"
+    },
+    {
+      "name": "Nachbin's theorem",
+      "fields": [
+        "complex analysis"
+      ],
+      "slug": "nachbin_s_theorem"
+    },
+    {
+      "name": "Open mapping theorem",
+      "fields": [
+        "complex analysis"
+      ],
+      "slug": "open_mapping_theorem"
+    },
+    {
+      "name": "Ostrowski-Hadamard gap theorem",
+      "fields": [
+        "complex analysis"
+      ],
+      "slug": "ostrowski_hadamard_gap_theorem"
+    },
+    {
+      "name": "Phragmen-Lindelof theorem",
+      "fields": [
+        "complex analysis"
+      ],
+      "slug": "phragmen_lindelof_theorem"
+    },
+    {
+      "name": "Picard theorem",
+      "fields": [
+        "complex analysis"
+      ],
+      "slug": "picard_theorem"
+    },
+    {
+      "name": "Residue theorem",
+      "fields": [
+        "complex analysis"
+      ],
+      "slug": "residue_theorem"
+    },
+    {
+      "name": "Riemann mapping theorem",
+      "fields": [
+        "complex analysis"
+      ],
+      "slug": "riemann_mapping_theorem"
+    },
+    {
+      "name": "Riemann's existence theorem",
+      "fields": [
+        "algebraic geometry"
+      ],
+      "slug": "riemann_s_existence_theorem"
+    },
+    {
+      "name": "Riemann's theorem on removable singularities",
+      "fields": [
+        "complex analysis"
+      ],
+      "slug": "riemann_s_theorem_on_removable_singularities"
+    },
+    {
+      "name": "Riemann-Roch theorem",
+      "fields": [
+        "Riemann surfaces",
+        "algebraic curves"
+      ],
+      "slug": "riemann_roch_theorem"
+    },
+    {
+      "name": "Rouche's theorem",
+      "fields": [
+        "complex analysis"
+      ],
+      "slug": "rouche_s_theorem"
+    },
+    {
+      "name": "Routh-Hurwitz theorem",
+      "fields": [
+        "polynomials"
+      ],
+      "slug": "routh_hurwitz_theorem"
+    },
+    {
+      "name": "Runge's theorem",
+      "fields": [
+        "complex analysis"
+      ],
+      "slug": "runge_s_theorem"
+    },
+    {
+      "name": "Siu's semicontinuity theorem",
+      "fields": [
+        "complex analysis"
+      ],
+      "slug": "siu_s_semicontinuity_theorem"
+    },
+    {
+      "name": "Sokhatsky-Weierstrass theorem",
+      "fields": [
+        "complex analysis"
+      ],
+      "slug": "sokhatsky_weierstrass_theorem"
+    },
+    {
+      "name": "Uniformization theorem",
+      "fields": [
+        "complex analysis",
+        "differential geometry"
+      ],
+      "slug": "uniformization_theorem"
+    },
+    {
+      "name": "Van Vleck's theorem",
+      "fields": [
+        "mathematical analysis"
+      ],
+      "slug": "van_vleck_s_theorem"
+    },
+    {
+      "name": "Weierstrass-Casorati theorem",
+      "fields": [
+        "complex analysis"
+      ],
+      "slug": "weierstrass_casorati_theorem"
+    },
+    {
+      "name": "Weierstrass factorization theorem",
+      "fields": [
+        "complex analysis"
+      ],
+      "slug": "weierstrass_factorization_theorem"
+    }
+  ],
+  "Several complex variables and analytic spaces": [
+    {
+      "name": "Appell-Humbert theorem",
+      "fields": [
+        "complex manifold"
+      ],
+      "slug": "appell_humbert_theorem"
+    },
+    {
+      "name": "Baily-Borel theorem",
+      "fields": [
+        "algebraic geometry"
+      ],
+      "slug": "baily_borel_theorem"
+    },
+    {
+      "name": "Behnke-Stein theorem",
+      "fields": [
+        "several complex variables"
+      ],
+      "slug": "behnke_stein_theorem"
+    },
+    {
+      "name": "Birkhoff-Grothendieck theorem",
+      "fields": [
+        "complex geometry"
+      ],
+      "slug": "birkhoff_grothendieck_theorem"
+    },
+    {
+      "name": "Bochner's tube theorem",
+      "fields": [
+        "complex analysis"
+      ],
+      "slug": "bochner_s_tube_theorem"
+    },
+    {
+      "name": "Cartan's theorems A and B",
+      "fields": [
+        "several complex variables"
+      ],
+      "slug": "cartan_s_theorems_a_and_b"
+    },
+    {
+      "name": "Castelnuovo-de Franchis theorem",
+      "fields": [
+        "algebraic geometry"
+      ],
+      "slug": "castelnuovo_de_franchis_theorem"
+    },
+    {
+      "name": "Chow's theorem",
+      "fields": [
+        "algebraic geometry"
+      ],
+      "slug": "chow_s_theorem"
+    },
+    {
+      "name": "Cramer's theorem (algebraic curves)",
+      "fields": [
+        "analytic geometry"
+      ],
+      "slug": "cramer_s_theorem_algebraic_curves"
+    },
+    {
+      "name": "Hartogs's theorem",
+      "fields": [
+        "complex analysis"
+      ],
+      "slug": "hartogs_s_theorem"
+    },
+    {
+      "name": "Hartogs's extension theorem",
+      "fields": [
+        "several complex variables"
+      ],
+      "slug": "hartogs_s_extension_theorem"
+    },
+    {
+      "name": "Hirzebruch-Riemann-Roch theorem",
+      "fields": [
+        "complex manifolds"
+      ],
+      "slug": "hirzebruch_riemann_roch_theorem"
+    },
+    {
+      "name": "Kawamata-Viehweg vanishing theorem",
+      "fields": [
+        "algebraic geometry"
+      ],
+      "slug": "kawamata_viehweg_vanishing_theorem"
+    },
+    {
+      "name": "Kodaira embedding theorem",
+      "fields": [
+        "algebraic geometry"
+      ],
+      "slug": "kodaira_embedding_theorem"
+    },
+    {
+      "name": "Kodaira vanishing theorem",
+      "fields": [
+        "complex manifold"
+      ],
+      "slug": "kodaira_vanishing_theorem"
+    },
+    {
+      "name": "Lefschetz theorem on (1,1)-classes",
+      "fields": [
+        "algebraic geometry"
+      ],
+      "slug": "lefschetz_theorem_on_1_1_classes"
+    },
+    {
+      "name": "Local invariant cycle theorem",
+      "fields": [
+        "algebraic geometry"
+      ],
+      "slug": "local_invariant_cycle_theorem"
+    },
+    {
+      "name": "Malgrange-Zerner theorem",
+      "fields": [
+        "complex analysis"
+      ],
+      "slug": "malgrange_zerner_theorem"
+    },
+    {
+      "name": "Newlander-Niremberg theorem",
+      "fields": [
+        "differential geometry"
+      ],
+      "slug": "newlander_niremberg_theorem"
+    },
+    {
+      "name": "Remmert-Stein theorem",
+      "fields": [
+        "complex analysis"
+      ],
+      "slug": "remmert_stein_theorem"
+    },
+    {
+      "name": "Riemann singularity theorem",
+      "fields": [
+        "algebraic geometry"
+      ],
+      "slug": "riemann_singularity_theorem"
+    },
+    {
+      "name": "Skoda-El Mir theorem",
+      "fields": [
+        "complex geometry"
+      ],
+      "slug": "skoda_el_mir_theorem"
+    },
+    {
+      "name": "Weierstrass preparation theorem",
+      "fields": [
+        "several complex variables",
+        "commutative algebra"
+      ],
+      "slug": "weierstrass_preparation_theorem"
+    }
+  ],
+  "Special functions": [
+    {
+      "name": "De Moivre's theorem",
+      "fields": [
+        "complex analysis"
+      ],
+      "slug": "de_moivre_s_theorem"
+    },
+    {
+      "name": "Holder's theorem",
+      "fields": [
+        "mathematical analysis"
+      ],
+      "slug": "holder_s_theorem"
+    },
+    {
+      "name": "Multiplication theorem",
+      "fields": [
+        "special functions"
+      ],
+      "slug": "multiplication_theorem"
+    }
+  ],
+  "Ordinary differential equations": [
+    {
+      "name": "Caratheodory's existence theorem",
+      "fields": [
+        "ordinary differential equations"
+      ],
+      "slug": "caratheodory_s_existence_theorem"
+    },
+    {
+      "name": "Floquet's theorem",
+      "fields": [
+        "differential equations"
+      ],
+      "slug": "floquet_s_theorem"
+    },
+    {
+      "name": "Fuchs's theorem",
+      "fields": [
+        "differential equations"
+      ],
+      "slug": "fuchs_s_theorem"
+    },
+    {
+      "name": "Kharitonov's theorem",
+      "fields": [
+        "control theory"
+      ],
+      "slug": "kharitonov_s_theorem"
+    },
+    {
+      "name": "Kneser's theorem",
+      "fields": [
+        "differential equations"
+      ],
+      "slug": "kneser_s_theorem"
+    },
+    {
+      "name": "Lienard's theorem",
+      "fields": [
+        "dynamical systems"
+      ],
+      "slug": "lienard_s_theorem"
+    },
+    {
+      "name": "Markus-Yamabe theorem",
+      "fields": [
+        "dynamical systems"
+      ],
+      "slug": "markus_yamabe_theorem"
+    },
+    {
+      "name": "Peano existence theorem",
+      "fields": [
+        "ordinary differential equations"
+      ],
+      "slug": "peano_existence_theorem"
+    },
+    {
+      "name": "Picard-Lindelof theorem",
+      "fields": [
+        "ordinary differential equations"
+      ],
+      "slug": "picard_lindelof_theorem"
+    },
+    {
+      "name": "Shift theorem",
+      "fields": [
+        "differential operators"
+      ],
+      "slug": "shift_theorem"
+    },
+    {
+      "name": "Sturm-Picone comparison theorem",
+      "fields": [
+        "differential equations"
+      ],
+      "slug": "sturm_picone_comparison_theorem"
+    }
+  ],
+  "Partial differential equations": [
+    {
+      "name": "Cartan-Kahler theorem",
+      "fields": [
+        "partial differential equations"
+      ],
+      "slug": "cartan_kahler_theorem"
+    },
+    {
+      "name": "Cartan-Kuranishi prolongation theorem",
+      "fields": [
+        "partial differential equations"
+      ],
+      "slug": "cartan_kuranishi_prolongation_theorem"
+    },
+    {
+      "name": "Cauchy-Kowalevski theorem",
+      "fields": [
+        "partial differential equations"
+      ],
+      "slug": "cauchy_kowalevski_theorem"
+    },
+    {
+      "name": "Malgrange-Ehrenpreis theorem",
+      "fields": [
+        "differential equations"
+      ],
+      "slug": "malgrange_ehrenpreis_theorem"
+    }
+  ],
+  "Dynamical systems and ergodic theory": [
+    {
+      "name": "Autonomous convergence theorem",
+      "fields": [
+        "dynamical systems"
+      ],
+      "slug": "autonomous_convergence_theorem"
+    },
+    {
+      "name": "Banach fixed-point theorem",
+      "fields": [
+        "metric spaces",
+        "differential equations"
+      ],
+      "slug": "banach_fixed_point_theorem"
+    },
+    {
+      "name": "Bendixson-Dulac theorem",
+      "fields": [
+        "dynamical systems"
+      ],
+      "slug": "bendixson_dulac_theorem"
+    },
+    {
+      "name": "Birkhoff's theorem",
+      "fields": [
+        "ergodic theory"
+      ],
+      "slug": "birkhoff_s_theorem"
+    },
+    {
+      "name": "Conley-Zehnder theorem",
+      "fields": [
+        "dynamical systems"
+      ],
+      "slug": "conley_zehnder_theorem"
+    },
+    {
+      "name": "Curtis-Hedlund-Lyndon theorem",
+      "fields": [
+        "cellular automata"
+      ],
+      "slug": "curtis_hedlund_lyndon_theorem"
+    },
+    {
+      "name": "Hartman-Grobman theorem",
+      "fields": [
+        "dynamical systems"
+      ],
+      "slug": "hartman_grobman_theorem"
+    },
+    {
+      "name": "Kolmogorov-Arnold-Moser theorem",
+      "fields": [
+        "dynamical systems"
+      ],
+      "slug": "kolmogorov_arnold_moser_theorem"
+    },
+    {
+      "name": "Krylov-Bogolyubov theorem",
+      "fields": [
+        "dynamical systems"
+      ],
+      "slug": "krylov_bogolyubov_theorem"
+    },
+    {
+      "name": "Maximal ergodic theorem",
+      "fields": [
+        "ergodic theory"
+      ],
+      "slug": "maximal_ergodic_theorem"
+    },
+    {
+      "name": "No wandering domain theorem",
+      "fields": [
+        "ergodic theory"
+      ],
+      "slug": "no_wandering_domain_theorem"
+    },
+    {
+      "name": "Noether's theorem",
+      "fields": [
+        "Lie groups",
+        "calculus of variations",
+        "differential invariants",
+        "physics"
+      ],
+      "slug": "noether_s_theorem"
+    },
+    {
+      "name": "Ornstein theorem",
+      "fields": [
+        "ergodic theory"
+      ],
+      "slug": "ornstein_theorem"
+    },
+    {
+      "name": "Oseledec theorem",
+      "fields": [
+        "ergodic theory"
+      ],
+      "slug": "oseledec_theorem"
+    },
+    {
+      "name": "Peixoto's theorem",
+      "fields": [
+        "dynamical systems"
+      ],
+      "slug": "peixoto_s_theorem"
+    },
+    {
+      "name": "Poincare-Bendixson theorem",
+      "fields": [
+        "dynamical systems"
+      ],
+      "slug": "poincare_bendixson_theorem"
+    },
+    {
+      "name": "Poincare recurrence theorem",
+      "fields": [
+        "dynamical systems"
+      ],
+      "slug": "poincare_recurrence_theorem"
+    },
+    {
+      "name": "Ratner's theorems",
+      "fields": [
+        "ergodic theory"
+      ],
+      "slug": "ratner_s_theorems"
+    },
+    {
+      "name": "Sarkovskii's theorem",
+      "fields": [
+        "dynamical systems"
+      ],
+      "slug": "sarkovskii_s_theorem"
+    },
+    {
+      "name": "Takens's theorem",
+      "fields": [
+        "dynamical systems"
+      ],
+      "slug": "takens_s_theorem"
+    }
+  ],
+  "Difference and functional equations": [
+    {
+      "name": "Euler's theorem on homogeneous functions",
+      "fields": [
+        "multivariate calculus"
+      ],
+      "slug": "euler_s_theorem_on_homogeneous_functions"
+    }
+  ],
+  "Sequence, series, summability": [
+    {
+      "name": "Abel's theorem",
+      "fields": [
+        "mathematical analysis"
+      ],
+      "slug": "abel_s_theorem"
+    },
+    {
+      "name": "Abelian and Tauberian theorems",
+      "fields": [
+        "mathematical analysis"
+      ],
+      "slug": "abelian_and_tauberian_theorems"
+    },
+    {
+      "name": "Absolute convergence theorem",
+      "fields": [
+        "mathematical series"
+      ],
+      "slug": "absolute_convergence_theorem"
+    },
+    {
+      "name": "Cesaro's theorem",
+      "fields": [
+        "real analysis"
+      ],
+      "slug": "cesaro_s_theorem"
+    },
+    {
+      "name": "Hardy-Littlewood tauberian theorem",
+      "fields": [
+        "mathematical analysis"
+      ],
+      "slug": "hardy_littlewood_tauberian_theorem"
+    },
+    {
+      "name": "Riemann series theorem",
+      "fields": [
+        "mathematical series"
+      ],
+      "slug": "riemann_series_theorem"
+    },
+    {
+      "name": "Silverman-Toeplitz theorem",
+      "fields": [
+        "mathematical analysis"
+      ],
+      "slug": "silverman_toeplitz_theorem"
+    },
+    {
+      "name": "Sleszynski-Pringsheim theorem",
+      "fields": [
+        "continued fraction"
+      ],
+      "slug": "sleszynski_pringsheim_theorem"
+    },
+    {
+      "name": "Stolz-Cesaro theorem",
+      "fields": [
+        "calculus"
+      ],
+      "slug": "stolz_cesaro_theorem"
+    }
+  ],
+  "Approximations and expansions": [
+    {
+      "name": "Stone-Weierstrass theorem",
+      "fields": [
+        "functional analysis"
+      ],
+      "slug": "stone_weierstrass_theorem"
+    },
+    {
+      "name": "Taylor's theorem",
+      "fields": [
+        "calculus"
+      ],
+      "slug": "taylor_s_theorem"
+    }
+  ],
+  "Harmonic analysis on Euclidean spaces": [
+    {
+      "name": "Balian-Low theorem",
+      "fields": [
+        "Fourier analysis"
+      ],
+      "slug": "balian_low_theorem"
+    },
+    {
+      "name": "Bernstein's theorem",
+      "fields": [
+        "approximation theory"
+      ],
+      "slug": "bernstein_s_theorem"
+    },
+    {
+      "name": "Carleson's theorem",
+      "fields": [
+        "harmonic analysis"
+      ],
+      "slug": "carleson_s_theorem"
+    },
+    {
+      "name": "Convolution theorem",
+      "fields": [
+        "Fourier transforms"
+      ],
+      "slug": "convolution_theorem"
+    },
+    {
+      "name": "Denjoy theorem",
+      "fields": [
+        "dynamical systems"
+      ],
+      "slug": "denjoy_theorem"
+    },
+    {
+      "name": "Fourier inversion theorem",
+      "fields": [
+        "harmonic analysis"
+      ],
+      "slug": "fourier_inversion_theorem"
+    },
+    {
+      "name": "Fourier theorem",
+      "fields": [
+        "harmonic analysis"
+      ],
+      "slug": "fourier_theorem"
+    },
+    {
+      "name": "Hausdorff-Young inequality",
+      "fields": [
+        "Fourier analysis"
+      ],
+      "slug": "hausdorff_young_inequality"
+    },
+    {
+      "name": "Lauricella's theorem",
+      "fields": [
+        "functional analysis"
+      ],
+      "slug": "lauricella_s_theorem"
+    },
+    {
+      "name": "Paley-Wiener theorem",
+      "fields": [
+        "Fourier transforms"
+      ],
+      "slug": "paley_wiener_theorem"
+    },
+    {
+      "name": "Parseval's theorem",
+      "fields": [
+        "Fourier analysis"
+      ],
+      "slug": "parseval_s_theorem"
+    },
+    {
+      "name": "Plancherel theorem",
+      "fields": [
+        "Fourier analysis"
+      ],
+      "slug": "plancherel_theorem"
+    },
+    {
+      "name": "Riesz-Fischer theorem",
+      "fields": [
+        "real analysis"
+      ],
+      "slug": "riesz_fischer_theorem"
+    },
+    {
+      "name": "Szego limit theorems",
+      "fields": [
+        "mathematical analysis"
+      ],
+      "slug": "szego_limit_theorems"
+    },
+    {
+      "name": "Wiener's tauberian theorem",
+      "fields": [
+        "real analysis"
+      ],
+      "slug": "wiener_s_tauberian_theorem"
+    },
+    {
+      "name": "Wiener-Ikehara theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "wiener_ikehara_theorem"
+    }
+  ],
+  "Abstract harmonic analysis": [
+    {
+      "name": "F. and M. Riesz theorem",
+      "fields": [
+        "measure theory"
+      ],
+      "slug": "f_and_m_riesz_theorem"
+    },
+    {
+      "name": "Peter-Weyl theorem",
+      "fields": [
+        "representation theory"
+      ],
+      "slug": "peter_weyl_theorem"
+    },
+    {
+      "name": "Pontryagin duality theorem",
+      "fields": [
+        "representation theory"
+      ],
+      "slug": "pontryagin_duality_theorem"
+    }
+  ],
+  "Integral transforms, operational calculus": [
+    {
+      "name": "Final value theorem",
+      "fields": [
+        "mathematical analysis"
+      ],
+      "slug": "final_value_theorem"
+    },
+    {
+      "name": "Initial value theorem",
+      "fields": [
+        "integral transform"
+      ],
+      "slug": "initial_value_theorem"
+    },
+    {
+      "name": "Mellin inversion theorem",
+      "fields": [
+        "complex analysis"
+      ],
+      "slug": "mellin_inversion_theorem"
+    },
+    {
+      "name": "Stahl's theorem",
+      "fields": [
+        "matrix analysis"
+      ],
+      "slug": "stahl_s_theorem"
+    },
+    {
+      "name": "Titchmarsh theorem",
+      "fields": [
+        "integral transform"
+      ],
+      "slug": "titchmarsh_theorem"
+    }
+  ],
+  "Integral equations": [
+    {
+      "name": "Fredholm's theorem",
+      "fields": [
+        "linear algebra"
+      ],
+      "slug": "fredholm_s_theorem"
+    }
+  ],
+  "Functional analysis": [
+    {
+      "name": "Analytic Fredholm theorem",
+      "fields": [
+        "functional analysis"
+      ],
+      "slug": "analytic_fredholm_theorem"
+    },
+    {
+      "name": "Banach-Alaoglu theorem",
+      "fields": [
+        "functional analysis"
+      ],
+      "slug": "banach_alaoglu_theorem"
+    },
+    {
+      "name": "Banach-Mazur theorem",
+      "fields": [
+        "functional analysis"
+      ],
+      "slug": "banach_mazur_theorem"
+    },
+    {
+      "name": "Banach-Steinhaus theorem",
+      "fields": [
+        "functional analysis"
+      ],
+      "slug": "banach_steinhaus_theorem"
+    },
+    {
+      "name": "Choquet-Bishop-de Leeuw theorem",
+      "fields": [
+        "functional analysis"
+      ],
+      "slug": "choquet_bishop_de_leeuw_theorem"
+    },
+    {
+      "name": "Closed range theorem",
+      "fields": [
+        "functional analysis"
+      ],
+      "slug": "closed_range_theorem"
+    },
+    {
+      "name": "Dunford-Schwartz theorem",
+      "fields": [
+        "functional analysis"
+      ],
+      "slug": "dunford_schwartz_theorem"
+    },
+    {
+      "name": "Eberlein-Smulian theorem",
+      "fields": [
+        "functional analysis"
+      ],
+      "slug": "eberlein_smulian_theorem"
+    },
+    {
+      "name": "Goldstine theorem",
+      "fields": [
+        "functional analysis"
+      ],
+      "slug": "goldstine_theorem"
+    },
+    {
+      "name": "Hahn-Banach theorem",
+      "fields": [
+        "functional analysis"
+      ],
+      "slug": "hahn_banach_theorem"
+    },
+    {
+      "name": "Hilbert projection theorem",
+      "fields": [
+        "convex analysis"
+      ],
+      "slug": "hilbert_projection_theorem"
+    },
+    {
+      "name": "Kachurovskii's theorem",
+      "fields": [
+        "convex analysis"
+      ],
+      "slug": "kachurovskii_s_theorem"
+    },
+    {
+      "name": "Kirszbraun theorem",
+      "fields": [
+        "Lipschitz continuity"
+      ],
+      "slug": "kirszbraun_theorem"
+    },
+    {
+      "name": "M. Riesz extension theorem",
+      "fields": [
+        "functional analysis"
+      ],
+      "slug": "m_riesz_extension_theorem"
+    },
+    {
+      "name": "Milman-Pettis theorem",
+      "fields": [
+        "Banach space"
+      ],
+      "slug": "milman_pettis_theorem"
+    },
+    {
+      "name": "Moore-Aronszajn theorem",
+      "fields": [
+        "Hilbert space"
+      ],
+      "slug": "moore_aronszajn_theorem"
+    },
+    {
+      "name": "Orlicz-Pettis theorem",
+      "fields": [
+        "functional analysis"
+      ],
+      "slug": "orlicz_pettis_theorem"
+    },
+    {
+      "name": "Quotient of subspace theorem",
+      "fields": [
+        "functional analysis"
+      ],
+      "slug": "quotient_of_subspace_theorem"
+    },
+    {
+      "name": "Riesz representation theorem",
+      "fields": [
+        "functional analysis",
+        "Hilbert space"
+      ],
+      "slug": "riesz_representation_theorem"
+    },
+    {
+      "name": "Schauder fixed-point theorem",
+      "fields": [
+        "functional analysis"
+      ],
+      "slug": "schauder_fixed_point_theorem"
+    },
+    {
+      "name": "Schwartz kernel theorem",
+      "fields": [
+        "generalized functions"
+      ],
+      "slug": "schwartz_kernel_theorem"
+    },
+    {
+      "name": "Sobczyk's theorem",
+      "fields": [
+        "functional analysis"
+      ],
+      "slug": "sobczyk_s_theorem"
+    },
+    {
+      "name": "Sobolev embedding theorem",
+      "fields": [
+        "mathematical analysis"
+      ],
+      "slug": "sobolev_embedding_theorem"
+    },
+    {
+      "name": "Soler's theorem",
+      "fields": [
+        "mathematical logic"
+      ],
+      "slug": "soler_s_theorem"
+    },
+    {
+      "name": "Tikhonov fixed-point theorem",
+      "fields": [
+        "functional analysis"
+      ],
+      "slug": "tikhonov_fixed_point_theorem"
+    },
+    {
+      "name": "Trudinger's theorem",
+      "fields": [
+        "functional analysis"
+      ],
+      "slug": "trudinger_s_theorem"
+    }
+  ],
+  "Operator theory": [
+    {
+      "name": "Aronszajn-Smith theorem",
+      "fields": [
+        "functional analysis"
+      ],
+      "slug": "aronszajn_smith_theorem"
+    },
+    {
+      "name": "Atiyah-Singer index theorem",
+      "fields": [
+        "elliptic differential operators",
+        "harmonic analysis"
+      ],
+      "slug": "atiyah_singer_index_theorem"
+    },
+    {
+      "name": "Atkinson's theorem",
+      "fields": [
+        "operator theory"
+      ],
+      "slug": "atkinson_s_theorem"
+    },
+    {
+      "name": "Babuska-Lax-Milgram theorem",
+      "fields": [
+        "partial differential equations"
+      ],
+      "slug": "babuska_lax_milgram_theorem"
+    },
+    {
+      "name": "Banach-Stone theorem",
+      "fields": [
+        "operator theory"
+      ],
+      "slug": "banach_stone_theorem"
+    },
+    {
+      "name": "Bauer-Fike theorem",
+      "fields": [
+        "spectral theory"
+      ],
+      "slug": "bauer_fike_theorem"
+    },
+    {
+      "name": "Bounded inverse theorem",
+      "fields": [
+        "operator theory"
+      ],
+      "slug": "bounded_inverse_theorem"
+    },
+    {
+      "name": "Browder-Minty theorem",
+      "fields": [
+        "operator theory"
+      ],
+      "slug": "browder_minty_theorem"
+    },
+    {
+      "name": "Choi's theorem on completely positive maps",
+      "fields": [
+        "operator theory"
+      ],
+      "slug": "choi_s_theorem_on_completely_positive_maps"
+    },
+    {
+      "name": "Commutation theorem",
+      "fields": [
+        "von Neumann algebra"
+      ],
+      "slug": "commutation_theorem"
+    },
+    {
+      "name": "Fuglede's theorem",
+      "fields": [
+        "functional analysis"
+      ],
+      "slug": "fuglede_s_theorem"
+    },
+    {
+      "name": "Gelfand-Mazur theorem",
+      "fields": [
+        "Banach algebra"
+      ],
+      "slug": "gelfand_mazur_theorem"
+    },
+    {
+      "name": "Gelfand-Naimark theorem",
+      "fields": [
+        "functional analysis"
+      ],
+      "slug": "gelfand_naimark_theorem"
+    },
+    {
+      "name": "Hardy-Littlewood maximal theorem",
+      "fields": [
+        "real analysis"
+      ],
+      "slug": "hardy_littlewood_maximal_theorem"
+    },
+    {
+      "name": "Hellinger-Toeplitz theorem",
+      "fields": [
+        "functional analysis"
+      ],
+      "slug": "hellinger_toeplitz_theorem"
+    },
+    {
+      "name": "Hilbert-Schmidt theorem",
+      "fields": [
+        "functional analysis"
+      ],
+      "slug": "hilbert_schmidt_theorem"
+    },
+    {
+      "name": "Hille-Yosida theorem",
+      "fields": [
+        "functional analysis"
+      ],
+      "slug": "hille_yosida_theorem"
+    },
+    {
+      "name": "Kaplansky density theorem",
+      "fields": [
+        "von Neumann algebra"
+      ],
+      "slug": "kaplansky_density_theorem"
+    },
+    {
+      "name": "Kuiper's theorem",
+      "fields": [
+        "operator theory",
+        "topology"
+      ],
+      "slug": "kuiper_s_theorem"
+    },
+    {
+      "name": "Lax-Milgram theorem",
+      "fields": [
+        "partial differential equations"
+      ],
+      "slug": "lax_milgram_theorem"
+    },
+    {
+      "name": "Lions-Lax-Milgram theorem",
+      "fields": [
+        "partial differential equations"
+      ],
+      "slug": "lions_lax_milgram_theorem"
+    },
+    {
+      "name": "Lumer-Phillips theorem",
+      "fields": [
+        "semigroup theory"
+      ],
+      "slug": "lumer_phillips_theorem"
+    },
+    {
+      "name": "Marcinkiewicz theorem",
+      "fields": [
+        "functional analysis"
+      ],
+      "slug": "marcinkiewicz_theorem"
+    },
+    {
+      "name": "Mazur-Ulam theorem",
+      "fields": [
+        "normed spaces"
+      ],
+      "slug": "mazur_ulam_theorem"
+    },
+    {
+      "name": "Mercer's theorem",
+      "fields": [
+        "functional analysis"
+      ],
+      "slug": "mercer_s_theorem"
+    },
+    {
+      "name": "Min-max theorem",
+      "fields": [
+        "functional analysis"
+      ],
+      "slug": "min_max_theorem"
+    },
+    {
+      "name": "Moreau's theorem",
+      "fields": [
+        "convex analysis"
+      ],
+      "slug": "moreau_s_theorem"
+    },
+    {
+      "name": "Nash-Moser theorem",
+      "fields": [
+        "mathematical analysis"
+      ],
+      "slug": "nash_moser_theorem"
+    },
+    {
+      "name": "Open mapping theorem",
+      "fields": [
+        "functional analysis"
+      ],
+      "slug": "open_mapping_theorem"
+    },
+    {
+      "name": "Peetre theorem",
+      "fields": [
+        "functional analysis"
+      ],
+      "slug": "peetre_theorem"
+    },
+    {
+      "name": "Riesz-Thorin theorem",
+      "fields": [
+        "functional analysis"
+      ],
+      "slug": "riesz_thorin_theorem"
+    },
+    {
+      "name": "Ryll-Nardzewski fixed-point theorem",
+      "fields": [
+        "functional analysis"
+      ],
+      "slug": "ryll_nardzewski_fixed_point_theorem"
+    },
+    {
+      "name": "Sazonov's theorem",
+      "fields": [
+        "functional analysis"
+      ],
+      "slug": "sazonov_s_theorem"
+    },
+    {
+      "name": "Schroder-Bernstein theorems for operator algebras",
+      "fields": [
+        "operator algebras"
+      ],
+      "slug": "schroder_bernstein_theorems_for_operator_algebras"
+    },
+    {
+      "name": "Stinespring factorization theorem",
+      "fields": [
+        "operator theory"
+      ],
+      "slug": "stinespring_factorization_theorem"
+    },
+    {
+      "name": "Stone's theorem on one-parameter unitary groups",
+      "fields": [
+        "functional analysis"
+      ],
+      "slug": "stone_s_theorem_on_one_parameter_unitary_groups"
+    },
+    {
+      "name": "Sz.-Nagy's dilation theorem",
+      "fields": [
+        "operator theory"
+      ],
+      "slug": "sz_nagy_s_dilation_theorem"
+    },
+    {
+      "name": "Tomita's theorem",
+      "fields": [
+        "operator algebras"
+      ],
+      "slug": "tomita_s_theorem"
+    },
+    {
+      "name": "Von Neumann bicommutant theorem",
+      "fields": [
+        "functional analysis"
+      ],
+      "slug": "von_neumann_bicommutant_theorem"
+    },
+    {
+      "name": "Von Neumann's theorem",
+      "fields": [
+        "operator theory"
+      ],
+      "slug": "von_neumann_s_theorem"
+    }
+  ],
+  "Calculus of variations and optimal control; optimization": [
+    {
+      "name": "Caristi fixed-point theorem",
+      "fields": [
+        "fixed points"
+      ],
+      "slug": "caristi_fixed_point_theorem"
+    },
+    {
+      "name": "Envelope theorem",
+      "fields": [
+        "calculus of variations"
+      ],
+      "slug": "envelope_theorem"
+    },
+    {
+      "name": "Isoperimetric theorem",
+      "fields": [
+        "curves",
+        "calculus of variations"
+      ],
+      "slug": "isoperimetric_theorem"
+    },
+    {
+      "name": "Minimax theorem",
+      "fields": [
+        "game theory"
+      ],
+      "slug": "minimax_theorem"
+    },
+    {
+      "name": "Mountain pass theorem",
+      "fields": [
+        "calculus of variations"
+      ],
+      "slug": "mountain_pass_theorem"
+    },
+    {
+      "name": "Noether's second theorem",
+      "fields": [
+        "calculus of variations",
+        "physics"
+      ],
+      "slug": "noether_s_second_theorem"
+    },
+    {
+      "name": "Parthasarathy's theorem",
+      "fields": [
+        "game theory"
+      ],
+      "slug": "parthasarathy_s_theorem"
+    },
+    {
+      "name": "Sion's minimax theorem",
+      "fields": [
+        "game theory"
+      ],
+      "slug": "sion_s_minimax_theorem"
+    },
+    {
+      "name": "Tonelli's theorem",
+      "fields": [
+        "functional analysis"
+      ],
+      "slug": "tonelli_s_theorem"
+    }
+  ],
+  "Geometry": [
+    {
+      "name": "Alternate Interior Angles Theorem",
+      "fields": [
+        "geometry"
+      ],
+      "slug": "alternate_interior_angles_theorem"
+    },
+    {
+      "name": "Alternate segment theorem",
+      "fields": [
+        "geometry"
+      ],
+      "slug": "alternate_segment_theorem"
+    },
+    {
+      "name": "Angle bisector theorem",
+      "fields": [
+        "Euclidean geometry"
+      ],
+      "slug": "angle_bisector_theorem"
+    },
+    {
+      "name": "Anne's theorem",
+      "fields": [
+        "geometry"
+      ],
+      "slug": "anne_s_theorem"
+    },
+    {
+      "name": "Apollonius's theorem",
+      "fields": [
+        "plane geometry"
+      ],
+      "slug": "apollonius_s_theorem"
+    },
+    {
+      "name": "Barbier's theorem",
+      "fields": [
+        "geometry"
+      ],
+      "slug": "barbier_s_theorem"
+    },
+    {
+      "name": "Beck's theorem",
+      "fields": [
+        "incidence geometry"
+      ],
+      "slug": "beck_s_theorem"
+    },
+    {
+      "name": "Beckman-Quarles theorem",
+      "fields": [
+        "Euclidean geometry"
+      ],
+      "slug": "beckman_quarles_theorem"
+    },
+    {
+      "name": "Beer's theorem",
+      "fields": [
+        "metric geometry"
+      ],
+      "slug": "beer_s_theorem"
+    },
+    {
+      "name": "Brahmagupta theorem",
+      "fields": [
+        "Euclidean geometry"
+      ],
+      "slug": "brahmagupta_theorem"
+    },
+    {
+      "name": "Brianchon's theorem",
+      "fields": [
+        "conics"
+      ],
+      "slug": "brianchon_s_theorem"
+    },
+    {
+      "name": "British flag theorem",
+      "fields": [
+        "Euclidean geometry"
+      ],
+      "slug": "british_flag_theorem"
+    },
+    {
+      "name": "Butterfly theorem",
+      "fields": [
+        "Euclidean geometry"
+      ],
+      "slug": "butterfly_theorem"
+    },
+    {
+      "name": "CPCTC",
+      "fields": [
+        "triangle geometry"
+      ],
+      "slug": "cpctc"
+    },
+    {
+      "name": "Carnot's theorem",
+      "fields": [
+        "geometry"
+      ],
+      "slug": "carnot_s_theorem"
+    },
+    {
+      "name": "Casey's theorem",
+      "fields": [
+        "Euclidean geometry"
+      ],
+      "slug": "casey_s_theorem"
+    },
+    {
+      "name": "Cayley-Bacharach theorem",
+      "fields": [
+        "projective geometry"
+      ],
+      "slug": "cayley_bacharach_theorem"
+    },
+    {
+      "name": "Ceva's theorem",
+      "fields": [
+        "geometry"
+      ],
+      "slug": "ceva_s_theorem"
+    },
+    {
+      "name": "Clifford's circle theorems",
+      "fields": [
+        "Euclidean plane geometry"
+      ],
+      "slug": "clifford_s_circle_theorems"
+    },
+    {
+      "name": "Commandino's theorem",
+      "fields": [
+        "geometry"
+      ],
+      "slug": "commandino_s_theorem"
+    },
+    {
+      "name": "Constant chord theorem",
+      "fields": [
+        "geometry"
+      ],
+      "slug": "constant_chord_theorem"
+    },
+    {
+      "name": "Conway circle theorem",
+      "fields": [
+        "Euclidean plane geometry"
+      ],
+      "slug": "conway_circle_theorem"
+    },
+    {
+      "name": "Crossbar theorem",
+      "fields": [
+        "Euclidean plane geometry"
+      ],
+      "slug": "crossbar_theorem"
+    },
+    {
+      "name": "Dandelin's theorem",
+      "fields": [
+        "solid geometry"
+      ],
+      "slug": "dandelin_s_theorem"
+    },
+    {
+      "name": "De Bruijn-Erdos theorem",
+      "fields": [
+        "incidence geometry"
+      ],
+      "slug": "de_bruijn_erdos_theorem"
+    },
+    {
+      "name": "De Gua's theorem",
+      "fields": [
+        "geometry"
+      ],
+      "slug": "de_gua_s_theorem"
+    },
+    {
+      "name": "Desargues's theorem",
+      "fields": [
+        "projective geometry"
+      ],
+      "slug": "desargues_s_theorem"
+    },
+    {
+      "name": "Descartes's theorem",
+      "fields": [
+        "plane geometry"
+      ],
+      "slug": "descartes_s_theorem"
+    },
+    {
+      "name": "Dinostratus' theorem",
+      "fields": [
+        "geometry",
+        "analysis"
+      ],
+      "slug": "dinostratus_theorem"
+    },
+    {
+      "name": "Equal incircles theorem",
+      "fields": [
+        "Euclidean geometry"
+      ],
+      "slug": "equal_incircles_theorem"
+    },
+    {
+      "name": "Euler's quadrilateral theorem",
+      "fields": [
+        "geometry"
+      ],
+      "slug": "euler_s_quadrilateral_theorem"
+    },
+    {
+      "name": "Euler's theorem in geometry",
+      "fields": [
+        "triangle geometry"
+      ],
+      "slug": "euler_s_theorem_in_geometry"
+    },
+    {
+      "name": "Exterior angle theorem",
+      "fields": [
+        "triangle geometry"
+      ],
+      "slug": "exterior_angle_theorem"
+    },
+    {
+      "name": "Feuerbach's theorem",
+      "fields": [
+        "geometry"
+      ],
+      "slug": "feuerbach_s_theorem"
+    },
+    {
+      "name": "Finsler-Hadwiger theorem",
+      "fields": [
+        "geometry"
+      ],
+      "slug": "finsler_hadwiger_theorem"
+    },
+    {
+      "name": "Five circles theorem",
+      "fields": [
+        "circles"
+      ],
+      "slug": "five_circles_theorem"
+    },
+    {
+      "name": "Gauss-Wantzel theorem",
+      "fields": [
+        "geometry"
+      ],
+      "slug": "gauss_wantzel_theorem"
+    },
+    {
+      "name": "Geometric mean theorem",
+      "fields": [
+        "geometry"
+      ],
+      "slug": "geometric_mean_theorem"
+    },
+    {
+      "name": "Hinge theorem",
+      "fields": [
+        "geometry"
+      ],
+      "slug": "hinge_theorem"
+    },
+    {
+      "name": "Hjelmslev's theorem",
+      "fields": [
+        "geometry"
+      ],
+      "slug": "hjelmslev_s_theorem"
+    },
+    {
+      "name": "Impossibility of angle trisection",
+      "fields": [
+        "geometry"
+      ],
+      "slug": "impossibility_of_angle_trisection"
+    },
+    {
+      "name": "Independence of the parallel postulate",
+      "fields": [
+        "geometry"
+      ],
+      "slug": "independence_of_the_parallel_postulate"
+    },
+    {
+      "name": "Inscribed angle theorem",
+      "fields": [
+        "geometry"
+      ],
+      "slug": "inscribed_angle_theorem"
+    },
+    {
+      "name": "Intercept theorem",
+      "fields": [
+        "Euclidean geometry"
+      ],
+      "slug": "intercept_theorem"
+    },
+    {
+      "name": "Intersecting chords theorem",
+      "fields": [
+        "Euclidean geometry"
+      ],
+      "slug": "intersecting_chords_theorem"
+    },
+    {
+      "name": "Intersecting secants theorem",
+      "fields": [
+        "Euclidean geometry"
+      ],
+      "slug": "intersecting_secants_theorem"
+    },
+    {
+      "name": "Intersection theorem",
+      "fields": [
+        "projective geometry"
+      ],
+      "slug": "intersection_theorem"
+    },
+    {
+      "name": "Japanese theorem for concyclic polygons",
+      "fields": [
+        "Euclidean geometry"
+      ],
+      "slug": "japanese_theorem_for_concyclic_polygons"
+    },
+    {
+      "name": "Japanese theorem for concyclic quadrilaterals",
+      "fields": [
+        "Euclidean geometry"
+      ],
+      "slug": "japanese_theorem_for_concyclic_quadrilaterals"
+    },
+    {
+      "name": "Kawasaki's theorem",
+      "fields": [
+        "mathematics of paper folding"
+      ],
+      "slug": "kawasaki_s_theorem"
+    },
+    {
+      "name": "Lester's theorem",
+      "fields": [
+        "Euclidean plane geometry"
+      ],
+      "slug": "lester_s_theorem"
+    },
+    {
+      "name": "Lexell's theorem",
+      "fields": [
+        "spherical geometry"
+      ],
+      "slug": "lexell_s_theorem"
+    },
+    {
+      "name": "Menelaus's theorem",
+      "fields": [
+        "geometry"
+      ],
+      "slug": "menelaus_s_theorem"
+    },
+    {
+      "name": "Miquel's theorem",
+      "fields": [
+        "geometry"
+      ],
+      "slug": "miquel_s_theorem"
+    },
+    {
+      "name": "Mohr-Mascheroni theorem",
+      "fields": [
+        "geometry"
+      ],
+      "slug": "mohr_mascheroni_theorem"
+    },
+    {
+      "name": "Monge's theorem",
+      "fields": [
+        "geometry"
+      ],
+      "slug": "monge_s_theorem"
+    },
+    {
+      "name": "Morley's trisector theorem",
+      "fields": [
+        "geometry"
+      ],
+      "slug": "morley_s_trisector_theorem"
+    },
+    {
+      "name": "Napoleon's theorem",
+      "fields": [
+        "triangle geometry"
+      ],
+      "slug": "napoleon_s_theorem"
+    },
+    {
+      "name": "Newton's theorem about ovals",
+      "fields": [
+        "curves"
+      ],
+      "slug": "newton_s_theorem_about_ovals"
+    },
+    {
+      "name": "Newton's theorem (quadrilateral)",
+      "fields": [
+        "geometry"
+      ],
+      "slug": "newton_s_theorem_quadrilateral"
+    },
+    {
+      "name": "Pappus's area theorem",
+      "fields": [
+        "geometry"
+      ],
+      "slug": "pappus_s_area_theorem"
+    },
+    {
+      "name": "Pappus's centroid theorem",
+      "fields": [
+        "geometry"
+      ],
+      "slug": "pappus_s_centroid_theorem"
+    },
+    {
+      "name": "Pappus's hexagon theorem",
+      "fields": [
+        "geometry"
+      ],
+      "slug": "pappus_s_hexagon_theorem"
+    },
+    {
+      "name": "Pascal's theorem",
+      "fields": [
+        "conics"
+      ],
+      "slug": "pascal_s_theorem"
+    },
+    {
+      "name": "Pasch's theorem",
+      "fields": [
+        "order theory"
+      ],
+      "slug": "pasch_s_theorem"
+    },
+    {
+      "name": "Pitot theorem",
+      "fields": [
+        "plane geometry"
+      ],
+      "slug": "pitot_theorem"
+    },
+    {
+      "name": "Pivot theorem",
+      "fields": [
+        "circles"
+      ],
+      "slug": "pivot_theorem"
+    },
+    {
+      "name": "Pompeiu's theorem",
+      "fields": [
+        "Euclidean geometry"
+      ],
+      "slug": "pompeiu_s_theorem"
+    },
+    {
+      "name": "Poncelet's closure theorem",
+      "fields": [
+        "conics"
+      ],
+      "slug": "poncelet_s_closure_theorem"
+    },
+    {
+      "name": "Poncelet-Steiner theorem",
+      "fields": [
+        "geometry"
+      ],
+      "slug": "poncelet_steiner_theorem"
+    },
+    {
+      "name": "Ptolemy's theorem",
+      "fields": [
+        "geometry"
+      ],
+      "slug": "ptolemy_s_theorem"
+    },
+    {
+      "name": "Pythagorean theorem",
+      "fields": [
+        "geometry"
+      ],
+      "slug": "pythagorean_theorem"
+    },
+    {
+      "name": "Reuschle's theorem",
+      "fields": [
+        "Euclidean geometry"
+      ],
+      "slug": "reuschle_s_theorem"
+    },
+    {
+      "name": "Routh's theorem",
+      "fields": [
+        "triangle geometry"
+      ],
+      "slug": "routh_s_theorem"
+    },
+    {
+      "name": "Saccheri-Legendre theorem",
+      "fields": [
+        "absolute geometry"
+      ],
+      "slug": "saccheri_legendre_theorem"
+    },
+    {
+      "name": "Six circles theorem",
+      "fields": [
+        "circles"
+      ],
+      "slug": "six_circles_theorem"
+    },
+    {
+      "name": "Steiner-Lehmus theorem",
+      "fields": [
+        "triangle geometry"
+      ],
+      "slug": "steiner_lehmus_theorem"
+    },
+    {
+      "name": "Symphonic theorem",
+      "fields": [
+        "triangle geometry"
+      ],
+      "slug": "symphonic_theorem"
+    },
+    {
+      "name": "Tangent-secant theorem",
+      "fields": [
+        "geometry"
+      ],
+      "slug": "tangent_secant_theorem"
+    },
+    {
+      "name": "Thales's theorem",
+      "fields": [
+        "geometry"
+      ],
+      "slug": "thales_s_theorem"
+    },
+    {
+      "name": "Thebault's theorem",
+      "fields": [
+        "geometry"
+      ],
+      "slug": "thebault_s_theorem"
+    },
+    {
+      "name": "Theorem of the gnomon",
+      "fields": [
+        "geometry"
+      ],
+      "slug": "theorem_of_the_gnomon"
+    },
+    {
+      "name": "Thomsen's theorem",
+      "fields": [
+        "geometry"
+      ],
+      "slug": "thomsen_s_theorem"
+    },
+    {
+      "name": "Van Aubel's theorem",
+      "fields": [
+        "quadrilaterals"
+      ],
+      "slug": "van_aubel_s_theorem"
+    },
+    {
+      "name": "Van Schooten's theorem",
+      "fields": [
+        "Euclidean geometry"
+      ],
+      "slug": "van_schooten_s_theorem"
+    },
+    {
+      "name": "Varignon's theorem",
+      "fields": [
+        "Euclidean geometry"
+      ],
+      "slug": "varignon_s_theorem"
+    },
+    {
+      "name": "Viviani's theorem",
+      "fields": [
+        "Euclidean geometry"
+      ],
+      "slug": "viviani_s_theorem"
+    }
+  ],
+  "Convex and discrete geometry": [
+    {
+      "name": "Alexandrov's uniqueness theorem",
+      "fields": [
+        "discrete geometry"
+      ],
+      "slug": "alexandrov_s_uniqueness_theorem"
+    },
+    {
+      "name": "Balinski's theorem",
+      "fields": [
+        "combinatorics"
+      ],
+      "slug": "balinski_s_theorem"
+    },
+    {
+      "name": "Bang's theorem",
+      "fields": [
+        "geometry"
+      ],
+      "slug": "bang_s_theorem"
+    },
+    {
+      "name": "Besicovitch covering theorem",
+      "fields": [
+        "mathematical analysis"
+      ],
+      "slug": "besicovitch_covering_theorem"
+    },
+    {
+      "name": "Blaschke selection theorem",
+      "fields": [
+        "geometric topology"
+      ],
+      "slug": "blaschke_selection_theorem"
+    },
+    {
+      "name": "Bolyai-Gerwien theorem",
+      "fields": [
+        "discrete geometry"
+      ],
+      "slug": "bolyai_gerwien_theorem"
+    },
+    {
+      "name": "Busemann's theorem",
+      "fields": [
+        "Euclidean geometry"
+      ],
+      "slug": "busemann_s_theorem"
+    },
+    {
+      "name": "Caratheodory's theorem",
+      "fields": [
+        "convex geometry"
+      ],
+      "slug": "caratheodory_s_theorem"
+    },
+    {
+      "name": "Cauchy's theorem",
+      "fields": [
+        "geometry"
+      ],
+      "slug": "cauchy_s_theorem"
+    },
+    {
+      "name": "Classification of Platonic solids",
+      "fields": [
+        "geometry"
+      ],
+      "slug": "classification_of_platonic_solids"
+    },
+    {
+      "name": "de Bruijn's theorem",
+      "fields": [
+        "discrete geometry"
+      ],
+      "slug": "de_bruijn_s_theorem"
+    },
+    {
+      "name": "Descartes's theorem on total angular defect",
+      "fields": [
+        "polyhedra"
+      ],
+      "slug": "descartes_s_theorem_on_total_angular_defect"
+    },
+    {
+      "name": "Erdos-Anning theorem",
+      "fields": [
+        "discrete geometry"
+      ],
+      "slug": "erdos_anning_theorem"
+    },
+    {
+      "name": "Erdos-Nagy theorem",
+      "fields": [
+        "discrete geometry"
+      ],
+      "slug": "erdos_nagy_theorem"
+    },
+    {
+      "name": "Erdos-Szekeres theorem",
+      "fields": [
+        "discrete geometry"
+      ],
+      "slug": "erdos_szekeres_theorem"
+    },
+    {
+      "name": "Fary's theorem",
+      "fields": [
+        "graph theory"
+      ],
+      "slug": "fary_s_theorem"
+    },
+    {
+      "name": "Fenchel's duality theorem",
+      "fields": [
+        "convex analysis"
+      ],
+      "slug": "fenchel_s_duality_theorem"
+    },
+    {
+      "name": "Fenchel-Moreau theorem",
+      "fields": [
+        "mathematical analysis"
+      ],
+      "slug": "fenchel_moreau_theorem"
+    },
+    {
+      "name": "Hadwiger's theorem",
+      "fields": [
+        "geometry",
+        "measure theory"
+      ],
+      "slug": "hadwiger_s_theorem"
+    },
+    {
+      "name": "Helly's theorem",
+      "fields": [
+        "convex sets"
+      ],
+      "slug": "helly_s_theorem"
+    },
+    {
+      "name": "Holditch's theorem",
+      "fields": [
+        "plane geometry"
+      ],
+      "slug": "holditch_s_theorem"
+    },
+    {
+      "name": "John ellipsoid",
+      "fields": [
+        "geometry"
+      ],
+      "slug": "john_ellipsoid"
+    },
+    {
+      "name": "Jung's theorem",
+      "fields": [
+        "geometry"
+      ],
+      "slug": "jung_s_theorem"
+    },
+    {
+      "name": "Kepler conjecture",
+      "fields": [
+        "discrete geometry"
+      ],
+      "slug": "kepler_conjecture"
+    },
+    {
+      "name": "Kirchberger's theorem",
+      "fields": [
+        "discrete geometry"
+      ],
+      "slug": "kirchberger_s_theorem"
+    },
+    {
+      "name": "Krein-Milman theorem",
+      "fields": [
+        "mathematical analysis",
+        "discrete geometry"
+      ],
+      "slug": "krein_milman_theorem"
+    },
+    {
+      "name": "Minkowski's theorem",
+      "fields": [
+        "geometry of numbers"
+      ],
+      "slug": "minkowski_s_theorem"
+    },
+    {
+      "name": "Minkowski's second theorem",
+      "fields": [
+        "geometry of numbers"
+      ],
+      "slug": "minkowski_s_second_theorem"
+    },
+    {
+      "name": "Minkowski-Hlawka theorem",
+      "fields": [
+        "geometry of numbers"
+      ],
+      "slug": "minkowski_hlawka_theorem"
+    },
+    {
+      "name": "Monsky's theorem",
+      "fields": [
+        "discrete geometry"
+      ],
+      "slug": "monsky_s_theorem"
+    },
+    {
+      "name": "Pick's theorem",
+      "fields": [
+        "geometry"
+      ],
+      "slug": "pick_s_theorem"
+    },
+    {
+      "name": "Pizza theorem",
+      "fields": [
+        "geometry"
+      ],
+      "slug": "pizza_theorem"
+    },
+    {
+      "name": "Radon's theorem",
+      "fields": [
+        "convex sets"
+      ],
+      "slug": "radon_s_theorem"
+    },
+    {
+      "name": "Separating axis theorem",
+      "fields": [
+        "convex geometry"
+      ],
+      "slug": "separating_axis_theorem"
+    },
+    {
+      "name": "Steinitz theorem",
+      "fields": [
+        "graph theory"
+      ],
+      "slug": "steinitz_theorem"
+    },
+    {
+      "name": "Stewart's theorem",
+      "fields": [
+        "plane geometry"
+      ],
+      "slug": "stewart_s_theorem"
+    },
+    {
+      "name": "Supporting hyperplane theorem",
+      "fields": [
+        "convex geometry"
+      ],
+      "slug": "supporting_hyperplane_theorem"
+    },
+    {
+      "name": "Sylvester-Gallai theorem",
+      "fields": [
+        "plane geometry"
+      ],
+      "slug": "sylvester_gallai_theorem"
+    },
+    {
+      "name": "Szemeredi-Trotter theorem",
+      "fields": [
+        "combinatorics"
+      ],
+      "slug": "szemeredi_trotter_theorem"
+    },
+    {
+      "name": "Tverberg's theorem",
+      "fields": [
+        "discrete geometry"
+      ],
+      "slug": "tverberg_s_theorem"
+    },
+    {
+      "name": "Vitali covering theorem",
+      "fields": [
+        "measure theory"
+      ],
+      "slug": "vitali_covering_theorem"
+    },
+    {
+      "name": "Wallace-Bolyai-Gerwien theorem",
+      "fields": [
+        "discrete geometry"
+      ],
+      "slug": "wallace_bolyai_gerwien_theorem"
+    }
+  ],
+  "Differential geometry": [
+    {
+      "name": "2-pi theorem",
+      "fields": [
+        "Riemannian geometry"
+      ],
+      "slug": "2_pi_theorem"
+    },
+    {
+      "name": "Abel's curve theorem",
+      "fields": [
+        "Riemannian geometry"
+      ],
+      "slug": "abel_s_curve_theorem"
+    },
+    {
+      "name": "Beltrami's theorem",
+      "fields": [
+        "Riemannian geometry"
+      ],
+      "slug": "beltrami_s_theorem"
+    },
+    {
+      "name": "Berger-Kazdan comparison theorem",
+      "fields": [
+        "Riemannian geometry"
+      ],
+      "slug": "berger_kazdan_comparison_theorem"
+    },
+    {
+      "name": "Bertrand-Diquet-Puiseux theorem",
+      "fields": [
+        "differential geometry"
+      ],
+      "slug": "bertrand_diquet_puiseux_theorem"
+    },
+    {
+      "name": "Bishop-Gromov inequality",
+      "fields": [
+        "Riemannian geometry"
+      ],
+      "slug": "bishop_gromov_inequality"
+    },
+    {
+      "name": "Bonnet theorem",
+      "fields": [
+        "differential geometry"
+      ],
+      "slug": "bonnet_theorem"
+    },
+    {
+      "name": "Caratheodory-Jacobi-Lie theorem",
+      "fields": [
+        "symplectic topology"
+      ],
+      "slug": "caratheodory_jacobi_lie_theorem"
+    },
+    {
+      "name": "Cartan-Hadamard theorem",
+      "fields": [
+        "Riemannian geometry"
+      ],
+      "slug": "cartan_hadamard_theorem"
+    },
+    {
+      "name": "Cheng's eigenvalue comparison theorem",
+      "fields": [
+        "Riemannian geometry"
+      ],
+      "slug": "cheng_s_eigenvalue_comparison_theorem"
+    },
+    {
+      "name": "Chern-Gauss-Bonnet theorem",
+      "fields": [
+        "differential geometry"
+      ],
+      "slug": "chern_gauss_bonnet_theorem"
+    },
+    {
+      "name": "Classification of symmetric spaces",
+      "fields": [
+        "Lie theory"
+      ],
+      "slug": "classification_of_symmetric_spaces"
+    },
+    {
+      "name": "Darboux's theorem",
+      "fields": [
+        "symplectic topology"
+      ],
+      "slug": "darboux_s_theorem"
+    },
+    {
+      "name": "Euler's theorem",
+      "fields": [
+        "differential geometry"
+      ],
+      "slug": "euler_s_theorem"
+    },
+    {
+      "name": "Four-vertex theorem",
+      "fields": [
+        "differential geometry"
+      ],
+      "slug": "four_vertex_theorem"
+    },
+    {
+      "name": "Frobenius theorem",
+      "fields": [
+        "foliations"
+      ],
+      "slug": "frobenius_theorem"
+    },
+    {
+      "name": "Gauss's lemma",
+      "fields": [
+        "Riemannian geometry"
+      ],
+      "slug": "gauss_s_lemma"
+    },
+    {
+      "name": "Gauss's Theorema Egregium",
+      "fields": [
+        "differential geometry"
+      ],
+      "slug": "gauss_s_theorema_egregium"
+    },
+    {
+      "name": "Gauss-Bonnet theorem",
+      "fields": [
+        "differential geometry"
+      ],
+      "slug": "gauss_bonnet_theorem"
+    },
+    {
+      "name": "Geroch's splitting theorem",
+      "fields": [
+        "differential geometry"
+      ],
+      "slug": "geroch_s_splitting_theorem"
+    },
+    {
+      "name": "Gromov's compactness theorem",
+      "fields": [
+        "Riemannian geometry"
+      ],
+      "slug": "gromov_s_compactness_theorem"
+    },
+    {
+      "name": "Gromov's compactness theorem",
+      "fields": [
+        "symplectic topology"
+      ],
+      "slug": "gromov_s_compactness_theorem"
+    },
+    {
+      "name": "Gromov-Ruh theorem",
+      "fields": [
+        "differential geometry"
+      ],
+      "slug": "gromov_ruh_theorem"
+    },
+    {
+      "name": "Hilbert's theorem",
+      "fields": [
+        "differential geometry"
+      ],
+      "slug": "hilbert_s_theorem"
+    },
+    {
+      "name": "Hopf-Rinow theorem",
+      "fields": [
+        "differential geometry"
+      ],
+      "slug": "hopf_rinow_theorem"
+    },
+    {
+      "name": "Killing-Hopf theorem",
+      "fields": [
+        "Riemannian geometry"
+      ],
+      "slug": "killing_hopf_theorem"
+    },
+    {
+      "name": "Lee Hwa Chung theorem",
+      "fields": [
+        "symplectic topology"
+      ],
+      "slug": "lee_hwa_chung_theorem"
+    },
+    {
+      "name": "Lie-Palais theorem",
+      "fields": [
+        "differential geometry"
+      ],
+      "slug": "lie_palais_theorem"
+    },
+    {
+      "name": "Meusnier's theorem",
+      "fields": [
+        "differential geometry"
+      ],
+      "slug": "meusnier_s_theorem"
+    },
+    {
+      "name": "Mostow rigidity theorem",
+      "fields": [
+        "differential geometry"
+      ],
+      "slug": "mostow_rigidity_theorem"
+    },
+    {
+      "name": "Myers theorem",
+      "fields": [
+        "differential geometry"
+      ],
+      "slug": "myers_theorem"
+    },
+    {
+      "name": "Myers-Steenrod theorem",
+      "fields": [
+        "differential geometry"
+      ],
+      "slug": "myers_steenrod_theorem"
+    },
+    {
+      "name": "Nash embedding theorem",
+      "fields": [
+        "differential geometry"
+      ],
+      "slug": "nash_embedding_theorem"
+    },
+    {
+      "name": "Non-squeezing theorem",
+      "fields": [
+        "symplectic geometry"
+      ],
+      "slug": "non_squeezing_theorem"
+    },
+    {
+      "name": "Rashevsky-Chow theorem",
+      "fields": [
+        "control theory"
+      ],
+      "slug": "rashevsky_chow_theorem"
+    },
+    {
+      "name": "Rauch comparison theorem",
+      "fields": [
+        "Riemannian geometry"
+      ],
+      "slug": "rauch_comparison_theorem"
+    },
+    {
+      "name": "Schwarz-Ahlfors-Pick theorem",
+      "fields": [
+        "differential geometry"
+      ],
+      "slug": "schwarz_ahlfors_pick_theorem"
+    },
+    {
+      "name": "Soul theorem",
+      "fields": [
+        "Riemannian geometry"
+      ],
+      "slug": "soul_theorem"
+    },
+    {
+      "name": "Sphere theorem",
+      "fields": [
+        "Riemannian geometry"
+      ],
+      "slug": "sphere_theorem"
+    },
+    {
+      "name": "Synge's theorem",
+      "fields": [
+        "Riemannian geometry"
+      ],
+      "slug": "synge_s_theorem"
+    },
+    {
+      "name": "Toponogov's theorem",
+      "fields": [
+        "Riemannian geometry"
+      ],
+      "slug": "toponogov_s_theorem"
+    }
+  ],
+  "General topology": [
+    {
+      "name": "Arzela-Ascoli theorem",
+      "fields": [
+        "functional analysis"
+      ],
+      "slug": "arzela_ascoli_theorem"
+    },
+    {
+      "name": "Baire category theorem",
+      "fields": [
+        "topology",
+        "metric spaces"
+      ],
+      "slug": "baire_category_theorem"
+    },
+    {
+      "name": "Bing metrization theorem",
+      "fields": [
+        "general topology"
+      ],
+      "slug": "bing_metrization_theorem"
+    },
+    {
+      "name": "Bolzano-Weierstrass theorem",
+      "fields": [
+        "real analysis",
+        "calculus"
+      ],
+      "slug": "bolzano_weierstrass_theorem"
+    },
+    {
+      "name": "Borsuk-Ulam theorem",
+      "fields": [
+        "topology"
+      ],
+      "slug": "borsuk_ulam_theorem"
+    },
+    {
+      "name": "Brouwer fixed-point theorem",
+      "fields": [
+        "topology"
+      ],
+      "slug": "brouwer_fixed_point_theorem"
+    },
+    {
+      "name": "Cantor's intersection theorem",
+      "fields": [
+        "real analysis"
+      ],
+      "slug": "cantor_s_intersection_theorem"
+    },
+    {
+      "name": "Closed graph theorem",
+      "fields": [
+        "functional analysis"
+      ],
+      "slug": "closed_graph_theorem"
+    },
+    {
+      "name": "Extreme value theorem",
+      "fields": [
+        "calculus"
+      ],
+      "slug": "extreme_value_theorem"
+    },
+    {
+      "name": "Fixed-point theorems in infinite-dimensional spaces",
+      "fields": [
+        "topology"
+      ],
+      "slug": "fixed_point_theorems_in_infinite_dimensional_spaces"
+    },
+    {
+      "name": "Hairy ball theorem",
+      "fields": [
+        "algebraic topology"
+      ],
+      "slug": "hairy_ball_theorem"
+    },
+    {
+      "name": "Hahn-Mazurkiewicz theorem",
+      "fields": [
+        "continuum theory"
+      ],
+      "slug": "hahn_mazurkiewicz_theorem"
+    },
+    {
+      "name": "Heine-Borel theorem",
+      "fields": [
+        "real analysis"
+      ],
+      "slug": "heine_borel_theorem"
+    },
+    {
+      "name": "Heine-Cantor theorem",
+      "fields": [
+        "metric geometry"
+      ],
+      "slug": "heine_cantor_theorem"
+    },
+    {
+      "name": "Jordan curve theorem",
+      "fields": [
+        "topology"
+      ],
+      "slug": "jordan_curve_theorem"
+    },
+    {
+      "name": "Kuratowski's closure-complement problem",
+      "fields": [
+        "topology"
+      ],
+      "slug": "kuratowski_s_closure_complement_problem"
+    },
+    {
+      "name": "Lebesgue covering dimension",
+      "fields": [
+        "dimension theory"
+      ],
+      "slug": "lebesgue_covering_dimension"
+    },
+    {
+      "name": "Metrization theorems",
+      "fields": [
+        "topological spaces"
+      ],
+      "slug": "metrization_theorems"
+    },
+    {
+      "name": "Nagata-Smirnov metrization theorem",
+      "fields": [
+        "general topology"
+      ],
+      "slug": "nagata_smirnov_metrization_theorem"
+    },
+    {
+      "name": "Netto's theorem",
+      "fields": [
+        "topology"
+      ],
+      "slug": "netto_s_theorem"
+    },
+    {
+      "name": "Parovicenko's theorem",
+      "fields": [
+        "topology"
+      ],
+      "slug": "parovicenko_s_theorem"
+    },
+    {
+      "name": "Tietze extension theorem",
+      "fields": [
+        "general topology"
+      ],
+      "slug": "tietze_extension_theorem"
+    },
+    {
+      "name": "Tychonoff's theorem",
+      "fields": [
+        "general topology"
+      ],
+      "slug": "tychonoff_s_theorem"
+    }
+  ],
+  "Algebraic topology": [
+    {
+      "name": "Acyclic models theorem",
+      "fields": [
+        "algebraic topology"
+      ],
+      "slug": "acyclic_models_theorem"
+    },
+    {
+      "name": "Blakers-Massey theorem",
+      "fields": [
+        "homotopy theory"
+      ],
+      "slug": "blakers_massey_theorem"
+    },
+    {
+      "name": "Bott periodicity theorem",
+      "fields": [
+        "homotopy theory"
+      ],
+      "slug": "bott_periodicity_theorem"
+    },
+    {
+      "name": "Brown's representability theorem",
+      "fields": [
+        "homotopy theory"
+      ],
+      "slug": "brown_s_representability_theorem"
+    },
+    {
+      "name": "Cellular approximation theorem",
+      "fields": [
+        "algebraic topology"
+      ],
+      "slug": "cellular_approximation_theorem"
+    },
+    {
+      "name": "Dold-Thom theorem",
+      "fields": [
+        "algebraic topology"
+      ],
+      "slug": "dold_thom_theorem"
+    },
+    {
+      "name": "Eilenberg-Ganea theorem",
+      "fields": [
+        "homological algebra",
+        "algebraic topology"
+      ],
+      "slug": "eilenberg_ganea_theorem"
+    },
+    {
+      "name": "Eilenberg-Zilber theorem",
+      "fields": [
+        "algebraic topology"
+      ],
+      "slug": "eilenberg_zilber_theorem"
+    },
+    {
+      "name": "Euler's polyhedron theorem",
+      "fields": [
+        "polyhedra"
+      ],
+      "slug": "euler_s_polyhedron_theorem"
+    },
+    {
+      "name": "Excision theorem",
+      "fields": [
+        "homology theory"
+      ],
+      "slug": "excision_theorem"
+    },
+    {
+      "name": "Freudenthal suspension theorem",
+      "fields": [
+        "homotopy theory"
+      ],
+      "slug": "freudenthal_suspension_theorem"
+    },
+    {
+      "name": "Hilton-Milnor theorem",
+      "fields": [
+        "algebraic topology"
+      ],
+      "slug": "hilton_milnor_theorem"
+    },
+    {
+      "name": "Homotopy excision theorem",
+      "fields": [
+        "algebraic topology"
+      ],
+      "slug": "homotopy_excision_theorem"
+    },
+    {
+      "name": "Hopf theorem",
+      "fields": [
+        "differential topology"
+      ],
+      "slug": "hopf_theorem"
+    },
+    {
+      "name": "Hurewicz theorem",
+      "fields": [
+        "algebraic topology"
+      ],
+      "slug": "hurewicz_theorem"
+    },
+    {
+      "name": "Kunneth theorem",
+      "fields": [
+        "algebraic topology"
+      ],
+      "slug": "kunneth_theorem"
+    },
+    {
+      "name": "Invariance of domain",
+      "fields": [
+        "algebraic topology"
+      ],
+      "slug": "invariance_of_domain"
+    },
+    {
+      "name": "Landweber exact functor theorem",
+      "fields": [
+        "algebraic topology"
+      ],
+      "slug": "landweber_exact_functor_theorem"
+    },
+    {
+      "name": "Lefschetz fixed-point theorem",
+      "fields": [
+        "fixed points",
+        "algebraic topology"
+      ],
+      "slug": "lefschetz_fixed_point_theorem"
+    },
+    {
+      "name": "Lefschetz-Hopf theorem",
+      "fields": [
+        "topology"
+      ],
+      "slug": "lefschetz_hopf_theorem"
+    },
+    {
+      "name": "Leray-Hirsch theorem",
+      "fields": [
+        "algebraic topology"
+      ],
+      "slug": "leray_hirsch_theorem"
+    },
+    {
+      "name": "Nielsen fixed-point theorem",
+      "fields": [
+        "fixed points"
+      ],
+      "slug": "nielsen_fixed_point_theorem"
+    },
+    {
+      "name": "Nilpotence theorem",
+      "fields": [
+        "algebraic topology"
+      ],
+      "slug": "nilpotence_theorem"
+    },
+    {
+      "name": "Poincare duality theorem",
+      "fields": [
+        "algebraic topology of manifolds"
+      ],
+      "slug": "poincare_duality_theorem"
+    },
+    {
+      "name": "Seifert-van Kampen theorem",
+      "fields": [
+        "algebraic topology"
+      ],
+      "slug": "seifert_van_kampen_theorem"
+    },
+    {
+      "name": "Simplicial approximation theorem",
+      "fields": [
+        "algebraic topology"
+      ],
+      "slug": "simplicial_approximation_theorem"
+    },
+    {
+      "name": "Stallings-Zeeman theorem",
+      "fields": [
+        "algebraic topology"
+      ],
+      "slug": "stallings_zeeman_theorem"
+    },
+    {
+      "name": "Sullivan conjecture",
+      "fields": [
+        "homotopy theory"
+      ],
+      "slug": "sullivan_conjecture"
+    },
+    {
+      "name": "Universal coefficient theorem",
+      "fields": [
+        "algebraic topology"
+      ],
+      "slug": "universal_coefficient_theorem"
+    },
+    {
+      "name": "Vietoris-Begle mapping theorem",
+      "fields": [
+        "algebraic topology"
+      ],
+      "slug": "vietoris_begle_mapping_theorem"
+    },
+    {
+      "name": "Whitehead theorem",
+      "fields": [
+        "homotopy theory"
+      ],
+      "slug": "whitehead_theorem"
+    },
+    {
+      "name": "Whitney-Graustein Theorem",
+      "fields": [
+        "algebraic topology"
+      ],
+      "slug": "whitney_graustein_theorem"
+    }
+  ],
+  "Manifolds and cell complexes": [
+    {
+      "name": "Atiyah-Bott fixed-point theorem",
+      "fields": [
+        "differential topology"
+      ],
+      "slug": "atiyah_bott_fixed_point_theorem"
+    },
+    {
+      "name": "Bing's recognition theorem",
+      "fields": [
+        "geometric topology"
+      ],
+      "slug": "bing_s_recognition_theorem"
+    },
+    {
+      "name": "Birman short exact sequence",
+      "fields": [
+        "geometric topology"
+      ],
+      "slug": "birman_short_exact_sequence"
+    },
+    {
+      "name": "Classification of compact surfaces",
+      "fields": [
+        "topology"
+      ],
+      "slug": "classification_of_compact_surfaces"
+    },
+    {
+      "name": "De Rham's theorem",
+      "fields": [
+        "differential topology"
+      ],
+      "slug": "de_rham_s_theorem"
+    },
+    {
+      "name": "Dehn-Nielsen-Baer theorem",
+      "fields": [
+        "geometric topology"
+      ],
+      "slug": "dehn_nielsen_baer_theorem"
+    },
+    {
+      "name": "Donaldson's theorem",
+      "fields": [
+        "differential topology"
+      ],
+      "slug": "donaldson_s_theorem"
+    },
+    {
+      "name": "Ehresmann's theorem",
+      "fields": [
+        "differential topology"
+      ],
+      "slug": "ehresmann_s_theorem"
+    },
+    {
+      "name": "Fary-Milnor theorem",
+      "fields": [
+        "knot theory"
+      ],
+      "slug": "fary_milnor_theorem"
+    },
+    {
+      "name": "Fenchel's theorem",
+      "fields": [
+        "differential geometry"
+      ],
+      "slug": "fenchel_s_theorem"
+    },
+    {
+      "name": "H-cobordism theorem",
+      "fields": [
+        "differential topology"
+      ],
+      "slug": "h_cobordism_theorem"
+    },
+    {
+      "name": "Hirzebruch signature theorem",
+      "fields": [
+        "topology",
+        "algebraic geometry"
+      ],
+      "slug": "hirzebruch_signature_theorem"
+    },
+    {
+      "name": "Jordan-Schonflies theorem",
+      "fields": [
+        "geometric topology"
+      ],
+      "slug": "jordan_schonflies_theorem"
+    },
+    {
+      "name": "JSJ theorem",
+      "fields": [
+        "3-manifolds"
+      ],
+      "slug": "jsj_theorem"
+    },
+    {
+      "name": "Lickorish twist theorem",
+      "fields": [
+        "geometric topology"
+      ],
+      "slug": "lickorish_twist_theorem"
+    },
+    {
+      "name": "Lickorish-Wallace theorem",
+      "fields": [
+        "3-manifolds"
+      ],
+      "slug": "lickorish_wallace_theorem"
+    },
+    {
+      "name": "Nielsen realization problem",
+      "fields": [
+        "geometric topology"
+      ],
+      "slug": "nielsen_realization_problem"
+    },
+    {
+      "name": "Nielsen-Thurston classification",
+      "fields": [
+        "low-dimensional topology"
+      ],
+      "slug": "nielsen_thurston_classification"
+    },
+    {
+      "name": "Novikov's compact leaf theorem",
+      "fields": [
+        "foliations"
+      ],
+      "slug": "novikov_s_compact_leaf_theorem"
+    },
+    {
+      "name": "Perelman's Geometrization theorem",
+      "fields": [
+        "3-manifolds"
+      ],
+      "slug": "perelman_s_geometrization_theorem"
+    },
+    {
+      "name": "Poincare-Hopf theorem",
+      "fields": [
+        "differential topology"
+      ],
+      "slug": "poincare_hopf_theorem"
+    },
+    {
+      "name": "Poincare conjecture",
+      "fields": [
+        "topology"
+      ],
+      "slug": "poincare_conjecture"
+    },
+    {
+      "name": "Preimage theorem",
+      "fields": [
+        "differential topology"
+      ],
+      "slug": "preimage_theorem"
+    },
+    {
+      "name": "Reeb sphere theorem",
+      "fields": [
+        "foliations"
+      ],
+      "slug": "reeb_sphere_theorem"
+    },
+    {
+      "name": "Reidemeister-Singer Theorem",
+      "fields": [
+        "geometric topology"
+      ],
+      "slug": "reidemeister_singer_theorem"
+    },
+    {
+      "name": "Riemann-Roch theorem for smooth manifolds",
+      "fields": [
+        "differential topology"
+      ],
+      "slug": "riemann_roch_theorem_for_smooth_manifolds"
+    },
+    {
+      "name": "Rokhlin's theorem",
+      "fields": [
+        "geometric topology"
+      ],
+      "slug": "rokhlin_s_theorem"
+    },
+    {
+      "name": "S-cobordism theorem",
+      "fields": [
+        "differential topology"
+      ],
+      "slug": "s_cobordism_theorem"
+    },
+    {
+      "name": "Sard's theorem",
+      "fields": [
+        "differential geometry"
+      ],
+      "slug": "sard_s_theorem"
+    },
+    {
+      "name": "Scott core theorem",
+      "fields": [
+        "3-manifolds"
+      ],
+      "slug": "scott_core_theorem"
+    },
+    {
+      "name": "Swan's theorem",
+      "fields": [
+        "module theory"
+      ],
+      "slug": "swan_s_theorem"
+    },
+    {
+      "name": "Tameness theorem",
+      "fields": [
+        "3-manifolds"
+      ],
+      "slug": "tameness_theorem"
+    },
+    {
+      "name": "Thom transversality theorem",
+      "fields": [
+        "differential topology"
+      ],
+      "slug": "thom_transversality_theorem"
+    },
+    {
+      "name": "Thurston's geometrization theorem",
+      "fields": [
+        "3-manifolds"
+      ],
+      "slug": "thurston_s_geometrization_theorem"
+    },
+    {
+      "name": "Waldhausen's theorem",
+      "fields": [
+        "geometric topology"
+      ],
+      "slug": "waldhausen_s_theorem"
+    },
+    {
+      "name": "Whitney embedding theorem",
+      "fields": [
+        "differential manifolds"
+      ],
+      "slug": "whitney_embedding_theorem"
+    },
+    {
+      "name": "Whitney immersion theorem",
+      "fields": [
+        "differential topology"
+      ],
+      "slug": "whitney_immersion_theorem"
+    }
+  ],
+  "Global analysis, analysis on manifolds": [
+    {
+      "name": "Rado's theorem",
+      "fields": [
+        "harmonic analysis"
+      ],
+      "slug": "rado_s_theorem"
+    }
+  ],
+  "Probability theory and stochastic processes": [
+    {
+      "name": "Bayes' theorem",
+      "fields": [
+        "probability"
+      ],
+      "slug": "bayes_theorem"
+    },
+    {
+      "name": "Bertrand's ballot theorem",
+      "fields": [
+        "probability theory",
+        "combinatorics"
+      ],
+      "slug": "bertrand_s_ballot_theorem"
+    },
+    {
+      "name": "Burke's theorem",
+      "fields": [
+        "probability theory",
+        "queueing theory"
+      ],
+      "slug": "burke_s_theorem"
+    },
+    {
+      "name": "Central limit theorem",
+      "fields": [
+        "probability"
+      ],
+      "slug": "central_limit_theorem"
+    },
+    {
+      "name": "Clark-Ocone theorem",
+      "fields": [
+        "stochastic processes"
+      ],
+      "slug": "clark_ocone_theorem"
+    },
+    {
+      "name": "Continuous mapping theorem",
+      "fields": [
+        "probability theory"
+      ],
+      "slug": "continuous_mapping_theorem"
+    },
+    {
+      "name": "Cramer's theorem (large deviations)",
+      "fields": [
+        "probability"
+      ],
+      "slug": "cramer_s_theorem_large_deviations"
+    },
+    {
+      "name": "Dawson-Gartner theorem",
+      "fields": [
+        "asymptotic analysis"
+      ],
+      "slug": "dawson_gartner_theorem"
+    },
+    {
+      "name": "Donsker's theorem",
+      "fields": [
+        "probability theory"
+      ],
+      "slug": "donsker_s_theorem"
+    },
+    {
+      "name": "Doob decomposition theorem",
+      "fields": [
+        "stochastic processes"
+      ],
+      "slug": "doob_decomposition_theorem"
+    },
+    {
+      "name": "Doob's martingale convergence theorems",
+      "fields": [
+        "stochastic processes"
+      ],
+      "slug": "doob_s_martingale_convergence_theorems"
+    },
+    {
+      "name": "Doob-Meyer decomposition theorem",
+      "fields": [
+        "stochastic processes"
+      ],
+      "slug": "doob_meyer_decomposition_theorem"
+    },
+    {
+      "name": "Dudley's theorem",
+      "fields": [
+        "probability"
+      ],
+      "slug": "dudley_s_theorem"
+    },
+    {
+      "name": "Dunford-Pettis theorem",
+      "fields": [
+        "probability theory"
+      ],
+      "slug": "dunford_pettis_theorem"
+    },
+    {
+      "name": "Fernique's theorem",
+      "fields": [
+        "measure theory"
+      ],
+      "slug": "fernique_s_theorem"
+    },
+    {
+      "name": "Foster's theorem",
+      "fields": [
+        "statistics"
+      ],
+      "slug": "foster_s_theorem"
+    },
+    {
+      "name": "Freidlin-Wentzell theorem",
+      "fields": [
+        "stochastic processes"
+      ],
+      "slug": "freidlin_wentzell_theorem"
+    },
+    {
+      "name": "Girsanov's theorem",
+      "fields": [
+        "stochastic processes"
+      ],
+      "slug": "girsanov_s_theorem"
+    },
+    {
+      "name": "Glivenko's theorem",
+      "fields": [
+        "probability"
+      ],
+      "slug": "glivenko_s_theorem"
+    },
+    {
+      "name": "Gordon-Newell theorem",
+      "fields": [
+        "queueing theory"
+      ],
+      "slug": "gordon_newell_theorem"
+    },
+    {
+      "name": "Hammersley-Clifford theorem",
+      "fields": [
+        "probability"
+      ],
+      "slug": "hammersley_clifford_theorem"
+    },
+    {
+      "name": "Helly-Bray theorem",
+      "fields": [
+        "probability theory"
+      ],
+      "slug": "helly_bray_theorem"
+    },
+    {
+      "name": "Integral representation theorem for classical Wiener space",
+      "fields": [
+        "measure theory"
+      ],
+      "slug": "integral_representation_theorem_for_classical_wiener_space"
+    },
+    {
+      "name": "Ionescu-Tulcea theorem",
+      "fields": [
+        "probability theory"
+      ],
+      "slug": "ionescu_tulcea_theorem"
+    },
+    {
+      "name": "Jackson's theorem",
+      "fields": [
+        "queueing theory"
+      ],
+      "slug": "jackson_s_theorem"
+    },
+    {
+      "name": "Karhunen-Loeve theorem",
+      "fields": [
+        "stochastic processes"
+      ],
+      "slug": "karhunen_loeve_theorem"
+    },
+    {
+      "name": "Kolmogorov extension theorem",
+      "fields": [
+        "stochastic processes"
+      ],
+      "slug": "kolmogorov_extension_theorem"
+    },
+    {
+      "name": "Kolmogorov's three-series theorem",
+      "fields": [
+        "mathematical series"
+      ],
+      "slug": "kolmogorov_s_three_series_theorem"
+    },
+    {
+      "name": "Le Cam's theorem",
+      "fields": [
+        "probability theory"
+      ],
+      "slug": "le_cam_s_theorem"
+    },
+    {
+      "name": "Levy continuity theorem",
+      "fields": [
+        "probability"
+      ],
+      "slug": "levy_continuity_theorem"
+    },
+    {
+      "name": "Levy's modulus of continuity theorem",
+      "fields": [
+        "probability"
+      ],
+      "slug": "levy_s_modulus_of_continuity_theorem"
+    },
+    {
+      "name": "Martingale representation theorem",
+      "fields": [
+        "probability theory"
+      ],
+      "slug": "martingale_representation_theorem"
+    },
+    {
+      "name": "Maxwell's theorem",
+      "fields": [
+        "probability theory"
+      ],
+      "slug": "maxwell_s_theorem"
+    },
+    {
+      "name": "Optional stopping theorem",
+      "fields": [
+        "probability theory"
+      ],
+      "slug": "optional_stopping_theorem"
+    },
+    {
+      "name": "Poisson limit theorem",
+      "fields": [
+        "probability"
+      ],
+      "slug": "poisson_limit_theorem"
+    },
+    {
+      "name": "Raikov's theorem",
+      "fields": [
+        "probability"
+      ],
+      "slug": "raikov_s_theorem"
+    },
+    {
+      "name": "Skorokhod's embedding theorem",
+      "fields": [
+        "statistics"
+      ],
+      "slug": "skorokhod_s_embedding_theorem"
+    },
+    {
+      "name": "Skorokhod's representation theorem",
+      "fields": [
+        "statistics"
+      ],
+      "slug": "skorokhod_s_representation_theorem"
+    },
+    {
+      "name": "Slutsky's theorem",
+      "fields": [
+        "probability theory"
+      ],
+      "slug": "slutsky_s_theorem"
+    },
+    {
+      "name": "Theorem of de Moivre-Laplace",
+      "fields": [
+        "probability theory"
+      ],
+      "slug": "theorem_of_de_moivre_laplace"
+    }
+  ],
+  "Statistics": [
+    {
+      "name": "Aumann's agreement theorem",
+      "fields": [
+        "statistics"
+      ],
+      "slug": "aumann_s_agreement_theorem"
+    },
+    {
+      "name": "Bapat-Beg theorem",
+      "fields": [
+        "statistics"
+      ],
+      "slug": "bapat_beg_theorem"
+    },
+    {
+      "name": "Basu's theorem",
+      "fields": [
+        "statistics"
+      ],
+      "slug": "basu_s_theorem"
+    },
+    {
+      "name": "Berry-Esseen theorem",
+      "fields": [
+        "probability theory"
+      ],
+      "slug": "berry_esseen_theorem"
+    },
+    {
+      "name": "Cochran's theorem",
+      "fields": [
+        "statistics"
+      ],
+      "slug": "cochran_s_theorem"
+    },
+    {
+      "name": "Cox's theorem",
+      "fields": [
+        "probability"
+      ],
+      "slug": "cox_s_theorem"
+    },
+    {
+      "name": "Cramer's decomposition theorem",
+      "fields": [
+        "statistics"
+      ],
+      "slug": "cramer_s_decomposition_theorem"
+    },
+    {
+      "name": "De Finetti's theorem",
+      "fields": [
+        "probability"
+      ],
+      "slug": "de_finetti_s_theorem"
+    },
+    {
+      "name": "FWL theorem",
+      "fields": [
+        "economics"
+      ],
+      "slug": "fwl_theorem"
+    },
+    {
+      "name": "Fieller's theorem",
+      "fields": [
+        "statistics"
+      ],
+      "slug": "fieller_s_theorem"
+    },
+    {
+      "name": "Fisher-Tippett-Gnedenko theorem",
+      "fields": [
+        "statistics"
+      ],
+      "slug": "fisher_tippett_gnedenko_theorem"
+    },
+    {
+      "name": "Gauss-Markov theorem",
+      "fields": [
+        "statistics"
+      ],
+      "slug": "gauss_markov_theorem"
+    },
+    {
+      "name": "Glivenko-Cantelli theorem",
+      "fields": [
+        "probability"
+      ],
+      "slug": "glivenko_cantelli_theorem"
+    },
+    {
+      "name": "Infinite monkey theorem",
+      "fields": [
+        "probability"
+      ],
+      "slug": "infinite_monkey_theorem"
+    },
+    {
+      "name": "Lehmann-Scheffe theorem",
+      "fields": [
+        "statistics"
+      ],
+      "slug": "lehmann_scheffe_theorem"
+    },
+    {
+      "name": "Lukacs's proportion-sum independence theorem",
+      "fields": [
+        "probability"
+      ],
+      "slug": "lukacs_s_proportion_sum_independence_theorem"
+    },
+    {
+      "name": "Lyapunov's central limit theorem",
+      "fields": [
+        "probability theory"
+      ],
+      "slug": "lyapunov_s_central_limit_theorem"
+    },
+    {
+      "name": "Pickands-Balkema-de Haan theorem",
+      "fields": [
+        "extreme value theory"
+      ],
+      "slug": "pickands_balkema_de_haan_theorem"
+    },
+    {
+      "name": "Pitman-Koopman-Darmois theorem",
+      "fields": [
+        "statistics"
+      ],
+      "slug": "pitman_koopman_darmois_theorem"
+    },
+    {
+      "name": "Rao-Blackwell theorem",
+      "fields": [
+        "statistics"
+      ],
+      "slug": "rao_blackwell_theorem"
+    },
+    {
+      "name": "Sklar's theorem",
+      "fields": [
+        "statistics"
+      ],
+      "slug": "sklar_s_theorem"
+    },
+    {
+      "name": "Wold's theorem",
+      "fields": [
+        "statistics"
+      ],
+      "slug": "wold_s_theorem"
+    }
+  ],
+  "Numerical analysis": [
+    {
+      "name": "Godunov's theorem",
+      "fields": [
+        "numerical analysis"
+      ],
+      "slug": "godunov_s_theorem"
+    },
+    {
+      "name": "Kantorovich theorem",
+      "fields": [
+        "functional analysis"
+      ],
+      "slug": "kantorovich_theorem"
+    },
+    {
+      "name": "Lax-Richtmyer theorem",
+      "fields": [
+        "numerical analysis"
+      ],
+      "slug": "lax_richtmyer_theorem"
+    },
+    {
+      "name": "Lax-Wendroff theorem",
+      "fields": [
+        "numerical analysis"
+      ],
+      "slug": "lax_wendroff_theorem"
+    },
+    {
+      "name": "Marsaglia's theorem",
+      "fields": [
+        "number theory"
+      ],
+      "slug": "marsaglia_s_theorem"
+    }
+  ],
+  "Computer science": [
+    {
+      "name": "Akra-Bazzi theorem",
+      "fields": [
+        "computer science"
+      ],
+      "slug": "akra_bazzi_theorem"
+    },
+    {
+      "name": "Art gallery theorem",
+      "fields": [
+        "geometry"
+      ],
+      "slug": "art_gallery_theorem"
+    },
+    {
+      "name": "CAP theorem",
+      "fields": [
+        "theoretical computer science"
+      ],
+      "slug": "cap_theorem"
+    },
+    {
+      "name": "Chomsky-Schutzenberger enumeration theorem",
+      "fields": [
+        "formal language theory"
+      ],
+      "slug": "chomsky_schutzenberger_enumeration_theorem"
+    },
+    {
+      "name": "Chomsky-Schutzenberger representation theorem",
+      "fields": [
+        "formal language theory"
+      ],
+      "slug": "chomsky_schutzenberger_representation_theorem"
+    },
+    {
+      "name": "Codd's theorem",
+      "fields": [
+        "relational model"
+      ],
+      "slug": "codd_s_theorem"
+    },
+    {
+      "name": "Compression theorem",
+      "fields": [
+        "computational complexity theory",
+        "structural complexity theory"
+      ],
+      "slug": "compression_theorem"
+    },
+    {
+      "name": "Cook's theorem",
+      "fields": [
+        "computational complexity theory"
+      ],
+      "slug": "cook_s_theorem"
+    },
+    {
+      "name": "Fagin's theorem",
+      "fields": [
+        "computational complexity theory"
+      ],
+      "slug": "fagin_s_theorem"
+    },
+    {
+      "name": "Full employment theorem",
+      "fields": [
+        "theoretical computer science"
+      ],
+      "slug": "full_employment_theorem"
+    },
+    {
+      "name": "Gap theorem",
+      "fields": [
+        "computational complexity theory"
+      ],
+      "slug": "gap_theorem"
+    },
+    {
+      "name": "Gottesman-Knill theorem",
+      "fields": [
+        "quantum computation"
+      ],
+      "slug": "gottesman_knill_theorem"
+    },
+    {
+      "name": "Holland's schema theorem",
+      "fields": [
+        "genetic algorithm"
+      ],
+      "slug": "holland_s_schema_theorem"
+    },
+    {
+      "name": "Immerman-Szelepcsenyi theorem",
+      "fields": [
+        "computational complexity theory"
+      ],
+      "slug": "immerman_szelepcsenyi_theorem"
+    },
+    {
+      "name": "Karp-Lipton theorem",
+      "fields": [
+        "computational complexity theory"
+      ],
+      "slug": "karp_lipton_theorem"
+    },
+    {
+      "name": "Ladner's theorem",
+      "fields": [
+        "computational complexity theory"
+      ],
+      "slug": "ladner_s_theorem"
+    },
+    {
+      "name": "Lame's theorem",
+      "fields": [
+        "computational complexity theory"
+      ],
+      "slug": "lame_s_theorem"
+    },
+    {
+      "name": "Linear speedup theorem",
+      "fields": [
+        "computational complexity theory"
+      ],
+      "slug": "linear_speedup_theorem"
+    },
+    {
+      "name": "Master theorem (analysis of algorithms)",
+      "fields": [
+        "recurrence relations",
+        "asymptotic analysis"
+      ],
+      "slug": "master_theorem_analysis_of_algorithms"
+    },
+    {
+      "name": "Max/min CSP/Ones classification theorems",
+      "fields": [
+        "computational complexity theory"
+      ],
+      "slug": "max_min_csp_ones_classification_theorems"
+    },
+    {
+      "name": "Myhill-Nerode theorem",
+      "fields": [
+        "formal languages"
+      ],
+      "slug": "myhill_nerode_theorem"
+    },
+    {
+      "name": "No free lunch theorem (search and optimization)",
+      "fields": [
+        "computational complexity theory"
+      ],
+      "slug": "no_free_lunch_theorem_search_and_optimization"
+    },
+    {
+      "name": "PCP theorem",
+      "fields": [
+        "computational complexity theory"
+      ],
+      "slug": "pcp_theorem"
+    },
+    {
+      "name": "Pseudorandom generator theorem",
+      "fields": [
+        "computational complexity theory"
+      ],
+      "slug": "pseudorandom_generator_theorem"
+    },
+    {
+      "name": "Quantum threshold theorem (computer science)",
+      "fields": [
+        "theoretical computer science"
+      ],
+      "slug": "quantum_threshold_theorem_computer_science"
+    },
+    {
+      "name": "Reversed compound agent theorem",
+      "fields": [
+        "probability"
+      ],
+      "slug": "reversed_compound_agent_theorem"
+    },
+    {
+      "name": "Rice's theorem",
+      "fields": [
+        "recursion theory",
+        "computer science"
+      ],
+      "slug": "rice_s_theorem"
+    },
+    {
+      "name": "Rice-Shapiro theorem",
+      "fields": [
+        "computer science"
+      ],
+      "slug": "rice_shapiro_theorem"
+    },
+    {
+      "name": "Savitch's theorem",
+      "fields": [
+        "computational complexity theory"
+      ],
+      "slug": "savitch_s_theorem"
+    },
+    {
+      "name": "Schaefer's dichotomy theorem",
+      "fields": [
+        "computational complexity theory"
+      ],
+      "slug": "schaefer_s_dichotomy_theorem"
+    },
+    {
+      "name": "Sipser-Lautemann theorem (probabilistic complexity theory)",
+      "fields": [
+        "structural complexity theory"
+      ],
+      "slug": "sipser_lautemann_theorem_probabilistic_complexity_theory"
+    },
+    {
+      "name": "Smn theorem",
+      "fields": [
+        "recursion theory",
+        "computer science"
+      ],
+      "slug": "smn_theorem"
+    },
+    {
+      "name": "Space hierarchy theorem",
+      "fields": [
+        "computational complexity theory"
+      ],
+      "slug": "space_hierarchy_theorem"
+    },
+    {
+      "name": "Speedup theorem",
+      "fields": [
+        "computational complexity theory"
+      ],
+      "slug": "speedup_theorem"
+    },
+    {
+      "name": "Structured program theorem",
+      "fields": [
+        "computer science"
+      ],
+      "slug": "structured_program_theorem"
+    },
+    {
+      "name": "Time hierarchy theorem",
+      "fields": [
+        "computational complexity theory"
+      ],
+      "slug": "time_hierarchy_theorem"
+    },
+    {
+      "name": "Toda's theorem",
+      "fields": [
+        "computational complexity theory"
+      ],
+      "slug": "toda_s_theorem"
+    },
+    {
+      "name": "Universal approximation theorem",
+      "fields": [
+        "artificial neural networks"
+      ],
+      "slug": "universal_approximation_theorem"
+    },
+    {
+      "name": "Valiant-Vazirani theorem",
+      "fields": [
+        "computational complexity theory"
+      ],
+      "slug": "valiant_vazirani_theorem"
+    }
+  ],
+  "Mechanics of particles and systems": [
+    {
+      "name": "Chasles' theorem",
+      "fields": [
+        "kinematics"
+      ],
+      "slug": "chasles_theorem"
+    },
+    {
+      "name": "Chasles' theorem",
+      "fields": [
+        "gravity"
+      ],
+      "slug": "chasles_theorem"
+    },
+    {
+      "name": "Helmholtz theorem (classical mechanics)",
+      "fields": [
+        "physics"
+      ],
+      "slug": "helmholtz_theorem_classical_mechanics"
+    },
+    {
+      "name": "Konig's theorem",
+      "fields": [
+        "physics"
+      ],
+      "slug": "konig_s_theorem"
+    },
+    {
+      "name": "Lami's theorem",
+      "fields": [
+        "statics"
+      ],
+      "slug": "lami_s_theorem"
+    },
+    {
+      "name": "Liouville's theorem",
+      "fields": [
+        "Hamiltonian mechanics"
+      ],
+      "slug": "liouville_s_theorem"
+    },
+    {
+      "name": "Parallel axis theorem",
+      "fields": [
+        "physics"
+      ],
+      "slug": "parallel_axis_theorem"
+    },
+    {
+      "name": "Perpendicular axis theorem",
+      "fields": [
+        "physics"
+      ],
+      "slug": "perpendicular_axis_theorem"
+    },
+    {
+      "name": "Virial theorem",
+      "fields": [
+        "classical mechanics"
+      ],
+      "slug": "virial_theorem"
+    }
+  ],
+  "Mechanics of deformable solids": [
+    {
+      "name": "Betti's theorem",
+      "fields": [
+        "physics"
+      ],
+      "slug": "betti_s_theorem"
+    },
+    {
+      "name": "Castigliano's first and second theorems",
+      "fields": [
+        "structural analysis"
+      ],
+      "slug": "castigliano_s_first_and_second_theorems"
+    },
+    {
+      "name": "Clapeyron's theorem",
+      "fields": [
+        "physics"
+      ],
+      "slug": "clapeyron_s_theorem"
+    },
+    {
+      "name": "Saint-Venant's theorem",
+      "fields": [
+        "physics"
+      ],
+      "slug": "saint_venant_s_theorem"
+    },
+    {
+      "name": "Theorem of three moments",
+      "fields": [
+        "physics"
+      ],
+      "slug": "theorem_of_three_moments"
+    }
+  ],
+  "Fluid mechanics": [
+    {
+      "name": "Buckingham pi theorem",
+      "fields": [
+        "dimensional analysis"
+      ],
+      "slug": "buckingham_pi_theorem"
+    },
+    {
+      "name": "Helmholtz's theorems",
+      "fields": [
+        "physics"
+      ],
+      "slug": "helmholtz_s_theorems"
+    },
+    {
+      "name": "Kelvin's circulation theorem",
+      "fields": [
+        "physics"
+      ],
+      "slug": "kelvin_s_circulation_theorem"
+    },
+    {
+      "name": "Kutta-Joukowski theorem",
+      "fields": [
+        "physics"
+      ],
+      "slug": "kutta_joukowski_theorem"
+    },
+    {
+      "name": "Reynolds transport theorem",
+      "fields": [
+        "fluid dynamics"
+      ],
+      "slug": "reynolds_transport_theorem"
+    },
+    {
+      "name": "Taylor-Proudman theorem",
+      "fields": [
+        "physics"
+      ],
+      "slug": "taylor_proudman_theorem"
+    }
+  ],
+  "Optics, electromagnetic theory": [
+    {
+      "name": "Blondel's theorem (electric power)",
+      "fields": [
+        "physics"
+      ],
+      "slug": "blondel_s_theorem_electric_power"
+    },
+    {
+      "name": "Earnshaw's theorem",
+      "fields": [
+        "electrostatics"
+      ],
+      "slug": "earnshaw_s_theorem"
+    },
+    {
+      "name": "Maximum power theorem",
+      "fields": [
+        "electrical circuits"
+      ],
+      "slug": "maximum_power_theorem"
+    },
+    {
+      "name": "Norton's theorem",
+      "fields": [
+        "electrical networks"
+      ],
+      "slug": "norton_s_theorem"
+    },
+    {
+      "name": "Optical theorem",
+      "fields": [
+        "physics"
+      ],
+      "slug": "optical_theorem"
+    },
+    {
+      "name": "Poynting's theorem",
+      "fields": [
+        "physics"
+      ],
+      "slug": "poynting_s_theorem"
+    },
+    {
+      "name": "Thevenin's theorem",
+      "fields": [
+        "electrical circuits"
+      ],
+      "slug": "thevenin_s_theorem"
+    }
+  ],
+  "Classical thermodynamics, heat transfer": [
+    {
+      "name": "Carnot's theorem",
+      "fields": [
+        "thermodynamics"
+      ],
+      "slug": "carnot_s_theorem"
+    },
+    {
+      "name": "Clausius theorem",
+      "fields": [
+        "physics"
+      ],
+      "slug": "clausius_theorem"
+    }
+  ],
+  "Quantum theory": [
+    {
+      "name": "Adiabatic theorem",
+      "fields": [
+        "physics"
+      ],
+      "slug": "adiabatic_theorem"
+    },
+    {
+      "name": "Bell's theorem",
+      "fields": [
+        "quantum mechanics"
+      ],
+      "slug": "bell_s_theorem"
+    },
+    {
+      "name": "Bogoliubov-Parasyuk theorem",
+      "fields": [
+        "quantum field theory"
+      ],
+      "slug": "bogoliubov_parasyuk_theorem"
+    },
+    {
+      "name": "Byers-Yang theorem",
+      "fields": [
+        "quantum mechanics"
+      ],
+      "slug": "byers_yang_theorem"
+    },
+    {
+      "name": "C-theorem",
+      "fields": [
+        "physics"
+      ],
+      "slug": "c_theorem"
+    },
+    {
+      "name": "Cluster decomposition theorem",
+      "fields": [
+        "quantum field theory"
+      ],
+      "slug": "cluster_decomposition_theorem"
+    },
+    {
+      "name": "Coleman-Mandula theorem",
+      "fields": [
+        "quantum field theory"
+      ],
+      "slug": "coleman_mandula_theorem"
+    },
+    {
+      "name": "Elitzur's theorem",
+      "fields": [
+        "quantum field theory",
+        "statistical field theory"
+      ],
+      "slug": "elitzur_s_theorem"
+    },
+    {
+      "name": "Furry's theorem",
+      "fields": [
+        "quantum field theory"
+      ],
+      "slug": "furry_s_theorem"
+    },
+    {
+      "name": "Gell-Mann and Low theorem",
+      "fields": [
+        "quantum field theory"
+      ],
+      "slug": "gell_mann_and_low_theorem"
+    },
+    {
+      "name": "Gleason's theorem",
+      "fields": [
+        "Hilbert space"
+      ],
+      "slug": "gleason_s_theorem"
+    },
+    {
+      "name": "Goldstone's theorem",
+      "fields": [
+        "physics"
+      ],
+      "slug": "goldstone_s_theorem"
+    },
+    {
+      "name": "Haag's theorem",
+      "fields": [
+        "quantum field theory"
+      ],
+      "slug": "haag_s_theorem"
+    },
+    {
+      "name": "Haag-Lopuszanski-Sohnius theorem",
+      "fields": [
+        "physics"
+      ],
+      "slug": "haag_lopuszanski_sohnius_theorem"
+    },
+    {
+      "name": "Hellmann-Feynman theorem",
+      "fields": [
+        "physics"
+      ],
+      "slug": "hellmann_feynman_theorem"
+    },
+    {
+      "name": "Kinoshita-Lee-Nauenberg theorem",
+      "fields": [
+        "quantum field theory"
+      ],
+      "slug": "kinoshita_lee_nauenberg_theorem"
+    },
+    {
+      "name": "Kochen-Specker theorem",
+      "fields": [
+        "physics"
+      ],
+      "slug": "kochen_specker_theorem"
+    },
+    {
+      "name": "Kramers' theorem",
+      "fields": [
+        "physics"
+      ],
+      "slug": "kramers_theorem"
+    },
+    {
+      "name": "Nielsen-Ninomiya theorem",
+      "fields": [
+        "quantum field theory"
+      ],
+      "slug": "nielsen_ninomiya_theorem"
+    },
+    {
+      "name": "No-broadcasting theorem",
+      "fields": [
+        "quantum information theory"
+      ],
+      "slug": "no_broadcasting_theorem"
+    },
+    {
+      "name": "No-cloning theorem",
+      "fields": [
+        "quantum computation"
+      ],
+      "slug": "no_cloning_theorem"
+    },
+    {
+      "name": "No-communication theorem",
+      "fields": [
+        "quantum information theory"
+      ],
+      "slug": "no_communication_theorem"
+    },
+    {
+      "name": "No-deleting theorem",
+      "fields": [
+        "quantum information theory"
+      ],
+      "slug": "no_deleting_theorem"
+    },
+    {
+      "name": "Optical equivalence theorem",
+      "fields": [
+        "quantum optics"
+      ],
+      "slug": "optical_equivalence_theorem"
+    },
+    {
+      "name": "Osterwalder-Schrader theorem",
+      "fields": [
+        "physics"
+      ],
+      "slug": "osterwalder_schrader_theorem"
+    },
+    {
+      "name": "Pandya theorem",
+      "fields": [
+        "nuclear physics"
+      ],
+      "slug": "pandya_theorem"
+    },
+    {
+      "name": "Pomeranchuk's theorem",
+      "fields": [
+        "physics"
+      ],
+      "slug": "pomeranchuk_s_theorem"
+    },
+    {
+      "name": "Reeh-Schlieder theorem",
+      "fields": [
+        "local quantum field theory"
+      ],
+      "slug": "reeh_schlieder_theorem"
+    },
+    {
+      "name": "Solovay-Kitaev theorem",
+      "fields": [
+        "quantum computation"
+      ],
+      "slug": "solovay_kitaev_theorem"
+    },
+    {
+      "name": "Spin-statistics theorem",
+      "fields": [
+        "physics"
+      ],
+      "slug": "spin_statistics_theorem"
+    },
+    {
+      "name": "Stone-von Neumann theorem",
+      "fields": [
+        "functional analysis",
+        "representation theory of the Heisenberg group",
+        "quantum mechanics"
+      ],
+      "slug": "stone_von_neumann_theorem"
+    },
+    {
+      "name": "Supersymmetry nonrenormalization theorems",
+      "fields": [
+        "physics"
+      ],
+      "slug": "supersymmetry_nonrenormalization_theorems"
+    },
+    {
+      "name": "Vafa-Witten theorem",
+      "fields": [
+        "physics"
+      ],
+      "slug": "vafa_witten_theorem"
+    },
+    {
+      "name": "Weinberg-Witten theorem",
+      "fields": [
+        "quantum field theory"
+      ],
+      "slug": "weinberg_witten_theorem"
+    },
+    {
+      "name": "Wick's theorem",
+      "fields": [
+        "physics"
+      ],
+      "slug": "wick_s_theorem"
+    },
+    {
+      "name": "Wigner-Eckart theorem",
+      "fields": [
+        "Clebsch-Gordan coefficients"
+      ],
+      "slug": "wigner_eckart_theorem"
+    }
+  ],
+  "Statistical mechanics, structure of matter": [
+    {
+      "name": "Bohr-van Leeuwen theorem",
+      "fields": [
+        "physics"
+      ],
+      "slug": "bohr_van_leeuwen_theorem"
+    },
+    {
+      "name": "Crooks fluctuation theorem",
+      "fields": [
+        "physics"
+      ],
+      "slug": "crooks_fluctuation_theorem"
+    },
+    {
+      "name": "Crystallographic restriction theorem",
+      "fields": [
+        "group theory",
+        "crystallography"
+      ],
+      "slug": "crystallographic_restriction_theorem"
+    },
+    {
+      "name": "Equipartition theorem",
+      "fields": [
+        "ergodic theory"
+      ],
+      "slug": "equipartition_theorem"
+    },
+    {
+      "name": "Fluctuation dissipation theorem",
+      "fields": [
+        "physics"
+      ],
+      "slug": "fluctuation_dissipation_theorem"
+    },
+    {
+      "name": "Fluctuation theorem",
+      "fields": [
+        "statistical mechanics"
+      ],
+      "slug": "fluctuation_theorem"
+    },
+    {
+      "name": "H-theorem",
+      "fields": [
+        "thermodynamics"
+      ],
+      "slug": "h_theorem"
+    },
+    {
+      "name": "Hohenberg-Kohn theorems",
+      "fields": [
+        "density functional theory"
+      ],
+      "slug": "hohenberg_kohn_theorems"
+    },
+    {
+      "name": "Lee-Yang theorem",
+      "fields": [
+        "statistical mechanics"
+      ],
+      "slug": "lee_yang_theorem"
+    },
+    {
+      "name": "Mermin-Wagner theorem",
+      "fields": [
+        "physics"
+      ],
+      "slug": "mermin_wagner_theorem"
+    }
+  ],
+  "Relativity and gravitational theory": [
+    {
+      "name": "Birkhoff's theorem",
+      "fields": [
+        "general relativity"
+      ],
+      "slug": "birkhoff_s_theorem"
+    },
+    {
+      "name": "Goldberg-Sachs theorem",
+      "fields": [
+        "physics"
+      ],
+      "slug": "goldberg_sachs_theorem"
+    },
+    {
+      "name": "Lovelock's theorem",
+      "fields": [
+        "physics"
+      ],
+      "slug": "lovelock_s_theorem"
+    },
+    {
+      "name": "No-hair theorem",
+      "fields": [
+        "physics"
+      ],
+      "slug": "no_hair_theorem"
+    },
+    {
+      "name": "Odd number theorem",
+      "fields": [
+        "physics"
+      ],
+      "slug": "odd_number_theorem"
+    },
+    {
+      "name": "Peeling theorem",
+      "fields": [
+        "physics"
+      ],
+      "slug": "peeling_theorem"
+    },
+    {
+      "name": "Penrose-Hawking singularity theorems",
+      "fields": [
+        "physics"
+      ],
+      "slug": "penrose_hawking_singularity_theorems"
+    },
+    {
+      "name": "Positive energy theorem",
+      "fields": [
+        "physics"
+      ],
+      "slug": "positive_energy_theorem"
+    },
+    {
+      "name": "Price's theorem",
+      "fields": [
+        "general relativity"
+      ],
+      "slug": "price_s_theorem"
+    }
+  ],
+  "Astronomy and astrophysics": [
+    {
+      "name": "Clairaut's theorem",
+      "fields": [
+        "physics"
+      ],
+      "slug": "clairaut_s_theorem"
+    },
+    {
+      "name": "Shell theorem",
+      "fields": [
+        "physics"
+      ],
+      "slug": "shell_theorem"
+    }
+  ],
+  "Operations research, mathematical programming": [
+    {
+      "name": "Analyst's traveling salesman theorem",
+      "fields": [
+        "discrete mathematics"
+      ],
+      "slug": "analyst_s_traveling_salesman_theorem"
+    },
+    {
+      "name": "Arrival theorem",
+      "fields": [
+        "queueing theory"
+      ],
+      "slug": "arrival_theorem"
+    },
+    {
+      "name": "Blum's speedup theorem",
+      "fields": [
+        "computational complexity theory"
+      ],
+      "slug": "blum_s_speedup_theorem"
+    },
+    {
+      "name": "Max flow min cut theorem",
+      "fields": [
+        "graph theory"
+      ],
+      "slug": "max_flow_min_cut_theorem"
+    },
+    {
+      "name": "No free lunch theorem",
+      "fields": [
+        "philosophy of mathematics"
+      ],
+      "slug": "no_free_lunch_theorem"
+    },
+    {
+      "name": "Topkis's theorem",
+      "fields": [
+        "economics"
+      ],
+      "slug": "topkis_s_theorem"
+    }
+  ],
+  "Game theory, economics, social and behavioral sciences": [
+    {
+      "name": "Alchian-Allen theorem",
+      "fields": [
+        "economics"
+      ],
+      "slug": "alchian_allen_theorem"
+    },
+    {
+      "name": "Arrow's impossibility theorem",
+      "fields": [
+        "game theory"
+      ],
+      "slug": "arrow_s_impossibility_theorem"
+    },
+    {
+      "name": "Arrow-Lind theorem",
+      "fields": [
+        "welfare economics"
+      ],
+      "slug": "arrow_lind_theorem"
+    },
+    {
+      "name": "Bishop-Cannings theorem",
+      "fields": [
+        "economics"
+      ],
+      "slug": "bishop_cannings_theorem"
+    },
+    {
+      "name": "Bondareva-Shapley theorem",
+      "fields": [
+        "economics"
+      ],
+      "slug": "bondareva_shapley_theorem"
+    },
+    {
+      "name": "Coase theorem",
+      "fields": [
+        "economics"
+      ],
+      "slug": "coase_theorem"
+    },
+    {
+      "name": "Duggan-Schwartz theorem",
+      "fields": [
+        "voting theory"
+      ],
+      "slug": "duggan_schwartz_theorem"
+    },
+    {
+      "name": "Edgeworth's limit theorem",
+      "fields": [
+        "economics"
+      ],
+      "slug": "edgeworth_s_limit_theorem"
+    },
+    {
+      "name": "Faustman-Ohlin theorem",
+      "fields": [
+        "economics"
+      ],
+      "slug": "faustman_ohlin_theorem"
+    },
+    {
+      "name": "Fisher separation theorem",
+      "fields": [
+        "economics"
+      ],
+      "slug": "fisher_separation_theorem"
+    },
+    {
+      "name": "Folk theorem",
+      "fields": [
+        "game theory"
+      ],
+      "slug": "folk_theorem"
+    },
+    {
+      "name": "Fundamental theorem of arbitrage-free pricing",
+      "fields": [
+        "financial mathematics"
+      ],
+      "slug": "fundamental_theorem_of_arbitrage_free_pricing"
+    },
+    {
+      "name": "Fundamental theorems of welfare economics",
+      "fields": [
+        "economics"
+      ],
+      "slug": "fundamental_theorems_of_welfare_economics"
+    },
+    {
+      "name": "Gibbard-Satterthwaite theorem",
+      "fields": [
+        "voting methods"
+      ],
+      "slug": "gibbard_satterthwaite_theorem"
+    },
+    {
+      "name": "Heckscher-Ohlin theorem",
+      "fields": [
+        "economics"
+      ],
+      "slug": "heckscher_ohlin_theorem"
+    },
+    {
+      "name": "Holmstrom's theorem",
+      "fields": [
+        "economics"
+      ],
+      "slug": "holmstrom_s_theorem"
+    },
+    {
+      "name": "Kuhn's theorem",
+      "fields": [
+        "game theory"
+      ],
+      "slug": "kuhn_s_theorem"
+    },
+    {
+      "name": "Lerner symmetry theorem",
+      "fields": [
+        "economics"
+      ],
+      "slug": "lerner_symmetry_theorem"
+    },
+    {
+      "name": "May's theorem",
+      "fields": [
+        "game theory"
+      ],
+      "slug": "may_s_theorem"
+    },
+    {
+      "name": "Modigliani-Miller theorem",
+      "fields": [
+        "finance theory"
+      ],
+      "slug": "modigliani_miller_theorem"
+    },
+    {
+      "name": "Morton's theorem",
+      "fields": [
+        "game theory"
+      ],
+      "slug": "morton_s_theorem"
+    },
+    {
+      "name": "Moving equilibrium theorem",
+      "fields": [
+        "economics"
+      ],
+      "slug": "moving_equilibrium_theorem"
+    },
+    {
+      "name": "Mutual fund separation theorem",
+      "fields": [
+        "financial mathematics"
+      ],
+      "slug": "mutual_fund_separation_theorem"
+    },
+    {
+      "name": "No-trade theorem",
+      "fields": [
+        "economics"
+      ],
+      "slug": "no_trade_theorem"
+    },
+    {
+      "name": "Rationality theorem",
+      "fields": [
+        "politics"
+      ],
+      "slug": "rationality_theorem"
+    },
+    {
+      "name": "Rybczynski theorem",
+      "fields": [
+        "economics"
+      ],
+      "slug": "rybczynski_theorem"
+    },
+    {
+      "name": "Sonnenschein-Mantel-Debreu Theorem",
+      "fields": [
+        "economics"
+      ],
+      "slug": "sonnenschein_mantel_debreu_theorem"
+    },
+    {
+      "name": "Sprague-Grundy theorem",
+      "fields": [
+        "combinatorial game theory"
+      ],
+      "slug": "sprague_grundy_theorem"
+    },
+    {
+      "name": "Stolper-Samuelson theorem",
+      "fields": [
+        "economics"
+      ],
+      "slug": "stolper_samuelson_theorem"
+    }
+  ],
+  "Biology and other natural sciences": [
+    {
+      "name": "Marginal value theorem",
+      "fields": [
+        "biology",
+        "optimization"
+      ],
+      "slug": "marginal_value_theorem"
+    }
+  ],
+  "Systems theory; control": [
+    {
+      "name": "Artstein's theorem",
+      "fields": [
+        "control theory"
+      ],
+      "slug": "artstein_s_theorem"
+    },
+    {
+      "name": "Krener's theorem",
+      "fields": [
+        "control theory"
+      ],
+      "slug": "krener_s_theorem"
+    },
+    {
+      "name": "Lyapunov-Malkin theorem",
+      "fields": [
+        "stability theory"
+      ],
+      "slug": "lyapunov_malkin_theorem"
+    },
+    {
+      "name": "Orbit theorem (Nagano-Sussmann)",
+      "fields": [
+        "control theory"
+      ],
+      "slug": "orbit_theorem_nagano_sussmann"
+    }
+  ],
+  "Information and communication, circuits": [
+    {
+      "name": "Kraft-McMillan theorem",
+      "fields": [
+        "coding theory"
+      ],
+      "slug": "kraft_mcmillan_theorem"
+    },
+    {
+      "name": "Nyquist-Shannon sampling theorem",
+      "fields": [
+        "information theory"
+      ],
+      "slug": "nyquist_shannon_sampling_theorem"
+    },
+    {
+      "name": "Shannon-Hartley theorem",
+      "fields": [
+        "information theory"
+      ],
+      "slug": "shannon_hartley_theorem"
+    },
+    {
+      "name": "Shannon's source coding theorem",
+      "fields": [
+        "information theory"
+      ],
+      "slug": "shannon_s_source_coding_theorem"
+    },
+    {
+      "name": "Shannon's theorem",
+      "fields": [
+        "information theory"
+      ],
+      "slug": "shannon_s_theorem"
+    },
+    {
+      "name": "Ugly duckling theorem",
+      "fields": [
+        "computer science"
+      ],
+      "slug": "ugly_duckling_theorem"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "_comment": "Stabilization Layer (P2.3) — Oscillation detection and damping parameters.",
+  "oscillation_detection": {
+    "window_size": 20,
+    "threshold_crossings_to_flag": 4,
+    "min_oscillation_amplitude": 0.1,
+    "description": "Flag as oscillating when a metric crosses its mean 4+ times in a 20-sample window"
+  },
+  "damping": {
+    "default_factor": 0.8,
+    "aggressive_factor": 0.5,
+    "min_factor": 0.1,
+    "description": "Damping reduces values by multiplying; 0.8 = 20% reduction per step"
+  },
+  "hysteresis": {
+    "default_buffer": 0.05,
+    "description": "5% buffer on threshold to prevent rapid flip-flop decisions"
+  },
+  "cooldowns": {
+    "_comment": "Per-action-type cooldown seconds. Add entries here to opt actions into cooldown enforcement.",
+    "deploy": 60,
+    "delete": 120,
+    "schema_migration": 300
+  }
+}

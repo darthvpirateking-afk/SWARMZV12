@@ -1,0 +1,120 @@
+# Number theory
+
+**116 theorems**
+
+- **15 and 290 theorems** -- number theory
+- **Albert-Brauer-Hasse-Noether theorem** -- algebras
+- **Ankeny-Artin-Chowla theorem** -- number theory
+- **Apery's theorem** -- number theory
+- **Artin-Verdier duality theorem** -- number theory
+- **ATS theorem** -- number theory
+- **Auxiliary polynomial theorem** -- Diophantine approximation
+- **Ax-Kochen theorem** -- number theory
+- **Baker's theorem** -- number theory
+- **Barban-Davenport-Halberstam theorem** -- analytic number theory
+- **Basel problem** -- mathematical analysis
+- **Beatty's theorem** -- Diophantine approximation
+- **Behrend's theorem** -- number theory
+- **Bertrand's postulate** -- number theory
+- **Birch's theorem** -- algebraic number theory
+- **Bombieri's theorem** -- number theory
+- **Bombieri-Friedlander-Iwaniec theorem** -- number theory
+- **Brauer-Siegel theorem** -- number theory
+- **Brun's theorem** -- number theory
+- **Brun-Titchmarsh theorem** -- number theory
+- **Carmichael's theorem** -- Fibonacci numbers
+- **Chebotarev's density theorem** -- number theory
+- **Chen's theorem** -- number theory
+- **Chowla-Mordell theorem** -- number theory
+- **Cohn's irreducibility criterion** -- polynomials
+- **Critical line theorem** -- number theory
+- **Davenport-Schmidt theorem** -- number theory, Diophantine approximations
+- **Dirichlet's approximation theorem** -- Diophantine approximations
+- **Dirichlet's theorem on arithmetic progressions** -- number theory
+- **Dirichlet's unit theorem** -- algebraic number theory
+- **Equidistribution theorem** -- ergodic theory
+- **Erdos-Kac theorem** -- number theory
+- **Euclid's theorem** -- number theory
+- **Euclid-Euler theorem** -- number theory
+- **Euler's theorem** -- number theory
+- **Fermat's Last Theorem** -- number theory
+- **Fermat's little theorem** -- number theory
+- **Fermat's theorem on sums of two squares** -- number theory
+- **Ferrero-Washington theorem** -- algebraic number theory
+- **Ford's theorem** -- number theory
+- **Franel-Landau theorem** -- number theory
+- **Gelfond-Schneider theorem** -- transcendental number theory
+- **Glaisher's theorem** -- number theory
+- **Green-Tao theorem** -- number theory
+- **Gross-Zagier theorem** -- number theory
+- **Grunwald-Wang theorem** -- algebraic number theory
+- **Hardy-Ramanujan theorem** -- number theory
+- **Hasse norm theorem** -- number theory
+- **Hasse-Minkowski theorem** -- number theory
+- **Herbrand-Ribet theorem** -- cyclotomic fields
+- **Hilbert's irreducibility theorem** -- number theory
+- **Hilbert-Speiser theorem** -- cyclotomic fields
+- **Hilbert-Waring theorem** -- number theory
+- **Hurwitz's theorem** -- number theory
+- **Jacobi's four-square theorem** -- number theory
+- **Jurkat-Richert theorem** -- analytic number theory
+- **Kaplansky's theorem on quadratic forms** -- number theory
+- **Khinchin's theorem** -- probability
+- **Kronecker's theorem** -- Diophantine approximation
+- **Kronecker-Weber theorem** -- number theory
+- **Kummer's theorem** -- number theory
+- **Lafforgue's theorem** -- algebraic number theory
+- **Lagrange's four-square theorem** -- number theory
+- **Landau prime ideal theorem** -- number theory
+- **Lindemann-Weierstrass theorem** -- transcendental number theory
+- **Linnik's theorem** -- number theory
+- **Lochs's theorem** -- number theory
+- **Lucas's theorem** -- number theory
+- **Mahler's compactness theorem** -- geometry of numbers
+- **Mahler's theorem** -- p-adic analysis
+- **Maier's theorem** -- analytic number theory
+- **Mann's theorem** -- number theory
+- **Mazur's control theorem** -- number theory
+- **Mertens's theorems** -- number theory
+- **Midy's theorem** -- number theory
+- **Mihailescu's theorem** -- number theory
+- **Mirsky-Newman theorem** -- group theory
+- **Modularity theorem** -- number theory
+- **Mordell-Weil theorem** -- number theory
+- **Multiplicity-one theorem** -- group representations
+- **Nagell-Lutz theorem** -- elliptic curves
+- **Niven's theorem** -- number theory
+- **Ostrowski's theorem** -- number theory
+- **Pentagonal number theorem** -- number theory
+- **Prime number theorem** -- number theory
+- **Principal ideal theorem** -- algebraic number theory
+- **Proth's theorem** -- number theory
+- **Quadratic reciprocity theorem** -- number theory
+- **Ramanujan-Skolem's theorem** -- Diophantine equations
+- **Reflection theorem** -- algebraic number theory
+- **Ribet's theorem** -- elliptic curves
+- **Robin's theorem** -- number theory
+- **Rosser's theorem** -- number theory
+- **Siegel-Walfisz theorem** -- analytic number theory
+- **Six exponentials theorem** -- transcendental number theory
+- **Skolem-Mahler-Lech theorem** -- number theory
+- **Solutions to Pell's equation** -- number theory
+- **Sophie Germain's theorem** -- number theory
+- **Sphere packing theorems in dimensions 8 and 24** -- geometry, modular forms
+- **Stark-Heegner theorem** -- number theory
+- **Subspace theorem** -- Diophantine approximation
+- **Sylvester's theorem** -- number theory
+- **Takagi existence theorem** -- number theory
+- **Thabit ibn Qurra's theorem** -- amicable numbers
+- **Thue's theorem** -- Diophantine equation
+- **Thue-Siegel-Roth theorem** -- Diophantine approximation
+- **Tijdeman's theorem** -- Diophantine equations
+- **Tunnell's theorem** -- number theory
+- **Turan-Kubilius theorem** -- number theory
+- **Vantieghems theorem** -- number theory
+- **Vinogradov's theorem** -- number theory
+- **Von Staudt-Clausen theorem** -- number theory
+- **Wilson's theorem** -- number theory
+- **Wolstenholme's theorem** -- number theory
+- **Zeckendorf's theorem** -- number theory
+- **Zsigmondy's theorem** -- number theory

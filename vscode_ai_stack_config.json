@@ -1,0 +1,27 @@
+{
+  "keybindings": [
+    {
+      "key": "ctrl+shift+e",
+      "command": "continue.editSelectedCode"
+    },
+    {
+      "key": "ctrl+shift+t",
+      "command": "continue.newTask"
+    },
+    {
+      "key": "ctrl+shift+a",
+      "command": "continue.ask"
+    }
+  ],
+  "ollama_models": [
+    "ollama pull deepseek-coder-v2",
+    "ollama pull qwen2.5-coder",
+    "ollama pull llama3.1",
+    "ollama pull nomic-embed-text"
+  ],
+  "codeium_settings": {
+    "codeium.local_model_provider": "ollama",
+    "codeium.local_model": "deepseek-coder-v2",
+    "codeium.local_model_endpoint": "http://localhost:11434"
+  }
+}

@@ -1,0 +1,53 @@
+﻿# PRIMAL_READY_SLATE
+
+- COMMAND: `NEXUSMON_OP: POST_IGNITE_LOCK`
+- BASELINE_DATE: `2026-02-20`
+- BASELINE_STATE: `CANONICAL_IGNITION_READY`
+
+## CANONICAL_IGNITE_CONTEXT
+- SYSTEM_STATUS: `READY`
+- ACTIVE_MODULES:
+  - `PARTNER_CORE=LINKED`
+  - `SHADOW_CORE=LINKED`
+  - `BASE_CORE=LINKED`
+  - `GATE_CORE=LINKED`
+  - `CHIP_CORE=LINKED`
+  - `UI_CORE=LINKED`
+  - `DATA_CORE=LINKED`
+- OPEN_PORTS:
+  - `LOGIC_PORT=8012`
+  - `DATA_PORT=8012`
+  - `UI_PORT=8012`
+  - `MISSION_PORT=8012`
+  - `SIM_PORT=8012`
+  - Note: idle until runtime start
+- READY_ENDPOINTS: `PASS`
+  - `/v1/health`
+  - `/v1/dispatch`
+  - `release_smoke`
+  - `doctrine+template+operator linkage`
+  - `deterministic sequencing subset`
+- WARNINGS: `NON_BLOCKING`
+  - hygiene warnings
+  - robustness-suite issues outside core Build NEXUSMON System gate
+
+## LEGACY_TO_PRIMAL_MAPPING
+- `PARTNER_CORE -> PARTNER_PRIME`
+- `SHADOW_CORE -> LEGION_UMBRA`
+- `BASE_CORE -> FORGE_HEARTH`
+- `GATE_CORE -> RIFTWALK`
+- `CHIP_CORE -> SIGILSTACK`
+- `UI_CORE -> NEXUSFRAME`
+- `DATA_CORE -> DATAVEIN`
+- `LOGIC_PORT -> MINDLINE`
+- `DATA_PORT -> CODELINE`
+- `UI_PORT -> SIGHTLINE`
+- `MISSION_PORT -> PATHLINE`
+- `SIM_PORT -> GHOSTLINE`
+
+## OPERATIONAL_WAIT_STATE
+- NEXT_DIRECTIVE_OPTIONS:
+  - `SEEDRUN` (build-phase)
+  - `RIFT_SCAN` (deep diagnostic)
+- CURRENT_STATE: `AWAITING_OPERATOR_MISSION`
+

@@ -1,0 +1,43 @@
+# Computer science
+
+**39 theorems**
+
+- **Akra-Bazzi theorem** -- computer science
+- **Art gallery theorem** -- geometry
+- **CAP theorem** -- theoretical computer science
+- **Chomsky-Schutzenberger enumeration theorem** -- formal language theory
+- **Chomsky-Schutzenberger representation theorem** -- formal language theory
+- **Codd's theorem** -- relational model
+- **Compression theorem** -- computational complexity theory, structural complexity theory
+- **Cook's theorem** -- computational complexity theory
+- **Fagin's theorem** -- computational complexity theory
+- **Full employment theorem** -- theoretical computer science
+- **Gap theorem** -- computational complexity theory
+- **Gottesman-Knill theorem** -- quantum computation
+- **Holland's schema theorem** -- genetic algorithm
+- **Immerman-Szelepcsenyi theorem** -- computational complexity theory
+- **Karp-Lipton theorem** -- computational complexity theory
+- **Ladner's theorem** -- computational complexity theory
+- **Lame's theorem** -- computational complexity theory
+- **Linear speedup theorem** -- computational complexity theory
+- **Master theorem (analysis of algorithms)** -- recurrence relations, asymptotic analysis
+- **Max/min CSP/Ones classification theorems** -- computational complexity theory
+- **Myhill-Nerode theorem** -- formal languages
+- **No free lunch theorem (search and optimization)** -- computational complexity theory
+- **PCP theorem** -- computational complexity theory
+- **Pseudorandom generator theorem** -- computational complexity theory
+- **Quantum threshold theorem (computer science)** -- theoretical computer science
+- **Reversed compound agent theorem** -- probability
+- **Rice's theorem** -- recursion theory, computer science
+- **Rice-Shapiro theorem** -- computer science
+- **Savitch's theorem** -- computational complexity theory
+- **Schaefer's dichotomy theorem** -- computational complexity theory
+- **Sipser-Lautemann theorem (probabilistic complexity theory)** -- structural complexity theory
+- **Smn theorem** -- recursion theory, computer science
+- **Space hierarchy theorem** -- computational complexity theory
+- **Speedup theorem** -- computational complexity theory
+- **Structured program theorem** -- computer science
+- **Time hierarchy theorem** -- computational complexity theory
+- **Toda's theorem** -- computational complexity theory
+- **Universal approximation theorem** -- artificial neural networks
+- **Valiant-Vazirani theorem** -- computational complexity theory

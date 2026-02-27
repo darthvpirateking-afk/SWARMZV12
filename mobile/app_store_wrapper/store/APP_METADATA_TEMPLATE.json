@@ -1,0 +1,13 @@
+{
+  "appName": "SWARMZ",
+  "packageId": "com.swarmz.app",
+  "bundleId": "com.swarmz.app",
+  "supportUrl": "https://swarmzV10-.onrender.com",
+  "marketingUrl": "https://swarmzV10-.onrender.com",
+  "privacyPolicyUrl": "https://swarmzV10-.onrender.com/privacy",
+  "shortDescription": "Operator control surface for SWARMZ runtime.",
+  "fullDescription": "SWARMZ is an operator-first control app to monitor runtime status, dispatch tasks, and manage command-center actions from mobile.",
+  "keywords": ["swarmz", "operator", "runtime", "automation"],
+  "releaseNotes": "Initial mobile wrapper release.",
+  "contactEmail": "support@swarmz.local"
+}

@@ -1,0 +1,91 @@
+# Geometry
+
+**87 theorems**
+
+- **Alternate Interior Angles Theorem** -- geometry
+- **Alternate segment theorem** -- geometry
+- **Angle bisector theorem** -- Euclidean geometry
+- **Anne's theorem** -- geometry
+- **Apollonius's theorem** -- plane geometry
+- **Barbier's theorem** -- geometry
+- **Beck's theorem** -- incidence geometry
+- **Beckman-Quarles theorem** -- Euclidean geometry
+- **Beer's theorem** -- metric geometry
+- **Brahmagupta theorem** -- Euclidean geometry
+- **Brianchon's theorem** -- conics
+- **British flag theorem** -- Euclidean geometry
+- **Butterfly theorem** -- Euclidean geometry
+- **Carnot's theorem** -- geometry
+- **Casey's theorem** -- Euclidean geometry
+- **Cayley-Bacharach theorem** -- projective geometry
+- **Ceva's theorem** -- geometry
+- **Clifford's circle theorems** -- Euclidean plane geometry
+- **Commandino's theorem** -- geometry
+- **Constant chord theorem** -- geometry
+- **Conway circle theorem** -- Euclidean plane geometry
+- **CPCTC** -- triangle geometry
+- **Crossbar theorem** -- Euclidean plane geometry
+- **Dandelin's theorem** -- solid geometry
+- **De Bruijn-Erdos theorem** -- incidence geometry
+- **De Gua's theorem** -- geometry
+- **Desargues's theorem** -- projective geometry
+- **Descartes's theorem** -- plane geometry
+- **Dinostratus' theorem** -- geometry, analysis
+- **Equal incircles theorem** -- Euclidean geometry
+- **Euler's quadrilateral theorem** -- geometry
+- **Euler's theorem in geometry** -- triangle geometry
+- **Exterior angle theorem** -- triangle geometry
+- **Feuerbach's theorem** -- geometry
+- **Finsler-Hadwiger theorem** -- geometry
+- **Five circles theorem** -- circles
+- **Gauss-Wantzel theorem** -- geometry
+- **Geometric mean theorem** -- geometry
+- **Hinge theorem** -- geometry
+- **Hjelmslev's theorem** -- geometry
+- **Impossibility of angle trisection** -- geometry
+- **Independence of the parallel postulate** -- geometry
+- **Inscribed angle theorem** -- geometry
+- **Intercept theorem** -- Euclidean geometry
+- **Intersecting chords theorem** -- Euclidean geometry
+- **Intersecting secants theorem** -- Euclidean geometry
+- **Intersection theorem** -- projective geometry
+- **Japanese theorem for concyclic polygons** -- Euclidean geometry
+- **Japanese theorem for concyclic quadrilaterals** -- Euclidean geometry
+- **Kawasaki's theorem** -- mathematics of paper folding
+- **Lester's theorem** -- Euclidean plane geometry
+- **Lexell's theorem** -- spherical geometry
+- **Menelaus's theorem** -- geometry
+- **Miquel's theorem** -- geometry
+- **Mohr-Mascheroni theorem** -- geometry
+- **Monge's theorem** -- geometry
+- **Morley's trisector theorem** -- geometry
+- **Napoleon's theorem** -- triangle geometry
+- **Newton's theorem (quadrilateral)** -- geometry
+- **Newton's theorem about ovals** -- curves
+- **Pappus's area theorem** -- geometry
+- **Pappus's centroid theorem** -- geometry
+- **Pappus's hexagon theorem** -- geometry
+- **Pascal's theorem** -- conics
+- **Pasch's theorem** -- order theory
+- **Pitot theorem** -- plane geometry
+- **Pivot theorem** -- circles
+- **Pompeiu's theorem** -- Euclidean geometry
+- **Poncelet's closure theorem** -- conics
+- **Poncelet-Steiner theorem** -- geometry
+- **Ptolemy's theorem** -- geometry
+- **Pythagorean theorem** -- geometry
+- **Reuschle's theorem** -- Euclidean geometry
+- **Routh's theorem** -- triangle geometry
+- **Saccheri-Legendre theorem** -- absolute geometry
+- **Six circles theorem** -- circles
+- **Steiner-Lehmus theorem** -- triangle geometry
+- **Symphonic theorem** -- triangle geometry
+- **Tangent-secant theorem** -- geometry
+- **Thales's theorem** -- geometry
+- **Thebault's theorem** -- geometry
+- **Theorem of the gnomon** -- geometry
+- **Thomsen's theorem** -- geometry
+- **Van Aubel's theorem** -- quadrilaterals
+- **Van Schooten's theorem** -- Euclidean geometry
+- **Varignon's theorem** -- Euclidean geometry
+- **Viviani's theorem** -- Euclidean geometry
