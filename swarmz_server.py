@@ -1820,6 +1820,80 @@ except Exception as _manifest_err:
     print(f"[WARN] Agent manifest API not loaded: {_manifest_err}")
 
 
+# --- Agent Runtime Kernel API ---
+try:
+    from core.agent_runtime import (
+        spawn as _spawn_runtime,
+        get_runtime as _get_runtime,
+        list_runtimes as _list_runtimes,
+        EVENT_BUS as _AGENT_EVENT_BUS,
+        MISSION_ROUTER as _AGENT_MISSION_ROUTER,
+    )
+
+    @app.post("/v1/agents/{agent_id}/spawn", tags=["agent-runtime"])
+    async def spawn_agent_runtime(agent_id: str):
+        """Spawn a live runtime for a registered agent manifest."""
+        from fastapi import HTTPException
+        try:
+            rt = _spawn_runtime(agent_id)
+            return {"ok": True, "runtime": rt.snapshot()}
+        except KeyError as exc:
+            raise HTTPException(status_code=404, detail=str(exc))
+
+    @app.get("/v1/agents/{agent_id}/runtime", tags=["agent-runtime"])
+    async def get_agent_runtime_state(agent_id: str):
+        """Get current runtime snapshot for a live agent."""
+        from fastapi import HTTPException
+        rt = _get_runtime(agent_id)
+        if rt is None:
+            raise HTTPException(status_code=404, detail=f"No live runtime for agent '{agent_id}'")
+        return {"ok": True, "runtime": rt.snapshot()}
+
+    @app.post("/v1/agents/{agent_id}/think", tags=["agent-runtime"])
+    async def agent_think(agent_id: str, body: dict):
+        """Run the cognition loop for a live agent and return the output."""
+        from fastapi import HTTPException
+        rt = _get_runtime(agent_id)
+        if rt is None:
+            raise HTTPException(status_code=404, detail=f"No live runtime for agent '{agent_id}'")
+        output = rt.think(body.get("input", body))
+        return {"ok": True, "output": output, "runtime": rt.snapshot()}
+
+    @app.post("/v1/agents/{agent_id}/act", tags=["agent-runtime"])
+    async def agent_act(agent_id: str, body: dict):
+        """Run act() for a live agent — think + mission dispatch."""
+        from fastapi import HTTPException
+        rt = _get_runtime(agent_id)
+        if rt is None:
+            raise HTTPException(status_code=404, detail=f"No live runtime for agent '{agent_id}'")
+        output = rt.act(body.get("input", body))
+        return {
+            "ok": True,
+            "output": output,
+            "pending_missions": _AGENT_MISSION_ROUTER.pending(),
+            "runtime": rt.snapshot(),
+        }
+
+    @app.get("/v1/runtimes", tags=["agent-runtime"])
+    async def list_all_runtimes():
+        """List snapshots of all live agent runtimes."""
+        return {"ok": True, "runtimes": _list_runtimes(), "count": len(_list_runtimes())}
+
+    @app.get("/v1/runtime/events", tags=["agent-runtime"])
+    async def get_runtime_events(n: int = 50):
+        """Get the most recent n events from the global agent event bus."""
+        return {"ok": True, "events": _AGENT_EVENT_BUS.recent(n)}
+
+    @app.get("/v1/runtime/missions/pending", tags=["agent-runtime"])
+    async def get_pending_missions():
+        """Get all pending missions in the agent mission router queue."""
+        return {"ok": True, "missions": _AGENT_MISSION_ROUTER.pending()}
+
+    print("[NEXUSMON] Agent runtime kernel API online — /v1/agents/{id}/spawn|think|act")
+except Exception as _runtime_err:
+    print(f"[WARN] Agent runtime API not loaded: {_runtime_err}")
+
+
 # --- Static file mount for HUD assets (CSS, JS) ---
 # MUST come after all explicit routes so /web/* doesn't shadow API paths.
 try:
