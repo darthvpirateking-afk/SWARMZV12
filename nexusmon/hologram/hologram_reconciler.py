@@ -1,11 +1,14 @@
 import json
+import os
 import time
 import threading
 from collections import deque
 from pathlib import Path
 
-SNAPSHOT_DIR = Path("hologram_snapshots")
-SNAPSHOT_DIR.mkdir(exist_ok=True)
+# Resolve snapshot directory from env var so Docker / k8s volume mounts work.
+# Falls back to a local directory when running outside containers.
+SNAPSHOT_DIR = Path(os.environ.get("HLOG_SNAPSHOT_DIR", "hologram_snapshots"))
+SNAPSHOT_DIR.mkdir(parents=True, exist_ok=True)
 
 
 class HologramPublisher:

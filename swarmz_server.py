@@ -863,6 +863,15 @@ async def health_check():
     return {"status": "ok", "service": "SWARMZ API"}
 
 
+@app.get("/ready", operation_id="swarmz_ready")
+async def readiness():
+    """Kubernetes readiness probe — returns 200 when the service is ready to
+    accept traffic.  Extend with queue-depth / reconciler-thread checks as
+    the system matures.
+    """
+    return {"status": "ready", "service": "SWARMZ API"}
+
+
 @app.post("/v1/auth/login")
 async def auth_login(payload: LoginRequest, request: Request):
     """Issue a JWT for operator usage when correctly authenticated.
