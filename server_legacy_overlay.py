@@ -875,21 +875,15 @@ def avatar_matrix_set_state(req: _AvatarStateRequest):
 
 @app.post("/v1/avatar/matrix/trigger", tags=["avatar-matrix"])
 def avatar_matrix_trigger(req: _AvatarTriggerRequest):
-    """Trigger avatar evolution commands (ASCEND|SOVEREIGN|MONARCH)."""
-    command = str(req.command or "").strip().upper()
-    if command not in {"ASCEND", "SOVEREIGN", "MONARCH"}:
-        raise HTTPException(
-            status_code=400,
-            detail="command must be one of ASCEND, SOVEREIGN, MONARCH",
-        )
+    """Trigger avatar commands (ASCEND|SOVEREIGN|MONARCH|RETURN|CHIP <id>|BURST|CHAIN)."""
+    command = str(req.command or "").strip()
+    if not command:
+        raise HTTPException(status_code=400, detail="command is required")
     matrix = get_avatar_matrix()
-    transitioned = matrix.operator_trigger(command)
-    return {
-        "ok": True,
-        "command": command,
-        "transitioned": transitioned,
-        "current_form": matrix.current_form,
-    }
+    result = matrix.handle_operator_command(command)
+    if not result.get("ok", False):
+        raise HTTPException(status_code=400, detail=result.get("error", "unsupported command"))
+    return result
 
 
 # ── NEXUSMON WebSocket — real-time cockpit channel ──────────────────────────

@@ -384,7 +384,10 @@ class AvatarMatrixStateRequest(BaseModel):
 
 
 class AvatarMatrixTriggerRequest(BaseModel):
-    command: str = Field("", description="Avatar trigger command (ASCEND|SOVEREIGN|MONARCH)")
+    command: str = Field(
+        "",
+        description="Avatar trigger command (ASCEND|SOVEREIGN|MONARCH|RETURN|CHIP <id>|BURST|CHAIN)",
+    )
 
 
 # Initialize FastAPI app
@@ -1486,21 +1489,15 @@ async def avatar_matrix_trigger(req: AvatarMatrixTriggerRequest):
     from fastapi import HTTPException
     from swarmz_runtime.avatar.avatar_matrix import get_avatar_matrix
 
-    command = str(req.command or "").strip().upper()
-    if command not in {"ASCEND", "SOVEREIGN", "MONARCH"}:
-        raise HTTPException(
-            status_code=400,
-            detail="command must be one of ASCEND, SOVEREIGN, MONARCH",
-        )
+    command = str(req.command or "").strip()
+    if not command:
+        raise HTTPException(status_code=400, detail="command is required")
 
     matrix = get_avatar_matrix()
-    transitioned = matrix.operator_trigger(command)
-    return {
-        "ok": True,
-        "command": command,
-        "transitioned": transitioned,
-        "current_form": matrix.current_form,
-    }
+    result = matrix.handle_operator_command(command)
+    if not result.get("ok", False):
+        raise HTTPException(status_code=400, detail=result.get("error", "unsupported command"))
+    return result
 
 
 @app.post("/v1/canonical/missions/templates/{template_id}/run", tags=["missions"], operation_id="canonical_mission_template_run")
