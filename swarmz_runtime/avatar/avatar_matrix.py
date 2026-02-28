@@ -17,6 +17,11 @@ from swarmz_runtime.avatar.avatar_omega import (
     AvatarOmega,
     AvatarOmegaPlus,
 )
+from swarmz_runtime.avatar.evolution_controller import (
+    EvolutionController,
+    RankSystemAdapter,
+    WitnessLogger,
+)
 
 AVATAR_VARIANTS: dict[str, tuple[str, str]] = {
     "omega": ("AvatarOmega", "Standard SWARMZ avatar"),
@@ -52,14 +57,35 @@ class AvatarMatrix:
         }
         self._active_variant = "omega"
         self._current_state = "neutral"
+        self.rank_system = RankSystemAdapter()
+        self.witness = WitnessLogger()
+        self.evolution = EvolutionController(self, self.rank_system, self.witness)
+        self.current_form = self.evolution.current_form
+
+    def get_evolution_state(self) -> dict[str, Any]:
+        rank = self.rank_system.refresh_rank()
+        self.current_form = self.evolution.current_form
+        next_form = self.evolution.get_next_form()
+        can_evolve = self.evolution.can_evolve_to(next_form) if next_form else False
+        return {
+            "current_form": self.current_form,
+            "next_form": next_form,
+            "rank": rank,
+            "can_evolve": can_evolve,
+            "sovereign_unlocked": self.rank_system.rank_at_least("Sovereign"),
+            "monarch_available": self.evolution.can_enter_monarch_mode(),
+        }
 
     def get_matrix_state(self) -> dict[str, Any]:
+        evolution_state = self.get_evolution_state()
         return {
             "operator_rank": self._operator_rank,
             "active_variant": self._active_variant,
             "current_state": self._current_state,
+            "current_form": evolution_state["current_form"],
             "available_variants": list(AVATAR_VARIANTS.keys()),
             "valid_states": sorted(_VALID_STATES),
+            "evolution": evolution_state,
             "variants": {
                 k: {"class": v[0], "description": v[1]}
                 for k, v in AVATAR_VARIANTS.items()
@@ -86,6 +112,11 @@ class AvatarMatrix:
             return {"ok": False, "error": f"Unknown variant '{variant}'"}
         self._active_variant = variant
         return {"ok": True, "active_variant": variant}
+
+    def operator_trigger(self, command: str) -> bool:
+        transitioned = self.evolution.operator_trigger(command)
+        self.current_form = self.evolution.current_form
+        return transitioned
 
 
 _matrix: AvatarMatrix | None = None

@@ -46,6 +46,7 @@ def get_cockpit_status():
     avatar = get_avatar_matrix()
     realms = get_realm_registry()
     avatar_state = avatar.get_matrix_state()
+    evolution = avatar.get_evolution_state()
 
     return {
         "ok": True,
@@ -54,6 +55,14 @@ def get_cockpit_status():
         "avatar": {
             "active_variant": avatar_state["active_variant"],
             "current_state": avatar_state["current_state"],
+        },
+        "evolution": {
+            "current_form": evolution["current_form"],
+            "next_form": evolution["next_form"],
+            "rank": evolution["rank"],
+            "can_evolve": evolution["can_evolve"],
+            "sovereign_unlocked": evolution["sovereign_unlocked"],
+            "monarch_available": evolution["monarch_available"],
         },
         "realms": {
             "total": len(realms.list_realms()),

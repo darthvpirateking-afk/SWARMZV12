@@ -857,6 +857,10 @@ class _AvatarStateRequest(BaseModel):
     variant: str | None = None
 
 
+class _AvatarTriggerRequest(BaseModel):
+    command: str
+
+
 @app.get("/v1/avatar/matrix", tags=["avatar-matrix"])
 def avatar_matrix_state():
     """Get the current Avatar Matrix state."""
@@ -867,6 +871,25 @@ def avatar_matrix_state():
 def avatar_matrix_set_state(req: _AvatarStateRequest):
     """Set the avatar state, optionally switching variant."""
     return get_avatar_matrix().set_state(req.state, req.variant)
+
+
+@app.post("/v1/avatar/matrix/trigger", tags=["avatar-matrix"])
+def avatar_matrix_trigger(req: _AvatarTriggerRequest):
+    """Trigger avatar evolution commands (ASCEND|SOVEREIGN|MONARCH)."""
+    command = str(req.command or "").strip().upper()
+    if command not in {"ASCEND", "SOVEREIGN", "MONARCH"}:
+        raise HTTPException(
+            status_code=400,
+            detail="command must be one of ASCEND, SOVEREIGN, MONARCH",
+        )
+    matrix = get_avatar_matrix()
+    transitioned = matrix.operator_trigger(command)
+    return {
+        "ok": True,
+        "command": command,
+        "transitioned": transitioned,
+        "current_form": matrix.current_form,
+    }
 
 
 # ── NEXUSMON WebSocket — real-time cockpit channel ──────────────────────────

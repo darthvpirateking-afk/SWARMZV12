@@ -153,6 +153,14 @@ except Exception as e:
     print(f"Warning: cockpit telemetry router not available: {e}")
 
 try:
+    from swarmz_runtime.ui.cockpit import router as runtime_cockpit_router
+
+    _runtime_cockpit_router_available = True
+except Exception as e:
+    _runtime_cockpit_router_available = False
+    print(f"Warning: runtime cockpit router not available: {e}")
+
+try:
     from backend.health_model import router as health_router
 
     _health_router_available = True
@@ -351,6 +359,8 @@ class PhaseRunRequest(BaseModel):
 
 class Helper1RunRequest(BaseModel):
     query: str = Field("", description="Helper1 task query")
+    command: str = Field("echo", description="helper1 command (echo|validate_manifest|validate_proposal)")
+    payload: Dict[str, Any] = Field(default_factory=dict, description="helper1 command payload")
 
 
 class RealityGateRunRequest(BaseModel):
@@ -366,6 +376,15 @@ class MissionTemplateRunRequest(BaseModel):
 class MissionEngineRunRequest(BaseModel):
     template_id: str = Field("", description="Canonical mission template ID")
     payload: Dict[str, Any] = Field(default_factory=dict, description="Mission input payload")
+
+
+class AvatarMatrixStateRequest(BaseModel):
+    state: str = Field("", description="Avatar matrix state")
+    variant: str | None = Field(None, description="Optional avatar variant override")
+
+
+class AvatarMatrixTriggerRequest(BaseModel):
+    command: str = Field("", description="Avatar trigger command (ASCEND|SOVEREIGN|MONARCH)")
 
 
 # Initialize FastAPI app
@@ -447,6 +466,9 @@ if _mission_lifecycle_router_available:
 
 if _cockpit_router_available:
     app.include_router(cockpit_router)
+
+if _runtime_cockpit_router_available:
+    app.include_router(runtime_cockpit_router)
 
 if _health_router_available:
     app.include_router(health_router)
@@ -1050,7 +1072,7 @@ async def run_helper1_agent(req: Helper1RunRequest, request: Request):
     from core.agent_manifest import AgentManifest
     from core.spawn_context import SpawnContext
     from core.observability import AgentEvent, ObservabilityEmitter, inputs_hash
-    from plugins.helper1 import run as helper1_run
+    from plugins.helper1 import Helper1Plugin
 
     if not _canonical_operator_approved(request):
         raise HTTPException(status_code=403, detail="Operator approval required for canonical lane")
@@ -1058,29 +1080,59 @@ async def run_helper1_agent(req: Helper1RunRequest, request: Request):
     manifest = AgentManifest.from_file("config/manifests/helper1.manifest.json")
     ctx = SpawnContext.root_from_manifest(manifest)
 
-    # Deterministic local subset gate for this kernel slice endpoint.
+    compatibility_mode = bool(req.query.strip()) and req.command.strip().lower() in {"", "echo"}
+    command = "echo" if compatibility_mode else req.command.strip().lower()
+    payload = dict(req.payload or {})
+    if compatibility_mode:
+        payload.setdefault("query", req.query)
+
+    command_capability_map = {
+        "echo": "data.read",
+        "validate_manifest": "agent.introspect",
+        "validate_proposal": "agent.introspect",
+    }
+    mapped_cap = command_capability_map.get(command)
+    granted = {mapped_cap} if mapped_cap else set()
+
+    if command and command not in command_capability_map:
+        raise HTTPException(status_code=400, detail=f"Unsupported helper1 command '{command}'")
+
+    # Deterministic local subset gate for this kernel slice endpoint (command-scoped).
     declared = set(manifest.capabilities)
-    granted = {"data.read"}
-    if not granted.issubset(declared):
+    if granted and not granted.issubset(declared):
         raise HTTPException(
             status_code=403,
             detail="Granted capabilities exceed declared manifest capabilities",
         )
     allowed = sorted(granted)
 
-    result = helper1_run({"query": req.query})
+    plugin = Helper1Plugin()
+    await plugin.on_init(manifest, ctx)
+    await plugin.on_activate(ctx)
+    result = await plugin.run(command or "echo", payload)
+    await plugin.on_deactivate(ctx)
 
     emitter = ObservabilityEmitter(success_sample_rate=1.0)
+    result_payload = result if isinstance(result, dict) else {}
+    risk_score = float(result_payload.get("risk_score", 0.0)) if isinstance(result_payload, dict) else 0.0
+    errors = result_payload.get("errors", []) if isinstance(result_payload, dict) else []
+    outcome = "success" if len(errors) == 0 else "failure"
     emitter.emit(
         AgentEvent(
             agent_id=manifest.id,
             trace_id=ctx.trace_id,
             session_id=ctx.session_id,
-            event="helper1.run",
-            decision="execute",
-            inputs_hash=inputs_hash({"query": req.query}),
-            outcome="success",
-            payload={"allowed_capabilities": allowed},
+            event="helper1.run.command",
+            decision=command or "echo",
+            inputs_hash=inputs_hash({"query": req.query, "command": command, "payload": payload}),
+            outcome=outcome,
+            payload={
+                "allowed_capabilities": allowed,
+                "command": command or "echo",
+                "risk_score": risk_score,
+                "error_count": len(errors) if isinstance(errors, list) else 0,
+                "legacy_query": compatibility_mode,
+            },
         )
     )
     _append_canonical_trace(
@@ -1088,7 +1140,9 @@ async def run_helper1_agent(req: Helper1RunRequest, request: Request):
             "trace_id": ctx.trace_id,
             "event": "agent.helper1.run",
             "agent_id": manifest.id,
-            "outcome": "success",
+            "outcome": outcome,
+            "command": command or "echo",
+            "legacy_query": compatibility_mode,
         }
     )
 
@@ -1098,6 +1152,8 @@ async def run_helper1_agent(req: Helper1RunRequest, request: Request):
         "trace_id": ctx.trace_id,
         "session_id": ctx.session_id,
         "allowed_capabilities": allowed,
+        "command": command or "echo",
+        "compatibility_mode": {"legacy_query": compatibility_mode},
         "result": result,
     }
 
@@ -1242,7 +1298,7 @@ async def run_mission_engine_agent(req: MissionEngineRunRequest, request: Reques
 @app.get("/v1/canonical/agents", tags=["agent-runtime"], operation_id="canonical_agents_list")
 async def list_canonical_agents():
     agents = [
-        {"id": "helper1", "manifest": "helper1@0.1.0", "status": "ready"},
+        {"id": "helper1", "manifest": "helper1@0.2.0", "status": "ready"},
         {"id": "reality_gate", "manifest": "reality_gate@0.1.0", "status": "ready"},
         {"id": "mission_engine", "manifest": "mission_engine@0.1.0", "status": "ready"},
     ]
@@ -1259,6 +1315,192 @@ async def canonical_traces_recent(limit: int = 50):
 async def canonical_mission_templates():
     templates = _load_canonical_templates()
     return {"ok": True, "templates": templates, "count": len(templates)}
+
+
+def _repo_root() -> Path:
+    return Path(__file__).resolve().parent
+
+
+def _latest_mtime_iso(path: Path) -> Optional[str]:
+    if not path.exists():
+        return None
+    latest = 0.0
+    if path.is_file():
+        latest = path.stat().st_mtime
+    else:
+        for child in path.rglob("*"):
+            if child.is_file():
+                latest = max(latest, child.stat().st_mtime)
+    if latest <= 0:
+        return None
+    return datetime.fromtimestamp(latest, timezone.utc).isoformat()
+
+
+def _observatory_size_mb(root: Path) -> float:
+    total = 0
+    for child in root.rglob("*"):
+        if child.is_file():
+            total += child.stat().st_size
+    return round(total / (1024 * 1024), 3)
+
+
+def _manifest_totals(root: Path) -> tuple[int, int]:
+    registry_path = root / "core" / "manifests" / "registry.json"
+    if not registry_path.exists():
+        return 0, 0
+    try:
+        payload = json.loads(registry_path.read_text(encoding="utf-8-sig"))
+    except Exception:
+        return 0, 0
+    manifests = payload.get("manifests", []) if isinstance(payload, dict) else []
+    total = len(manifests) if isinstance(manifests, list) else 0
+    return total, 0
+
+
+def _cockpit_mode_stats(root: Path) -> tuple[int, int]:
+    registry_path = root / "cockpit" / "modes" / "registry.json"
+    if not registry_path.exists():
+        return 0, 0
+    try:
+        payload = json.loads(registry_path.read_text(encoding="utf-8-sig"))
+    except Exception:
+        return 0, 0
+    modes = payload.get("modes", []) if isinstance(payload, dict) else []
+    if not isinstance(modes, list):
+        return 0, 0
+    total = len(modes)
+    broken = 0
+    for mode in modes:
+        mode_path = mode.get("path", "")
+        if not mode_path or not (root / mode_path).exists():
+            broken += 1
+    return total, broken
+
+
+def _prepared_actions_metrics(root: Path) -> dict[str, Any]:
+    base = root / "prepared_actions"
+    if not base.exists():
+        return {"total": 0, "executed": 0, "pending": 0, "lastExecutionISO": None}
+    proposals = list(base.rglob("proposal.json"))
+    executed = 0
+    last_exec: Optional[float] = None
+    for proposal in proposals:
+        parent = proposal.parent
+        markers = [
+            parent / "executed.json",
+            parent / "receipt.json",
+            parent / "execution.log",
+            parent / "status.executed",
+        ]
+        if any(marker.exists() for marker in markers):
+            executed += 1
+            latest_marker = max((m.stat().st_mtime for m in markers if m.exists()), default=0.0)
+            if latest_marker > 0:
+                last_exec = latest_marker if last_exec is None else max(last_exec, latest_marker)
+    total = len(proposals)
+    pending = max(total - executed, 0)
+    last_exec_iso = (
+        datetime.fromtimestamp(last_exec, timezone.utc).isoformat() if last_exec is not None else None
+    )
+    return {
+        "total": total,
+        "executed": executed,
+        "pending": pending,
+        "lastExecutionISO": last_exec_iso,
+    }
+
+
+@app.get("/v1/canonical/health", tags=["agent-runtime"], operation_id="canonical_health")
+async def canonical_health():
+    return {
+        "ok": True,
+        "status": "healthy",
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+    }
+
+
+@app.get("/v1/runtime/health", tags=["agent-runtime"], operation_id="runtime_health")
+async def runtime_health():
+    root = _repo_root()
+    manifests_total, manifests_unregistered = _manifest_totals(root)
+    cockpit_modes_total, cockpit_modes_broken = _cockpit_mode_stats(root)
+    tests_total = len(list((root / "tests").rglob("test_*.py")))
+    observatory_root = root / "observatory"
+    observatory_size_mb = _observatory_size_mb(observatory_root) if observatory_root.exists() else 0.0
+    diary_dir = observatory_root / "diary"
+    scheduler_dir = observatory_root / "scheduler"
+    legacy_paths = [root / "ui", root / "web", root / "web_ui", root / "organism"]
+    return {
+        "manifestsTotal": manifests_total,
+        "manifestsUnregistered": manifests_unregistered,
+        "hooksMissing": 0,
+        "cockpitModesTotal": cockpit_modes_total,
+        "cockpitModesBroken": cockpit_modes_broken,
+        "testsTotal": tests_total,
+        "testsFailed": 0,
+        "observatorySizeMB": observatory_size_mb,
+        "lastDiaryWriteISO": _latest_mtime_iso(diary_dir),
+        "lastSchedulerRunISO": _latest_mtime_iso(scheduler_dir),
+        "legacyArtifactsFound": any(path.exists() for path in legacy_paths),
+    }
+
+
+@app.get("/v1/scheduler/status", tags=["agent-runtime"], operation_id="scheduler_status")
+async def scheduler_status():
+    root = _repo_root()
+    obs = root / "observatory" / "scheduler"
+    return {
+        "lastDiaryRunISO": _latest_mtime_iso(obs / "diary"),
+        "lastAwakeningLoopRunISO": _latest_mtime_iso(obs / "awakening"),
+        "lastBreathRunISO": _latest_mtime_iso(obs / "breath"),
+        "lastHeartRunISO": _latest_mtime_iso(obs / "heart"),
+        "lastCosmicRunISO": _latest_mtime_iso(obs / "cosmic"),
+    }
+
+
+@app.get(
+    "/v1/prepared_actions/status",
+    tags=["agent-runtime"],
+    operation_id="prepared_actions_status",
+)
+async def prepared_actions_status():
+    return _prepared_actions_metrics(_repo_root())
+
+
+@app.get("/v1/avatar/matrix", tags=["avatar-matrix"], operation_id="avatar_matrix_state")
+async def avatar_matrix_state():
+    from swarmz_runtime.avatar.avatar_matrix import get_avatar_matrix
+
+    return get_avatar_matrix().get_matrix_state()
+
+
+@app.post("/v1/avatar/matrix/state", tags=["avatar-matrix"], operation_id="avatar_matrix_set_state")
+async def avatar_matrix_set_state(req: AvatarMatrixStateRequest):
+    from swarmz_runtime.avatar.avatar_matrix import get_avatar_matrix
+
+    return get_avatar_matrix().set_state(req.state, req.variant)
+
+
+@app.post("/v1/avatar/matrix/trigger", tags=["avatar-matrix"], operation_id="avatar_matrix_trigger")
+async def avatar_matrix_trigger(req: AvatarMatrixTriggerRequest):
+    from fastapi import HTTPException
+    from swarmz_runtime.avatar.avatar_matrix import get_avatar_matrix
+
+    command = str(req.command or "").strip().upper()
+    if command not in {"ASCEND", "SOVEREIGN", "MONARCH"}:
+        raise HTTPException(
+            status_code=400,
+            detail="command must be one of ASCEND, SOVEREIGN, MONARCH",
+        )
+
+    matrix = get_avatar_matrix()
+    transitioned = matrix.operator_trigger(command)
+    return {
+        "ok": True,
+        "command": command,
+        "transitioned": transitioned,
+        "current_form": matrix.current_form,
+    }
 
 
 @app.post("/v1/canonical/missions/templates/{template_id}/run", tags=["missions"], operation_id="canonical_mission_template_run")

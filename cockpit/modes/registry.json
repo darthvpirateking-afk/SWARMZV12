@@ -5,6 +5,10 @@
                       "path":  "cockpit/modes/altar_modes.tsx"
                   },
                   {
+                      "id":  "avatar",
+                      "path":  "cockpit/modes/avatar.tsx"
+                  },
+                  {
                       "id":  "cosmic_hud",
                       "path":  "cockpit/modes/cosmic_hud.tsx"
                   },

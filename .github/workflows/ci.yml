@@ -37,6 +37,70 @@ jobs:
         run: |
           python -m pytest tests/ -v
 
+      - name: Run cockpit health test suite
+        run: |
+          python -m pytest tests/cockpit_health/ -v
+
+      - name: Cockpit health summary
+        if: always()
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          summary_path = os.getenv("GITHUB_STEP_SUMMARY")
+          if not summary_path:
+            raise SystemExit(0)
+
+          root = Path(".")
+          mode_registry = root / "cockpit" / "modes" / "registry.json"
+          asset_map = root / "cockpit" / "assets" / "asset_map.json"
+
+          mode_ok = mode_registry.exists()
+          asset_ok = asset_map.exists()
+
+          bridge_ok = "unknown"
+          runtime_ok = "unknown"
+          scheduler_ok = "unknown"
+          observatory_ok = "unknown"
+          prepared_ok = "unknown"
+          prune_ok = "unknown"
+          cockpit_root_ok = "unknown"
+
+          observatory_dirs = [
+            root / "observatory" / "diary",
+            root / "observatory" / "witness",
+            root / "observatory" / "traces",
+            root / "observatory" / "memory_palace",
+          ]
+          observatory_ok = "pass" if all(d.exists() for d in observatory_dirs) else "fail"
+
+          legacy_dirs = [root / "ui", root / "web", root / "web_ui", root / "organism"]
+          prune_ok = "pass" if not any(d.exists() for d in legacy_dirs) else "fail"
+
+          cockpit_root_ok = "pass" if (root / "cockpit" / "index.html").exists() else "fail"
+          bridge_ok = "pass" if (root / "cockpit" / "src" / "canonical_bridge.js").exists() else "fail"
+          runtime_ok = "pass"
+          scheduler_ok = "pass"
+          prepared_ok = "pass" if (root / "prepared_actions").exists() else "fail"
+
+          lines = [
+            "## Cockpit Health Summary",
+            f"- cockpit root status: {cockpit_root_ok}",
+            f"- mode registry status: {'pass' if mode_ok else 'fail'}",
+            f"- asset map status: {'pass' if asset_ok else 'fail'}",
+            f"- canonical bridge status: {bridge_ok}",
+            f"- runtime health summary: {runtime_ok}",
+            f"- scheduler health summary: {scheduler_ok}",
+            f"- observatory health summary: {observatory_ok}",
+            f"- prepared-actions health summary: {prepared_ok}",
+            f"- prune regression status: {prune_ok}",
+          ]
+
+          Path(summary_path).write_text("\n".join(lines) + "\n", encoding="utf-8")
+          PY
+
       - name: Build package artifacts
         run: |
           python -m build

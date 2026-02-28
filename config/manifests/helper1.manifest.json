@@ -1,16 +1,60 @@
 {
-  "id": "helper1@0.1.0",
-  "version": "0.1.0",
+  "id": "helper1@0.2.0",
+  "version": "0.2.0",
   "capabilities": ["data.read", "agent.introspect"],
-  "inputs": {"query": {"type": "string", "required": true, "description": "Task query"}},
-  "outputs": {"result": {"type": "object", "required": true, "description": "Response payload"}},
+  "inputs": {
+    "query": {
+      "type": "string",
+      "required": false,
+      "description": "Legacy helper1 query input"
+    },
+    "command": {
+      "type": "string",
+      "required": true,
+      "enum": ["echo", "validate_manifest", "validate_proposal"]
+    },
+    "payload": {
+      "type": "object",
+      "required": false
+    }
+  },
+  "outputs": {
+    "result": {
+      "type": "object",
+      "required": true,
+      "description": "Helper1 command result payload"
+    }
+  },
   "spawn_policy": "restricted",
-  "constraints": {"max_memory_mb": 256, "max_cpu_percent": 25, "max_spawn_depth": 1},
-  "limits": {"max_depth": 1, "max_children": 4},
-  "error_modes": {"on_validation_failure": "reject", "on_dependency_missing": "defer", "on_runtime_exception": "fallback"},
+  "constraints": {
+    "max_memory_mb": 256,
+    "max_cpu_percent": 25,
+    "max_spawn_depth": 1,
+    "max_children": 4,
+    "network_access": false,
+    "filesystem_access": "none",
+    "trust_level": 0.95
+  },
+  "limits": {
+    "max_depth": 1,
+    "max_children": 4
+  },
+  "error_modes": {
+    "on_validation_failure": "reject",
+    "on_dependency_missing": "reject",
+    "on_runtime_exception": "fallback",
+    "fallback_agent_id": "reality_gate",
+    "max_retries": 1
+  },
   "feature_flags": {
     "enabled": true,
-    "rollout_policy": {"strategy": "percentage", "percentage": 100, "segments": ["internal"]}
+    "rollout_policy": {
+      "strategy": "percentage",
+      "percentage": 100,
+      "segments": ["internal"]
+    }
   },
-  "extensions": {"legacy_alias": "helper1"}
+  "extensions": {
+    "legacy_alias": "helper1"
+  }
 }

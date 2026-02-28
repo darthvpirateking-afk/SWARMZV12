@@ -9,10 +9,8 @@ import jsonschema
 
 def test_manifest_helper1_manifest() -> None:
     repo_root = Path(__file__).resolve().parent.parent
-    schema_path = repo_root / "schemas" / "agent-manifest.v1.json"
-    manifest_path = repo_root / "config" / "manifests" / "helper1.manifest.json"
-    schema = json.loads(schema_path.read_text(encoding="utf-8-sig"))
-    manifest = json.loads(manifest_path.read_text(encoding="utf-8-sig"))
+    schema = json.loads((repo_root / "schemas" / "agent-manifest.v1.json").read_text(encoding="utf-8-sig"))
+    manifest = json.loads((repo_root / "config" / "manifests" / "helper1.manifest.json").read_text(encoding="utf-8-sig"))
 
     jsonschema.validate(instance=manifest, schema=schema)
 
