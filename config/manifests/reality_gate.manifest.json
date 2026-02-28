@@ -1,15 +1,50 @@
 {
   "id": "reality_gate@0.1.0",
   "version": "0.1.0",
-  "capabilities": ["gate.evaluate", "gate.enforce", "data.read"],
-  "inputs": {"assertion": {"type": "object", "required": true, "description": "Assertion payload"}},
-  "outputs": {"verdict": {"type": "string", "required": true, "description": "pass|fail|inconclusive"}},
-  "spawn_policy": "restricted",
-  "constraints": {"max_memory_mb": 128, "max_cpu_percent": 15, "max_spawn_depth": 0},
-  "error_modes": {"on_validation_failure": "reject", "on_dependency_missing": "reject", "on_runtime_exception": "fallback"},
-  "feature_flags": {
-    "enabled": true,
-    "rollout_policy": {"strategy": "percentage", "percentage": 100, "segments": ["internal"]}
+  "description": "Canonical kernel-lane agent for controlled external I/O, validation, and transformation.",
+  "capabilities": [
+    "io.read",
+    "io.write",
+    "validate",
+    "transform"
+  ],
+  "inputs": {
+    "command": {
+      "type": "string",
+      "required": true,
+      "description": "Operation to execute"
+    },
+    "payload": {
+      "type": "object",
+      "required": false,
+      "description": "Optional operation payload"
+    }
   },
-  "extensions": {"legacy_alias": "reality_gate"}
+  "outputs": {
+    "result": {
+      "type": "object",
+      "required": true,
+      "description": "Reality gate operation result"
+    }
+  },
+  "spawn_policy": "restricted",
+  "constraints": {
+    "deterministic": true,
+    "side_effects": "bounded",
+    "allow_network": false,
+    "allow_filesystem": false,
+    "max_spawn_depth": 2
+  },
+  "limits": {
+    "max_depth": 2,
+    "max_children": 3
+  },
+  "error_modes": {
+    "invalid_input": "fail",
+    "capability_violation": "fail",
+    "depth_violation": "fail"
+  },
+  "extensions": {
+    "legacy_alias": "reality_gate"
+  }
 }

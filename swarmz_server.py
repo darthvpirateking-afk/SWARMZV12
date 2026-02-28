@@ -14,6 +14,7 @@ import socket
 import json
 import logging
 import traceback
+from collections import deque
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, Optional
@@ -144,6 +145,86 @@ except Exception as e:
     print(f"Warning: mission lifecycle router not available: {e}")
 
 try:
+    from backend.cockpit_telemetry import router as cockpit_router
+
+    _cockpit_router_available = True
+except Exception as e:
+    _cockpit_router_available = False
+    print(f"Warning: cockpit telemetry router not available: {e}")
+
+try:
+    from backend.health_model import router as health_router
+
+    _health_router_available = True
+except Exception as e:
+    _health_router_available = False
+    print(f"Warning: health router not available: {e}")
+
+try:
+    from backend.autonomous_runtime import router as nexusmon_autonomous_router
+
+    _nexusmon_autonomous_router_available = True
+except Exception as e:
+    _nexusmon_autonomous_router_available = False
+    print(f"Warning: autonomous runtime router not available: {e}")
+
+try:
+    from backend.proposal_registry import router as proposal_router
+
+    _proposal_router_available = True
+except Exception as e:
+    _proposal_router_available = False
+    print(f"Warning: proposal router not available: {e}")
+
+try:
+    from backend.code_drafting_engine import router as drafting_router
+
+    _drafting_router_available = True
+except Exception as e:
+    _drafting_router_available = False
+    print(f"Warning: drafting router not available: {e}")
+
+try:
+    from backend.evolution_planner_api import router as planner_router
+
+    _planner_router_available = True
+except Exception as e:
+    _planner_router_available = False
+    print(f"Warning: planner router not available: {e}")
+
+try:
+    from backend.refactor_api import router as refactor_router
+
+    _refactor_router_available = True
+except Exception as e:
+    _refactor_router_available = False
+    print(f"Warning: refactor router not available: {e}")
+
+try:
+    from backend.simulation_api import router as simulation_router
+
+    _simulation_router_available = True
+except Exception as e:
+    _simulation_router_available = False
+    print(f"Warning: simulation router not available: {e}")
+
+try:
+    from backend.symbolic_api import router as symbolic_router
+
+    _symbolic_router_available = True
+except Exception as e:
+    _symbolic_router_available = False
+    print(f"Warning: symbolic router not available: {e}")
+
+try:
+    from backend.life_api import router as life_router
+
+    _life_router_available = True
+except Exception as e:
+    _life_router_available = False
+    print(f"Warning: life router not available: {e}")
+
+try:
     from backend.intel.vuln_db_client import search_vulnerabilities
 except Exception:
     search_vulnerabilities = None
@@ -268,6 +349,25 @@ class PhaseRunRequest(BaseModel):
     )
 
 
+class Helper1RunRequest(BaseModel):
+    query: str = Field("", description="Helper1 task query")
+
+
+class RealityGateRunRequest(BaseModel):
+    command: str = Field("", description="Reality gate command")
+    payload: Dict[str, Any] = Field(default_factory=dict, description="Reality gate payload")
+
+
+class MissionTemplateRunRequest(BaseModel):
+    payload: Dict[str, Any] = Field(default_factory=dict, description="Mission payload")
+    operator_approved: bool = Field(False, description="Explicit operator approval flag for strict mode")
+
+
+class MissionEngineRunRequest(BaseModel):
+    template_id: str = Field("", description="Canonical mission template ID")
+    payload: Dict[str, Any] = Field(default_factory=dict, description="Mission input payload")
+
+
 # Initialize FastAPI app
 app = FastAPI(
     title="SWARMZ API",
@@ -345,6 +445,36 @@ if _mission_lifecycle_router_available:
         mission_lifecycle_router, prefix="/v1/missions", tags=["mission-lifecycle"]
     )
 
+if _cockpit_router_available:
+    app.include_router(cockpit_router)
+
+if _health_router_available:
+    app.include_router(health_router)
+
+if _nexusmon_autonomous_router_available:
+    app.include_router(nexusmon_autonomous_router)
+
+if _proposal_router_available:
+    app.include_router(proposal_router)
+
+if _drafting_router_available:
+    app.include_router(drafting_router)
+
+if _planner_router_available:
+    app.include_router(planner_router)
+
+if _refactor_router_available:
+    app.include_router(refactor_router)
+
+if _simulation_router_available:
+    app.include_router(simulation_router)
+
+if _symbolic_router_available:
+    app.include_router(symbolic_router)
+
+if _life_router_available:
+    app.include_router(life_router)
+
 # Include the new tab loader routes
 # app.include_router(app.router, prefix="/v1/tabs")
 
@@ -357,6 +487,57 @@ logging.basicConfig(
 
 # Global state for exception tracking
 last_exception_traceback = None
+CANONICAL_TRACE_BUFFER: deque[dict[str, Any]] = deque(maxlen=200)
+
+
+def _load_runtime_config() -> dict[str, Any]:
+    try:
+        from core.config_loader import load_config
+
+        cfg = load_config() or {}
+        return cfg if isinstance(cfg, dict) else {}
+    except Exception:
+        return {}
+
+
+def _canonical_lane_policy() -> dict[str, Any]:
+    cfg = _load_runtime_config()
+    lane = cfg.get("canonical_lane", {}) if isinstance(cfg, dict) else {}
+    return {
+        "strict_mode": bool(lane.get("strict_mode", True)),
+        "auto_approve": bool(lane.get("auto_approve", False)),
+        "require_operator_approval": bool(lane.get("require_operator_approval", True)),
+    }
+
+
+def _canonical_operator_approved(request: Request, explicit_flag: bool = False) -> bool:
+    policy = _canonical_lane_policy()
+    if not policy["strict_mode"]:
+        return True
+    if policy["auto_approve"]:
+        return True
+    if not policy["require_operator_approval"]:
+        return True
+    header = request.headers.get("X-Operator-Approval", "")
+    return explicit_flag or header.strip().lower() in {"1", "true", "approved", "yes"}
+
+
+def _append_canonical_trace(event: dict[str, Any]) -> None:
+    stamped = {"ts": _utc_now_iso_z(), **event}
+    CANONICAL_TRACE_BUFFER.append(stamped)
+
+
+def _load_canonical_templates() -> list[dict[str, Any]]:
+    templates_dir = Path("config/missions")
+    if not templates_dir.exists():
+        return []
+    templates: list[dict[str, Any]] = []
+    for fp in sorted(templates_dir.glob("*.template.json")):
+        try:
+            templates.append(json.loads(fp.read_text(encoding="utf-8-sig")))
+        except Exception:
+            continue
+    return templates
 
 
 @app.exception_handler(Exception)
@@ -870,6 +1051,323 @@ async def readiness():
     the system matures.
     """
     return {"status": "ready", "service": "SWARMZ API"}
+
+
+@app.get("/health/ready", operation_id="swarmz_health_ready_compat")
+async def health_ready_compat():
+    """Compatibility readiness endpoint for UI clients."""
+    return {"ok": True, "status": "ready"}
+
+
+@app.get("/api/governor", operation_id="swarmz_governor_status_compat")
+async def governor_status_compat():
+    """Compatibility governor status endpoint for UI clients."""
+    cfg = _load_runtime_config()
+
+    operator_sovereignty = cfg.get("operator_sovereignty", {}) if isinstance(cfg, dict) else {}
+    security = cfg.get("security", {}) if isinstance(cfg, dict) else {}
+
+    auto_approve = bool(operator_sovereignty.get("auto_approve", False))
+    require_operator_approval = bool(security.get("require_operator_approval", False))
+
+    warnings = []
+    if auto_approve:
+        warnings.append("operator_sovereignty.auto_approve=true")
+    if not require_operator_approval:
+        warnings.append("security.require_operator_approval=false")
+
+    return {
+        "ok": True,
+        "status": "ok",
+        "governance": {
+            "operator_sovereignty": {"auto_approve": auto_approve},
+            "security": {"require_operator_approval": require_operator_approval},
+            "canonical_lane": _canonical_lane_policy(),
+        },
+        "warnings": warnings,
+    }
+
+
+@app.post("/v1/agents/helper1/run", tags=["agent-runtime"], operation_id="helper1_run")
+async def run_helper1_agent(req: Helper1RunRequest, request: Request):
+    """Execute helper1 via canonical manifest + spawn context + capability gate."""
+    from fastapi import HTTPException
+    from core.agent_manifest import AgentManifest
+    from core.spawn_context import SpawnContext
+    from core.observability import AgentEvent, ObservabilityEmitter, inputs_hash
+    from plugins.helper1 import run as helper1_run
+
+    if not _canonical_operator_approved(request):
+        raise HTTPException(status_code=403, detail="Operator approval required for canonical lane")
+
+    manifest = AgentManifest.from_file("config/manifests/helper1.manifest.json")
+    ctx = SpawnContext.root_from_manifest(manifest)
+
+    # Deterministic local subset gate for this kernel slice endpoint.
+    declared = set(manifest.capabilities)
+    granted = {"data.read"}
+    if not granted.issubset(declared):
+        raise HTTPException(
+            status_code=403,
+            detail="Granted capabilities exceed declared manifest capabilities",
+        )
+    allowed = sorted(granted)
+
+    result = helper1_run({"query": req.query})
+
+    emitter = ObservabilityEmitter(success_sample_rate=1.0)
+    emitter.emit(
+        AgentEvent(
+            agent_id=manifest.id,
+            trace_id=ctx.trace_id,
+            session_id=ctx.session_id,
+            event="helper1.run",
+            decision="execute",
+            inputs_hash=inputs_hash({"query": req.query}),
+            outcome="success",
+            payload={"allowed_capabilities": allowed},
+        )
+    )
+    _append_canonical_trace(
+        {
+            "trace_id": ctx.trace_id,
+            "event": "agent.helper1.run",
+            "agent_id": manifest.id,
+            "outcome": "success",
+        }
+    )
+
+    return {
+        "ok": True,
+        "agent_id": manifest.id,
+        "trace_id": ctx.trace_id,
+        "session_id": ctx.session_id,
+        "allowed_capabilities": allowed,
+        "result": result,
+    }
+
+
+@app.post("/v1/agents/reality_gate/run", tags=["agent-runtime"], operation_id="reality_gate_run")
+async def run_reality_gate_agent(req: RealityGateRunRequest, request: Request):
+    """Execute canonical reality_gate plugin with manifest + spawn + capability gate."""
+    from fastapi import HTTPException
+    from core.agent_manifest import AgentManifest
+    from core.spawn_context import SpawnContext
+    from core.observability import AgentEvent, ObservabilityEmitter, inputs_hash
+    from plugins.reality_gate import RealityGatePlugin
+
+    if not _canonical_operator_approved(request):
+        raise HTTPException(status_code=403, detail="Operator approval required for canonical lane")
+
+    manifest = AgentManifest.from_file("config/manifests/reality_gate.manifest.json")
+    context = SpawnContext.root_from_manifest(manifest)
+
+    declared = set(manifest.capabilities)
+    command_capability_map = {
+        "validate": "validate",
+        "transform": "transform",
+        "echo": "io.read",
+    }
+    mapped_cap = command_capability_map.get(req.command)
+    granted = {mapped_cap} if mapped_cap else set()
+    if granted and not granted.issubset(declared):
+        raise HTTPException(
+            status_code=403,
+            detail="Granted capabilities exceed declared manifest capabilities",
+        )
+
+    plugin = RealityGatePlugin()
+    await plugin.on_init(manifest, context)
+    await plugin.on_activate(context)
+    result = await plugin.run(req.command, req.payload)
+    await plugin.on_deactivate(context)
+
+    emitter = ObservabilityEmitter(success_sample_rate=1.0)
+    emitter.emit(
+        AgentEvent(
+            agent_id=manifest.id,
+            trace_id=context.trace_id,
+            session_id=context.session_id,
+            event="reality_gate.run",
+            decision=req.command,
+            inputs_hash=inputs_hash({"command": req.command, "payload": req.payload}),
+            outcome="success" if "error" not in result else "failure",
+            payload={"allowed_capabilities": sorted(granted) if granted else []},
+        )
+    )
+    _append_canonical_trace(
+        {
+            "trace_id": context.trace_id,
+            "event": "agent.reality_gate.run",
+            "agent_id": manifest.id,
+            "command": req.command,
+            "outcome": "success" if "error" not in result else "failure",
+        }
+    )
+
+    return {
+        "ok": True,
+        "agent": "reality_gate",
+        "agent_id": manifest.id,
+        "command": req.command,
+        "result": result,
+        "trace_id": context.trace_id,
+        "session_id": context.session_id,
+    }
+
+
+@app.post("/v1/agents/mission_engine/run", tags=["agent-runtime"], operation_id="mission_engine_run")
+async def run_mission_engine_agent(req: MissionEngineRunRequest, request: Request):
+    """Execute canonical mission_engine plugin for a canonical template run."""
+    from fastapi import HTTPException
+    from core.agent_manifest import AgentManifest
+    from core.spawn_context import SpawnContext
+    from core.observability import AgentEvent, ObservabilityEmitter, inputs_hash
+    from plugins.mission_engine import MissionEnginePlugin
+
+    if not _canonical_operator_approved(request):
+        raise HTTPException(status_code=403, detail="Operator approval required for canonical lane")
+
+    templates = {t.get("id"): t for t in _load_canonical_templates() if isinstance(t, dict)}
+    if req.template_id not in templates:
+        raise HTTPException(status_code=404, detail=f"Template '{req.template_id}' not found")
+    template = templates[req.template_id]
+
+    manifest = AgentManifest.from_file("config/manifests/mission_engine.manifest.json")
+    context = SpawnContext.root_from_manifest(manifest)
+
+    declared = set(manifest.capabilities)
+    granted = {"mission.execute"}
+    if not granted.issubset(declared):
+        raise HTTPException(
+            status_code=403,
+            detail="Granted capabilities exceed declared manifest capabilities",
+        )
+
+    plugin = MissionEnginePlugin()
+    await plugin.on_init(manifest, context)
+    await plugin.on_activate(context)
+    result = await plugin.run(template, req.payload)
+    await plugin.on_deactivate(context)
+
+    emitter = ObservabilityEmitter(success_sample_rate=1.0)
+    emitter.emit(
+        AgentEvent(
+            agent_id=manifest.id,
+            trace_id=context.trace_id,
+            session_id=context.session_id,
+            event="mission_engine.run",
+            decision=req.template_id,
+            inputs_hash=inputs_hash({"template_id": req.template_id, "payload": req.payload}),
+            outcome="success" if "error" not in result else "failure",
+            payload={"allowed_capabilities": sorted(granted)},
+        )
+    )
+    _append_canonical_trace(
+        {
+            "trace_id": context.trace_id,
+            "event": "agent.mission_engine.run",
+            "agent_id": manifest.id,
+            "template_id": req.template_id,
+            "outcome": "success" if "error" not in result else "failure",
+        }
+    )
+
+    return {
+        "ok": True,
+        "agent": "mission_engine",
+        "agent_id": manifest.id,
+        "template_id": req.template_id,
+        "result": result,
+        "trace_id": context.trace_id,
+        "session_id": context.session_id,
+    }
+
+
+@app.get("/v1/canonical/agents", tags=["agent-runtime"], operation_id="canonical_agents_list")
+async def list_canonical_agents():
+    agents = [
+        {"id": "helper1", "manifest": "helper1@0.1.0", "status": "ready"},
+        {"id": "reality_gate", "manifest": "reality_gate@0.1.0", "status": "ready"},
+        {"id": "mission_engine", "manifest": "mission_engine@0.1.0", "status": "ready"},
+    ]
+    return {"ok": True, "agents": agents, "count": len(agents)}
+
+
+@app.get("/v1/canonical/traces/recent", tags=["agent-runtime"], operation_id="canonical_traces_recent")
+async def canonical_traces_recent(limit: int = 50):
+    bounded = max(1, min(limit, 200))
+    return {"ok": True, "events": list(CANONICAL_TRACE_BUFFER)[-bounded:], "count": bounded}
+
+
+@app.get("/v1/canonical/missions/templates", tags=["missions"], operation_id="canonical_mission_templates")
+async def canonical_mission_templates():
+    templates = _load_canonical_templates()
+    return {"ok": True, "templates": templates, "count": len(templates)}
+
+
+@app.post("/v1/canonical/missions/templates/{template_id}/run", tags=["missions"], operation_id="canonical_mission_template_run")
+async def canonical_mission_template_run(template_id: str, req: MissionTemplateRunRequest, request: Request):
+    from fastapi import HTTPException
+    from core.agent_manifest import AgentManifest
+    from core.spawn_context import SpawnContext
+    from core.observability import AgentEvent, ObservabilityEmitter, inputs_hash
+    from plugins.reality_gate import RealityGatePlugin
+
+    if not _canonical_operator_approved(request, explicit_flag=req.operator_approved):
+        raise HTTPException(status_code=403, detail="Operator approval required for canonical lane")
+
+    templates = {t.get("id"): t for t in _load_canonical_templates() if isinstance(t, dict)}
+    if template_id not in templates:
+        raise HTTPException(status_code=404, detail=f"Template '{template_id}' not found")
+    template = templates[template_id]
+
+    manifest = AgentManifest.from_file("config/manifests/reality_gate.manifest.json")
+    context = SpawnContext.root_from_manifest(manifest)
+    plugin = RealityGatePlugin()
+    await plugin.on_init(manifest, context)
+    await plugin.on_activate(context)
+
+    steps = list(template.get("steps", []))
+    step_results: list[dict[str, Any]] = []
+    for step in steps:
+        command = str(step.get("command", ""))
+        payload = {"template_payload": req.payload, "step_payload": step.get("payload", {})}
+        result = await plugin.run(command, payload)
+        step_results.append({"step_id": step.get("id", ""), "command": command, "result": result})
+
+    await plugin.on_deactivate(context)
+    _append_canonical_trace(
+        {
+            "trace_id": context.trace_id,
+            "event": "mission.template.run",
+            "template_id": template_id,
+            "step_count": len(step_results),
+            "outcome": "success",
+        }
+    )
+
+    emitter = ObservabilityEmitter(success_sample_rate=1.0)
+    emitter.emit(
+        AgentEvent(
+            agent_id=manifest.id,
+            trace_id=context.trace_id,
+            session_id=context.session_id,
+            event="mission.template.run",
+            decision=template_id,
+            inputs_hash=inputs_hash({"template_id": template_id, "payload": req.payload}),
+            outcome="success",
+            payload={"step_count": len(step_results)},
+        )
+    )
+
+    return {
+        "ok": True,
+        "template_id": template_id,
+        "trace_id": context.trace_id,
+        "session_id": context.session_id,
+        "results": step_results,
+    }
 
 
 @app.post("/v1/auth/login")
@@ -1808,6 +2306,51 @@ try:
             from fastapi import HTTPException
             raise HTTPException(status_code=404, detail=f"Agent '{agent_id}' not found")
         return {"ok": True, "agent": agent.model_dump()}
+
+    @app.get("/v1/agents/{agent_id}/status", tags=["agent-runtime"])
+    async def get_agent_status(agent_id: str):
+        """Get status for a registered agent and its runtime, if live."""
+        from fastapi import HTTPException
+
+        agent = _get_agent(agent_id)
+        if agent is None:
+            raise HTTPException(status_code=404, detail=f"Agent '{agent_id}' not found")
+
+        runtime_state = None
+        runtime_status = "registered"
+        try:
+            from core.agent_runtime import get_runtime as _get_runtime  # local import
+
+            runtime = _get_runtime(agent_id)
+            if runtime is not None:
+                runtime_status = "running"
+                runtime_state = runtime.snapshot()
+        except Exception:
+            pass
+
+        return {
+            "ok": True,
+            "agent_id": agent_id,
+            "status": runtime_status,
+            "spawn_policy": agent.spawn_policy.value,
+            "runtime": runtime_state,
+        }
+
+    @app.get("/v1/agents/{agent_id}/capabilities", tags=["agent-manifest"])
+    async def get_agent_capabilities(agent_id: str):
+        """Get declared capabilities for a single registered agent."""
+        from fastapi import HTTPException
+
+        agent = _get_agent(agent_id)
+        if agent is None:
+            raise HTTPException(status_code=404, detail=f"Agent '{agent_id}' not found")
+
+        return {
+            "ok": True,
+            "agent_id": agent_id,
+            "capabilities": sorted(agent.capabilities),
+            "count": len(agent.capabilities),
+        }
 
     @app.post("/v1/agents", tags=["agent-manifest"])
     async def register_agent_manifest(data: dict):

@@ -1,0 +1,1294 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>NEXUSMON Cockpit</title>
+  <style>
+    :root {
+      --bg: #050712;
+      --panel: #0b0f1f;
+      --accent: #46e6ff;
+      --accent-soft: rgba(70, 230, 255, 0.2);
+      --danger: #ff4b81;
+      --ok: #46ff9a;
+      --text: #f5f7ff;
+      --muted: #7b86a8;
+      --border: #1b2238;
+      --glow: 0 0 18px rgba(70, 230, 255, 0.6);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 10px;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+      background: radial-gradient(circle at top, #10152b 0, #050712 55%);
+      color: var(--text);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1.2fr 1.4fr;
+      grid-template-rows: auto auto;
+      gap: 10px;
+    }
+    .card {
+      background: linear-gradient(145deg, #090d1a, #050712);
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      padding: 10px;
+      box-shadow: 0 0 0 1px rgba(10, 16, 40, 0.8), var(--glow);
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top left, rgba(70, 230, 255, 0.12), transparent 55%);
+      opacity: 0.7;
+      pointer-events: none;
+    }
+    .card h2 {
+      margin: 0 0 6px;
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .pill-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 6px;
+    }
+    .pill {
+      padding: 3px 7px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      font-size: 10px;
+      color: var(--muted);
+      background: rgba(5, 10, 30, 0.9);
+    }
+    .pill.ok { border-color: var(--ok); color: var(--ok); }
+    .pill.bad { border-color: var(--danger); color: var(--danger); }
+    .pill.accent { border-color: var(--accent); color: var(--accent); }
+    .list {
+      max-height: 180px;
+      overflow-y: auto;
+      font-size: 11px;
+    }
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 0;
+      border-bottom: 1px solid rgba(27, 34, 56, 0.7);
+    }
+    .row:last-child { border-bottom: none; }
+    .row span.label {
+      color: var(--muted);
+    }
+    .row span.value {
+      color: var(--text);
+    }
+    .row span.value.ok { color: var(--ok); }
+    .row span.value.bad { color: var(--danger); }
+    .row span.value.accent { color: var(--accent); }
+    .btn-row {
+      display: flex;
+      gap: 6px;
+      margin-top: 6px;
+      flex-wrap: wrap;
+    }
+    button {
+      border-radius: 999px;
+      border: 1px solid var(--accent);
+      background: radial-gradient(circle at top, var(--accent-soft), transparent 70%);
+      color: var(--text);
+      font-size: 11px;
+      padding: 4px 10px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    button.danger {
+      border-color: var(--danger);
+      background: radial-gradient(circle at top, rgba(255, 75, 129, 0.18), transparent 70%);
+    }
+    button:disabled {
+      opacity: 0.4;
+      cursor: default;
+    }
+    .toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .toggle input {
+      accent-color: var(--accent);
+    }
+    .log {
+      max-height: 180px;
+      overflow-y: auto;
+      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 10px;
+      background: rgba(3, 6, 18, 0.9);
+      border-radius: 6px;
+      padding: 6px;
+      border: 1px solid var(--border);
+    }
+    .log-line {
+      white-space: pre;
+      color: var(--muted);
+    }
+    .log-line.ok { color: var(--ok); }
+    .log-line.bad { color: var(--danger); }
+    .log-line.accent { color: var(--accent); }
+    .badge {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+    .badge.ok { border-color: var(--ok); color: var(--ok); }
+    .badge.bad { border-color: var(--danger); color: var(--danger); }
+  </style>
+</head>
+<body>
+  <div class="grid">
+    <!-- Agents / health -->
+    <div class="card">
+      <h2>Canonical Agents</h2>
+      <div class="pill-row">
+        <span class="pill accent">Lane: v0.1</span>
+        <span class="pill">helper1</span>
+        <span class="pill">reality_gate</span>
+        <span class="pill">mission_engine</span>
+      </div>
+      <div id="agents-list" class="list"></div>
+    </div>
+
+    <!-- Strict-mode + governor -->
+    <div class="card">
+      <h2>Governance / Strict-Mode</h2>
+      <div class="row">
+        <span class="label">Canonical Lane</span>
+        <span id="lane-status" class="badge">loading...</span>
+      </div>
+      <div class="row">
+        <span class="label">Strict-Mode</span>
+        <span id="strict-status" class="badge">loading...</span>
+      </div>
+      <div class="row">
+        <span class="label">Operator Approval</span>
+        <span class="toggle">
+          <input id="approval-toggle" type="checkbox" checked />
+          <span>Send X-Operator-Approval</span>
+        </span>
+      </div>
+      <div class="btn-row">
+        <button id="refresh-governor">Refresh Governor</button>
+      </div>
+    </div>
+
+    <!-- Live traces -->
+    <div class="card">
+      <h2>Live Traces</h2>
+      <div class="btn-row">
+        <button id="refresh-traces">Refresh</button>
+        <button id="auto-traces">Auto Stream</button>
+      </div>
+      <div id="traces-log" class="log"></div>
+    </div>
+
+    <!-- Missions -->
+    <div class="card">
+      <h2>Mission Templates</h2>
+      <div id="missions-list" class="list"></div>
+      <div class="btn-row">
+        <button id="refresh-missions">Refresh</button>
+      </div>
+    </div>
+
+    <!-- Mission execution log -->
+    <div class="card">
+      <h2>Mission Execution Log</h2>
+      <div class="btn-row">
+        <button id="run-reality-template">Run reality_gate_linear</button>
+      </div>
+      <div id="missions-log" class="log"></div>
+    </div>
+
+    <!-- Agent run panel -->
+    <div class="card">
+      <h2>Agent Run Panel</h2>
+      <div class="btn-row">
+        <button data-agent="helper1" class="run-agent">Run helper1</button>
+        <button data-agent="reality_gate" class="run-agent">Run reality_gate</button>
+        <button data-agent="mission_engine" class="run-agent">Run mission_engine</button>
+      </div>
+      <div id="agents-log" class="log"></div>
+    </div>
+
+    <!-- NEXUSMON Avatar -->
+    <div class="card">
+      <h2>NEXUSMON Avatar</h2>
+      <div id="avatar-summary" class="list"></div>
+      <div class="btn-row">
+        <button id="avatar-refresh">Refresh Avatar</button>
+        <button id="avatar-auto">Auto Tick</button>
+      </div>
+    </div>
+
+    <!-- NEXUSMON Shell -->
+    <div class="card">
+      <h2>NEXUSMON Shell</h2>
+      <div class="btn-row">
+        <input id="shell-input" type="text" placeholder="talk to NEXUSMON..." style="flex:1; padding:4px 8px; border-radius:6px; border:1px solid var(--border); background:#050712; color:var(--text); font-size:11px;" />
+        <button id="shell-send">Send</button>
+      </div>
+      <div id="shell-log" class="log"></div>
+    </div>
+
+    <!-- Proposals -->
+    <div class="card">
+      <h2>Proposals</h2>
+      <div id="proposals-list" class="list"></div>
+      <div class="btn-row">
+        <button id="refresh-proposals">Refresh</button>
+      </div>
+    </div>
+
+    <!-- Draft Code -->
+    <div class="card">
+      <h2>Draft Code</h2>
+      <div class="btn-row">
+        <button class="draft-btn" data-type="test" data-target="mission_engine">Draft Test</button>
+        <button class="draft-btn" data-type="plugin" data-target="example_plugin">Draft Plugin</button>
+        <button class="draft-btn" data-type="backend" data-target="example_module">Draft Backend</button>
+      </div>
+      <div id="draft-log" class="log"></div>
+    </div>
+
+    <div class="card">
+      <h2>Proposal Scores</h2>
+      <div id="scores-list" class="list"></div>
+      <div class="btn-row">
+        <button id="refresh-scores">Refresh Scores</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Evolution Council</h2>
+      <div id="council-list" class="list"></div>
+      <div class="btn-row">
+        <button id="refresh-council">Refresh Council</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Evolution Plans</h2>
+      <div id="plans-list" class="list"></div>
+      <div class="btn-row">
+        <button id="create-plan">Create Plan</button>
+        <button id="realize-plans">Realize Plans</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Refactor Hints</h2>
+      <div id="refactor-list" class="list"></div>
+      <div class="btn-row">
+        <button id="refresh-refactor">Refresh Hints</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Pantheon Browser</h2>
+      <div id="pantheon-list" class="list"></div>
+      <div class="btn-row">
+        <button id="refresh-pantheons">Refresh</button>
+        <button id="activate-pantheon">Activate</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Grimoire Library</h2>
+      <div id="grimoire-list" class="list"></div>
+      <div class="btn-row">
+        <button id="refresh-grimoires">Refresh</button>
+        <button id="consult-grimoire">Consult</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Sigil Renderer</h2>
+      <div class="btn-row">
+        <button id="refresh-sigils">Refresh</button>
+        <button id="render-sigil">Generate Geometry</button>
+      </div>
+      <div id="sigil-log" class="log"></div>
+    </div>
+
+    <div class="card">
+      <h2>Relic Inventory</h2>
+      <div id="relic-list" class="list"></div>
+      <div class="btn-row">
+        <button id="refresh-relics">Refresh</button>
+        <button id="invoke-relic">Invoke</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Cosmic HUD</h2>
+      <div id="cosmic-list" class="list"></div>
+      <div class="btn-row">
+        <button id="refresh-cosmic">Refresh</button>
+        <button id="consult-cosmic">Consult</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Multiverse Fork Viewer</h2>
+      <div class="btn-row">
+        <button id="refresh-multiverse">Refresh</button>
+        <button id="simulate-branch">Simulate Branch</button>
+      </div>
+      <div id="multiverse-log" class="log"></div>
+    </div>
+
+    <div class="card">
+      <h2>Synchronicity Web</h2>
+      <div class="btn-row">
+        <button id="refresh-synchronicity">Refresh</button>
+        <button id="trigger-synchronicity">Trigger Anomaly</button>
+      </div>
+      <div id="synchronicity-log" class="log"></div>
+    </div>
+
+    <div class="card">
+      <h2>Lineage Tree</h2>
+      <div id="lineage-list" class="list"></div>
+      <div class="btn-row">
+        <button id="refresh-lineage">Refresh</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Altar Modes</h2>
+      <div id="altar-list" class="list"></div>
+      <div class="btn-row">
+        <button id="refresh-altar">Refresh</button>
+        <button id="render-altar-mode">Render Mode</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Diary Engine</h2>
+      <div class="btn-row">
+        <button id="diary-tick">Write Diary Entry</button>
+      </div>
+      <div id="diary-log" class="log"></div>
+    </div>
+
+    <div class="card">
+      <h2>Sovereign Mirror Panel</h2>
+      <div class="btn-row">
+        <button id="mirror-reflect">Reflect Operator Pattern</button>
+      </div>
+      <div id="mirror-log" class="log"></div>
+    </div>
+
+    <div class="card">
+      <h2>Eternal Witness Log</h2>
+      <div id="witness-list" class="list"></div>
+      <div class="btn-row">
+        <button id="refresh-witness">Refresh Witness</button>
+        <button id="build-memory-room">Build Memory Room</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Dream Seed Console</h2>
+      <div class="btn-row">
+        <input id="dream-seed-input" type="text" placeholder='{"motif":"river"}' style="flex:1; padding:4px 8px; border-radius:6px; border:1px solid var(--border); background:#050712; color:var(--text); font-size:11px;" />
+        <button id="run-dream-seed">Interpret</button>
+      </div>
+      <div id="dream-log" class="log"></div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = (window.API_BASE_URL || "http://localhost:8000").replace(/\/+$/, "");
+    const approvalToggle = document.getElementById("approval-toggle");
+    const tracesLog = document.getElementById("traces-log");
+    const missionsLog = document.getElementById("missions-log");
+    const agentsLog = document.getElementById("agents-log");
+    const agentsList = document.getElementById("agents-list");
+    const missionsList = document.getElementById("missions-list");
+    const laneStatus = document.getElementById("lane-status");
+    const strictStatus = document.getElementById("strict-status");
+    const avatarSummary = document.getElementById("avatar-summary");
+    const shellInput = document.getElementById("shell-input");
+    const shellLog = document.getElementById("shell-log");
+    const proposalsList = document.getElementById("proposals-list");
+    const draftLog = document.getElementById("draft-log");
+    const scoresList = document.getElementById("scores-list");
+    const councilList = document.getElementById("council-list");
+    const plansList = document.getElementById("plans-list");
+    const refactorList = document.getElementById("refactor-list");
+    const pantheonList = document.getElementById("pantheon-list");
+    const grimoireList = document.getElementById("grimoire-list");
+    const sigilLog = document.getElementById("sigil-log");
+    const relicList = document.getElementById("relic-list");
+    const cosmicList = document.getElementById("cosmic-list");
+    const multiverseLog = document.getElementById("multiverse-log");
+    const synchronicityLog = document.getElementById("synchronicity-log");
+    const lineageList = document.getElementById("lineage-list");
+    const altarList = document.getElementById("altar-list");
+    const diaryLog = document.getElementById("diary-log");
+    const mirrorLog = document.getElementById("mirror-log");
+    const witnessList = document.getElementById("witness-list");
+    const dreamSeedInput = document.getElementById("dream-seed-input");
+    const dreamLog = document.getElementById("dream-log");
+
+    let tracesInterval = null;
+    let avatarInterval = null;
+    const symbolicState = {
+      pantheon: null,
+      grimoire: null,
+      sigil: null,
+      relic: null,
+      cosmic: null,
+      multiverse: null,
+      synchronicity: null,
+      altar: null
+    };
+    const modeRouteMap = {
+      "activate-pantheon": { modeId: "pantheon_browser", hook: "on_invoke", system: "pantheon.norse.odin" },
+      "consult-grimoire": { modeId: "grimoire_viewer", hook: "on_consult", system: "grimoire.ars_notoria" },
+      "render-sigil": { modeId: "sigil_renderer", hook: "on_generate_geometry", system: "sigil.triadic_seed" },
+      "invoke-relic": { modeId: "relic_inventory", hook: "on_invoke", system: "relic.operator_compass" },
+      "consult-cosmic": { modeId: "cosmic_hud", hook: "on_consult", system: "archive.cosmic_mind.model_01" },
+      "simulate-branch": { modeId: "multiverse_viewer", hook: "on_simulate_branch", system: "multiverse.fork_alpha" },
+      "trigger-synchronicity": { modeId: "synchronicity_web", hook: "on_trigger_anomaly", system: "synchronicity.core" },
+      "render-altar-mode": { modeId: "altar_modes", hook: "on_render_altar_mode", system: "altar.neon_observatory" },
+      "mirror-reflect": { modeId: "sovereign_mirror_panel", hook: "on_consult", system: "life.sovereign_mirror" },
+      "build-memory-room": { modeId: "memory_palace_explorer", hook: "on_symbolic_interpretation", system: "life.memory_palace" }
+    };
+
+    function headers() {
+      const h = { "Content-Type": "application/json" };
+      if (approvalToggle.checked) {
+        h["X-Operator-Approval"] = "true";
+      }
+      return h;
+    }
+
+    function log(target, text, cls = "") {
+      const line = document.createElement("div");
+      line.className = "log-line " + cls;
+      line.textContent = text;
+      target.prepend(line);
+    }
+
+    function logShell(text, cls = "") {
+      const line = document.createElement("div");
+      line.className = "log-line " + cls;
+      line.textContent = text;
+      shellLog.prepend(line);
+    }
+
+    function validateModeRouting() {
+      const missingButtons = [];
+      Object.entries(modeRouteMap).forEach(([buttonId, route]) => {
+        const btn = document.getElementById(buttonId);
+        if (!btn) {
+          missingButtons.push(buttonId);
+          return;
+        }
+        btn.dataset.modeId = route.modeId;
+        btn.dataset.modeHook = route.hook;
+        btn.dataset.modeSystem = route.system;
+      });
+      if (missingButtons.length) {
+        log(agentsLog, `[routing] missing buttons: ${missingButtons.join(", ")}`, "bad");
+      } else {
+        log(agentsLog, "[routing] mode/button/hook mapping validated", "ok");
+      }
+    }
+
+    async function safeFetch(path, opts = {}) {
+      try {
+        const res = await fetch(API_BASE + path, { ...opts, headers: { ...(opts.headers || {}), ...headers() } });
+        if (!res.ok) throw new Error(res.status + " " + res.statusText);
+        return await res.json();
+      } catch (e) {
+        console.error("fetch error", path, e);
+        throw e;
+      }
+    }
+
+    async function loadAgents() {
+      agentsList.innerHTML = "";
+      try {
+        const data = await safeFetch("/v1/canonical/agents");
+        (data.agents || data || []).forEach(a => {
+          const row = document.createElement("div");
+          row.className = "row";
+          const label = document.createElement("span");
+          label.className = "label";
+          label.textContent = a.id || a.name || "agent";
+          const value = document.createElement("span");
+          value.className = "value";
+          value.textContent = (a.status || "unknown").toUpperCase();
+          if ((a.status || "").toLowerCase() === "healthy") value.classList.add("ok");
+          if ((a.status || "").toLowerCase() === "degraded") value.classList.add("bad");
+          row.append(label, value);
+          agentsList.appendChild(row);
+        });
+      } catch (e) {
+        log(agentsLog, "[agents] " + e.message, "bad");
+      }
+    }
+
+    async function loadGovernor() {
+      try {
+        const data = await safeFetch("/api/governor");
+        const lane = data.canonical_lane || data.lane || "v0.1";
+        const strict = data.canonical_lane?.strict_mode ?? data.strict_mode ?? false;
+        laneStatus.textContent = lane;
+        laneStatus.className = "badge ok";
+        strictStatus.textContent = strict ? "STRICT" : "PERMISSIVE";
+        strictStatus.className = "badge " + (strict ? "bad" : "ok");
+      } catch (e) {
+        laneStatus.textContent = "error";
+        laneStatus.className = "badge bad";
+        strictStatus.textContent = "error";
+        strictStatus.className = "badge bad";
+        log(agentsLog, "[governor] " + e.message, "bad");
+      }
+    }
+
+    async function loadTraces() {
+      try {
+        const data = await safeFetch("/v1/canonical/traces/recent");
+        tracesLog.innerHTML = "";
+        (data.traces || data || []).slice(0, 30).forEach(t => {
+          const cls = t.outcome === "success" ? "ok" : (t.outcome === "failure" ? "bad" : "accent");
+          log(tracesLog, `[${t.agent_id || t.agent}] ${t.event || t.type} :: ${t.outcome}`, cls);
+        });
+      } catch (e) {
+        log(tracesLog, "[traces] " + e.message, "bad");
+      }
+    }
+
+    async function loadMissions() {
+      missionsList.innerHTML = "";
+      try {
+        const data = await safeFetch("/v1/canonical/missions/templates");
+        (data.templates || data || []).forEach(m => {
+          const row = document.createElement("div");
+          row.className = "row";
+          const label = document.createElement("span");
+          label.className = "label";
+          label.textContent = m.id || m.name || "mission";
+          const value = document.createElement("span");
+          value.className = "value";
+          value.textContent = m.version || "v0.1";
+          row.append(label, value);
+          missionsList.appendChild(row);
+        });
+      } catch (e) {
+        log(missionsLog, "[missions] " + e.message, "bad");
+      }
+    }
+
+    async function loadProposals() {
+      proposalsList.innerHTML = "";
+      try {
+        const data = await safeFetch("/v1/nexusmon/proposals");
+        (data || []).slice().reverse().forEach(p => {
+          const row = document.createElement("div");
+          row.className = "row";
+          const label = document.createElement("span");
+          label.className = "label";
+          label.textContent = `${p.id} · ${p.type} · ${p.risk}`;
+          const value = document.createElement("span");
+          value.className = "value";
+          value.textContent = p.status.toUpperCase();
+          if (p.status === "pending") value.classList.add("accent");
+          if (p.status === "approved") value.classList.add("ok");
+          if (p.status === "rejected") value.classList.add("bad");
+          row.append(label, value);
+
+          row.addEventListener("click", async () => {
+            const choice = window.prompt(
+              `Proposal ${p.id}\n` +
+              `Type: ${p.type}\n` +
+              `Risk: ${p.risk}\n` +
+              `Title: ${p.title}\n` +
+              `Rationale: ${p.rationale}\n\n` +
+              "Type 'approve', 'reject', 'apply', or 'simulate' to act on this proposal."
+            );
+            if (!choice) return;
+            const c = choice.toLowerCase();
+            try {
+              if (c === "approve") {
+                await safeFetch(`/v1/nexusmon/proposals/${encodeURIComponent(p.id)}/approve`, {
+                  method: "POST",
+                  body: JSON.stringify({})
+                });
+              } else if (c === "reject") {
+                await safeFetch(`/v1/nexusmon/proposals/${encodeURIComponent(p.id)}/reject`, {
+                  method: "POST",
+                  body: JSON.stringify({})
+                });
+              } else if (c === "apply") {
+                await safeFetch(`/v1/nexusmon/proposals/${encodeURIComponent(p.id)}/apply`, {
+                  method: "POST",
+                  body: JSON.stringify({})
+                });
+              } else if (c === "simulate") {
+                const sim = await safeFetch(`/v1/nexusmon/proposals/${encodeURIComponent(p.id)}/simulate`);
+                const warnings = (sim.warnings || []).join("; ");
+                log(
+                  agentsLog,
+                  `[simulate ${p.id}] ${sim.summary} impacts=${(sim.impacts || []).join("; ")} warnings=${warnings || "none"}`,
+                  warnings ? "bad" : "ok"
+                );
+              }
+              await loadProposals();
+            } catch (e) {
+              log(agentsLog, `[proposal ${p.id}] ${e.message}`, "bad");
+            }
+          });
+
+          proposalsList.appendChild(row);
+        });
+      } catch (e) {
+        log(agentsLog, "[proposals] " + e.message, "bad");
+      }
+    }
+
+    async function draftCode(type, target) {
+      try {
+        await safeFetch("/v1/nexusmon/draft", {
+          method: "POST",
+          body: JSON.stringify({ draft_type: type, target })
+        });
+        log(draftLog, `Drafted ${type}: ${target}`, "ok");
+        await loadProposals();
+      } catch (e) {
+        log(draftLog, `[draft] ${e.message}`, "bad");
+      }
+    }
+
+    async function loadScores() {
+      scoresList.innerHTML = "";
+      try {
+        const data = await safeFetch("/v1/nexusmon/proposals/scores");
+        Object.entries(data).forEach(([pid, score]) => {
+          const row = document.createElement("div");
+          row.className = "row";
+          const label = document.createElement("span");
+          label.className = "label";
+          label.textContent = `${pid} · ${score.band}`;
+          const value = document.createElement("span");
+          value.className = "value";
+          value.textContent = (score.total * 100).toFixed(1) + "%";
+          row.append(label, value);
+          scoresList.appendChild(row);
+        });
+      } catch (e) {
+        log(agentsLog, "[scores] " + e.message, "bad");
+      }
+    }
+
+    async function loadCouncil() {
+      councilList.innerHTML = "";
+      try {
+        const data = await safeFetch("/v1/nexusmon/proposals/council");
+        Object.entries(data).forEach(([pid, decision]) => {
+          const row = document.createElement("div");
+          row.className = "row";
+          const label = document.createElement("span");
+          label.className = "label";
+          label.textContent = `${pid} · ${decision.consensus}`;
+          const value = document.createElement("span");
+          value.className = "value";
+          value.textContent = decision.summary;
+          row.append(label, value);
+          councilList.appendChild(row);
+        });
+      } catch (e) {
+        log(agentsLog, "[council] " + e.message, "bad");
+      }
+    }
+
+    async function loadPlans() {
+      plansList.innerHTML = "";
+      try {
+        const data = await safeFetch("/v1/nexusmon/plans");
+        (data || []).forEach(p => {
+          const row = document.createElement("div");
+          row.className = "row";
+          const label = document.createElement("span");
+          label.className = "label";
+          label.textContent = `${p.id} · ${p.goal}`;
+          const value = document.createElement("span");
+          value.className = "value";
+          value.textContent = `${p.steps.length} steps`;
+          row.append(label, value);
+          plansList.appendChild(row);
+        });
+      } catch (e) {
+        log(agentsLog, "[plans] " + e.message, "bad");
+      }
+    }
+
+    async function loadRefactorHints() {
+      refactorList.innerHTML = "";
+      try {
+        const data = await safeFetch("/v1/nexusmon/refactor/hints");
+        (data || []).forEach(h => {
+          const row = document.createElement("div");
+          row.className = "row";
+          const label = document.createElement("span");
+          label.className = "label";
+          label.textContent = `${h.target} · ${h.kind}`;
+          const value = document.createElement("span");
+          value.className = "value";
+          value.textContent = h.suggestion;
+          row.append(label, value);
+          refactorList.appendChild(row);
+        });
+      } catch (e) {
+        log(agentsLog, "[refactor] " + e.message, "bad");
+      }
+    }
+
+    function symbolicPayload(extra = {}) {
+      return {
+        ...extra,
+        ritual_confirmation: {
+          confirmed: true,
+          note: "operator-confirmed"
+        }
+      };
+    }
+
+    function renderSymbolicEntry(target, entry) {
+      const row = document.createElement("div");
+      row.className = "row";
+      const label = document.createElement("span");
+      label.className = "label";
+      label.textContent = entry.name || entry.id || entry.entry_id;
+      const value = document.createElement("span");
+      value.className = "value";
+      value.textContent = entry.symbolic_role || entry.entry_id || "symbolic";
+      row.append(label, value);
+      target.appendChild(row);
+    }
+
+    async function loadFamilyEntries(family, target, stateKey) {
+      target.innerHTML = "";
+      const data = await safeFetch(`/v1/nexusmon/symbolic/families/${encodeURIComponent(family)}/entries`);
+      const entries = data.entries || [];
+      symbolicState[stateKey] = entries.length ? entries[0] : null;
+      entries.forEach(entry => renderSymbolicEntry(target, entry));
+      if (!entries.length) {
+        const row = document.createElement("div");
+        row.className = "row";
+        const label = document.createElement("span");
+        label.className = "label";
+        label.textContent = "No symbolic entries";
+        const value = document.createElement("span");
+        value.className = "value";
+        value.textContent = family;
+        row.append(label, value);
+        target.appendChild(row);
+      }
+    }
+
+    async function runSymbolicHook(endpoint, stateKey, context, targetLog) {
+      const entry = symbolicState[stateKey];
+      if (!entry) {
+        log(targetLog || agentsLog, `[symbolic] no ${stateKey} entry loaded`, "bad");
+        return;
+      }
+      try {
+        const payload = symbolicPayload({
+          family: entry.family,
+          entry_id: entry.entry_id,
+          context
+        });
+        const res = await safeFetch(endpoint, {
+          method: "POST",
+          body: JSON.stringify(payload)
+        });
+        const summary = res.result?.summary || "symbolic action complete";
+        log(targetLog || agentsLog, `[symbolic ${stateKey}] ${summary}`, "ok");
+      } catch (e) {
+        log(targetLog || agentsLog, `[symbolic ${stateKey}] ${e.message}`, "bad");
+      }
+    }
+
+    async function activateSymbolic(stateKey) {
+      const entry = symbolicState[stateKey];
+      if (!entry) {
+        log(agentsLog, `[activate] no ${stateKey} entry loaded`, "bad");
+        return;
+      }
+      try {
+        const data = await safeFetch(`/v1/nexusmon/symbolic/activate/${encodeURIComponent(entry.id)}`, {
+          method: "POST",
+          body: JSON.stringify(symbolicPayload({}))
+        });
+        log(agentsLog, `[activate] ${data.activated}`, "ok");
+      } catch (e) {
+        log(agentsLog, `[activate ${stateKey}] ${e.message}`, "bad");
+      }
+    }
+
+    async function loadPantheons() {
+      try {
+        await loadFamilyEntries("pantheons", pantheonList, "pantheon");
+      } catch (e) {
+        log(agentsLog, "[pantheons] " + e.message, "bad");
+      }
+    }
+
+    async function loadGrimoires() {
+      try {
+        await loadFamilyEntries("grimoires", grimoireList, "grimoire");
+      } catch (e) {
+        log(agentsLog, "[grimoires] " + e.message, "bad");
+      }
+    }
+
+    async function loadSigils() {
+      try {
+        const list = document.createElement("div");
+        list.className = "list";
+        await loadFamilyEntries("sigils", list, "sigil");
+        sigilLog.innerHTML = "";
+        list.querySelectorAll(".row").forEach(row => {
+          log(sigilLog, row.innerText, "accent");
+        });
+      } catch (e) {
+        log(sigilLog, "[sigils] " + e.message, "bad");
+      }
+    }
+
+    async function loadRelics() {
+      try {
+        await loadFamilyEntries("relics", relicList, "relic");
+      } catch (e) {
+        log(agentsLog, "[relics] " + e.message, "bad");
+      }
+    }
+
+    async function loadCosmicHud() {
+      cosmicList.innerHTML = "";
+      try {
+        const families = ["archives", "federation", "quantum"];
+        for (const family of families) {
+          const data = await safeFetch(`/v1/nexusmon/symbolic/families/${encodeURIComponent(family)}/entries`);
+          (data.entries || []).forEach(entry => {
+            renderSymbolicEntry(cosmicList, entry);
+            if (!symbolicState.cosmic) symbolicState.cosmic = entry;
+          });
+        }
+      } catch (e) {
+        log(agentsLog, "[cosmic] " + e.message, "bad");
+      }
+    }
+
+    async function loadMultiverse() {
+      try {
+        const data = await safeFetch("/v1/nexusmon/symbolic/families/multiverse/entries");
+        symbolicState.multiverse = (data.entries || [])[0] || null;
+        multiverseLog.innerHTML = "";
+        (data.entries || []).forEach(entry => {
+          log(multiverseLog, `${entry.id} :: ${entry.symbolic_role}`, "accent");
+        });
+      } catch (e) {
+        log(multiverseLog, "[multiverse] " + e.message, "bad");
+      }
+    }
+
+    async function loadSynchronicity() {
+      try {
+        const data = await safeFetch("/v1/nexusmon/symbolic/families/synchronicity");
+        symbolicState.synchronicity = {
+          family: "synchronicity",
+          entry_id: "manifest",
+          id: data.manifest.id
+        };
+        synchronicityLog.innerHTML = "";
+        log(synchronicityLog, data.manifest.name + " loaded", "accent");
+      } catch (e) {
+        log(synchronicityLog, "[synchronicity] " + e.message, "bad");
+      }
+    }
+
+    async function loadLineageTree() {
+      lineageList.innerHTML = "";
+      try {
+        const lineage = await safeFetch("/v1/nexusmon/symbolic/lineage");
+        const audit = await safeFetch("/v1/nexusmon/symbolic/audit");
+        (lineage.lineage || []).slice().reverse().slice(0, 10).forEach(item => {
+          const row = document.createElement("div");
+          row.className = "row";
+          const label = document.createElement("span");
+          label.className = "label";
+          label.textContent = item.action;
+          const value = document.createElement("span");
+          value.className = "value";
+          value.textContent = item.target;
+          row.append(label, value);
+          lineageList.appendChild(row);
+        });
+        (audit.audit || []).slice().reverse().slice(0, 5).forEach(item => {
+          const row = document.createElement("div");
+          row.className = "row";
+          const label = document.createElement("span");
+          label.className = "label";
+          label.textContent = item.event;
+          const value = document.createElement("span");
+          value.className = "value";
+          value.textContent = item.outcome;
+          row.append(label, value);
+          lineageList.appendChild(row);
+        });
+      } catch (e) {
+        log(agentsLog, "[lineage] " + e.message, "bad");
+      }
+    }
+
+    async function loadAltarModes() {
+      try {
+        await loadFamilyEntries("altar_modes", altarList, "altar");
+      } catch (e) {
+        log(agentsLog, "[altar] " + e.message, "bad");
+      }
+    }
+
+    async function writeDiaryEntry() {
+      try {
+        const data = await safeFetch("/v1/nexusmon/life/diary/tick", {
+          method: "POST",
+          body: JSON.stringify(symbolicPayload({
+            active_layers: ["symbolic", "life"],
+            routing_imbalance: "observed",
+            operator_actions: ["approval-toggle", "cockpit-refresh"],
+            anomalies: [],
+            optimization_goals: ["stability", "coherence"],
+            recent_missions: ["cockpit-runtime-sync"]
+          }))
+        });
+        log(diaryLog, `diary entry written: ${data.entry_path || "n/a"}`, "ok");
+        await loadWitness();
+      } catch (e) {
+        log(diaryLog, "[diary] " + e.message, "bad");
+      }
+    }
+
+    async function reflectSovereignMirror() {
+      try {
+        const data = await safeFetch("/v1/nexusmon/life/sovereign_mirror/reflect", {
+          method: "POST",
+          body: JSON.stringify(symbolicPayload({
+            approvals: 5,
+            rejections: 2,
+            rituals: 3,
+            cockpit_interactions: 12
+          }))
+        });
+        log(mirrorLog, data.summary || "mirror reflection complete", "accent");
+        await loadWitness();
+      } catch (e) {
+        log(mirrorLog, "[mirror] " + e.message, "bad");
+      }
+    }
+
+    async function loadWitness() {
+      witnessList.innerHTML = "";
+      try {
+        const data = await safeFetch("/v1/nexusmon/life/witness?limit=20");
+        (data.witness || []).slice().reverse().forEach(item => {
+          const row = document.createElement("div");
+          row.className = "row";
+          const label = document.createElement("span");
+          label.className = "label";
+          label.textContent = item.kind;
+          const value = document.createElement("span");
+          value.className = "value";
+          value.textContent = item.timestamp;
+          row.append(label, value);
+          witnessList.appendChild(row);
+        });
+      } catch (e) {
+        log(agentsLog, "[witness] " + e.message, "bad");
+      }
+    }
+
+    async function buildMemoryRoom() {
+      try {
+        const data = await safeFetch("/v1/nexusmon/life/memory_palace/build", {
+          method: "POST",
+          body: JSON.stringify(symbolicPayload({
+            mission_id: "cockpit-symbolic-sync",
+            archetypes: ["operator", "guardian"],
+            symbols: ["mirror", "sigil"]
+          }))
+        });
+        log(agentsLog, `[memory-palace] ${data.room_path || "room built"}`, "ok");
+        await loadWitness();
+      } catch (e) {
+        log(agentsLog, "[memory-palace] " + e.message, "bad");
+      }
+    }
+
+    async function runDreamSeed() {
+      const raw = dreamSeedInput.value.trim();
+      let seed = {};
+      if (raw) {
+        try {
+          seed = JSON.parse(raw);
+        } catch (e) {
+          log(dreamLog, "invalid JSON seed", "bad");
+          return;
+        }
+      }
+      try {
+        const data = await safeFetch("/v1/nexusmon/life/dream_seed/interpret", {
+          method: "POST",
+          body: JSON.stringify(symbolicPayload({
+            seed,
+            traditions: ["pantheons", "grimoires", "archives", "multiverse"]
+          }))
+        });
+        log(dreamLog, data.summary || "dream interpreted", "ok");
+        (data.proposals || []).forEach(p => {
+          log(dreamLog, `${p.type}:${p.title}`, "accent");
+        });
+        await loadWitness();
+      } catch (e) {
+        log(dreamLog, "[dream-seed] " + e.message, "bad");
+      }
+    }
+
+    async function runMissionTemplate(id) {
+      try {
+        log(missionsLog, `-> run template ${id}`, "accent");
+        const data = await safeFetch(`/v1/canonical/missions/templates/${encodeURIComponent(id)}/run`, {
+          method: "POST",
+          body: JSON.stringify({})
+        });
+        log(missionsLog, `OK mission ${id} trace=${data.trace_id || "n/a"}`, "ok");
+        await loadTraces();
+      } catch (e) {
+        log(missionsLog, `ERR mission ${id} ${e.message}`, "bad");
+      }
+    }
+
+    async function runAgent(agent) {
+      const path = `/v1/agents/${agent}/run`;
+      const payload = agent === "reality_gate"
+        ? { command: "echo", payload: { ping: "cockpit" } }
+        : agent === "mission_engine"
+        ? { command: "dry_run", payload: { template_id: "reality_gate_linear" } }
+        : { input: "ping from cockpit" };
+      try {
+        log(agentsLog, `-> run ${agent}`, "accent");
+        await safeFetch(path, {
+          method: "POST",
+          body: JSON.stringify(payload)
+        });
+        log(agentsLog, `OK ${agent}`, "ok");
+        await loadTraces();
+      } catch (e) {
+        log(agentsLog, `ERR ${agent} ${e.message}`, "bad");
+      }
+    }
+
+    async function loadAvatar() {
+      try {
+        const data = await safeFetch("/v1/nexusmon/avatar");
+        avatarSummary.innerHTML = "";
+        const fields = [
+          ["ID", data.id],
+          ["Phase", data.phase],
+          ["Mood", data.mood],
+          ["Strict-Mode", String(data.strict_mode)],
+          ["Operator Approval", String(data.operator_approval)],
+          ["Missions Observed", String(data.missions_observed)],
+          ["Agents Observed", String(data.agents_observed)],
+          ["Last Tick", data.last_tick || "never"]
+        ];
+        fields.forEach(([k, v]) => {
+          const row = document.createElement("div");
+          row.className = "row";
+          const l = document.createElement("span");
+          l.className = "label";
+          l.textContent = k;
+          const val = document.createElement("span");
+          val.className = "value";
+          val.textContent = v;
+          row.append(l, val);
+          avatarSummary.appendChild(row);
+        });
+      } catch (e) {
+        log(agentsLog, "[avatar] " + e.message, "bad");
+      }
+    }
+
+    async function tickNexusmon() {
+      try {
+        await safeFetch("/v1/nexusmon/tick", { method: "POST", body: JSON.stringify({}) });
+        await loadAvatar();
+      } catch (e) {
+        log(agentsLog, "[tick] " + e.message, "bad");
+      }
+    }
+
+    async function sendShell() {
+      const text = shellInput.value.trim();
+      if (!text) return;
+      logShell("you: " + text, "accent");
+      shellInput.value = "";
+      try {
+        const data = await safeFetch("/v1/nexusmon/shell", {
+          method: "POST",
+          body: JSON.stringify({ input: text })
+        });
+        logShell("nexusmon: " + data.reply, "ok");
+        await loadAvatar();
+      } catch (e) {
+        logShell("[error] " + e.message, "bad");
+      }
+    }
+
+    document.getElementById("refresh-traces").onclick = () => loadTraces();
+    document.getElementById("refresh-missions").onclick = () => loadMissions();
+    document.getElementById("refresh-governor").onclick = () => loadGovernor();
+    document.getElementById("refresh-proposals").onclick = () => loadProposals();
+    document.getElementById("refresh-scores").onclick = () => loadScores();
+    document.getElementById("refresh-council").onclick = () => loadCouncil();
+    document.getElementById("refresh-refactor").onclick = () => loadRefactorHints();
+    document.getElementById("run-reality-template").onclick = () => runMissionTemplate("reality_gate_linear");
+    document.getElementById("refresh-pantheons").onclick = () => loadPantheons();
+    document.getElementById("refresh-grimoires").onclick = () => loadGrimoires();
+    document.getElementById("refresh-sigils").onclick = () => loadSigils();
+    document.getElementById("refresh-relics").onclick = () => loadRelics();
+    document.getElementById("refresh-cosmic").onclick = () => loadCosmicHud();
+    document.getElementById("refresh-multiverse").onclick = () => loadMultiverse();
+    document.getElementById("refresh-synchronicity").onclick = () => loadSynchronicity();
+    document.getElementById("refresh-lineage").onclick = () => loadLineageTree();
+    document.getElementById("refresh-altar").onclick = () => loadAltarModes();
+    document.getElementById("activate-pantheon").onclick = () => activateSymbolic("pantheon");
+    document.getElementById("consult-grimoire").onclick = () =>
+      runSymbolicHook("/v1/nexusmon/symbolic/consult", "grimoire", "grimoire consult", agentsLog);
+    document.getElementById("render-sigil").onclick = () =>
+      runSymbolicHook("/v1/nexusmon/symbolic/geometry", "sigil", "geometry request", sigilLog);
+    document.getElementById("invoke-relic").onclick = () =>
+      runSymbolicHook("/v1/nexusmon/symbolic/invoke", "relic", "relic invoke", agentsLog);
+    document.getElementById("consult-cosmic").onclick = () =>
+      runSymbolicHook("/v1/nexusmon/symbolic/consult", "cosmic", "cosmic hud consult", agentsLog);
+    document.getElementById("simulate-branch").onclick = () =>
+      runSymbolicHook("/v1/nexusmon/symbolic/branch", "multiverse", "branch simulation", multiverseLog);
+    document.getElementById("trigger-synchronicity").onclick = () =>
+      runSymbolicHook("/v1/nexusmon/symbolic/anomaly", "synchronicity", "synchronicity weave", synchronicityLog);
+    document.getElementById("render-altar-mode").onclick = () =>
+      runSymbolicHook("/v1/nexusmon/symbolic/altar", "altar", "altar mode render", agentsLog);
+    document.getElementById("diary-tick").onclick = () => writeDiaryEntry();
+    document.getElementById("mirror-reflect").onclick = () => reflectSovereignMirror();
+    document.getElementById("refresh-witness").onclick = () => loadWitness();
+    document.getElementById("build-memory-room").onclick = () => buildMemoryRoom();
+    document.getElementById("run-dream-seed").onclick = () => runDreamSeed();
+    document.getElementById("create-plan").onclick = async () => {
+      await safeFetch("/v1/nexusmon/plans", { method: "POST", body: JSON.stringify({}) });
+      await loadPlans();
+    };
+    document.getElementById("realize-plans").onclick = async () => {
+      const data = await safeFetch("/v1/nexusmon/plans");
+      for (const p of data || []) {
+        await safeFetch(`/v1/nexusmon/plans/${encodeURIComponent(p.id)}/realize`, {
+          method: "POST",
+          body: JSON.stringify({})
+        });
+      }
+      await loadProposals();
+      await loadPlans();
+    };
+
+    document.querySelectorAll(".run-agent").forEach(btn => {
+      btn.addEventListener("click", () => runAgent(btn.dataset.agent));
+    });
+    document.querySelectorAll(".draft-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        draftCode(btn.dataset.type, btn.dataset.target);
+      });
+    });
+
+    document.getElementById("auto-traces").onclick = (e) => {
+      if (tracesInterval) {
+        clearInterval(tracesInterval);
+        tracesInterval = null;
+        e.target.textContent = "Auto Stream";
+      } else {
+        tracesInterval = setInterval(loadTraces, 3000);
+        e.target.textContent = "Stop Stream";
+      }
+    };
+
+    document.getElementById("avatar-refresh").onclick = () => loadAvatar();
+    document.getElementById("avatar-auto").onclick = (e) => {
+      if (avatarInterval) {
+        clearInterval(avatarInterval);
+        avatarInterval = null;
+        e.target.textContent = "Auto Tick";
+      } else {
+        avatarInterval = setInterval(tickNexusmon, 3000);
+        e.target.textContent = "Stop Auto";
+      }
+    };
+    document.getElementById("shell-send").onclick = () => sendShell();
+    shellInput.addEventListener("keydown", (ev) => {
+      if (ev.key === "Enter") sendShell();
+    });
+    dreamSeedInput.addEventListener("keydown", (ev) => {
+      if (ev.key === "Enter") runDreamSeed();
+    });
+
+    // Initial load
+    validateModeRouting();
+    loadAgents();
+    loadGovernor();
+    loadTraces();
+    loadMissions();
+    loadAvatar();
+    tickNexusmon();
+    loadProposals();
+    loadScores();
+    loadCouncil();
+    loadPlans();
+    loadRefactorHints();
+    loadPantheons();
+    loadGrimoires();
+    loadSigils();
+    loadRelics();
+    loadCosmicHud();
+    loadMultiverse();
+    loadSynchronicity();
+    loadLineageTree();
+    loadAltarModes();
+    loadWitness();
+  </script>
+</body>
+</html>

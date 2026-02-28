@@ -7,12 +7,22 @@
   "properties":{
     "id":{"type":"string","pattern":"^[a-z0-9_.-]+@[0-9]+\\.[0-9]+\\.[0-9]+$"},
     "version":{"type":"string","pattern":"^\\d+\\.\\d+\\.\\d+$"},
+    "description":{"type":"string"},
     "capabilities":{"type":"array","items":{"type":"string"}},
     "inputs":{"type":"object"},
     "outputs":{"type":"object"},
     "spawn_policy":{"type":"string","enum":["manual","auto","restricted"]},
     "constraints":{"type":"object"},
     "error_modes":{"type":"object"},
+    "limits":{
+      "type":"object",
+      "required":["max_depth","max_children"],
+      "properties":{
+        "max_depth":{"type":"integer","minimum":0},
+        "max_children":{"type":"integer","minimum":0}
+      },
+      "additionalProperties":false
+    },
     "feature_flags":{"type":"object"},
     "extensions":{"type":"object"}
   }

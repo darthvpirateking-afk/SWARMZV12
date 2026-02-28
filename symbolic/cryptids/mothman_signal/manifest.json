@@ -1,0 +1,42 @@
+﻿{
+    "id":  "cryptid.mothman_signal",
+    "name":  "Mothman Signal",
+    "origin":  "anomaly folklore index",
+    "symbolic_role":  "anomaly metaphor agent",
+    "domains":  [
+                    "anomaly",
+                    "warning motifs"
+                ],
+    "entities":  [
+                     "mothman",
+                     "bigfoot",
+                     "dragon"
+                 ],
+    "correspondences":  {
+                            "signal":  "uncertainty",
+                            "action":  "observe"
+                        },
+    "geometry":  {
+                     "points":  [
+
+                                ],
+                     "lines":  [
+
+                               ]
+                 },
+    "runtime_hooks":  {
+                          "on_invoke":  true,
+                          "on_consult":  true,
+                          "on_symbolic_interpretation":  true,
+                          "on_generate_geometry":  true,
+                          "on_trigger_anomaly":  true,
+                          "on_resolve_correspondence":  true,
+                          "on_render_altar_mode":  true,
+                          "on_simulate_branch":  true
+                      },
+    "cockpit_modes":  [
+                          "anomaly-view"
+                      ],
+    "operator_approval_required":  true
+}
+

@@ -1,0 +1,40 @@
+﻿{
+    "id":  "life.witness",
+    "name":  "Eternal Witness Log",
+    "origin":  "internal life systems",
+    "symbolic_role":  "immutable event ledger",
+    "domains":  [
+                    "audit",
+                    "immutability"
+                ],
+    "entities":  [
+                     "witness_ledger"
+                 ],
+    "correspondences":  {
+                            "write":  "append-only",
+                            "delete":  "forbidden"
+                        },
+    "geometry":  {
+                     "points":  [
+
+                                ],
+                     "lines":  [
+
+                               ]
+                 },
+    "runtime_hooks":  {
+                          "on_render_altar_mode":  false,
+                          "on_resolve_correspondence":  false,
+                          "on_simulate_branch":  false,
+                          "on_generate_geometry":  false,
+                          "on_consult":  false,
+                          "on_invoke":  true,
+                          "on_symbolic_interpretation":  false,
+                          "on_trigger_anomaly":  false
+                      },
+    "cockpit_modes":  [
+                          "witness-log"
+                      ],
+    "operator_approval_required":  true
+}
+

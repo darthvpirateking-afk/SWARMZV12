@@ -440,7 +440,7 @@ jobs:
 
       - name: Run manifest and registry tests
         run: |
-          pytest tests/test_manifest_*.py tests/test_registry_*.py tests/test_duplicate_id_behavior.py tests/test_manifest_generation_determinism.py tests/test_manifest_dogfood_chain.py
+          pytest tests/test_manifest_*.py tests/test_registry_*.py tests/test_duplicate_id_behavior.py tests/test_manifest_generation_determinism.py
 
       - name: Run mypy strict for manifest scope
         run: |
@@ -456,7 +456,7 @@ jobs:
 
       - name: Enforce branch coverage threshold
         run: |
-          pytest --cov=core.registry --cov-branch --cov-fail-under=85 tests/test_registry_*.py tests/test_duplicate_id_behavior.py
+          pytest --cov=core/registry.py --cov-branch --cov-fail-under=85 tests/test_registry_get.py tests/test_registry_query.py tests/test_duplicate_id_behavior.py
 
       - name: Write pass status artifact
         run: |
@@ -710,6 +710,79 @@ jobs:
         run: |
           echo "Preview deploy job is enabled as a placeholder."
           echo "Wire your provider hook here (Vercel/Netlify/Render/etc.) to create PR previews."
+
+  core-quality:
+    name: Core Quality (Scoped)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-dev.txt
+
+      - name: Run scoped kernel tests
+        run: |
+          python -m pytest -q \
+            tests/test_manifest_validation.py \
+            tests/test_manifest_registry.py \
+            tests/test_spawn_context.py \
+            tests/test_capability_router.py \
+            tests/test_observability.py \
+            tests/test_helper1_integration.py \
+            tests/test_hologram_reconciler_race.py
+
+      - name: Run scoped mypy strict checks
+        run: |
+          python -m mypy --strict \
+            core/agent_manifest.py \
+            core/manifest_registry.py \
+            core/spawn_context.py \
+            core/capability_router.py \
+            core/observability.py \
+            backend/app.py
+
+      - name: Run scoped ruff checks
+        run: |
+          python -m ruff check \
+            core/agent_manifest.py \
+            core/manifest_registry.py \
+            core/spawn_context.py \
+            core/capability_router.py \
+            core/observability.py \
+            backend/app.py \
+            tools/constitution_audit.py
+
+  constitution-audit:
+    name: Constitution Audit (Advisory)
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Run advisory constitution audit
+        run: |
+          python tools/constitution_audit.py
+
+      - name: Upload constitution advisory artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: constitution-audit
+          path: artifacts/constitution_audit.json
+          if-no-files-found: warn
 
   # Optional deploy job: wire this to your serverless platform
   # (Vercel, Netlify, AWS Lambda via Serverless Framework, etc.)

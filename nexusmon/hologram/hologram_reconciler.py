@@ -2,6 +2,7 @@ import json
 import os
 import time
 import threading
+import uuid
 from collections import deque
 from pathlib import Path
 
@@ -129,16 +130,37 @@ class HologramReconciler:
                 "events": list(self.state["events"]),
                 "meta": dict(self.state["meta"])
             }
+        SNAPSHOT_DIR.mkdir(parents=True, exist_ok=True)
         ts = int(time.time())
-        path = SNAPSHOT_DIR / f"snapshot_{ts}.json"
-        path.write_text(json.dumps(snap))
-        snaps = sorted(SNAPSHOT_DIR.glob("snapshot_*.json"), key=lambda p: p.stat().st_mtime)
+        # Include a random suffix to avoid collisions under concurrent writers.
+        path = SNAPSHOT_DIR / f"snapshot_{ts}_{uuid.uuid4().hex[:8]}.json"
+        tmp_path = path.with_suffix(".tmp")
+        tmp_path.write_text(json.dumps(snap), encoding="utf-8")
+        os.replace(tmp_path, path)
+        snaps = []
+        for p in SNAPSHOT_DIR.glob("snapshot_*.json"):
+            try:
+                snaps.append((p.stat().st_mtime, p))
+            except (FileNotFoundError, PermissionError):
+                continue
+        snaps = [p for _mtime, p in sorted(snaps, key=lambda item: item[0])]
         while len(snaps) > 10:
-            snaps.pop(0).unlink()
+            oldest = snaps.pop(0)
+            try:
+                oldest.unlink()
+            except (FileNotFoundError, PermissionError):
+                # Concurrent cleanup/write races are non-fatal.
+                pass
         return snap
 
     def get_latest_snapshot(self):
-        snaps = sorted(SNAPSHOT_DIR.glob("snapshot_*.json"), key=lambda p: p.stat().st_mtime)
+        snaps = []
+        for p in SNAPSHOT_DIR.glob("snapshot_*.json"):
+            try:
+                snaps.append((p.stat().st_mtime, p))
+            except (FileNotFoundError, PermissionError):
+                continue
+        snaps = [p for _mtime, p in sorted(snaps, key=lambda item: item[0])]
         if not snaps:
             return self._snapshot()
         return json.loads(snaps[-1].read_text())

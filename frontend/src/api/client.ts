@@ -1,5 +1,7 @@
 const API_BASE_URL = (
-  import.meta.env.VITE_API_BASE_URL ?? "https://nexusmon.onrender.com"
+  import.meta.env.VITE_API_BASE_URL ??
+  import.meta.env.VITE_API_URL ??
+  "https://nexusmon.onrender.com"
 ).replace(/\/+$/, "");
 
 function buildHeaders(): HeadersInit {

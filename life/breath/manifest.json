@@ -1,0 +1,26 @@
+{
+  "id": "life.breath.core",
+  "name": "Breath Cycle Agent",
+  "origin": "internal_life",
+  "symbolic_role": "organism_breath_rhythm",
+  "domains": ["rhythm", "expansion", "contraction"],
+  "entities": [],
+  "correspondences": {
+    "inhale": "expand_parallelism",
+    "exhale": "prune_low_trust",
+    "cycle_seconds": "60-300"
+  },
+  "geometry": {},
+  "runtime_hooks": {
+    "on_invoke": true,
+    "on_consult": false,
+    "on_symbolic_interpretation": false,
+    "on_generate_geometry": false,
+    "on_trigger_anomaly": false,
+    "on_resolve_correspondence": false,
+    "on_render_altar_mode": false,
+    "on_simulate_branch": false
+  },
+  "cockpit_modes": [],
+  "operator_approval_required": true
+}

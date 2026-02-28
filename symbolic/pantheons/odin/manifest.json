@@ -1,0 +1,26 @@
+{
+  "id": "pantheon.norse.odin",
+  "name": "Odin",
+  "origin": "norse_mythology",
+  "symbolic_role": "wisdom_seeker",
+  "domains": ["knowledge", "sacrifice", "vision"],
+  "entities": ["odin"],
+  "correspondences": {
+    "element": "air",
+    "color": "deep_blue",
+    "animal": "raven"
+  },
+  "geometry": {},
+  "runtime_hooks": {
+    "on_invoke": true,
+    "on_consult": true,
+    "on_symbolic_interpretation": true,
+    "on_generate_geometry": false,
+    "on_trigger_anomaly": false,
+    "on_resolve_correspondence": true,
+    "on_render_altar_mode": true,
+    "on_simulate_branch": false
+  },
+  "cockpit_modes": ["pantheon_browser"],
+  "operator_approval_required": true
+}

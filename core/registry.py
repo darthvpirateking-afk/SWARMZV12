@@ -6,11 +6,10 @@ import json
 import os
 import subprocess
 import threading
-from collections.abc import Callable
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
-import jsonschema  # type: ignore[import-untyped]
+import jsonschema
 
 _SCHEMA_PATH = Path(__file__).resolve().parent.parent / "schemas" / "agent-manifest.v1.json"
 
@@ -30,11 +29,7 @@ class ManifestRegistry:
         errors = sorted(self._validator.iter_errors(manifest), key=lambda err: err.json_path)
         return [f"{source}: [{error.json_path}] {error.message}" for error in errors]
 
-    def load_all(
-        self,
-        path: str = "config/manifests/",
-        reject_duplicates: bool = True,
-    ) -> list[dict[str, Any]]:
+    def load_all(self, path: str = "config/manifests/", reject_duplicates: bool = True) -> list[dict[str, Any]]:
         manifests_path = Path(path)
         files = sorted(manifests_path.glob("*.json"))
         temp_by_id: dict[str, dict[str, Any]] = {}
@@ -49,10 +44,7 @@ class ManifestRegistry:
 
             manifest_id = str(data["id"])
             if manifest_id in temp_by_id:
-                duplicates.setdefault(
-                    manifest_id,
-                    [temp_source[manifest_id]],
-                ).append(file_path.name)
+                duplicates.setdefault(manifest_id, [temp_source[manifest_id]]).append(file_path.name)
                 continue
 
             temp_by_id[manifest_id] = data
@@ -158,7 +150,9 @@ class ManifestRegistry:
 
         if status != "pass":
             return False
-        return not (artifact_sha and current_sha and artifact_sha != current_sha)
+        if artifact_sha and current_sha and artifact_sha != current_sha:
+            return False
+        return True
 
     def apply_update(
         self,

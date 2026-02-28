@@ -1,0 +1,40 @@
+﻿{
+    "id":  "sigil.triadic_seed",
+    "name":  "Triadic Seed",
+    "origin":  "sacred geometry archive",
+    "symbolic_role":  "geometry generator profile",
+    "domains":  [
+                    "geometry",
+                    "symbol"
+                ],
+    "entities":  [
+                     "triad"
+                 ],
+    "correspondences":  {
+                            "shape":  "triangle",
+                            "intent":  "stability"
+                        },
+    "geometry":  {
+                     "points":  [
+
+                                ],
+                     "lines":  [
+
+                               ]
+                 },
+    "runtime_hooks":  {
+                          "on_invoke":  true,
+                          "on_consult":  true,
+                          "on_symbolic_interpretation":  true,
+                          "on_generate_geometry":  true,
+                          "on_trigger_anomaly":  true,
+                          "on_resolve_correspondence":  true,
+                          "on_render_altar_mode":  true,
+                          "on_simulate_branch":  true
+                      },
+    "cockpit_modes":  [
+                          "sigil-render"
+                      ],
+    "operator_approval_required":  true
+}
+

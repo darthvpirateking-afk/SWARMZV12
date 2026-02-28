@@ -1,0 +1,40 @@
+﻿{
+    "id":  "life.species.panspermia_seed_bank",
+    "name":  "Panspermia Seed Bank",
+    "origin":  "internal life systems",
+    "symbolic_role":  "genome export import",
+    "domains":  [
+                    "bundles",
+                    "migration"
+                ],
+    "entities":  [
+                     "seed_bank"
+                 ],
+    "correspondences":  {
+                            "export":  "signed",
+                            "import":  "approved"
+                        },
+    "geometry":  {
+                     "points":  [
+
+                                ],
+                     "lines":  [
+
+                               ]
+                 },
+    "runtime_hooks":  {
+                          "on_render_altar_mode":  false,
+                          "on_resolve_correspondence":  false,
+                          "on_simulate_branch":  true,
+                          "on_generate_geometry":  false,
+                          "on_consult":  false,
+                          "on_invoke":  false,
+                          "on_symbolic_interpretation":  true,
+                          "on_trigger_anomaly":  false
+                      },
+    "cockpit_modes":  [
+                          "species-lab"
+                      ],
+    "operator_approval_required":  true
+}
+

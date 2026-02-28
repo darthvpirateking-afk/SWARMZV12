@@ -6,6 +6,7 @@
   "outputs": {"result": {"type": "object", "required": true, "description": "Response payload"}},
   "spawn_policy": "restricted",
   "constraints": {"max_memory_mb": 256, "max_cpu_percent": 25, "max_spawn_depth": 1},
+  "limits": {"max_depth": 1, "max_children": 4},
   "error_modes": {"on_validation_failure": "reject", "on_dependency_missing": "defer", "on_runtime_exception": "fallback"},
   "feature_flags": {
     "enabled": true,

@@ -1,0 +1,24 @@
+{
+  "id": "life.awakening_loop.core",
+  "name": "Self-Referential Awakening Loop",
+  "origin": "internal_life",
+  "symbolic_role": "meta_evolution_reflector",
+  "domains": ["meta", "evolution", "self_analysis"],
+  "entities": [],
+  "correspondences": {
+    "cadence": "2-6_hours"
+  },
+  "geometry": {},
+  "runtime_hooks": {
+    "on_invoke": false,
+    "on_consult": true,
+    "on_symbolic_interpretation": true,
+    "on_generate_geometry": false,
+    "on_trigger_anomaly": false,
+    "on_resolve_correspondence": false,
+    "on_render_altar_mode": false,
+    "on_simulate_branch": false
+  },
+  "cockpit_modes": [],
+  "operator_approval_required": true
+}

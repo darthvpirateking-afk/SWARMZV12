@@ -5,8 +5,11 @@ export async function apiPost<T>(
   endpoint: string,
   payload: Record<string, unknown>
 ): Promise<T> {
-  // Use environment variable for API URL in production
-  const baseUrl = import.meta.env.VITE_API_URL || window.location.origin;
+  // Canonical API env with backward-compatible fallback.
+  const baseUrl =
+    import.meta.env.VITE_API_BASE_URL ||
+    import.meta.env.VITE_API_URL ||
+    window.location.origin;
   const url = new URL(endpoint, baseUrl);
 
   const response = await fetch(url.toString(), {

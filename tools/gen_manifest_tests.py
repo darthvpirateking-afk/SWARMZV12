@@ -24,10 +24,8 @@ import jsonschema
 
 def test_manifest_{sanitize_manifest_id(Path(manifest_file_name).stem)}() -> None:
     repo_root = Path(__file__).resolve().parent.parent
-    schema_path = repo_root / "schemas" / "agent-manifest.v1.json"
-    manifest_path = repo_root / "config" / "manifests" / "{manifest_file_name}"
-    schema = json.loads(schema_path.read_text(encoding="utf-8-sig"))
-    manifest = json.loads(manifest_path.read_text(encoding="utf-8-sig"))
+    schema = json.loads((repo_root / "schemas" / "agent-manifest.v1.json").read_text(encoding="utf-8-sig"))
+    manifest = json.loads((repo_root / "config" / "manifests" / "{manifest_file_name}").read_text(encoding="utf-8-sig"))
 
     jsonschema.validate(instance=manifest, schema=schema)
 
@@ -73,10 +71,7 @@ def main() -> int:
     if args.check:
         expected = set(generated.keys())
         for existing in sorted(output_dir.glob("test_manifest_*.py")):
-            if existing.name in expected:
-                continue
-            text = existing.read_text(encoding="utf-8")
-            if text.startswith('"""Auto-generated manifest validation test'):
+            if existing.name not in expected:
                 mismatches.append(existing.name)
 
     if args.check and mismatches:

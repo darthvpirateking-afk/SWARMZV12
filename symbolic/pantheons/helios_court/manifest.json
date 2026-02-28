@@ -1,0 +1,41 @@
+﻿{
+    "id":  "pantheon.helios_court",
+    "name":  "Helios Court",
+    "origin":  "mythic comparative archive",
+    "symbolic_role":  "archetype council",
+    "domains":  [
+                    "leadership",
+                    "insight"
+                ],
+    "entities":  [
+                     "solar_guide",
+                     "threshold_keeper"
+                 ],
+    "correspondences":  {
+                            "element":  "light",
+                            "color":  "gold"
+                        },
+    "geometry":  {
+                     "points":  [
+
+                                ],
+                     "lines":  [
+
+                               ]
+                 },
+    "runtime_hooks":  {
+                          "on_invoke":  true,
+                          "on_consult":  true,
+                          "on_symbolic_interpretation":  true,
+                          "on_generate_geometry":  true,
+                          "on_trigger_anomaly":  true,
+                          "on_resolve_correspondence":  true,
+                          "on_render_altar_mode":  true,
+                          "on_simulate_branch":  true
+                      },
+    "cockpit_modes":  [
+                          "altar-neon-court"
+                      ],
+    "operator_approval_required":  true
+}
+
