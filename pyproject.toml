@@ -16,27 +16,38 @@ include-package-data = false
 where = ["."]
 include = ["swarmz*", "swarmz_runtime*", "swarmz_app*", "kernel_runtime*", "addons*"]
 exclude = [
-	"swarmz-mobile*",
-	"*.node_modules*",
-	"node_modules*",
-	"tests*",
-	"build*",
-	"dist*",
-	"_backup*"
+  "swarmz-mobile*",
+  "*.node_modules*",
+  "node_modules*",
+  "tests*",
+  "build*",
+  "dist*",
+  "_backup*"
 ]
+
+[tool.mypy]
+strict = true
+python_version = "3.11"
+exclude = ["tests/"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.coverage.run]
+branch = true
+source = ["core"]
+
+[tool.coverage.report]
+fail_under = 85
+show_missing = true
 
 [tool.ruff]
-extend-exclude = ["tools/vscode-scaffold-bot/templates"]
+target-version = "py311"
+line-length = 100
 
 [tool.ruff.lint]
-ignore = [
-    "E402",  # module level import not at top of file
-    "E722",  # bare except
-    "E731",  # lambda assignment
-    "E741",  # ambiguous variable name
-    "F821",  # undefined name (many false positives from dynamic patterns)
-    "F841",  # local variable assigned but never used
-]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+ignore = []
 
 [tool.black]
 extend-exclude = '''

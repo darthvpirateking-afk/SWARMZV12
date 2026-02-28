@@ -409,6 +409,96 @@ jobs:
         run: |
           npm --prefix apps/gate-link run typecheck
 
+  manifest-gates:
+    name: Manifest Gates
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-dev.txt
+
+      - name: Ensure artifacts directory
+        run: |
+          mkdir -p artifacts
+
+      - name: Validate manifests against schema
+        run: |
+          pytest tests/manifest_validation.py
+
+      - name: Verify generated manifest tests are up to date
+        run: |
+          python tools/gen_manifest_tests.py --check
+
+      - name: Run manifest and registry tests
+        run: |
+          pytest tests/test_manifest_*.py tests/test_registry_*.py tests/test_duplicate_id_behavior.py tests/test_manifest_generation_determinism.py tests/test_manifest_dogfood_chain.py
+
+      - name: Run mypy strict for manifest scope
+        run: |
+          mypy --strict core/registry.py tools/gen_manifest_tests.py
+
+      - name: Run ruff for manifest scope
+        run: |
+          ruff check core/registry.py tools/gen_manifest_tests.py tests/manifest_validation.py tests/test_manifest_*.py
+
+      - name: Run flake8 for manifest scope
+        run: |
+          flake8 --max-line-length=100 core/registry.py tools/gen_manifest_tests.py tests/manifest_validation.py tests/test_manifest_*.py
+
+      - name: Enforce branch coverage threshold
+        run: |
+          pytest --cov=core.registry --cov-branch --cov-fail-under=85 tests/test_registry_*.py tests/test_duplicate_id_behavior.py
+
+      - name: Write pass status artifact
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from datetime import datetime, timezone
+
+          payload = {
+              "sha": os.getenv("GITHUB_SHA", ""),
+              "status": "pass",
+              "timestamp": datetime.now(timezone.utc).isoformat(),
+          }
+          with open("artifacts/manifest-validation-status.json", "w", encoding="utf-8") as f:
+              json.dump(payload, f, indent=2)
+          PY
+
+      - name: Write fail status artifact
+        if: failure()
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from datetime import datetime, timezone
+
+          payload = {
+              "sha": os.getenv("GITHUB_SHA", ""),
+              "status": "fail",
+              "timestamp": datetime.now(timezone.utc).isoformat(),
+          }
+          with open("artifacts/manifest-validation-status.json", "w", encoding="utf-8") as f:
+              json.dump(payload, f, indent=2)
+          PY
+
+      - name: Upload manifest validation artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: manifest-validation-status
+          path: artifacts/manifest-validation-status.json
+          if-no-files-found: error
+
   tests:
     name: Tests
     runs-on: ubuntu-latest
