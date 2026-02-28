@@ -121,3 +121,6 @@ website/public/llms.txt
 /_home.html
 /workspace_file_manifest.txt
 /key.txt
+FULL_PATH_LIST.txt
+FULL_READ_MANIFEST.csv
+*.bundle
