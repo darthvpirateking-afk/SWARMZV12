@@ -6,7 +6,13 @@ export default defineConfig({
   server: {
     port: 5173,
     proxy: {
-      '/hologram': {
+      '/v1/canonical': {
+        target: 'http://localhost:8000',
+        ws: true,
+        changeOrigin: true,
+        secure: false,
+      },
+      '/v1': {
         target: 'http://localhost:8000',
         ws: true,
         changeOrigin: true,

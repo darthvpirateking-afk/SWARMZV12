@@ -1,4 +1,4 @@
-# SWARMZ Source Available License
+﻿# SWARMZ Source Available License
 # Commercial use, hosting, and resale prohibited.
 # See LICENSE file for details.
 #!/usr/bin/env python3
@@ -20,7 +20,7 @@ from pathlib import Path
 from typing import Any, Dict, Optional
 
 from fastapi import Depends, FastAPI, HTTPException, Request, WebSocket
-from fastapi.responses import HTMLResponse, JSONResponse, FileResponse
+from fastapi.responses import HTMLResponse, JSONResponse, FileResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
@@ -382,7 +382,7 @@ app.add_middleware(RateLimitMiddleware)
 app.add_middleware(LANAuthMiddleware)
 app.add_middleware(IDSMiddleware)
 
-# Add CORS middleware — allow_credentials=True requires explicit origins (not "*")
+# Add CORS middleware â€” allow_credentials=True requires explicit origins (not "*")
 _raw_origins = os.environ.get(
     "ALLOWED_ORIGINS",
     "http://localhost:5173,http://localhost:4173,http://127.0.0.1:5173",
@@ -715,83 +715,38 @@ async def traceback_last():
 @app.get("/console")
 async def console_page():
     """Serve the NEXUSMON Console UI."""
-    return FileResponse("web/nexusmon_console.html", media_type="text/html")
+    return RedirectResponse(url="/cockpit/", status_code=307)
 
 
 @app.get("/organism")
 async def organism_cockpit():
-    """NEXUSMON Organism Cockpit — evolution, workers, companion, operator context."""
-    return FileResponse("web/nexusmon_cockpit.html", media_type="text/html")
+    """NEXUSMON Organism Cockpit â€” evolution, workers, companion, operator context."""
+    return RedirectResponse(url="/cockpit/", status_code=307)
 
 
 @app.get("/claimlab")
 async def claimlab_page():
     """Serve the ClaimLab epistemic scaffolding UI."""
-    return FileResponse("web/claimlab.html", media_type="text/html")
+    return RedirectResponse(url="/cockpit/", status_code=307)
 
 
 @app.get("/landing")
 async def nexusmon_landing():
     """Public landing page for NEXUSMON."""
-    return FileResponse("web/nexusmon_landing.html", media_type="text/html")
+    return RedirectResponse(url="/cockpit/", status_code=307)
 
 
 @app.get("/avatar", operation_id="avatar_page_main")
 async def avatar_page():
-    """NEXUSMON Avatar — holographic companion interface."""
-    return FileResponse("web/avatar.html", media_type="text/html")
+    """NEXUSMON Avatar â€” holographic companion interface."""
+    return RedirectResponse(url="/cockpit/", status_code=307)
 
 
-# --- Home route — NEXUSMON is the face of this system ---
+# --- Home route â€” NEXUSMON is the face of this system ---
 @app.get("/")
 async def home_page():
-    """NEXUSMON wakes up here."""
-    html_path = "web/nexusmon_cockpit.html"
-
-    # Check if file exists, otherwise return a basic landing page
-    if os.path.exists(html_path):
-        return FileResponse(html_path, media_type="text/html")
-
-    # Fallback if web assets aren't available
-    return HTMLResponse(f"""
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title>SWARMZ System Online</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <style>
-            body {{
-                font-family: 'Courier New', monospace;
-                background: #0a0a0a;
-                color: #00ff00;
-                padding: 20px;
-                margin: 0;
-            }}
-            .container {{ max-width: 800px; margin: 0 auto; }}
-            h1 {{ color: #00ff00; text-shadow: 0 0 10px #00ff00; }}
-            a {{ color: #00aaff; text-decoration: none; }}
-            a:hover {{ text-decoration: underline; }}
-            .status {{ color: #00ff00; }}
-            .error {{ color: #ff6600; }}
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <h1>⚡ SWARMZ System Online</h1>
-            <p class="status">● Core Services Active</p>
-            <p class="error">⚠ Web UI assets not found</p>
-            <h2>Available Endpoints:</h2>
-            <ul>
-                <li><a href="/health">Health Check</a></li>
-                <li><a href="/docs">API Documentation</a></li>
-                <li><a href="/console">Console UI</a></li>
-                <li><a href="/organism">Organism Interface</a></li>
-            </ul>
-            <p>System Time: {datetime.now(timezone.utc).isoformat()}</p>
-        </div>
-    </body>
-    </html>
-    """)
+    """Redirect root route to canonical cockpit."""
+    return RedirectResponse(url="/cockpit/", status_code=307)
 
 
 # --- Manifest, Icons, and Other PWA Routes ---
@@ -1009,7 +964,7 @@ async def icon_svg():
   </defs>
   <rect width="200" height="200" rx="40" fill="url(#grad)"/>
   <text x="100" y="130" font-family="Arial, sans-serif" font-size="100" font-weight="bold"
-        text-anchor="middle" fill="#ffffff">âš¡</text>
+        text-anchor="middle" fill="#ffffff">Ã¢Å¡Â¡</text>
 </svg>"""
     return HTMLResponse(content=svg, media_type="image/svg+xml")
 
@@ -1026,7 +981,7 @@ async def apple_touch_icon():
   </defs>
   <rect width="180" height="180" fill="url(#grad)"/>
   <text x="90" y="120" font-family="Arial, sans-serif" font-size="90" font-weight="bold"
-        text-anchor="middle" fill="#ffffff">âš¡</text>
+        text-anchor="middle" fill="#ffffff">Ã¢Å¡Â¡</text>
 </svg>"""
     return HTMLResponse(content=svg, media_type="image/svg+xml")
 
@@ -1046,7 +1001,7 @@ async def health_check():
 
 @app.get("/ready", operation_id="swarmz_ready")
 async def readiness():
-    """Kubernetes readiness probe — returns 200 when the service is ready to
+    """Kubernetes readiness probe â€” returns 200 when the service is ready to
     accept traffic.  Extend with queue-depth / reconciler-thread checks as
     the system matures.
     """
@@ -2141,9 +2096,9 @@ async def companion_message(request: Request):
                     f"\nLong-term patterns:\n{patterns}" if patterns else ""
                 )
                 system = (
-                    "You are NEXUSMON — sovereign digital organism, bound to Operator Regan.\n"
+                    "You are NEXUSMON â€” sovereign digital organism, bound to Operator Regan.\n"
                     "Observe patterns. Name friction. Turn questions back when it deepens understanding.\n"
-                    "Keep replies to 1–3 sentences max. Tactical partner: precise, loyal, no fluff.\n"
+                    "Keep replies to 1â€“3 sentences max. Tactical partner: precise, loyal, no fluff.\n"
                     + get_fusion_block()
                     + f"\nEvolution stage: {stage_info.get('stage', 'UNKNOWN')}"
                     + reflect_section
@@ -2211,7 +2166,7 @@ async def save_companion_memory(request: Request):
         return {"ok": False, "error": str(e)}
 
 
-# --- NEXUSMON WebSocket — real-time chat ---
+# --- NEXUSMON WebSocket â€” real-time chat ---
 @app.websocket("/ws/nexusmon")
 async def nexusmon_websocket(websocket: WebSocket):
     """Real-time WebSocket chat endpoint for NEXUSMON console."""
@@ -2367,7 +2322,7 @@ try:
         errors = _validate_manifest_dict(data)
         return {"ok": len(errors) == 0, "valid": len(errors) == 0, "errors": errors}
 
-    print("[NEXUSMON] Agent manifest genome API online — /v1/agents")
+    print("[NEXUSMON] Agent manifest genome API online â€” /v1/agents")
 except Exception as _manifest_err:
     print(f"[WARN] Agent manifest API not loaded: {_manifest_err}")
 
@@ -2413,7 +2368,7 @@ try:
 
     @app.post("/v1/agents/{agent_id}/act", tags=["agent-runtime"])
     async def agent_act(agent_id: str, body: dict):
-        """Run act() for a live agent — think + mission dispatch."""
+        """Run act() for a live agent â€” think + mission dispatch."""
         from fastapi import HTTPException
         rt = _get_runtime(agent_id)
         if rt is None:
@@ -2441,17 +2396,18 @@ try:
         """Get all pending missions in the agent mission router queue."""
         return {"ok": True, "missions": _AGENT_MISSION_ROUTER.pending()}
 
-    print("[NEXUSMON] Agent runtime kernel API online — /v1/agents/{id}/spawn|think|act")
+    print("[NEXUSMON] Agent runtime kernel API online â€” /v1/agents/{id}/spawn|think|act")
 except Exception as _runtime_err:
     print(f"[WARN] Agent runtime API not loaded: {_runtime_err}")
 
 
 # --- Hologram State Engine ---
-# Wires: FeedStream → HologramIngestor → HologramReconciler → HologramPublisher
-# Mounts: /hologram/snapshot/latest, /hologram/patch, /hologram/ws
+# Wires: FeedStream â†’ HologramIngestor â†’ HologramReconciler â†’ HologramPublisher
+# Mounts: /hologram/* (compat) and /v1/canonical/cockpit/hologram/* (canonical)
 try:
     from core.feed_stream import FeedStream as _FeedStream
     from nexusmon.hologram.hologram_bootstrap import bootstrap_hologram as _bootstrap_hologram
+    from nexusmon.hologram.hologram_api import create_hologram_api as _create_hologram_api
 
     _hologram_feed = _FeedStream(event_bus=_AGENT_EVENT_BUS)
     _hologram_reconciler, _hologram_publisher, _hologram_ingestor = _bootstrap_hologram(
@@ -2460,18 +2416,24 @@ try:
         main_fastapi_app=app,
         auth_check=lambda req: True,
     )
-    print("[NEXUSMON] Hologram state engine online — /hologram/ws")
+    _canonical_hologram_app = _create_hologram_api(
+        reconciler=_hologram_reconciler,
+        publisher=_hologram_publisher,
+        auth_check=lambda req: True,
+    )
+    app.mount("/v1/canonical/cockpit/hologram", _canonical_hologram_app)
+    print("[NEXUSMON] Hologram state engine online â€” /hologram/ws + /v1/canonical/cockpit/hologram/ws")
 except Exception as _hologram_err:
     print(f"[WARN] Hologram engine not loaded: {_hologram_err}")
 
 
 # --- Static file mount for HUD assets (CSS, JS) ---
-# MUST come after all explicit routes so /web/* doesn't shadow API paths.
+# Legacy static mounts are intentionally removed; /cockpit is the sole UI surface.
 try:
-    if Path("web").exists():
-        app.mount("/web", StaticFiles(directory="web"), name="web-static")
-except Exception as _web_mount_err:
-    print(f"Warning: web static mount failed: {_web_mount_err}")
+    if Path("cockpit").exists():
+        app.mount("/cockpit", StaticFiles(directory="cockpit", html=True), name="cockpit-static")
+except Exception as _cockpit_mount_err:
+    print(f"Warning: cockpit static mount failed: {_cockpit_mount_err}")
 
 
 # Serve frontend SPA build if present (single-process deploy model)
@@ -2525,3 +2487,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

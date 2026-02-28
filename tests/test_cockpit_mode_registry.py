@@ -5,7 +5,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 MODE_REGISTRY = ROOT / "cockpit" / "modes" / "mode_registry.json"
-COCKPIT_HTML = ROOT / "ui" / "nexusmon-cockpit.html"
+CANONICAL_REGISTRY = ROOT / "cockpit" / "modes" / "registry.json"
 
 ALLOWED_HOOKS = {
     "on_invoke",
@@ -39,8 +39,16 @@ def test_mode_component_files_exist() -> None:
         assert mode_file.exists(), f"missing mode component: {mode_file}"
 
 
-def test_cockpit_buttons_match_mode_routes() -> None:
-    html = COCKPIT_HTML.read_text(encoding="utf-8-sig")
-    payload = json.loads(MODE_REGISTRY.read_text(encoding="utf-8-sig"))
-    for route in payload.get("routes", []):
-        assert f'id="{route["button_id"]}"' in html
+def test_canonical_registry_references_existing_modes() -> None:
+    assert CANONICAL_REGISTRY.exists()
+    payload = json.loads(CANONICAL_REGISTRY.read_text(encoding="utf-8-sig"))
+    modes = payload.get("modes", [])
+    assert isinstance(modes, list) and modes
+    for mode in modes:
+        assert set(mode.keys()) == {"id", "path"}
+        assert mode["id"]
+        assert mode["path"].startswith("cockpit/modes/")
+        assert mode["path"].endswith(".tsx")
+        mode_file = ROOT / mode["path"]
+        assert mode_file.exists(), f"registry path missing: {mode_file}"
+        assert mode_file.stem == mode["id"]

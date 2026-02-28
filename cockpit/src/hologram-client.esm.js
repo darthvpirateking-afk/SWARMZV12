@@ -10,8 +10,11 @@
  *   client.disconnect();
  */
 
-const DEFAULT_SNAPSHOT_URL = '/hologram/snapshot/latest';
-const DEFAULT_WS_URL = `${location.protocol === 'https:' ? 'wss' : 'ws'}://${location.host}/hologram/ws`;
+import { getCanonicalCockpitBridge } from './canonical_bridge.js';
+
+const CANONICAL_BRIDGE = getCanonicalCockpitBridge();
+const DEFAULT_SNAPSHOT_URL = CANONICAL_BRIDGE.cockpit.hologramSnapshot;
+const DEFAULT_WS_URL = CANONICAL_BRIDGE.cockpit.hologramWs;
 const RECONNECT_BASE_MS = 1000;
 const RECONNECT_MAX_MS = 30000;
 const RECONNECT_FACTOR = 2;
