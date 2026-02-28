@@ -88,4 +88,50 @@ class OperatorLink:
                 "current_form": self.avatar_matrix.current_form,
             }
 
+        if upper.startswith("SUMMON "):
+            summon_id = cmd.split(" ", 1)[1].strip()
+            if not summon_id:
+                return {"ok": False, "error": "summon id required"}
+            summon_result = self.avatar_matrix.summons.spawn(summon_id)
+            return {
+                "ok": bool(summon_result.get("ok")),
+                "command": f"SUMMON {summon_id}",
+                "executed": bool(summon_result.get("executed")),
+                "summon_result": summon_result,
+                "current_form": self.avatar_matrix.current_form,
+            }
+
+        if upper.startswith("DISMISS "):
+            summon_id = cmd.split(" ", 1)[1].strip()
+            if not summon_id:
+                return {"ok": False, "error": "summon id required"}
+            summon_result = self.avatar_matrix.summons.dismiss(summon_id)
+            return {
+                "ok": bool(summon_result.get("ok")),
+                "command": f"DISMISS {summon_id}",
+                "executed": bool(summon_result.get("executed")),
+                "summon_result": summon_result,
+                "current_form": self.avatar_matrix.current_form,
+            }
+
+        if upper == "LEGION":
+            summon_result = self.avatar_matrix.summons.legion()
+            return {
+                "ok": bool(summon_result.get("ok")),
+                "command": upper,
+                "executed": bool(summon_result.get("executed")),
+                "summon_result": summon_result,
+                "current_form": self.avatar_matrix.current_form,
+            }
+
+        if upper in {"GUARD", "HUNT"}:
+            summon_result = self.avatar_matrix.summons.command_all(upper)
+            return {
+                "ok": bool(summon_result.get("ok")),
+                "command": upper,
+                "executed": bool(summon_result.get("executed")),
+                "summon_result": summon_result,
+                "current_form": self.avatar_matrix.current_form,
+            }
+
         return {"ok": False, "error": f"unsupported command '{cmd}'"}

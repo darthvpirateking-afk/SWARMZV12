@@ -875,7 +875,7 @@ def avatar_matrix_set_state(req: _AvatarStateRequest):
 
 @app.post("/v1/avatar/matrix/trigger", tags=["avatar-matrix"])
 def avatar_matrix_trigger(req: _AvatarTriggerRequest):
-    """Trigger avatar commands (ASCEND|SOVEREIGN|MONARCH|RETURN|CHIP <id>|BURST|CHAIN)."""
+    """Trigger avatar commands (ASCEND|SOVEREIGN|MONARCH|RETURN|CHIP <id>|BURST|CHAIN|SUMMON <id>|DISMISS <id>|LEGION|GUARD|HUNT)."""
     command = str(req.command or "").strip()
     if not command:
         raise HTTPException(status_code=400, detail="command is required")

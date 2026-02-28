@@ -386,7 +386,7 @@ class AvatarMatrixStateRequest(BaseModel):
 class AvatarMatrixTriggerRequest(BaseModel):
     command: str = Field(
         "",
-        description="Avatar trigger command (ASCEND|SOVEREIGN|MONARCH|RETURN|CHIP <id>|BURST|CHAIN)",
+        description="Avatar trigger command (ASCEND|SOVEREIGN|MONARCH|RETURN|CHIP <id>|BURST|CHAIN|SUMMON <id>|DISMISS <id>|LEGION|GUARD|HUNT)",
     )
 
 

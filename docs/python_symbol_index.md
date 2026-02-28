@@ -1,4 +1,4 @@
-﻿# Python Module Symbol Index
+# Python Module Symbol Index
 
 Generated: 2026-02-20T02:43:00.758979+00:00
 
@@ -1446,50 +1446,50 @@ Generated: 2026-02-20T02:43:00.758979+00:00
 - Constants (0): -
 - Exports (0): -
 
-### nexusmon.backend.core.avatar.avatar
-- Path: nexusmon/backend/core/avatar/avatar.py
+### nexusmon.backend.core.avatar_legacy.avatar
+- Path: nexusmon/backend/core/avatar_legacy/avatar.py
 - Functions (0): -
 - Classes (3): AvatarBrain, AvatarPresence, AvatarState
 - Constants (0): -
 - Exports (0): -
 
-### nexusmon.backend.core.avatar.brain
-- Path: nexusmon/backend/core/avatar/brain.py
+### nexusmon.backend.core.avatar_legacy.brain
+- Path: nexusmon/backend/core/avatar_legacy/brain.py
 - Functions (0): -
 - Classes (1): AvatarBrain
 - Constants (0): -
 - Exports (0): -
 
-### nexusmon.backend.core.avatar.controller
-- Path: nexusmon/backend/core/avatar/controller.py
+### nexusmon.backend.core.avatar_legacy.controller
+- Path: nexusmon/backend/core/avatar_legacy/controller.py
 - Functions (0): -
 - Classes (1): AvatarController
 - Constants (0): -
 - Exports (0): -
 
-### nexusmon.backend.core.avatar.models
-- Path: nexusmon/backend/core/avatar/models.py
+### nexusmon.backend.core.avatar_legacy.models
+- Path: nexusmon/backend/core/avatar_legacy/models.py
 - Functions (0): -
 - Classes (1): Avatar
 - Constants (0): -
 - Exports (0): -
 
-### nexusmon.backend.core.avatar.presence
-- Path: nexusmon/backend/core/avatar/presence.py
+### nexusmon.backend.core.avatar_legacy.presence
+- Path: nexusmon/backend/core/avatar_legacy/presence.py
 - Functions (0): -
 - Classes (1): AvatarPresence
 - Constants (0): -
 - Exports (0): -
 
-### nexusmon.backend.core.avatar.renderer
-- Path: nexusmon/backend/core/avatar/renderer.py
+### nexusmon.backend.core.avatar_legacy.renderer
+- Path: nexusmon/backend/core/avatar_legacy/renderer.py
 - Functions (0): -
 - Classes (1): AvatarRenderer
 - Constants (0): -
 - Exports (0): -
 
-### nexusmon.backend.core.avatar.state
-- Path: nexusmon/backend/core/avatar/state.py
+### nexusmon.backend.core.avatar_legacy.state
+- Path: nexusmon/backend/core/avatar_legacy/state.py
 - Functions (0): -
 - Classes (1): AvatarState
 - Constants (0): -

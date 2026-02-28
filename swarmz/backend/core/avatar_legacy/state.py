@@ -9,8 +9,8 @@ class AvatarState:
 
     def update_state(self, key, value):
         """Update the avatar state."""
-        self.state[key] = value
+        self.avatar_form[key] = value
 
     def get_state(self):
         """Retrieve the current state."""
-        return self.state
+        return self.avatar_form

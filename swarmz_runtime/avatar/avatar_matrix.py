@@ -31,12 +31,7 @@ from swarmz_runtime.avatar.evolution_controller import (
 )
 from swarmz_runtime.avatar.forms.avatar_monarch import AvatarMonarch
 from swarmz_runtime.avatar.operator_link import OperatorLink
-from swarmz_runtime.avatar.summons.monarch import (
-    ShadowArcher,
-    ShadowColossus,
-    ShadowKnight,
-    ShadowMage,
-)
+from swarmz_runtime.avatar.summons.summon_engine import SummonEngine, SummonWitnessLogger
 
 AVATAR_VARIANTS: dict[str, tuple[str, str]] = {
     "omega": ("AvatarOmega", "Standard SWARMZ avatar"),
@@ -80,11 +75,12 @@ class AvatarMatrix:
         self.monarch_form = AvatarMonarch()
         self._voice_lines = self._load_voice_lines()
         self._monarch_profile = self._load_monarch_profile()
+        self.summons = SummonEngine(avatar=self, witness=SummonWitnessLogger())
         self._monarch_summons = [
-            ShadowKnight(),
-            ShadowArcher(),
-            ShadowMage(),
-            ShadowColossus(),
+            self.summons.registry["ShadowKnight"],
+            self.summons.registry["ShadowArcher"],
+            self.summons.registry["ShadowMage"],
+            self.summons.registry["ShadowColossus"],
         ]
         self.battle_chip_engine = BattleChipEngine(
             avatar=self,
@@ -109,16 +105,17 @@ class AvatarMatrix:
         return data if isinstance(data, dict) else {}
 
     def _active_summons(self) -> list[dict[str, str]]:
-        if self.current_form != "AvatarMonarch":
-            return []
-        return [summon.to_dict() for summon in self._monarch_summons]
+        return [summon.to_dict() for summon in self.summons.active_summons]
 
     def get_monarch_state(self) -> dict[str, Any]:
         active = self.current_form == "AvatarMonarch"
+        summons = self._active_summons()
+        if active and not summons:
+            summons = [summon.to_dict() for summon in self._monarch_summons]
         return {
             "active": active,
             "profile": self._monarch_profile if active else {},
-            "summons": self._active_summons(),
+            "summons": summons if active else [],
         }
 
     def get_chip_state(self) -> dict[str, Any]:
@@ -201,9 +198,6 @@ class AvatarMatrix:
     def handle_operator_command(self, command: str) -> dict[str, Any]:
         result = self.operator_link.execute_command(command)
         self.current_form = self.evolution.current_form
-        if self.current_form == "AvatarMonarch":
-            for summon in self._monarch_summons:
-                summon.execute(command)
         return result
 
 

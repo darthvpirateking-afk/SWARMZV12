@@ -11,8 +11,11 @@ type EvolutionState = {
 
 type SummonState = {
   id: string;
+  name?: string;
   tier: string;
   aura: string;
+  form_required?: string;
+  stats?: Record<string, number>;
   last_command?: string;
 };
 
@@ -98,6 +101,7 @@ export default function AvatarMode() {
   return (
     <section data-mode-id="avatar" aria-label="avatar">
       <h3>Sovereign Avatar</h3>
+      <img src="/assets/my-avatar.png" alt="Sovereign Avatar" style={{ width: 96, height: 96, borderRadius: "50%" }} />
       {error && <p>status error: {error}</p>}
       {!error && !evolution && <p>loading avatar state...</p>}
 
@@ -127,7 +131,9 @@ export default function AvatarMode() {
           <ul>
             {summons.map((summon) => (
               <li key={summon.id}>
-                {summon.id} | tier={summon.tier} | aura={summon.aura}
+                {summon.id} | tier={summon.tier} | aura={summon.aura} | requires=
+                {summon.form_required ?? "AvatarOmega"} | stats=
+                {summon.stats ? JSON.stringify(summon.stats) : "{}"}
               </li>
             ))}
           </ul>

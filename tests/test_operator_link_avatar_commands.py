@@ -61,3 +61,26 @@ def test_unknown_command_is_rejected() -> None:
     matrix = AvatarMatrix("TEST_OPERATOR")
     result = matrix.handle_operator_command("NOT_A_REAL_COMMAND")
     assert result["ok"] is False
+
+
+def test_summon_commands_route_through_operator_link() -> None:
+    matrix = AvatarMatrix("TEST_OPERATOR")
+    _force_rank(matrix, "Sovereign")
+    matrix.handle_operator_command("SOVEREIGN")
+    matrix.handle_operator_command("MONARCH")
+
+    summon = matrix.handle_operator_command("SUMMON ShadowKnight")
+    assert summon["ok"] is True
+    assert summon["executed"] is True
+
+    guard = matrix.handle_operator_command("GUARD")
+    assert guard["ok"] is True
+
+    hunt = matrix.handle_operator_command("HUNT")
+    assert hunt["ok"] is True
+
+    legion = matrix.handle_operator_command("LEGION")
+    assert legion["ok"] is True
+
+    dismiss = matrix.handle_operator_command("DISMISS ShadowKnight")
+    assert dismiss["ok"] is True
