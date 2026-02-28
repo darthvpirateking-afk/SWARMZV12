@@ -124,3 +124,6 @@ website/public/llms.txt
 FULL_PATH_LIST.txt
 FULL_READ_MANIFEST.csv
 *.bundle
+FULL_PATH_LIST.txt
+FULL_READ_MANIFEST.csv
+*.bundle
