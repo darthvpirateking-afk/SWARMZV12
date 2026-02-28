@@ -1,0 +1,15 @@
+{
+  "id": "helper1@0.1.0",
+  "version": "0.1.0",
+  "capabilities": ["data.read", "agent.introspect"],
+  "inputs": {"query": {"type": "string", "required": true, "description": "Task query"}},
+  "outputs": {"result": {"type": "object", "required": true, "description": "Response payload"}},
+  "spawn_policy": "restricted",
+  "constraints": {"max_memory_mb": 256, "max_cpu_percent": 25, "max_spawn_depth": 1},
+  "error_modes": {"on_validation_failure": "reject", "on_dependency_missing": "defer", "on_runtime_exception": "fallback"},
+  "feature_flags": {
+    "enabled": true,
+    "rollout_policy": {"strategy": "percentage", "percentage": 100, "segments": ["internal"]}
+  },
+  "extensions": {"legacy_alias": "helper1"}
+}

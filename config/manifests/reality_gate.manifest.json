@@ -1,0 +1,15 @@
+{
+  "id": "reality_gate@0.1.0",
+  "version": "0.1.0",
+  "capabilities": ["gate.evaluate", "gate.enforce", "data.read"],
+  "inputs": {"assertion": {"type": "object", "required": true, "description": "Assertion payload"}},
+  "outputs": {"verdict": {"type": "string", "required": true, "description": "pass|fail|inconclusive"}},
+  "spawn_policy": "restricted",
+  "constraints": {"max_memory_mb": 128, "max_cpu_percent": 15, "max_spawn_depth": 0},
+  "error_modes": {"on_validation_failure": "reject", "on_dependency_missing": "reject", "on_runtime_exception": "fallback"},
+  "feature_flags": {
+    "enabled": true,
+    "rollout_policy": {"strategy": "percentage", "percentage": 100, "segments": ["internal"]}
+  },
+  "extensions": {"legacy_alias": "reality_gate"}
+}

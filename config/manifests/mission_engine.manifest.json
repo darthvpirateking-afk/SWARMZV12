@@ -1,0 +1,15 @@
+{
+  "id": "mission_engine@0.1.0",
+  "version": "0.1.0",
+  "capabilities": ["mission.execute", "mission.validate", "agent.spawn"],
+  "inputs": {"mission_id": {"type": "string", "required": true, "description": "Mission id"}},
+  "outputs": {"outcome": {"type": "string", "required": true, "description": "Mission outcome"}},
+  "spawn_policy": "restricted",
+  "constraints": {"max_memory_mb": 512, "max_cpu_percent": 50, "max_spawn_depth": 3},
+  "error_modes": {"on_validation_failure": "reject", "on_dependency_missing": "defer", "on_runtime_exception": "retry", "max_retries": 2},
+  "feature_flags": {
+    "enabled": true,
+    "rollout_policy": {"strategy": "percentage", "percentage": 100, "segments": ["internal"]}
+  },
+  "extensions": {"legacy_alias": "mission_engine"}
+}

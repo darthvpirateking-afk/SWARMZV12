@@ -1,0 +1,19 @@
+{
+  "$schema":"http://json-schema.org/draft-07/schema#",
+  "title":"Agent Manifest v1",
+  "type":"object",
+  "additionalProperties":false,
+  "required":["id","version","capabilities","inputs","outputs","spawn_policy","constraints","error_modes"],
+  "properties":{
+    "id":{"type":"string","pattern":"^[a-z0-9_.-]+@[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "version":{"type":"string","pattern":"^\\d+\\.\\d+\\.\\d+$"},
+    "capabilities":{"type":"array","items":{"type":"string"}},
+    "inputs":{"type":"object"},
+    "outputs":{"type":"object"},
+    "spawn_policy":{"type":"string","enum":["manual","auto","restricted"]},
+    "constraints":{"type":"object"},
+    "error_modes":{"type":"object"},
+    "feature_flags":{"type":"object"},
+    "extensions":{"type":"object"}
+  }
+}
