@@ -123,6 +123,20 @@ class EvolutionController:
     def can_enter_monarch_mode(self) -> bool:
         return self.current_form == "AvatarSovereign"
 
+    def enter_monarch_mode(self) -> bool:
+        if self.current_form != "AvatarSovereign":
+            return False
+        self.current_form = "AvatarMonarch"
+        self._log_evolution("AvatarMonarch")
+        return True
+
+    def exit_monarch_mode(self) -> bool:
+        if self.current_form == "AvatarMonarch":
+            self.current_form = "AvatarSovereign"
+            self._log_evolution("AvatarSovereign")
+            return True
+        return False
+
     def operator_trigger(self, command: str) -> bool:
         token = str(command or "").strip().upper()
         if token == "ASCEND":
@@ -130,10 +144,9 @@ class EvolutionController:
         if token == "SOVEREIGN":
             return self.unlock_sovereign()
         if token == "MONARCH":
-            if self.can_enter_monarch_mode():
-                self.current_form = "AvatarMonarch"
-                self._log_evolution("AvatarMonarch")
-                return True
+            return self.enter_monarch_mode()
+        if token == "RETURN":
+            return self.exit_monarch_mode()
         return False
 
     def _log_evolution(self, form: str) -> None:
