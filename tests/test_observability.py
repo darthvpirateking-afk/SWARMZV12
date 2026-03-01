@@ -112,7 +112,6 @@ from kernel_runtime.orchestrator import SwarmzOrchestrator
 
 
 class TestObservabilityEndpoints(unittest.TestCase):
-
     @patch("kernel_runtime.orchestrator.SwarmzOrchestrator.start_api")
     def test_api_reporting_endpoint(self, mock_start_api):
         # Mock the API start method

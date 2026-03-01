@@ -370,7 +370,7 @@ class _PgJobStore:
                 await conn.execute("SELECT pg_notify('vr_jobs', $1)", job["job_id"])
             else:
                 existing = await conn.fetchrow(
-                    "SELECT job_id FROM verification_jobs " "WHERE dedupe_key = $1",
+                    "SELECT job_id FROM verification_jobs WHERE dedupe_key = $1",
                     job["dedupe_key"],
                 )
                 job["job_id"] = str(existing["job_id"]) if existing else None
@@ -525,7 +525,7 @@ class _PgJobStore:
     async def stats(self) -> dict[str, int]:
         async with self._pool.acquire() as conn:
             rows = await conn.fetch(
-                "SELECT status, count(*) AS c FROM verification_jobs " "GROUP BY status"
+                "SELECT status, count(*) AS c FROM verification_jobs GROUP BY status"
             )
             return {r["status"]: r["c"] for r in rows}
 
@@ -1045,7 +1045,7 @@ def main():
     parser.add_argument(
         "--pg-dsn",
         default=os.environ.get("VR_PG_DSN"),
-        help="Postgres DSN (default: $VR_PG_DSN).  " "Omit for in-process mode.",
+        help="Postgres DSN (default: $VR_PG_DSN).  Omit for in-process mode.",
     )
     parser.add_argument(
         "--loop", action="store_true", help="Run continuously (in-process mode)"
@@ -1070,7 +1070,7 @@ def main():
         try:
             import asyncpg
         except ImportError:
-            sys.exit("asyncpg is required for Postgres mode: " "pip install asyncpg")
+            sys.exit("asyncpg is required for Postgres mode: pip install asyncpg")
 
         async def _run():
             pool = await asyncpg.create_pool(args.pg_dsn)

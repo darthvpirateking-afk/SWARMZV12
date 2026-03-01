@@ -1,10 +1,10 @@
-# SWARMZ UI — DAILY OPERATOR FLOW
+﻿# NEXUSMON UI — DAILY OPERATOR FLOW
 
 ## START SESSION
 🟢 Press “VERIFY STREAM”
 Runs: tools/verify_activity_stream.py  
 If green → continue  
-If red → restart SWARMZ
+If red → restart NEXUSMON
 
 ---
 
@@ -29,4 +29,4 @@ Choose ONE item → wrap with COMMIT_ACTION
 ---
 
 ## DONE
-Close laptop. SWARMZ learns from repetition.
+Close laptop. NEXUSMON learns from repetition.

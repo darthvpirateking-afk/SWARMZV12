@@ -1,4 +1,4 @@
-# Store Submission Notes
+﻿# Store Submission Notes
 
 Use this file to paste final values before submission.
 
@@ -18,4 +18,5 @@ Use this file to paste final values before submission.
 
 ## Known limitations
 - App wrapper requires backend URL online:
-  - `https://swarmzV10-.onrender.com`
+  - `https://nexusmonV10-.onrender.com`
+

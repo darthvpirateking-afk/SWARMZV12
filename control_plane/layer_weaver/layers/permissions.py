@@ -12,7 +12,6 @@ from .base import BaseLayer
 
 
 class PermissionsLayer(BaseLayer):
-
     name = "Permissions"
     variables = ["access_scope"]
 

@@ -1,4 +1,4 @@
-# SWARMZ Fusion Manifest
+﻿# NEXUSMON Fusion Manifest
 
 This manifest fuses prior operator directives, implemented runtime layers, and governance artifacts into one anchored system record.
 
@@ -20,9 +20,9 @@ This manifest fuses prior operator directives, implemented runtime layers, and g
 - Operational pipeline (blueprint -> offer -> checkout -> fulfillment -> ledger)
 
 ## Canonical Documents
-- [docs/SWARMZ_AGENT_BUILD_FINAL.md](docs/SWARMZ_AGENT_BUILD_FINAL.md)
-- [docs/SWARMZ_BUILD_MATRIX.md](docs/SWARMZ_BUILD_MATRIX.md)
-- [docs/SWARMZ_DUAL_MODE_CHARTER.md](docs/SWARMZ_DUAL_MODE_CHARTER.md)
+- [docs/NEXUSMON_AGENT_BUILD_FINAL.md](docs/NEXUSMON_AGENT_BUILD_FINAL.md)
+- [docs/NEXUSMON_BUILD_MATRIX.md](docs/NEXUSMON_BUILD_MATRIX.md)
+- [docs/NEXUSMON_DUAL_MODE_CHARTER.md](docs/NEXUSMON_DUAL_MODE_CHARTER.md)
 
 ## Registry Usage
 Register any major idea/spec before implementation:
@@ -41,4 +41,5 @@ Then verify continuity:
 - `GET /v1/fusion/summary`
 
 ## Operational Intent
-This fusion layer exists to preserve authorship lineage, lock idea history to implementation history, and prevent design drift across future SWARMZ evolution.
+This fusion layer exists to preserve authorship lineage, lock idea history to implementation history, and prevent design drift across future NEXUSMON evolution.
+

@@ -1,7 +1,7 @@
-# SWARMZ — Final Summary for Agent Build
+﻿# NEXUSMON — Final Summary for Agent Build
 
-## What SWARMZ Is
-SWARMZ is a governed, embodied, evolving AI runtime that runs real automations and business pipelines using:
+## What NEXUSMON Is
+NEXUSMON is a governed, embodied, evolving AI runtime that runs real automations and business pipelines using:
 - A Partner (visible, evolving operator assistant)
 - A Shadow (high-risk executor lane)
 - A Swarm of agents (Planner, Coder, Tester, Verifier, Governance, Memory, Reflection)
@@ -12,7 +12,7 @@ SWARMZ is a governed, embodied, evolving AI runtime that runs real automations a
 - A ledger spine (append-only financial truth)
 - A self-improving loop (sensors -> planning -> execution -> memory -> evolution)
 
-SWARMZ is not a game.
+NEXUSMON is not a game.
 It is a real operational system with a companion interface.
 
 ## Partner (Evolving Operator Assistant)
@@ -159,7 +159,7 @@ Blueprint packages with:
 - Signing
 
 ## Autonomy Loop (The Living System)
-This is how SWARMZ improves itself.
+This is how NEXUSMON improves itself.
 
 ```txt
 Sensors -> Partner plans -> Shadow executes -> Policy checks ->
@@ -193,13 +193,13 @@ PHASE 10 — Autonomy + evolution
 ```
 
 ## One-line summary for the agent
-Build SWARMZ as a governed, embodied, evolving AI runtime with a Partner assistant, a Shadow executor lane, a multi-agent LangGraph core, a blueprint-to-product factory, a full commerce + fulfillment pipeline, a ledger spine, a policy engine, and a continuous autonomy loop that improves through sensors, memory, reflection, and controlled evolution.
+Build NEXUSMON as a governed, embodied, evolving AI runtime with a Partner assistant, a Shadow executor lane, a multi-agent LangGraph core, a blueprint-to-product factory, a full commerce + fulfillment pipeline, a ledger spine, a policy engine, and a continuous autonomy loop that improves through sensors, memory, reflection, and controlled evolution.
 
-## SWARMZ Software-Builder Architecture
+## NEXUSMON Software-Builder Architecture
 
 All safe, all powerful, all actionable. Let's lock it in.
 
-SWARMZ is structured as a governed multi-agent organism:
+NEXUSMON is structured as a governed multi-agent organism:
 
 ### 1. Operator Layer
 
@@ -233,7 +233,7 @@ Agents never act outside their lane.
 
 ### 4. Artifact Layer
 
-Everything SWARMZ produces is:
+Everything NEXUSMON produces is:
 - versioned
 - inspectable
 - modifiable
@@ -253,9 +253,9 @@ Assembles:
 
 This is the factory floor.
 
-## SWARMZ App-Factory Blueprint
+## NEXUSMON App-Factory Blueprint
 
-How SWARMZ builds full apps from scratch in four phases:
+How NEXUSMON builds full apps from scratch in four phases:
 
 ### Phase 1 - Specification
 - Operator gives mission
@@ -280,7 +280,7 @@ How SWARMZ builds full apps from scratch in four phases:
 
 This is deterministic, safe, and repeatable.
 
-## SWARMZ Agent Roles (Software Development)
+## NEXUSMON Agent Roles (Software Development)
 
 Each agent has a strict, operator-defined purpose.
 
@@ -339,7 +339,7 @@ Produces:
 
 Each agent is deterministic and governed.
 
-## SWARMZ Mission Templates (App Creation)
+## NEXUSMON Mission Templates (App Creation)
 
 Reusable commands for building software:
 
@@ -385,12 +385,12 @@ INPUT: entity type
 OUTPUT: web-based editor
 ```
 
-These missions allow SWARMZ to build software safely under operator control.
+These missions allow NEXUSMON to build software safely under operator control.
 
 ## Full App-Factory Blueprint (Complete)
 
 ```yaml
-SWARMZ_APP_FACTORY:
+NEXUSMON_APP_FACTORY:
 	OPERATOR_LAYER:
 		- missions
 		- constraints
@@ -438,7 +438,7 @@ SWARMZ_APP_FACTORY:
 
 ## Next Move
 
-Now that the architecture is locked, SWARMZ can build first:
+Now that the architecture is locked, NEXUSMON can build first:
 
 1. A dashboard
 2. A backend service
@@ -450,3 +450,4 @@ Now that the architecture is locked, SWARMZ can build first:
 8. A companion app
 9. A governance-style voting system (fictional)
 10. A full dev portal
+

@@ -1,4 +1,4 @@
-const CACHE = "swarmz-cache-v1";
+﻿const CACHE = "nexusmon-cache-v1";
 const ASSETS = [
   "/",
   "/index.html",
@@ -29,3 +29,4 @@ self.addEventListener("fetch", (event) => {
     caches.match(req).then((cached) => cached || fetch(req))
   );
 });
+

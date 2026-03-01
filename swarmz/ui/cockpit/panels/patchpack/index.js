@@ -1,3 +1,3 @@
-// Patchpack panel for SWARMZ cockpit
+﻿// Patchpack panel for NEXUSMON cockpit
 
 console.log("Patchpack panel loaded");

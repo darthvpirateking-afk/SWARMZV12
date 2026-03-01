@@ -65,7 +65,7 @@ def main() -> None:
 
     for i in range(3):  # a few short rounds
         send_sample()
-        print(f"round {i+1} sent")
+        print(f"round {i + 1} sent")
         time.sleep(0.3)
 
     overview = _get("/v1/infra/overview")

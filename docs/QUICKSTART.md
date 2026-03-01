@@ -1,4 +1,4 @@
-# SWARMZ — Quickstart Guide
+﻿# NEXUSMON — Quickstart Guide
 
 > From zero to running in 5 minutes. Windows-first.
 
@@ -13,17 +13,17 @@
 ## Step 1: Get the Code
 
 ```cmd
-git clone <your-repo-url> swarmz
-cd swarmz
+git clone <your-repo-url> nexusmon
+cd nexusmon
 ```
 
 Or unzip the folder if you received it as an archive.
 
-## Step 2: Start SWARMZ
+## Step 2: Start NEXUSMON
 
 ### Option A: Double-click (easiest)
 
-Double-click **`SWARMZ_UP.cmd`** in the project folder.
+Double-click **`NEXUSMON_UP.cmd`** in the project folder.
 
 This will:
 1. Create a Python virtual environment (`venv/`)
@@ -35,7 +35,7 @@ This will:
 ### Option B: PowerShell
 
 ```powershell
-.\SWARMZ_UP.ps1
+.\NEXUSMON_UP.ps1
 ```
 
 ### Option C: Manual
@@ -58,7 +58,7 @@ The LAN IP is printed when the server starts (e.g., `LAN: http://192.168.1.42:80
 Run the smoke test:
 
 ```cmd
-SWARMZ_SMOKE_TEST.cmd
+NEXUSMON_SMOKE_TEST.cmd
 ```
 
 Or manually:
@@ -77,7 +77,7 @@ Expected: `{"status":"ok"}`
 
 ```powershell
 # Run PowerShell as Administrator
-New-NetFirewallRule -DisplayName "SWARMZ Port 8012" -Direction Inbound -Protocol TCP -LocalPort 8012 -Action Allow
+New-NetFirewallRule -DisplayName "NEXUSMON Port 8012" -Direction Inbound -Protocol TCP -LocalPort 8012 -Action Allow
 ```
 
 Or via GUI: Windows Defender Firewall → Advanced Settings → Inbound Rules → New Rule → Port → TCP 8012 → Allow.
@@ -100,8 +100,8 @@ All settings live in **`config/runtime.json`**:
 
 | Tool | How to Run |
 |------|-----------|
-| Doctor | `SWARMZ_DOCTOR.cmd` or `SWARMZ_DOCTOR.ps1` |
-| Smoke Test | `SWARMZ_SMOKE_TEST.cmd` or `SWARMZ_SMOKE_TEST.ps1` |
+| Doctor | `NEXUSMON_DOCTOR.cmd` or `NEXUSMON_DOCTOR.ps1` |
+| Smoke Test | `NEXUSMON_SMOKE_TEST.cmd` or `NEXUSMON_SMOKE_TEST.ps1` |
 | Zapier Test | `python tools/test_zapier_bridge.py` |
 | Full Smoke | `python tools/smoke/run_smoke.py` |
 
@@ -109,7 +109,8 @@ All settings live in **`config/runtime.json`**:
 
 | Problem | Fix |
 |---------|-----|
-| Port 8012 in use | Close the other process, or set `KILL_PORT=1` before running `SWARMZ_UP` |
+| Port 8012 in use | Close the other process, or set `KILL_PORT=1` before running `NEXUSMON_UP` |
 | Phone can't connect | Check same Wi-Fi + firewall rule (see Step 5) |
-| `run_swarmz.py` fails | Use `SWARMZ_UP.cmd` instead (known issue with `run_swarmz.py`) |
-| Missing dependencies | Delete `venv/` and re-run `SWARMZ_UP.cmd` |
+| `run_nexusmon.py` fails | Use `NEXUSMON_UP.cmd` instead (known issue with `run_nexusmon.py`) |
+| Missing dependencies | Delete `venv/` and re-run `NEXUSMON_UP.cmd` |
+

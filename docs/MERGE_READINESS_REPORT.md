@@ -1,10 +1,10 @@
-# SWARMZ Merge Readiness Report
+﻿# NEXUSMON Merge Readiness Report
 
 Date: 2026-02-20
 
 ## Branch + Remote
 - Branch: `copilot/sub-pr-37`
-- Remote: `origin` -> `https://github.com/darthvpirateking-afk/SWARMZV12.git`
+- Remote: `origin` -> `https://github.com/darthvpirateking-afk/NEXUSMONV12.git`
 - Tracking: `origin/copilot/sub-pr-37`
 
 ## Verification Gates
@@ -24,7 +24,7 @@ Date: 2026-02-20
 1. In GitHub repo settings, set default branch to `copilot/sub-pr-37` (or create a new stable branch, then set it as default).
 2. Optionally create `main` from this branch if you want conventional branch naming.
 3. Open PR only if a target branch exists; otherwise promote branch directly.
-4. Tag release after default branch is fixed (example: `v0.1.0-swarmz-prime`).
+4. Tag release after default branch is fixed (example: `v0.1.0-nexusmon-prime`).
 
 ## Suggested Commands (after default branch decision)
 ```bash
@@ -37,3 +37,4 @@ git push -u origin main
 
 ## Status
 Merge-ready from code quality perspective. Repository branch policy/default branch needs final GitHub-side adjustment.
+

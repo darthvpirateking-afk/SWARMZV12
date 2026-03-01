@@ -22,7 +22,7 @@ export class WorkerLimitsEnforcer {
       max_per_type: limits?.max_per_type || 5,
       max_execution_time_ms: limits?.max_execution_time_ms || 60000,
       max_memory_mb: limits?.max_memory_mb || 512,
-      max_cost_per_task: limits?.max_cost_per_task || 100
+      max_cost_per_task: limits?.max_cost_per_task || 100,
     };
   }
 
@@ -34,13 +34,13 @@ export class WorkerLimitsEnforcer {
     if (this.currentWorkerCount >= this.limits.max_total_workers) {
       return false;
     }
-    
+
     // Check per-type limit
     const typeCount = this.workersByType.get(worker_type) || 0;
     if (typeCount >= this.limits.max_per_type) {
       return false;
     }
-    
+
     return true;
   }
 
@@ -87,7 +87,7 @@ export class WorkerLimitsEnforcer {
     return {
       total: this.currentWorkerCount,
       by_type: Object.fromEntries(this.workersByType),
-      available: this.limits.max_total_workers - this.currentWorkerCount
+      available: this.limits.max_total_workers - this.currentWorkerCount,
     };
   }
 

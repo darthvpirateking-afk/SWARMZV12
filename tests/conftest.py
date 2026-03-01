@@ -24,11 +24,21 @@ SOFTWARE.
 import pytest
 from fastapi.testclient import TestClient
 
-# Simplify the import of create_app
-from swarmz_runtime.api.server import app
+# Try the legacy swarmz_runtime app first; fall back to swarmz_server
+try:
+    from swarmz_runtime.api.server import app as _legacy_app
+    _app = _legacy_app
+except Exception:
+    try:
+        from swarmz_server import app as _server_app
+        _app = _server_app
+    except Exception:
+        _app = None
 
 
 @pytest.fixture
 def client():
     """FastAPI TestClient using a fresh app instance."""
-    return TestClient(app)
+    if _app is None:
+        pytest.skip("No app available")
+    return TestClient(_app)

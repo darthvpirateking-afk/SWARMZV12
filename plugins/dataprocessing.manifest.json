@@ -1,0 +1,10 @@
+{
+  "name": "dataprocessing",
+  "version": "1.0.0",
+  "description": "Data manipulation and processing capabilities including JSON parsing, hashing, and data transformation.",
+  "entry_point": "dataprocessing.py",
+  "capabilities": ["json_parse", "json_stringify", "hash_string", "transform_data"],
+  "category": "data",
+  "author": "SWARMZ",
+  "license": "SWARMZ-SAL"
+}

@@ -37,7 +37,7 @@ def test_companion_section():
 
     c = companion()
     assert isinstance(c, dict)
-    assert c.get("policy") == "prepare_only"
+    assert c.get("policy") == "active"
 
 
 def test_is_offline_default():

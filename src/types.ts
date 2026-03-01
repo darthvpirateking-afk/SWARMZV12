@@ -15,7 +15,7 @@ export interface TaskPacket {
     session_id?: string;
     timestamp: number;
   };
-  safety_level: 'safe' | 'needs_confirm' | 'blocked';
+  safety_level: "safe" | "needs_confirm" | "blocked";
   priority: number;
 }
 
@@ -24,7 +24,7 @@ export interface TaskPacket {
  */
 export interface WorkerResult {
   task_id: string;
-  status: 'success' | 'failure' | 'partial';
+  status: "success" | "failure" | "partial";
   data: any;
   artifacts: string[];
   cost: {
@@ -38,7 +38,7 @@ export interface WorkerResult {
 /**
  * Commit state for actions
  */
-export type CommitState = 'ACTION_READY' | 'NEEDS_CONFIRM' | 'BLOCKED';
+export type CommitState = "ACTION_READY" | "NEEDS_CONFIRM" | "BLOCKED";
 
 /**
  * Action interface that all actions must implement
@@ -52,7 +52,7 @@ export interface Action {
 /**
  * Mode for the interface layer
  */
-export type InterfaceMode = 'companion' | 'operator';
+export type InterfaceMode = "companion" | "operator";
 
 /**
  * Metric entry for tracking performance

@@ -46,12 +46,12 @@ def _resolve_host_port() -> tuple[str, int]:
         or cfg.get("port")
         or cfg.get("api_port")
         or cfg.get("uiPort")
-        or 8012
+        or 8000
     )
     try:
         port = int(port_val)
     except Exception:
-        port = 8012
+        port = 8000
     return host, port
 
 
@@ -83,6 +83,18 @@ def main():
         print(f"[COLD START] {result.get('data_dir', 'data')} â€” OK")
     except Exception as exc:
         print(f"[COLD START] WARNING: {exc}")
+
+    # Boot NEXUSMON entity (SQLite state persistence)
+    try:
+        from nexusmon.entity import get_entity
+
+        entity = get_entity()
+        state = entity.boot()
+        print(
+            f"[NEXUSMON] Boot #{state.get('boot_count', '?')} — {entity.get_greeting()}"
+        )
+    except Exception as exc:
+        print(f"[NEXUSMON] WARNING: {exc}")
 
     # Initialise engine singletons (fast, safe)
     try:
@@ -128,7 +140,11 @@ def main():
         print(f"[SWARM RUNNER] WARNING: Could not start runner â€” {exc}")
 
     uvicorn.run(
-        "server:app", host=args.host, port=args.port, reload=False, log_level="info"
+        "swarmz_server:app",
+        host=args.host,
+        port=args.port,
+        reload=False,
+        log_level="info",
     )
 
 

@@ -1,8 +1,8 @@
-# Google Play Release Checklist (SWARMZ)
+﻿# Google Play Release Checklist (NEXUSMON)
 
 ## 1) App identity
-- [ ] Final package name confirmed (example: `com.swarmz.app`)
-- [ ] App name finalized: `SWARMZ`
+- [ ] Final package name confirmed (example: `com.nexusmon.app`)
+- [ ] App name finalized: `NEXUSMON`
 - [ ] Version code/version name set in Android project
 
 ## 2) Legal + policy
@@ -27,3 +27,4 @@
 - [ ] Resolve all Play pre-launch warnings
 - [ ] Move from internal -> production
 - [ ] Monitor Android vitals and crash-free users
+

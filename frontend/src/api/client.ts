@@ -1,4 +1,9 @@
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "https://https-swarmzv10-onrender-com.onrender.com";
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL ??
+  "https://https-swarmzv10-onrender-com.onrender.com";
+const API_BASE_URL = (
+  import.meta.env.VITE_API_BASE_URL ?? "https://nexusmon.onrender.com"
+).replace(/\/+$/, "");
 
 function buildHeaders(): HeadersInit {
   const headers: HeadersInit = { "Content-Type": "application/json" };
@@ -10,7 +15,9 @@ function buildHeaders(): HeadersInit {
 }
 
 export async function apiGet<T>(path: string): Promise<T> {
-  const response = await fetch(`${API_BASE_URL}${path}`);
+  const response = await fetch(`${API_BASE_URL}${path}`, {
+    headers: buildHeaders(),
+  });
   if (!response.ok) {
     throw new Error(`Request failed (${response.status})`);
   }
