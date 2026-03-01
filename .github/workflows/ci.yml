@@ -88,6 +88,12 @@ jobs:
         continue-on-error: true
         run: |
           mkdir -p artifacts
+          set +e
+          python tools/find_import_cycles.py . --dot artifacts/autofind_import_graph.dot > artifacts/autofind_agent.stdout.txt 2> artifacts/autofind_agent.stderr.txt
+          autofind_exit_code=$?
+          set -e
+          echo "$autofind_exit_code" > /tmp/autofind_exit.txt || true
+          python - <<'PY' || true
           python tools/find_import_cycles.py . --dot artifacts/autofind_import_graph.dot > artifacts/autofind_agent.stdout.txt 2> artifacts/autofind_agent.stderr.txt && echo 0 > /tmp/autofind_exit.txt || echo $? > /tmp/autofind_exit.txt
           python - <<'PY'
           import json
@@ -136,6 +142,10 @@ jobs:
           with open("artifacts/autofind_agent_result.json", "w", encoding="utf-8") as f:
               json.dump(data, f, indent=2)
           PY
+          if [ ! -f artifacts/autofind_agent_result.json ]; then
+            _exit=$(cat /tmp/autofind_exit.txt 2>/dev/null || echo -1)
+            printf '{"status":"error","message":"autofind_agent_result.json not written","exit_code":%s}\n' "$_exit" > artifacts/autofind_agent_result.json
+          fi
 
       - name: Run security detector
         continue-on-error: true
