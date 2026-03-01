@@ -1,5 +1,5 @@
-/* ═══════════════════════════════════════════════════
-   SWARMZ CONTROL — app.js
+﻿/* ═══════════════════════════════════════════════════
+   NEXUSMON CONTROL — app.js
    Runtime: vanilla JS, no build step.
    ═══════════════════════════════════════════════════ */
 
@@ -13,8 +13,8 @@
   // ── State ──────────────────────────────────────
   var connected = false;
   var currentMode = 'COMPANION';
-  var operatorKey = localStorage.getItem('swarmz_opkey') || '';
-  var currentMissionId = localStorage.getItem('swarmz_cur_mission') || '';
+  var operatorKey = localStorage.getItem('nexusmon_opkey') || '';
+  var currentMissionId = localStorage.getItem('nexusmon_cur_mission') || '';
   var pollTimer = null;
 
   // ── DOM refs ───────────────────────────────────
@@ -35,8 +35,8 @@
   var $logFeed;
 
   // ── Soft state for guidance ───────────────────
-  var viewMode = localStorage.getItem('swarmz_view_mode') || 'CLOSE';
-  var operatorGoal = localStorage.getItem('swarmz_goal') || '';
+  var viewMode = localStorage.getItem('nexusmon_view_mode') || 'CLOSE';
+  var operatorGoal = localStorage.getItem('nexusmon_goal') || '';
   var lastUiState = null;
   var lastMissions = [];
   var lastInfraOverview = null;
@@ -71,7 +71,7 @@
   function persistKey() {
     if ($opKeyInput) {
       operatorKey = $opKeyInput.value.trim();
-      localStorage.setItem('swarmz_opkey', operatorKey);
+      localStorage.setItem('nexusmon_opkey', operatorKey);
       updateLockChip();
     }
   }
@@ -79,7 +79,7 @@
   function persistGoal() {
     if ($goalInput) {
       operatorGoal = $goalInput.value.trim();
-      localStorage.setItem('swarmz_goal', operatorGoal);
+      localStorage.setItem('nexusmon_goal', operatorGoal);
       computeGuidance();
       updateNetworkSummary();
     }
@@ -317,7 +317,7 @@
         $missionList.querySelectorAll('.mission-row').forEach(function (row) {
           row.addEventListener('click', function () {
             currentMissionId = row.getAttribute('data-id');
-            localStorage.setItem('swarmz_cur_mission', currentMissionId);
+            localStorage.setItem('nexusmon_cur_mission', currentMissionId);
             refreshMissionSelection(missions);
           });
         });
@@ -478,7 +478,7 @@
       var d = await r.json();
       if (!r.ok || !d.ok) throw new Error(d.error || d.detail || 'dispatch failed');
       currentMissionId = d.mission_id;
-      localStorage.setItem('swarmz_cur_mission', currentMissionId);
+      localStorage.setItem('nexusmon_cur_mission', currentMissionId);
       $intentInput.value = '';
       $specInput.value = '';
       hint('Dispatched: ' + d.mission_id);
@@ -638,7 +638,7 @@
     if ($chipView) {
       $chipView.addEventListener('click', function () {
         viewMode = viewMode === 'FAR' ? 'CLOSE' : 'FAR';
-        localStorage.setItem('swarmz_view_mode', viewMode);
+        localStorage.setItem('nexusmon_view_mode', viewMode);
         updateViewChip();
         computeGuidance();
       });
@@ -678,3 +678,4 @@
   }
 
 })();
+

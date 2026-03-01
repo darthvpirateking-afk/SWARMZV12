@@ -3,14 +3,14 @@
  * Part of Evolution Engine - never auto-applies
  */
 
-import { PatchPack } from '../types';
+import { PatchPack } from "../types";
 
 export interface PatchProposal {
   file: string;
   current_version: string;
   proposed_change: string;
   reason: string;
-  impact: 'low' | 'medium' | 'high';
+  impact: "low" | "medium" | "high";
   confidence: number;
 }
 
@@ -22,20 +22,20 @@ export class PatchpackGenerator {
    */
   generate(proposals: PatchProposal[]): PatchPack {
     const version = this.generateVersion();
-    
-    const changes = proposals.map(p => ({
+
+    const changes = proposals.map((p) => ({
       file: p.file,
-      diff: this.generateDiff(p.current_version, p.proposed_change)
+      diff: this.generateDiff(p.current_version, p.proposed_change),
     }));
-    
+
     const rationale = this.generateRationale(proposals);
     const metrics_justification = this.generateMetricsJustification(proposals);
-    
+
     return {
       version,
       changes,
       rationale,
-      metrics_justification
+      metrics_justification,
     };
   }
 
@@ -56,12 +56,12 @@ export class PatchpackGenerator {
   }
 
   private simpleDiff(current: string, proposed: string): string {
-    const currentLines = current.split('\n');
-    const proposedLines = proposed.split('\n');
-    
-    let diff = '';
+    const currentLines = current.split("\n");
+    const proposedLines = proposed.split("\n");
+
+    let diff = "";
     const maxLines = Math.max(currentLines.length, proposedLines.length);
-    
+
     for (let i = 0; i < maxLines; i++) {
       if (currentLines[i] !== proposedLines[i]) {
         if (currentLines[i]) {
@@ -72,7 +72,7 @@ export class PatchpackGenerator {
         }
       }
     }
-    
+
     return diff;
   }
 
@@ -80,21 +80,25 @@ export class PatchpackGenerator {
    * Generate rationale for patch pack
    */
   private generateRationale(proposals: PatchProposal[]): string {
-    const reasons = proposals.map(p => `${p.file}: ${p.reason}`);
-    return `Proposed improvements based on system metrics:\n${reasons.join('\n')}`;
+    const reasons = proposals.map((p) => `${p.file}: ${p.reason}`);
+    return `Proposed improvements based on system metrics:\n${reasons.join("\n")}`;
   }
 
   /**
    * Generate metrics justification
    */
   private generateMetricsJustification(proposals: PatchProposal[]): string {
-    const highConfidence = proposals.filter(p => p.confidence > 0.8).length;
-    const mediumConfidence = proposals.filter(p => p.confidence > 0.5 && p.confidence <= 0.8).length;
-    
-    return `Based on observed performance:\n` +
-           `- ${highConfidence} high-confidence improvements\n` +
-           `- ${mediumConfidence} medium-confidence improvements\n` +
-           `Average confidence: ${this.calculateAverageConfidence(proposals).toFixed(2)}`;
+    const highConfidence = proposals.filter((p) => p.confidence > 0.8).length;
+    const mediumConfidence = proposals.filter(
+      (p) => p.confidence > 0.5 && p.confidence <= 0.8,
+    ).length;
+
+    return (
+      `Based on observed performance:\n` +
+      `- ${highConfidence} high-confidence improvements\n` +
+      `- ${mediumConfidence} medium-confidence improvements\n` +
+      `Average confidence: ${this.calculateAverageConfidence(proposals).toFixed(2)}`
+    );
   }
 
   private calculateAverageConfidence(proposals: PatchProposal[]): number {
@@ -108,7 +112,7 @@ export class PatchpackGenerator {
    */
   private generateVersion(): string {
     const date = new Date();
-    return `patch_${date.getFullYear()}${String(date.getMonth() + 1).padStart(2, '0')}${String(date.getDate()).padStart(2, '0')}_${Date.now()}`;
+    return `patch_${date.getFullYear()}${String(date.getMonth() + 1).padStart(2, "0")}${String(date.getDate()).padStart(2, "0")}_${Date.now()}`;
   }
 
   /**
@@ -128,15 +132,15 @@ export class PatchpackGenerator {
   /**
    * Filter proposals by impact
    */
-  filterByImpact(impact: PatchProposal['impact']): PatchProposal[] {
-    return this.proposals.filter(p => p.impact === impact);
+  filterByImpact(impact: PatchProposal["impact"]): PatchProposal[] {
+    return this.proposals.filter((p) => p.impact === impact);
   }
 
   /**
    * Filter proposals by confidence
    */
   filterByConfidence(minConfidence: number): PatchProposal[] {
-    return this.proposals.filter(p => p.confidence >= minConfidence);
+    return this.proposals.filter((p) => p.confidence >= minConfidence);
   }
 
   /**

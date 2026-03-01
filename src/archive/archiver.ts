@@ -3,14 +3,14 @@
  * Part of Archive Layer - saves completed artifacts for later retrieval
  */
 
-import * as fs from 'fs';
-import * as path from 'path';
-import { ArtifactPack } from '../types';
+import * as fs from "fs";
+import * as path from "path";
+import { ArtifactPack } from "../types";
 
 export class Archiver {
   private packsDir: string;
 
-  constructor(packsDir: string = './packs') {
+  constructor(packsDir: string = "./packs") {
     this.packsDir = packsDir;
   }
 
@@ -30,7 +30,7 @@ export class Archiver {
     this.ensurePacksDir();
     const filename = `${pack.id}.json`;
     const filepath = path.join(this.packsDir, filename);
-    fs.writeFileSync(filepath, JSON.stringify(pack, null, 2), 'utf-8');
+    fs.writeFileSync(filepath, JSON.stringify(pack, null, 2), "utf-8");
     return filepath;
   }
 
@@ -42,7 +42,7 @@ export class Archiver {
     if (!fs.existsSync(filepath)) {
       return null;
     }
-    const content = fs.readFileSync(filepath, 'utf-8');
+    const content = fs.readFileSync(filepath, "utf-8");
     return JSON.parse(content) as ArtifactPack;
   }
 
@@ -53,9 +53,10 @@ export class Archiver {
     if (!fs.existsSync(this.packsDir)) {
       return [];
     }
-    return fs.readdirSync(this.packsDir)
-      .filter(f => f.endsWith('.json'))
-      .map(f => f.replace('.json', ''));
+    return fs
+      .readdirSync(this.packsDir)
+      .filter((f) => f.endsWith(".json"))
+      .map((f) => f.replace(".json", ""));
   }
 
   /**

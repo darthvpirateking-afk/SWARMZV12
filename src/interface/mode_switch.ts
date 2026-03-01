@@ -3,7 +3,7 @@
  * Part of Interface Layer
  */
 
-import { InterfaceMode } from '../types';
+import { InterfaceMode } from "../types";
 
 export interface ModeConfig {
   mode: InterfaceMode;
@@ -13,17 +13,17 @@ export interface ModeConfig {
 }
 
 export class ModeSwitch {
-  private currentMode: InterfaceMode = 'companion';
+  private currentMode: InterfaceMode = "companion";
   private locked: boolean = false;
   private config: ModeConfig;
 
-  constructor(initialMode: InterfaceMode = 'companion') {
+  constructor(initialMode: InterfaceMode = "companion") {
     this.currentMode = initialMode;
     this.config = {
       mode: initialMode,
       locked: false,
       auto_execute: false,
-      require_confirmation: true
+      require_confirmation: true,
     };
   }
 
@@ -39,22 +39,22 @@ export class ModeSwitch {
    */
   switchMode(newMode: InterfaceMode): boolean {
     if (this.locked) {
-      console.warn('Mode is locked, cannot switch');
+      console.warn("Mode is locked, cannot switch");
       return false;
     }
-    
+
     this.currentMode = newMode;
     this.config.mode = newMode;
-    
+
     // Adjust settings based on mode
-    if (newMode === 'operator') {
+    if (newMode === "operator") {
       this.config.auto_execute = true;
       this.config.require_confirmation = false;
     } else {
       this.config.auto_execute = false;
       this.config.require_confirmation = true;
     }
-    
+
     return true;
   }
 

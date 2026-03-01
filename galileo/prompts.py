@@ -167,8 +167,8 @@ def get_scorer_prompt(hypothesis: Dict, scores_dict: Dict[str, float] = None) ->
     return f"""GALILEO SCORER RUBRIC (v0.1)
 
 Hypothesis being scored:
-Title: {hypothesis.get('title', 'N/A')}
-Claim: {hypothesis.get('claim', 'N/A')}
+Title: {hypothesis.get("title", "N/A")}
+Claim: {hypothesis.get("claim", "N/A")}
 
 DETERMINISTIC SCORING (by rule-engine, not LLM):
 Scores:

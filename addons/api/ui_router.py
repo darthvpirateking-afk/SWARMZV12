@@ -36,6 +36,20 @@ def get_orchestrator(request: Request):
 logger = logging.getLogger(__name__)
 
 router = APIRouter()
+_FALLBACK_CORE = None
+
+
+def _get_fallback_core():
+    global _FALLBACK_CORE
+    if _FALLBACK_CORE is not None:
+        return _FALLBACK_CORE
+    try:
+        from swarmz import SwarmzCore
+
+        _FALLBACK_CORE = SwarmzCore()
+    except Exception:
+        _FALLBACK_CORE = None
+    return _FALLBACK_CORE
 
 
 # ---------------------------------------------------------------------------

@@ -17,7 +17,6 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 
 class TestArenaSchema:
-
     def test_arena_run_defaults(self):
         from swarmz_runtime.arena.schema import ArenaRun
 
@@ -53,7 +52,6 @@ class TestArenaSchema:
 
 
 class TestArenaScoring:
-
     def test_score_empty_response(self):
         from swarmz_runtime.arena.scoring import score_candidate
 
@@ -116,7 +114,6 @@ class TestArenaScoring:
 
 
 class TestArenaStore:
-
     def test_save_and_load_run(self, tmp_path):
         from swarmz_runtime.arena.store import ArenaStore
 
@@ -157,7 +154,6 @@ class TestArenaStore:
 
 
 class TestArenaConfig:
-
     def test_self_check_passes(self):
         from swarmz_runtime.arena.config import self_check
 
@@ -177,7 +173,6 @@ class TestArenaConfig:
 
 
 class TestArenaEngine:
-
     def test_start_run(self, tmp_path):
         from swarmz_runtime.arena.store import ArenaStore
         from swarmz_runtime.arena.engine import ArenaEngine
@@ -279,7 +274,6 @@ class TestArenaEngine:
 
 
 class TestArenaAPI:
-
     def _get_client(self):
         from fastapi.testclient import TestClient
         from swarmz_runtime.api.server import app

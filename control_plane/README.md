@@ -1,6 +1,6 @@
-# Layer-Weaver Control Plane
+﻿# Layer-Weaver Control Plane
 
-A self-contained, autonomous control-plane subsystem for the **swarmz** project.
+A self-contained, autonomous control-plane subsystem for the **nexusmon** project.
 
 ## Architecture
 
@@ -13,7 +13,7 @@ A self-contained, autonomous control-plane subsystem for the **swarmz** project.
 | **Scoring** | `scoring.py` | Deterministic action scoring with configurable λ weights |
 | **Regime Manager** | `regime.py` | Objective regimes with hysteresis |
 | **Event Debouncer** | `event_debouncer.py` | Pub/sub event bus with debouncing |
-| **Swarmz Adapter** | `swarmz_adapter.py` | In-process adapter abstraction |
+| **Nexusmon Adapter** | `nexusmon_adapter.py` | In-process adapter abstraction |
 | **Weaver Service** | `weaver_service.py` | Main event-driven control loop |
 | **Verification Runner** | `verification_runner.py` | Post-action verification + rollback |
 
@@ -105,3 +105,5 @@ python control_plane/verification_runner.py --loop --interval 2
 
 - Python 3.10+
 - `jsonschema` (see `requirements.txt`)
+
+

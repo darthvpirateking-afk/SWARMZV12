@@ -3,7 +3,7 @@
  * Part of Commit Engine
  */
 
-import { QueuedAction } from './pending_queue';
+import { QueuedAction } from "./pending_queue";
 
 export interface CountdownState {
   action_id: string;
@@ -22,7 +22,7 @@ export class Countdown {
    */
   start(
     action: QueuedAction,
-    callback: (action_id: string) => void
+    callback: (action_id: string) => void,
   ): CountdownState {
     const countdown_seconds = action.commit_decision.countdown_seconds || 5;
     const state: CountdownState = {
@@ -30,11 +30,11 @@ export class Countdown {
       remaining_seconds: countdown_seconds,
       started_at: Date.now(),
       will_execute_at: Date.now() + countdown_seconds * 1000,
-      cancelled: false
+      cancelled: false,
     };
-    
+
     this.countdowns.set(action.id, state);
-    
+
     // Set up interval to update countdown
     const interval = setInterval(() => {
       const current = this.countdowns.get(action.id);
@@ -42,18 +42,23 @@ export class Countdown {
         this.stop(action.id);
         return;
       }
-      
-      const elapsed_seconds = Math.floor((Date.now() - current.started_at) / 1000);
-      current.remaining_seconds = Math.max(0, countdown_seconds - elapsed_seconds);
-      
+
+      const elapsed_seconds = Math.floor(
+        (Date.now() - current.started_at) / 1000,
+      );
+      current.remaining_seconds = Math.max(
+        0,
+        countdown_seconds - elapsed_seconds,
+      );
+
       if (current.remaining_seconds <= 0) {
         this.stop(action.id);
         callback(action.id);
       }
     }, 1000);
-    
+
     this.intervals.set(action.id, interval);
-    
+
     return state;
   }
 

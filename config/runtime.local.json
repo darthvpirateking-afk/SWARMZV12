@@ -21,7 +21,7 @@
     "enabled": true,
     "sessionId": "main_companion",
     "memoryFile": "data/companion_memory.json",
-    "policy": "prepare_only"
+    "policy": "active"
   },
   "integrations": {
     "zapier": {

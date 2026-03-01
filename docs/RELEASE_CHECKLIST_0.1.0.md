@@ -1,4 +1,4 @@
-# SWARMZ Release Checklist — v0.1.0
+﻿# NEXUSMON Release Checklist — v0.1.0
 
 ## Go/No-Go
 - [x] Working tree clean (`git status -sb`)
@@ -14,7 +14,7 @@ git checkout copilot/sub-pr-37
 git pull --ff-only
 python -m pytest tests/ -v --tb=short
 python -m build
-git tag -a v0.1.0 -m "SWARMZ v0.1.0"
+git tag -a v0.1.0 -m "NEXUSMON v0.1.0"
 git push origin v0.1.0
 ```
 
@@ -22,3 +22,4 @@ git push origin v0.1.0
 - Version: v0.1.0
 - Scope: doctrine invariants + charter route + federation charter tests + proprietary licensing notice
 - Validation: tests and package build passed
+

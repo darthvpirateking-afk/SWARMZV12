@@ -1,13 +1,13 @@
-# SWARMZ :: Zapier Universal Connector Bridge
+﻿# NEXUSMON :: Zapier Universal Connector Bridge
 
 ## Overview
 
-The Zapier bridge gives SWARMZ a **universal integration pipe**:
+The Zapier bridge gives NEXUSMON a **universal integration pipe**:
 
 | Direction | Flow |
 |-----------|------|
-| **Inbound** | Any Zapier trigger → Webhooks POST → SWARMZ creates a mission |
-| **Outbound** | SWARMZ emits JSON → Zapier Catch Hook → any app action |
+| **Inbound** | Any Zapier trigger → Webhooks POST → NEXUSMON creates a mission |
+| **Outbound** | NEXUSMON emits JSON → Zapier Catch Hook → any app action |
 
 ---
 
@@ -30,16 +30,16 @@ Edit **`config/runtime.json`** — look for the `integrations.zapier` block:
 | Key | Purpose |
 |-----|---------|
 | `enabled` | `false` → endpoints return safe "disabled" response |
-| `shared_secret` | Shared between SWARMZ and your Zaps. Pass as `X-SWARMZ-SECRET` header. |
-| `inbound_path` | URL path for Zapier → SWARMZ triggers (default `/v1/zapier/inbound`) |
-| `emit_path` | URL path for SWARMZ → Zapier emits (default `/v1/zapier/emit`) |
+| `shared_secret` | Shared between NEXUSMON and your Zaps. Pass as `X-NEXUSMON-SECRET` header. |
+| `inbound_path` | URL path for Zapier → NEXUSMON triggers (default `/v1/zapier/inbound`) |
+| `emit_path` | URL path for NEXUSMON → Zapier emits (default `/v1/zapier/emit`) |
 | `zapier_catch_hook_url` | Paste your Zapier Catch Hook URL here. If empty, `/emit` returns `ok:false`. |
 
 ---
 
-## Zap #1: Any App Trigger → SWARMZ Mission
+## Zap #1: Any App Trigger → NEXUSMON Mission
 
-**Goal:** When *anything* happens in Zapier (new email, Slack message, form submission, etc.), create a SWARMZ mission.
+**Goal:** When *anything* happens in Zapier (new email, Slack message, form submission, etc.), create a NEXUSMON mission.
 
 ### Setup Steps
 
@@ -59,17 +59,17 @@ Edit **`config/runtime.json`** — look for the `integrations.zapier` block:
      ```
    - **Headers:**
      ```
-     X-SWARMZ-SECRET: change-me-to-a-real-secret
+     X-NEXUSMON-SECRET: change-me-to-a-real-secret
      ```
-5. Test the Zap and confirm a mission appears in SWARMZ.
+5. Test the Zap and confirm a mission appears in NEXUSMON.
 
 > **Note:** For LAN access from Zapier, you need your PC reachable from the internet (e.g., ngrok). For local testing, use the test commands below.
 
 ---
 
-## Zap #2: SWARMZ → Any App Action (via Catch Hook)
+## Zap #2: NEXUSMON → Any App Action (via Catch Hook)
 
-**Goal:** When SWARMZ emits a notice, Zapier picks it up and runs any action (send email, post to Slack, update sheet, etc.).
+**Goal:** When NEXUSMON emits a notice, Zapier picks it up and runs any action (send email, post to Slack, update sheet, etc.).
 
 ### Setup Steps
 
@@ -88,7 +88,7 @@ Edit **`config/runtime.json`** — look for the `integrations.zapier` block:
 
 ## Example Payloads
 
-### Inbound (Zapier → SWARMZ)
+### Inbound (Zapier → NEXUSMON)
 
 ```json
 {
@@ -102,11 +102,11 @@ Edit **`config/runtime.json`** — look for the `integrations.zapier` block:
 }
 ```
 
-### Outbound (SWARMZ → Zapier)
+### Outbound (NEXUSMON → Zapier)
 
 ```json
 {
-  "type": "swarmz.mission_complete",
+  "type": "nexusmon.mission_complete",
   "payload": {
     "mission_id": "mission_1739753400000",
     "status": "SUCCESS",
@@ -123,22 +123,22 @@ Edit **`config/runtime.json`** — look for the `integrations.zapier` block:
 
 ```cmd
 REM Test inbound
-curl -X POST http://localhost:8012/v1/zapier/inbound -H "Content-Type: application/json" -H "X-SWARMZ-SECRET: change-me-to-a-real-secret" -d "{\"source\":\"zapier\",\"type\":\"trigger.test.smoke\",\"payload\":{\"msg\":\"hello from CMD\"},\"dedupe_key\":\"test-cmd-1\"}"
+curl -X POST http://localhost:8012/v1/zapier/inbound -H "Content-Type: application/json" -H "X-NEXUSMON-SECRET: change-me-to-a-real-secret" -d "{\"source\":\"zapier\",\"type\":\"trigger.test.smoke\",\"payload\":{\"msg\":\"hello from CMD\"},\"dedupe_key\":\"test-cmd-1\"}"
 
 REM Test emit (no hook URL → returns ok:false, which is expected)
-curl -X POST http://localhost:8012/v1/zapier/emit -H "Content-Type: application/json" -H "X-SWARMZ-SECRET: change-me-to-a-real-secret" -d "{\"type\":\"swarmz.test\",\"payload\":{\"msg\":\"emit from CMD\"}}"
+curl -X POST http://localhost:8012/v1/zapier/emit -H "Content-Type: application/json" -H "X-NEXUSMON-SECRET: change-me-to-a-real-secret" -d "{\"type\":\"nexusmon.test\",\"payload\":{\"msg\":\"emit from CMD\"}}"
 ```
 
 ### Windows PowerShell
 
 ```powershell
 # Test inbound
-$headers = @{ "Content-Type" = "application/json"; "X-SWARMZ-SECRET" = "change-me-to-a-real-secret" }
+$headers = @{ "Content-Type" = "application/json"; "X-NEXUSMON-SECRET" = "change-me-to-a-real-secret" }
 $body = '{"source":"zapier","type":"trigger.test.smoke","payload":{"msg":"hello from PS"},"dedupe_key":"test-ps-1"}'
 Invoke-WebRequest -Uri "http://localhost:8012/v1/zapier/inbound" -Method POST -Headers $headers -Body $body -UseBasicParsing | Select-Object -ExpandProperty Content
 
 # Test emit
-$emitBody = '{"type":"swarmz.test","payload":{"msg":"emit from PS"}}'
+$emitBody = '{"type":"nexusmon.test","payload":{"msg":"emit from PS"}}'
 Invoke-WebRequest -Uri "http://localhost:8012/v1/zapier/emit" -Method POST -Headers $headers -Body $emitBody -UseBasicParsing | Select-Object -ExpandProperty Content
 ```
 
@@ -159,6 +159,7 @@ Each log line includes: `ts`, `direction`, `event_id`, `source`, `type`, `payloa
 
 ## Security
 
-- **Do NOT expose your SWARMZ instance to the public internet** without additional protection.
+- **Do NOT expose your NEXUSMON instance to the public internet** without additional protection.
 - The `shared_secret` header provides basic authentication for the bridge.
 - For production use with Zapier cloud, tunnel via ngrok or similar.
+

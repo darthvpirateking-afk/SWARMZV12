@@ -40,7 +40,7 @@ export class WorkerRegistry {
   isAvailable(type: string): boolean {
     const worker = this.workers.get(type);
     if (!worker) return false;
-    
+
     const active = this.activeCount.get(type) || 0;
     return active < worker.max_concurrent;
   }
@@ -52,7 +52,7 @@ export class WorkerRegistry {
     if (!this.isAvailable(type)) {
       return false;
     }
-    
+
     const current = this.activeCount.get(type) || 0;
     this.activeCount.set(type, current + 1);
     return true;
@@ -79,40 +79,40 @@ export class WorkerRegistry {
   updateStats(type: string, time_ms: number, success: boolean): void {
     const worker = this.workers.get(type);
     if (!worker) return;
-    
+
     // Simple running average
     worker.average_time_ms = (worker.average_time_ms + time_ms) / 2;
-    
+
     // Update success rate
     const currentSuccess = worker.success_rate;
-    worker.success_rate = success 
-      ? (currentSuccess + 1.0) / 2 
+    worker.success_rate = success
+      ? (currentSuccess + 1.0) / 2
       : currentSuccess * 0.9;
   }
 
   private registerDefaultWorkers(): void {
     this.register({
-      type: 'scout',
-      capabilities: ['read', 'search', 'analyze'],
+      type: "scout",
+      capabilities: ["read", "search", "analyze"],
       max_concurrent: 5,
       average_time_ms: 1000,
-      success_rate: 0.95
+      success_rate: 0.95,
     });
 
     this.register({
-      type: 'builder',
-      capabilities: ['create', 'modify', 'build'],
+      type: "builder",
+      capabilities: ["create", "modify", "build"],
       max_concurrent: 3,
       average_time_ms: 5000,
-      success_rate: 0.85
+      success_rate: 0.85,
     });
 
     this.register({
-      type: 'verify',
-      capabilities: ['test', 'validate', 'check'],
+      type: "verify",
+      capabilities: ["test", "validate", "check"],
       max_concurrent: 5,
       average_time_ms: 2000,
-      success_rate: 0.90
+      success_rate: 0.9,
     });
   }
 }

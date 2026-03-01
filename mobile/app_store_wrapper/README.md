@@ -1,10 +1,10 @@
-# SWARMZ App Store Wrapper (Capacitor)
+﻿# NEXUSMON App Store Wrapper (Capacitor)
 
-This is a native wrapper so SWARMZ can be submitted to Google Play and Apple App Store.
+This is a native wrapper so NEXUSMON can be submitted to Google Play and Apple App Store.
 
 ## What this does
 - Creates Android/iOS native shells.
-- Loads your live SWARMZ app from: `https://swarmzV10-.onrender.com`.
+- Loads your live NEXUSMON app from: `https://nexusmonV10-.onrender.com`.
 
 ## Quick start
 
@@ -36,7 +36,7 @@ npm run ios:open
 
 ### Apple App Store
 1. Open Xcode via `npm run ios:open`
-2. Configure signing + bundle ID (`com.swarmz.app` or your final ID)
+2. Configure signing + bundle ID (`com.nexusmon.app` or your final ID)
 3. Archive and upload through Xcode Organizer
 4. Submit in App Store Connect
 
@@ -51,3 +51,4 @@ npm run ios:open
 - Metadata template: `store/APP_METADATA_TEMPLATE.json`
 - Submission notes: `store/STORE_SUBMISSION_NOTES.md`
 - Privacy policy draft: `../../docs/PRIVACY_POLICY.md`
+

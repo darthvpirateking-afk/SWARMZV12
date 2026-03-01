@@ -8,12 +8,22 @@ interface BootstrapStatusCardProps {
   onRefresh: () => void;
 }
 
-export function BootstrapStatusCard({ status, loading, error, onRefresh }: BootstrapStatusCardProps) {
+export function BootstrapStatusCard({
+  status,
+  loading,
+  error,
+  onRefresh,
+}: BootstrapStatusCardProps) {
   return (
     <section style={styles.card}>
       <header style={styles.header}>
         <h2 style={styles.title}>Project Bootstrap</h2>
-        <button style={styles.button} onClick={onRefresh} disabled={loading} type="button">
+        <button
+          style={styles.button}
+          onClick={onRefresh}
+          disabled={loading}
+          type="button"
+        >
           {loading ? "Refreshing..." : "Refresh"}
         </button>
       </header>
@@ -26,11 +36,20 @@ export function BootstrapStatusCard({ status, loading, error, onRefresh }: Boots
             {status.service} · {status.environment} · v{status.version}
           </p>
           <ul style={styles.list}>
-            <li>data dir: {status.checks.data_dir_exists ? "ok" : "missing"}</li>
-            <li>audit log: {status.checks.audit_log_exists ? "ok" : "missing"}</li>
-            <li>missions log: {status.checks.missions_log_exists ? "ok" : "missing"}</li>
+            <li>
+              data dir: {status.checks.data_dir_exists ? "ok" : "missing"}
+            </li>
+            <li>
+              audit log: {status.checks.audit_log_exists ? "ok" : "missing"}
+            </li>
+            <li>
+              missions log:{" "}
+              {status.checks.missions_log_exists ? "ok" : "missing"}
+            </li>
           </ul>
-          {status.warnings.length ? <p style={styles.warning}>Warnings: {status.warnings.join("; ")}</p> : null}
+          {status.warnings.length ? (
+            <p style={styles.warning}>Warnings: {status.warnings.join("; ")}</p>
+          ) : null}
         </>
       ) : (
         <p style={styles.meta}>No bootstrap status loaded yet.</p>
@@ -62,9 +81,11 @@ const styles: Record<string, CSSProperties> = {
     background: "#24527a",
     color: "#f3f8ff",
     borderRadius: "8px",
-    padding: "6px 10px",
+    padding: "10px 14px",
+    minHeight: "44px",
     cursor: "pointer",
     font: "inherit",
+    flexShrink: 0,
   },
   meta: {
     margin: 0,

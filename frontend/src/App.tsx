@@ -1,36 +1,31 @@
-import { FormEvent, useMemo, useState, type CSSProperties } from "react";
-import { apiPost } from "./api/client";
-import { BootstrapPage } from "./pages/BootstrapPage";
-import { ApiFoundationPage } from "./pages/ApiFoundationPage";
-import { DatabaseLayerPage } from "./pages/DatabaseLayerPage";
-import { OperatorAuthPage } from "./pages/OperatorAuthPage";
-import { CompanionCorePage } from "./pages/CompanionCorePage";
-import { BuildMilestonesPage } from "./pages/BuildMilestonesPage";
-
-type Role = "user" | "assistant";
-
-interface ChatMessage {
-  id: string;
-  role: Role;
-  text: string;
-}
-
-interface CompanionResponse {
-  ok?: boolean;
-  reply?: string;
-  error?: string;
-  detail?: string;
-}
-
-function makeMessage(role: Role, text: string): ChatMessage {
-  return {
-    id: `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`,
-    role,
-    text,
-  };
-}
+import { type CSSProperties } from "react";
+import { CockpitTopBar } from "./components/CockpitTopBar";
+import { RuntimeControlCard } from "./components/RuntimeControlCard";
+import { MissionLifecycleCard } from "./components/MissionLifecycleCard";
+import { KernelLogsViewer } from "./components/KernelLogsViewer";
+import { MissionTimelineVisualizer } from "./components/MissionTimelineVisualizer";
+import { OperatorIdentityPanel } from "./components/OperatorIdentityPanel";
+import { CompanionAvatarDock } from "./components/CompanionAvatarDock";
+import { AppStoreTracker } from "./components/AppStoreTracker";
 
 export default function App() {
+  return (
+    <div style={styles.root}>
+      <CockpitTopBar buildTag="v12.0" />
+
+      <main style={styles.main}>
+        <div style={styles.topRow}>
+          <OperatorIdentityPanel buildTag="v12.0" />
+          <CompanionAvatarDock />
+        </div>
+
+        <RuntimeControlCard />
+        <MissionLifecycleCard />
+        <AppStoreTracker />
+        <MissionTimelineVisualizer />
+        <KernelLogsViewer />
+      </main>
+    </div>
   const [messages, setMessages] = useState<ChatMessage[]>([
     makeMessage("assistant", "SWARMZ chat ready."),
   ]);
@@ -38,7 +33,10 @@ export default function App() {
   const [isSending, setIsSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const canSend = useMemo(() => !isSending && text.trim().length > 0, [isSending, text]);
+  const canSend = useMemo(
+    () => !isSending && text.trim().length > 0,
+    [isSending, text],
+  );
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -53,16 +51,23 @@ export default function App() {
     setMessages((prev) => [...prev, makeMessage("user", outbound)]);
 
     try {
-      const payload = await apiPost<CompanionResponse>("/v1/companion/message", { text: outbound });
+      const payload = await apiPost<CompanionResponse>(
+        "/v1/companion/message",
+        { text: outbound },
+      );
 
       if (payload.ok === false) {
         throw new Error(payload.error || payload.detail || "Request failed");
       }
 
-      const replyText = typeof payload.reply === "string" ? payload.reply : "No reply returned.";
+      const replyText =
+        typeof payload.reply === "string"
+          ? payload.reply
+          : "No reply returned.";
       setMessages((prev) => [...prev, makeMessage("assistant", replyText)]);
     } catch (caught) {
-      const message = caught instanceof Error ? caught.message : "Request failed.";
+      const message =
+        caught instanceof Error ? caught.message : "Request failed.";
       setError(message);
     } finally {
       setIsSending(false);
@@ -74,7 +79,9 @@ export default function App() {
       <section style={styles.card}>
         <header>
           <h1 style={styles.title}>SWARMZ Frontend Chat</h1>
-          <p style={styles.subtitle}>Companion endpoint: /v1/companion/message</p>
+          <p style={styles.subtitle}>
+            Companion endpoint: /v1/companion/message
+          </p>
         </header>
 
         <BootstrapPage />
@@ -90,10 +97,14 @@ export default function App() {
               key={message.id}
               style={{
                 ...styles.message,
-                ...(message.role === "user" ? styles.userMessage : styles.assistantMessage),
+                ...(message.role === "user"
+                  ? styles.userMessage
+                  : styles.assistantMessage),
               }}
             >
-              <p style={styles.role}>{message.role === "user" ? "You" : "SWARMZ"}</p>
+              <p style={styles.role}>
+                {message.role === "user" ? "You" : "SWARMZ"}
+              </p>
               <p style={styles.text}>{message.text}</p>
             </article>
           ))}
@@ -126,12 +137,15 @@ export default function App() {
 }
 
 const styles: Record<string, CSSProperties> = {
-  page: {
+  root: {
     minHeight: "100vh",
+    background: "#050712",
+    color: "#F5F7FF",
+    fontFamily: "Inter, Segoe UI, Arial, sans-serif",
     margin: 0,
-    padding: "24px",
+    padding: "clamp(12px, 4vw, 24px)",
     display: "grid",
-    placeItems: "center",
+    placeItems: "center start",
     background: "#0d1218",
     color: "#e9edf3",
     fontFamily: "Inter, Segoe UI, Arial, sans-serif",
@@ -141,52 +155,25 @@ const styles: Record<string, CSSProperties> = {
     background: "#17202a",
     border: "1px solid #2e3b4a",
     borderRadius: "14px",
-    padding: "18px",
+    padding: "clamp(12px, 3vw, 18px)",
     display: "grid",
-    gap: "14px",
+    gridTemplateRows: "auto 1fr",
   },
-  title: {
-    margin: 0,
-    fontSize: "1.3rem",
-  },
-  subtitle: {
-    margin: "6px 0 0",
-    color: "#9fb2c8",
-    fontSize: "0.9rem",
-  },
-  messages: {
+  main: {
+    padding: "24px",
     display: "grid",
-    gap: "10px",
-    maxHeight: "56vh",
-    overflowY: "auto",
-  },
-  message: {
-    borderRadius: "10px",
-    padding: "10px",
-  },
-  userMessage: {
-    background: "#2b4054",
-  },
-  assistantMessage: {
-    background: "#232d38",
-  },
-  role: {
-    margin: "0 0 6px",
-    fontSize: "0.78rem",
-    textTransform: "uppercase",
-    color: "#9bc6ef",
-  },
-  text: {
-    margin: 0,
-    whiteSpace: "pre-wrap",
-    lineHeight: 1.4,
-  },
-  form: {
-    display: "grid",
-    gap: "10px",
-  },
-  textarea: {
+    gap: "20px",
+    maxWidth: "960px",
+    margin: "0 auto",
     width: "100%",
+    boxSizing: "border-box",
+  },
+  topRow: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    flexWrap: "wrap",
+    gap: "16px",
     resize: "vertical",
     minHeight: "96px",
     borderRadius: "9px",
@@ -202,7 +189,8 @@ const styles: Record<string, CSSProperties> = {
     background: "#24527a",
     color: "#f3f8ff",
     borderRadius: "8px",
-    padding: "8px 14px",
+    padding: "10px 16px",
+    minHeight: "44px",
     cursor: "pointer",
     font: "inherit",
   },

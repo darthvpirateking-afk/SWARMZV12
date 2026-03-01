@@ -1,4 +1,4 @@
-# SWARMZ Privacy Guard
+﻿# NEXUSMON Privacy Guard
 
 ## Purpose
 The Privacy Guard ensures that sensitive data is redacted from event logs to protect user privacy and security.

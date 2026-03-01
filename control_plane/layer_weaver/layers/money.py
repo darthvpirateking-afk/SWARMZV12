@@ -12,7 +12,6 @@ from .base import BaseLayer
 
 
 class MoneyLayer(BaseLayer):
-
     name = "Money"
     variables = [
         "burn_weekly_usd",

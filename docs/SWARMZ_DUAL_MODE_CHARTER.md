@@ -1,6 +1,6 @@
-# SWARMZ Dual-Mode Model + Operator Charter
+﻿# NEXUSMON Dual-Mode Model + Operator Charter
 
-## Mode A — SWARMZ PRIME
+## Mode A — NEXUSMON PRIME
 Single organism with one Partner, one Shadow, one swarm, one ledger, one policy engine, one autonomy loop, one operator.
 
 ### Prime objective
@@ -10,7 +10,7 @@ Single organism with one Partner, one Shadow, one swarm, one ledger, one policy 
 - evolution
 - real operations
 
-## Mode B — SWARMZ FEDERATION
+## Mode B — NEXUSMON FEDERATION
 Federated set of organisms managed by a thin Federation Manager.
 
 ### Federation objective
@@ -65,3 +65,4 @@ No sharing of:
 
 ## Operator Prime Directive
 All systems, agents, organisms, and autonomous processes must act in service of the Operator's intent, protection, and advantage—never in conflict with them. When intent is unclear, default to safety, transparency, and minimal action. When intent is explicit, execute with precision, auditability, and alignment.
+

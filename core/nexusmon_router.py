@@ -9,6 +9,7 @@ All operations are audited and append-only.
 """
 
 import json
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional, Dict, Any
 
@@ -27,6 +28,15 @@ from core.nexusmon_models import (
 from core.conversation_engine import get_conversation_engine
 from core.memory_engine import get_memory_engine
 from jsonl_utils import write_jsonl
+from core.interaction_logger import log_event
+from system.health_monitor import update_status
+from system.mission_controller import schedule_next_mission
+from evolution.consensus_engine import propose_upgrade
+from core.reasoning_engine import reasoning_engine
+from core.audit_trail import log_audit_event
+from system.self_monitoring import monitor
+from addons.external_extension_api import extension_api
+from core.intent_modeling import intent_modeler
 
 router = APIRouter(prefix="/v1/nexusmon", tags=["conversation"])
 
@@ -39,6 +49,7 @@ OPERATOR_PROFILES_FILE = DATA_DIR / "operator_profiles.jsonl"
 NEXUS_FORMS_FILE = DATA_DIR / "nexus_forms.jsonl"
 AUDIT_FILE = DATA_DIR / "audit.jsonl"
 MISSIONS_FILE = DATA_DIR / "missions.jsonl"
+_low_coherence_since: Optional[str] = None
 
 
 # ================================================================
@@ -73,9 +84,10 @@ def _ensure_operator_profile(operator_id: str) -> OperatorProfile:
             pass
 
     # Create new profile
-    profile = OperatorProfile(
-        operator_id=operator_id, username=operator_id.replace("op-", "")
-    )
+    # Sovereign operator identity — Regan Stewart Harris is the primary operator
+    _known_names = {"op-001": "Regan Stewart Harris"}
+    username = _known_names.get(operator_id, operator_id.replace("op-", ""))
+    profile = OperatorProfile(operator_id=operator_id, username=username)
 
     # Store it
     write_jsonl(OPERATOR_PROFILES_FILE, profile.model_dump(mode="json"))
@@ -123,7 +135,46 @@ def _get_system_health() -> SystemHealth:
 
     In production, this would compute from actual system metrics.
     """
-    return SystemHealth(entropy=0.3, drift=0.2, coherence=0.8)
+    global _low_coherence_since
+
+    health = SystemHealth(entropy=0.3, drift=0.2, coherence=0.8)
+    if health.coherence < 0.7 and _low_coherence_since is None:
+        _low_coherence_since = datetime.now(timezone.utc).isoformat()
+    if health.coherence >= 0.7:
+        _low_coherence_since = None
+
+    status = update_status(health.coherence, _low_coherence_since)
+    if status.freeze_autonomy:
+        log_event(
+            event_type="coherence_freeze",
+            role="system",
+            details={
+                "coherence": health.coherence,
+                "alert": status.alert,
+            },
+        )
+    return health
+
+
+def _get_mission_queue() -> list:
+    """Get pending mission queue for scheduling checks."""
+    queue = []
+    if MISSIONS_FILE.exists():
+        try:
+            with MISSIONS_FILE.open("r", encoding="utf-8") as f:
+                for line in f:
+                    line = line.strip()
+                    if not line:
+                        continue
+                    try:
+                        obj = json.loads(line)
+                        if obj.get("status") in {"PENDING", "QUEUED"}:
+                            queue.append(obj)
+                    except (json.JSONDecodeError, ValueError):
+                        pass
+        except OSError:
+            pass
+    return queue
 
 
 def _get_active_missions(operator_id: Optional[str] = None) -> list:
@@ -162,6 +213,17 @@ def _emit_audit_event(event: AuditEvent) -> None:
         event: AuditEvent to record
     """
     write_jsonl(AUDIT_FILE, event.model_dump(mode="json"))
+    try:
+        log_event(
+            event_type=event.event_type,
+            role="system",
+            details={
+                "operator_id": event.operator_id,
+                "details": event.details,
+            },
+        )
+    except Exception:
+        pass
 
 
 # ================================================================
@@ -198,6 +260,40 @@ async def chat(payload: ChatRequest, request: Request) -> ChatReply:
         # 3. Get system state
         health = _get_system_health()
         missions = _get_active_missions()
+        queue = _get_mission_queue()
+        schedule_decision = schedule_next_mission(queue, health.entropy, health.drift)
+        if not schedule_decision.get("scheduled", False):
+            _emit_audit_event(
+                AuditEvent(
+                    event_type="mission_schedule_blocked",
+                    operator_id=operator_id,
+                    details=schedule_decision,
+                )
+            )
+
+        # 3a. Run self-monitoring diagnostics
+        anomalies = monitor.run_diagnostics(
+            {
+                "drift": health.drift,
+                "entropy": health.entropy,
+                "coherence": health.coherence,
+            }
+        )
+
+        # 3b. Parse intent with hierarchical modeling
+        intent = intent_modeler.parse_intent(payload.message)
+
+        # 3c. Log to persistent audit trail
+        log_audit_event(
+            "chat_initiated",
+            {
+                "operator_id": operator_id,
+                "message": payload.message[:100],
+                "anomalies": anomalies,
+                "intent": intent,
+            },
+            actor=operator_id,
+        )
 
         # 4. Build conversation context
         context = ConversationContext(
@@ -257,6 +353,50 @@ async def chat(payload: ChatRequest, request: Request) -> ChatReply:
 async def nexusmon_health():
     """Health check for NEXUSMON service."""
     return {"ok": True, "service": "NEXUSMON Console", "status": "operational"}
+
+
+@router.get("/entity/state")
+async def get_entity_state():
+    """Get NEXUSMON entity state for cockpit display."""
+    try:
+        from nexusmon.entity import get_entity
+
+        _XP_THRESHOLDS = {
+            "ROOKIE": 100.0,
+            "CHAMPION": 500.0,
+            "ULTIMATE": 2000.0,
+            "MEGA": 10000.0,
+            "SOVEREIGN": float("inf"),
+        }
+
+        entity = get_entity()
+        state = entity.get_state()
+        traits = entity.get_traits()
+
+        form_raw = state.get("current_form", "ROOKIE")
+        form = form_raw.capitalize() if form_raw else "Rookie"
+        mood_raw = state.get("mood", "CALM")
+        mood = mood_raw.lower() if mood_raw else "calm"
+        xp = float(state.get("evolution_xp") or 0.0)
+        xp_to_next = _XP_THRESHOLDS.get(form_raw, 100.0)
+        xp_pct = (
+            min(100.0, xp / xp_to_next * 100.0) if xp_to_next != float("inf") else 100.0
+        )
+
+        return {
+            "name": "NEXUSMON",
+            "form": form,
+            "mood": mood,
+            "xp": xp,
+            "xp_to_next": None if xp_to_next == float("inf") else xp_to_next,
+            "xp_pct": round(xp_pct, 1),
+            "boot_count": state.get("boot_count", 0),
+            "interaction_count": state.get("interaction_count", 0),
+            "traits": traits,
+            "operator_name": state.get("operator_name", ""),
+        }
+    except Exception as e:
+        return {"error": str(e)}
 
 
 @router.get("/operators/{operator_id}/profile")
@@ -353,4 +493,294 @@ async def get_system_health():
         SystemHealth
     """
     health = _get_system_health()
-    return health.model_dump(mode="json")
+    anomalies = monitor.run_diagnostics(
+        {
+            "drift": health.drift,
+            "entropy": health.entropy,
+            "coherence": health.coherence,
+        }
+    )
+    return {**health.model_dump(mode="json"), "anomalies": anomalies}
+
+
+@router.post("/system/upgrade/propose")
+async def system_upgrade_propose(payload: Dict[str, Any]):
+    """Propose an upgrade with novelty-gated consensus checks."""
+    proposal = payload.get("proposal", {})
+    simulation_results = payload.get("simulation_results", {})
+    decision = propose_upgrade(proposal, simulation_results)
+    log_audit_event("upgrade_proposal", {"proposal": proposal, "decision": decision})
+    return decision
+
+
+@router.post("/reasoning/switch_core")
+async def switch_reasoning_core(payload: Dict[str, Any]):
+    """Switch the active reasoning core."""
+    core_name = payload.get("core_name", "default")
+    reasoning_engine.switch_core(core_name)
+    return {"status": "ok", "active_core": reasoning_engine.active_core}
+
+
+@router.post("/extensions/register")
+async def register_extension(payload: Dict[str, Any]):
+    """Register an external extension."""
+    name = payload.get("name")
+    capabilities = payload.get("capabilities", [])
+    extension_api.register_extension(name, capabilities)
+    return {"status": "registered", "name": name}
+
+
+@router.post("/extensions/invoke")
+async def invoke_extension(payload: Dict[str, Any]):
+    """Invoke an external extension."""
+    name = payload.get("name")
+    action = payload.get("action")
+    ext_payload = payload.get("payload", {})
+    result = extension_api.invoke_extension(name, action, ext_payload)
+    return result
+
+
+# ── Swarm endpoints ─────────────────────────────────────────────────
+
+
+@router.get("/swarm/units")
+async def list_swarm_units(status: str = None):
+    from nexusmon.swarm import get_swarm_engine
+
+    units = get_swarm_engine().list_units(status=status)
+    return {"units": units, "count": len(units)}
+
+
+@router.post("/swarm/units")
+async def create_swarm_unit(payload: Dict[str, Any]):
+    from nexusmon.swarm import get_swarm_engine
+
+    unit_type = payload.get("unit_type", "SCOUT")
+    unit = get_swarm_engine().create_unit(unit_type)
+    return unit
+
+
+@router.post("/swarm/units/{unit_id}/deploy")
+async def deploy_unit(unit_id: str):
+    from nexusmon.swarm import get_swarm_engine
+
+    get_swarm_engine().deploy_unit(unit_id)
+    return {"ok": True, "unit_id": unit_id, "status": "ON_MISSION"}
+
+
+@router.post("/swarm/units/{unit_id}/recall")
+async def recall_unit(unit_id: str):
+    from nexusmon.swarm import get_swarm_engine
+
+    get_swarm_engine().recall_unit(unit_id)
+    return {"ok": True, "unit_id": unit_id, "status": "IDLE"}
+
+
+# ── Mission endpoints ────────────────────────────────────────────────
+
+
+@router.get("/missions")
+async def list_missions(limit: int = 20, status: str = None):
+    from nexusmon.missions import get_mission_engine
+
+    engine = get_mission_engine()
+    if status == "active":
+        missions = engine.get_active()
+    elif status == "pending":
+        missions = engine.get_pending()
+    else:
+        missions = engine.get_all(limit=limit)
+    return {"missions": missions, "stats": engine.get_stats()}
+
+
+@router.post("/missions")
+async def create_mission(payload: Dict[str, Any]):
+    from nexusmon.missions import get_mission_engine
+
+    engine = get_mission_engine()
+    mission = engine.create_mission(
+        title=payload.get("title", "Unnamed Mission"),
+        mission_type=payload.get("mission_type", "RESEARCH"),
+        difficulty=int(payload.get("difficulty", 1)),
+        operator_id=payload.get("operator_id", "op-001"),
+    )
+    return mission
+
+
+@router.post("/missions/{mission_id}/dispatch")
+async def dispatch_mission(mission_id: str, payload: Dict[str, Any]):
+    from nexusmon.missions import get_mission_engine
+
+    unit_id = payload.get("unit_id")
+    if not unit_id:
+        return {"error": "unit_id required"}
+    result = get_mission_engine().dispatch(mission_id, unit_id)
+    return result
+
+
+@router.post("/missions/{mission_id}/complete")
+async def complete_mission(mission_id: str, payload: Dict[str, Any]):
+    from nexusmon.missions import get_mission_engine
+
+    success = payload.get("success", True)
+    result = get_mission_engine().complete(mission_id, success=success)
+    return result
+
+
+# ── Artifact endpoints ───────────────────────────────────────────────
+
+
+@router.get("/artifacts")
+async def list_artifacts(
+    artifact_type: str = None, rarity: str = None, limit: int = 50
+):
+    from nexusmon.artifacts import get_vault
+
+    items = get_vault().list_all(
+        artifact_type=artifact_type, rarity=rarity, limit=limit
+    )
+    return {"artifacts": items, "total": get_vault().get_vault_size()}
+
+
+@router.get("/artifacts/{artifact_id}")
+async def get_artifact(artifact_id: str):
+    from nexusmon.artifacts import get_vault
+
+    item = get_vault().get(artifact_id)
+    if not item:
+        return {"error": "Artifact not found"}
+    return item
+
+
+@router.post("/artifacts")
+async def create_artifact(payload: Dict[str, Any]):
+    from nexusmon.artifacts import get_vault
+
+    item = get_vault().create(
+        name=payload.get("name", "Unnamed Artifact"),
+        artifact_type=payload.get("artifact_type", "KNOWLEDGE_BLOCK"),
+        rarity=payload.get("rarity", "COMMON"),
+        created_by=payload.get("created_by", "operator"),
+        tags=payload.get("tags"),
+        metadata=payload.get("metadata"),
+        payload=payload.get("payload"),
+    )
+    return item
+
+
+# ── Factory endpoints ────────────────────────────────────────────────
+
+
+@router.get("/factory/status")
+async def factory_status():
+    from nexusmon.factory import get_factory
+
+    return get_factory().get_status()
+
+
+@router.get("/factory/recipes")
+async def factory_recipes():
+    from nexusmon.factory import get_factory
+
+    return {"recipes": get_factory().get_recipes()}
+
+
+@router.post("/factory/jobs")
+async def queue_factory_job(payload: Dict[str, Any]):
+    from nexusmon.factory import get_factory
+
+    recipe_id = payload.get("recipe_id")
+    if not recipe_id:
+        return {"error": "recipe_id required"}
+    job_id = get_factory().queue_job(recipe_id)
+    return {"ok": True, "job_id": job_id}
+
+
+# ── Chronicle endpoints ──────────────────────────────────────────────
+
+
+@router.get("/chronicle")
+async def get_chronicle(limit: int = 20, min_significance: float = 0.0):
+    from nexusmon.chronicle import get_chronicle as _gc
+
+    entries = _gc().get_entries(limit=limit, min_significance=min_significance)
+    return {"entries": entries, "total": _gc().get_entry_count()}
+
+
+@router.get("/chronicle/letters")
+async def get_letters():
+    from nexusmon.chronicle import get_chronicle as _gc
+
+    return {"letters": _gc().get_letters()}
+
+
+@router.post("/chronicle/letters/{letter_id}/reply")
+async def reply_to_letter(letter_id: int, payload: Dict[str, Any]):
+    from nexusmon.chronicle import get_chronicle as _gc
+
+    reply = payload.get("reply", "")
+    _gc().add_operator_reply(letter_id, reply)
+    return {"ok": True}
+
+
+# ── Operator extended endpoints ──────────────────────────────────────
+
+
+@router.get("/operator/profile-page")
+async def get_operator_profile_page():
+    from nexusmon.operator import get_operator_engine
+
+    eng = get_operator_engine()
+    profile = eng.ensure_profile()
+    page = eng.get_profile_page()
+    return {**profile, **page}
+
+
+@router.put("/operator/safe-word")
+async def set_safe_word(payload: Dict[str, Any]):
+    from nexusmon.entity import get_entity
+
+    word = payload.get("word", "").strip()
+    if not word:
+        return {"error": "word required"}
+    get_entity().set_safe_word(word)
+    return {"ok": True, "word": word}
+
+
+@router.get("/operator/safe-word")
+async def get_safe_word_status():
+    from nexusmon.entity import get_entity
+
+    word = get_entity().get_safe_word()
+    return {"set": word is not None, "activated_count": 0}
+
+
+@router.get("/operator/curiosities")
+async def get_curiosities():
+    from nexusmon.entity import get_entity
+
+    return {"curiosities": get_entity().get_curiosities()}
+
+
+@router.get("/operator/dreams")
+async def get_dreams():
+    from nexusmon.dream import get_dream_engine
+
+    return {"dreams": get_dream_engine().get_pending_share()}
+
+
+@router.post("/operator/dreams/{dream_id}/dismiss")
+async def dismiss_dream(dream_id: int):
+    from nexusmon.dream import get_dream_engine
+
+    get_dream_engine().mark_shared(dream_id)
+    return {"ok": True}
+
+
+@router.put("/operator/nexusmon-note")
+async def update_nexusmon_note(payload: Dict[str, Any]):
+    from nexusmon.operator import get_operator_engine
+
+    note = payload.get("note", "")
+    get_operator_engine().update_nexusmon_note(note)
+    return {"ok": True}

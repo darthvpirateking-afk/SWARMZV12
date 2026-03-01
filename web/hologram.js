@@ -1,5 +1,5 @@
-/* ═══════════════════════════════════════════════════
-   SWARMZ HOLOGRAM — hologram.js
+﻿/* ═══════════════════════════════════════════════════
+   NEXUSMON HOLOGRAM — hologram.js
    Frontend controller. Polls /v1/hologram/state,
    renders orb + ladder + powers + currencies + burst.
    ═══════════════════════════════════════════════════ */
@@ -408,3 +408,4 @@
     init();
   }
 })();
+

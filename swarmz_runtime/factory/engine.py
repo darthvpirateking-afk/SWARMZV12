@@ -66,6 +66,7 @@ def list_missions(limit: int = 200) -> List[Dict[str, Any]]:
 
 
 def get_mission(mid: str) -> Dict[str, Any]:
+    rows = _read_jsonl(FACTORY_FILE)
     for m in rows:
         if m["id"] == mid:
             return m
@@ -92,6 +93,7 @@ def record_decision(mission_id: str, chosen: str, reason: str = "") -> Dict[str,
 
 
 def latest_decision() -> Dict[str, Any]:
+    decs = _read_jsonl(DECISIONS_FILE)
     return decs[-1] if decs else {}  # Replace None with an empty dictionary
 
 

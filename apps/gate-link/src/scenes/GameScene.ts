@@ -1,6 +1,15 @@
 import Phaser from "phaser";
-import { applyGateRewards, loadProgress, resetProgress, type PlayerProgress } from "../state/progression";
-import { createMission, resolveMissionReward, type GateMission } from "../systems/mission";
+import {
+  applyGateRewards,
+  loadProgress,
+  resetProgress,
+  type PlayerProgress,
+} from "../state/progression";
+import {
+  createMission,
+  resolveMissionReward,
+  type GateMission,
+} from "../systems/mission";
 
 const GRID_SIZE = 5;
 const CELL = 64;
@@ -51,13 +60,28 @@ export class GameScene extends Phaser.Scene {
     this.drawGrid(GRID_X, GRID_Y, 0x1fd3ff);
     this.drawGrid(GRID_X + GRID_SIZE * CELL + 96, GRID_Y, 0xff5b7f);
 
-    this.messageText = this.add.text(48, 24, "JACK-IN: Gate mission active", { color: "#7df9ff", fontSize: "18px" });
-    this.hudText = this.add.text(48, 432, "", { color: "#f2f5ff", fontSize: "16px" });
-    this.timerText = this.add.text(48, 460, "", { color: "#f8d66d", fontSize: "16px" });
+    this.messageText = this.add.text(48, 24, "JACK-IN: Gate mission active", {
+      color: "#7df9ff",
+      fontSize: "18px",
+    });
+    this.hudText = this.add.text(48, 432, "", {
+      color: "#f2f5ff",
+      fontSize: "16px",
+    });
+    this.timerText = this.add.text(48, 460, "", {
+      color: "#f8d66d",
+      fontSize: "16px",
+    });
 
-    this.partnerSprite = this.add.rectangle(0, 0, CELL - 20, CELL - 20, 0x7df9ff).setStrokeStyle(2, 0xffffff);
-    this.shadowSprite = this.add.rectangle(0, 0, CELL - 24, CELL - 24, 0xb794f4).setStrokeStyle(2, 0xffffff);
-    this.enemySprite = this.add.rectangle(0, 0, CELL - 20, CELL - 20, 0xff5b7f).setStrokeStyle(2, 0xffffff);
+    this.partnerSprite = this.add
+      .rectangle(0, 0, CELL - 20, CELL - 20, 0x7df9ff)
+      .setStrokeStyle(2, 0xffffff);
+    this.shadowSprite = this.add
+      .rectangle(0, 0, CELL - 24, CELL - 24, 0xb794f4)
+      .setStrokeStyle(2, 0xffffff);
+    this.enemySprite = this.add
+      .rectangle(0, 0, CELL - 20, CELL - 20, 0xff5b7f)
+      .setStrokeStyle(2, 0xffffff);
 
     this.spawnChipHand();
     this.bindInput();
@@ -120,9 +144,19 @@ export class GameScene extends Phaser.Scene {
   }
 
   private movePartner(dx: number, dy: number): void {
-    this.partnerPos.x = Phaser.Math.Clamp(this.partnerPos.x + dx, 0, GRID_SIZE - 1);
-    this.partnerPos.y = Phaser.Math.Clamp(this.partnerPos.y + dy, 0, GRID_SIZE - 1);
-    this.setMessage(`Partner moved to ${this.partnerPos.x},${this.partnerPos.y}`);
+    this.partnerPos.x = Phaser.Math.Clamp(
+      this.partnerPos.x + dx,
+      0,
+      GRID_SIZE - 1,
+    );
+    this.partnerPos.y = Phaser.Math.Clamp(
+      this.partnerPos.y + dy,
+      0,
+      GRID_SIZE - 1,
+    );
+    this.setMessage(
+      `Partner moved to ${this.partnerPos.x},${this.partnerPos.y}`,
+    );
     this.refreshHud();
   }
 
@@ -163,10 +197,14 @@ export class GameScene extends Phaser.Scene {
     const chip = this.chips[index];
     if (!chip) return;
 
-    if (chip.effect === "damage") this.enemyHp = Math.max(0, this.enemyHp - chip.value);
-    if (chip.effect === "heal") this.partnerHp = Math.min(140, this.partnerHp + chip.value);
-    if (chip.effect === "buff") this.partnerHp = Math.min(150, this.partnerHp + chip.value);
-    if (chip.effect === "summon") this.enemyHp = Math.max(0, this.enemyHp - chip.value);
+    if (chip.effect === "damage")
+      this.enemyHp = Math.max(0, this.enemyHp - chip.value);
+    if (chip.effect === "heal")
+      this.partnerHp = Math.min(140, this.partnerHp + chip.value);
+    if (chip.effect === "buff")
+      this.partnerHp = Math.min(150, this.partnerHp + chip.value);
+    if (chip.effect === "summon")
+      this.enemyHp = Math.max(0, this.enemyHp - chip.value);
 
     this.setMessage(`Chip used: ${chip.name}`);
     this.chips.splice(index, 1);
@@ -207,7 +245,8 @@ export class GameScene extends Phaser.Scene {
 
   private shadowAct(): void {
     if (this.shadowHp <= 0 || this.enemyHp <= 0) return;
-    const dmg = Phaser.Math.Between(6, 11) + Math.floor(this.progress.partnerLevel / 2);
+    const dmg =
+      Phaser.Math.Between(6, 11) + Math.floor(this.progress.partnerLevel / 2);
     this.enemyHp = Math.max(0, this.enemyHp - dmg);
     this.checkWin();
   }
@@ -225,7 +264,9 @@ export class GameScene extends Phaser.Scene {
     if (victory) {
       const rewards = resolveMissionReward(this.mission);
       this.progress = applyGateRewards(this.progress, rewards);
-      this.setMessage(`Gate cleared! +${rewards.xp} XP, +${rewards.shards} Data Shards`);
+      this.setMessage(
+        `Gate cleared! +${rewards.xp} XP, +${rewards.shards} Data Shards`,
+      );
     } else {
       this.setMessage("Gate failed. Retreat and rebuild.");
     }
@@ -237,21 +278,34 @@ export class GameScene extends Phaser.Scene {
   }
 
   private refreshHud(): void {
-    this.partnerSprite.setPosition(this.toBoardX(this.partnerPos.x, GRID_X), this.toBoardY(this.partnerPos.y));
-    this.shadowSprite.setPosition(this.toBoardX(this.shadowPos.x, GRID_X), this.toBoardY(this.shadowPos.y));
-    this.enemySprite.setPosition(this.toBoardX(this.enemyPos.x, GRID_X + GRID_SIZE * CELL + 96), this.toBoardY(this.enemyPos.y));
+    this.partnerSprite.setPosition(
+      this.toBoardX(this.partnerPos.x, GRID_X),
+      this.toBoardY(this.partnerPos.y),
+    );
+    this.shadowSprite.setPosition(
+      this.toBoardX(this.shadowPos.x, GRID_X),
+      this.toBoardY(this.shadowPos.y),
+    );
+    this.enemySprite.setPosition(
+      this.toBoardX(this.enemyPos.x, GRID_X + GRID_SIZE * CELL + 96),
+      this.toBoardY(this.enemyPos.y),
+    );
 
     this.partnerSprite.setVisible(this.partnerHp > 0);
     this.shadowSprite.setVisible(this.shadowHp > 0);
     this.enemySprite.setVisible(this.enemyHp > 0);
 
-    const chipNames = this.chips.map((chip, i) => `[${i + 1}] ${chip.name}`).join("  ");
+    const chipNames = this.chips
+      .map((chip, i) => `[${i + 1}] ${chip.name}`)
+      .join("  ");
     this.hudText.setText([
       `Partner HP: ${this.partnerHp}   Enemy HP: ${this.enemyHp}   Shadow HP: ${this.shadowHp}`,
       `Partner Form: ${this.progress.partnerForm}  Lv ${this.progress.partnerLevel}  XP ${this.progress.partnerXp}/${this.progress.partnerLevel * 100}  Data Shards: ${this.progress.dataShards}`,
       `Controls: Arrows move | Q/W/E abilities | 1/2/3 chips (${chipNames}) | SPACE redeploy | R reset save`,
     ]);
-    this.timerText.setText(`Gate: ${this.mission.gateType} | Tier ${this.mission.tier} | Time Left: ${this.missionTimer}s`);
+    this.timerText.setText(
+      `Gate: ${this.mission.gateType} | Tier ${this.mission.tier} | Time Left: ${this.missionTimer}s`,
+    );
   }
 
   private setMessage(message: string): void {

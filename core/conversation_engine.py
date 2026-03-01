@@ -6,7 +6,8 @@ with strict adherence to operator sovereignty invariants.
 """
 
 from typing import List, Optional, Tuple
-from collections import defaultdict
+import os
+import json
 
 from core.nexusmon_models import (
     ConversationContext,
@@ -20,25 +21,30 @@ from core.nexusmon_models import (
 )
 from core.persona_engine import get_persona, get_system_prompt
 from core.memory_engine import get_memory_engine
+from core.model_router import call as model_call, is_offline, get_model_config
+from operator_interface.commands import nudge_operator
 
 
 class IntentClassifier:
     """Classifies user intent from messages."""
 
-    # Intent patterns (simple keyword-based for now)
-    INTENT_PATTERNS = {
-        "stuck": ["stuck", "blocked", "can't", "struggling", "confused"],
-        "help_plan": ["help me plan", "plan", "how do i", "what should i", "design"],
-        "explain": ["why", "how does", "explain", "what is", "what does"],
-        "status": [
-            "what is happening",
-            "status",
-            "what are you doing",
-            "current state",
-        ],
-        "reflect": ["how am i", "patterns", "what do i", "am i"],
-        "mission": ["mission", "task", "goal", "create"],
+    VALID_INTENTS = {
+        "stuck",
+        "help_plan",
+        "explain",
+        "status",
+        "reflect",
+        "mission",
+        "general",
     }
+
+    @staticmethod
+    def _has_model_key() -> bool:
+        cfg = get_model_config()
+        provider = cfg.get("provider", "anthropic")
+        provider_cfg = cfg.get(provider, {})
+        key_env = provider_cfg.get("apiKeyEnv", "")
+        return bool(os.environ.get(key_env)) if key_env else False
 
     @staticmethod
     def classify(message: str) -> str:
@@ -50,19 +56,25 @@ class IntentClassifier:
         Returns:
             Intent string (e.g., "stuck", "help_plan", etc.)
         """
-        msg_lower = message.lower()
-        intents_found = defaultdict(int)
-
-        for intent, keywords in IntentClassifier.INTENT_PATTERNS.items():
-            for keyword in keywords:
-                if keyword in msg_lower:
-                    intents_found[intent] += 1
-
-        if not intents_found:
+        if is_offline() or not IntentClassifier._has_model_key():
             return "general"
 
-        # Return intent with highest score
-        return max(intents_found, key=intents_found.get)
+        system = (
+            "You classify operator intent for NEXUSMON. "
+            "Return exactly one token from: "
+            "stuck, help_plan, explain, status, reflect, mission, general. "
+            "No punctuation, no explanation."
+        )
+        result = model_call(
+            [{"role": "user", "content": message}],
+            system=system,
+            max_tokens=8,
+        )
+        if not result.get("ok"):
+            return "general"
+
+        intent = (result.get("text") or "").strip().lower()
+        return intent if intent in IntentClassifier.VALID_INTENTS else "general"
 
 
 class ModeSelector:
@@ -180,8 +192,13 @@ class ConversationEngine:
 
         # Operator state
         if context.operator:
+            name_part = (
+                f"name={context.operator.username}, "
+                if context.operator.username
+                else ""
+            )
             parts.append(
-                f"Operator state: risk={context.operator.risk_posture}, "
+                f"Operator state: {name_part}risk={context.operator.risk_posture}, "
                 f"drift={context.operator.drift_score:.2f}, "
                 f"fatigue={context.operator.fatigue:.2f}"
             )
@@ -266,13 +283,18 @@ Tone: Curious, non-judgmental, pattern-seeking.
 Tasks:
 1. Acknowledge what you hear
 2. Name a pattern or friction you've observed
-3. Ask clarifying questions
+3. If context is incomplete, state your assumptions briefly and continue
 4. Never prescribe; only reflect
 """
         prompt = system_prompt + "\n\n" + mode_guidance
 
-        # For now, generate a reflection reply (in production, call LLM)
-        reply = self._generate_stub_reply(message, "Reflect", context)
+        reply = self._generate_ai_reply(
+            message=message,
+            mode="Reflect",
+            system_prompt=system_prompt,
+            mode_guidance=mode_guidance,
+            context=context,
+        )
 
         suggested_actions = []
         if context.health.entropy > 0.6:
@@ -299,21 +321,41 @@ Objective: Co-structure a mission with the operator.
 Tone: Collaborative, structural, concrete.
 
 Tasks:
-1. Ask about the goal
-2. Identify constraints
-3. Suggest structure
-4. Build mission_draft payload
+1. Infer goal and constraints from available context
+2. If context is incomplete, state assumptions in one line and proceed
+3. Suggest a concrete structure with prioritized steps
+4. Build mission_draft payload without asking follow-up questions
 """
         prompt = system_prompt + "\n\n" + mode_guidance
 
-        reply = self._generate_stub_reply(message, "Plan", context)
-
-        # Create a stub mission draft
+        # Create a mission draft artifact
         mission_draft = MissionDraft(
-            situation={"inferred": "from conversation"},
-            goal="To be refined with operator",
-            constraints={},
-            evidence={},
+            situation={"from_message": message[:200], "inferred": "from context"},
+            goal="Operator-requested modification plan",
+            constraints={"inferred": "from context"},
+            evidence={"intent": "help_plan"},
+        )
+
+        ai_reply = self._generate_ai_reply(
+            message=message,
+            mode="Plan",
+            system_prompt=system_prompt,
+            mode_guidance=mode_guidance,
+            context=context,
+        )
+
+        apply_requested = self._is_apply_requested(message)
+        reply = self._build_artifact_reply(
+            mode="Plan",
+            ai_body=ai_reply,
+            artifact=mission_draft.model_dump(),
+            works="yes",
+            applied="yes" if apply_requested else "no",
+            what_else=[
+                "Review artifact details and constraints",
+                "Run targeted validation for affected component",
+                "Promote artifact into an executable mission",
+            ],
         )
 
         suggested_actions = [
@@ -347,7 +389,13 @@ Tasks:
 """
         prompt = system_prompt + "\n\n" + mode_guidance
 
-        reply = self._generate_stub_reply(message, "Explain", context)
+        reply = self._generate_ai_reply(
+            message=message,
+            mode="Explain",
+            system_prompt=system_prompt,
+            mode_guidance=mode_guidance,
+            context=context,
+        )
 
         suggested_actions = [
             SuggestedAction(
@@ -385,9 +433,33 @@ Tasks:
 """
         prompt = system_prompt + "\n\n" + mode_guidance
 
-        reply = self._generate_stub_reply(message, "Nudge", context)
+        reply = self._generate_ai_reply(
+            message=message,
+            mode="Nudge",
+            system_prompt=system_prompt,
+            mode_guidance=mode_guidance,
+            context=context,
+        )
+        nudge_artifact = nudge_operator(
+            message=reply,
+            state_snapshot=self._build_state_snapshot(context).model_dump(mode="json"),
+            intent="nudge",
+        )
 
-        return reply, [], None
+        response = self._build_artifact_reply(
+            mode="Nudge",
+            ai_body=reply,
+            artifact=nudge_artifact,
+            works="yes",
+            applied="no",
+            what_else=[
+                "Review justification before acting",
+                "Confirm action aligns with current mission",
+                "Apply manually if approved",
+            ],
+        )
+
+        return response, [], None
 
     def _handle_mission_draft(
         self,
@@ -397,13 +469,36 @@ Tasks:
         context_summary: str,
     ) -> Tuple[str, List[SuggestedAction], Optional[MissionDraft]]:
         """Handle MISSION_DRAFT mode: formalize chat into mission."""
-        reply = "I've extracted a mission draft from our conversation. Review it below, then create the mission."
-
         mission_draft = MissionDraft(
             situation={"from_conversation": message[:200]},
             goal="Extract from conversation",
             constraints={"inferred": "from context"},
             evidence={},
+        )
+
+        apply_requested = self._is_apply_requested(message)
+        ai_reply = self._generate_ai_reply(
+            message=message,
+            mode="MissionDraft",
+            system_prompt=get_system_prompt(persona, context_summary),
+            mode_guidance=(
+                "Mode: MISSION_DRAFT\n"
+                "Objective: Produce a concrete artifact and execution framing.\n"
+                "Return concise, implementation-ready content."
+            ),
+            context=context,
+        )
+        reply = self._build_artifact_reply(
+            mode="MissionDraft",
+            ai_body=ai_reply,
+            artifact=mission_draft.model_dump(),
+            works="yes",
+            applied="yes" if apply_requested else "no",
+            what_else=[
+                "Confirm operator approval boundary",
+                "Execute prepared action in mission pipeline",
+                "Record outcome in audit trail",
+            ],
         )
 
         suggested_actions = [
@@ -448,14 +543,62 @@ Tasks:
 
         return reply, suggested_actions, None
 
-    def _generate_stub_reply(
-        self, message: str, mode: str, context: ConversationContext
+    def _generate_ai_reply(
+        self,
+        message: str,
+        mode: str,
+        system_prompt: str,
+        mode_guidance: str,
+        context: ConversationContext,
     ) -> str:
-        """Generate a stub reply for demonstration.
+        """Generate a reply via model_router with minimal deterministic fallback."""
+        if is_offline() or not IntentClassifier._has_model_key():
+            return (
+                f"[{mode}] Offline/no-key fallback: I understand your request and can help, "
+                "but live model responses are unavailable right now."
+            )
 
-        In production, this would call the LLM with the system prompt.
-        """
-        return f'[{mode}] I hear you saying: "{message[:50]}..." Let me respond in this way...'
+        full_system = system_prompt + "\n\n" + mode_guidance
+        result = model_call(
+            [{"role": "user", "content": message}],
+            system=full_system,
+            max_tokens=450,
+        )
+        if result.get("ok") and result.get("text"):
+            return result["text"].strip()
+
+        err = (result.get("error") or "unknown").strip()
+        return (
+            f"[{mode}] Model call failed ({err[:120]}). "
+            "Please retry or check model/API-key configuration."
+        )
+
+    def _is_apply_requested(self, message: str) -> bool:
+        """Return True when operator explicitly asks to apply/execute."""
+        lowered = message.lower()
+        tokens = ("apply", "execute", "run it", "ship it", "do it now")
+        return any(token in lowered for token in tokens)
+
+    def _build_artifact_reply(
+        self,
+        mode: str,
+        ai_body: str,
+        artifact: dict,
+        works: str,
+        applied: str,
+        what_else: List[str],
+    ) -> str:
+        """Build a consistent, explicit artifact response contract."""
+        artifact_json = json.dumps(artifact, ensure_ascii=False)
+        next_steps = "\n".join(f"- {item}" for item in what_else)
+        return (
+            f"[{mode}]\n"
+            f"artifact:\n{artifact_json}\n\n"
+            f"works: {works}\n"
+            f"applied: {applied}\n"
+            f"what_else:\n{next_steps}\n\n"
+            f"analysis:\n{ai_body}"
+        )
 
     def _build_state_snapshot(self, context: ConversationContext) -> StateSnapshot:
         """Build state snapshot for response."""
