@@ -1,0 +1,40 @@
+﻿{
+    "id":  "life.species.primordial_soup",
+    "name":  "Primordial Soup Re Seed",
+    "origin":  "internal life systems",
+    "symbolic_role":  "phase-zero ritual reset planner",
+    "domains":  [
+                    "reset",
+                    "reseed"
+                ],
+    "entities":  [
+                     "reseed_engine"
+                 ],
+    "correspondences":  {
+                            "keep":  "codex+helper1",
+                            "mode":  "ritualized"
+                        },
+    "geometry":  {
+                     "points":  [
+
+                                ],
+                     "lines":  [
+
+                               ]
+                 },
+    "runtime_hooks":  {
+                          "on_render_altar_mode":  false,
+                          "on_resolve_correspondence":  false,
+                          "on_simulate_branch":  true,
+                          "on_generate_geometry":  false,
+                          "on_consult":  false,
+                          "on_invoke":  false,
+                          "on_symbolic_interpretation":  true,
+                          "on_trigger_anomaly":  false
+                      },
+    "cockpit_modes":  [
+                          "species-lab"
+                      ],
+    "operator_approval_required":  true
+}
+

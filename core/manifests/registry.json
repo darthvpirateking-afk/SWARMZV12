@@ -1,0 +1,434 @@
+{
+  "generated_at": "2026-02-28T16:17:19.907888Z",
+  "project_root": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154",
+  "count": 61,
+  "entries": [
+    {
+      "id": "life.awakening_loop.core",
+      "path": "life/awakening_loop/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\life\\awakening_loop\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": "life.breath.core",
+      "path": "life/breath/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\life\\breath\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": "life.cosmic.dark_pool_oracle",
+      "path": "life/cosmic/dark_pool_oracle/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\life\\cosmic\\dark_pool_oracle\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": "life.cosmic.eclipse_alignment",
+      "path": "life/cosmic/eclipse_alignment/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\life\\cosmic\\eclipse_alignment\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": "life.cosmic.noetic_resonance",
+      "path": "life/cosmic/noetic_resonance/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\life\\cosmic\\noetic_resonance\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": "life.cosmic.zero_point",
+      "path": "life/cosmic/zero_point/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\life\\cosmic\\zero_point\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": "life.diary.core",
+      "path": "life/diary/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\life\\diary\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": "life.dream_seed",
+      "path": "life/dream_seed/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\life\\dream_seed\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": "life.guardians.infinite_regress",
+      "path": "life/guardians/infinite_regress/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\life\\guardians\\infinite_regress\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": "life.heart",
+      "path": "life/heart/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\life\\heart\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": "life.memory_palace",
+      "path": "life/memory_palace/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\life\\memory_palace\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": "life.sovereign_mirror",
+      "path": "life/sovereign_mirror/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\life\\sovereign_mirror\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": "life.species.akashic_fork_resolver",
+      "path": "life/species/akashic_fork_resolver/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\life\\species\\akashic_fork_resolver\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": "life.species.death_rebirth",
+      "path": "life/species/death_rebirth/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\life\\species\\death_rebirth\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": "life.species.meta_swarm_nursery",
+      "path": "life/species/meta_swarm_nursery/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\life\\species\\meta_swarm_nursery\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": "life.species.panspermia_seed_bank",
+      "path": "life/species/panspermia_seed_bank/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\life\\species\\panspermia_seed_bank\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": "life.species.primordial_soup",
+      "path": "life/species/primordial_soup/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\life\\species\\primordial_soup\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": "life.voice",
+      "path": "life/voice/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\life\\voice\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": "life.witness.codex_lock",
+      "path": "life/witness/codex_lock/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\life\\witness\\codex_lock\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": "life.witness",
+      "path": "life/witness/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\life\\witness\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": null,
+      "path": "nexusmon/plugins/plugin-helper1/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\nexusmon\\plugins\\plugin-helper1\\manifest.json",
+      "schema_valid": false,
+      "error": "not-unified-manifest-schema"
+    },
+    {
+      "id": "plugin-helper1",
+      "path": "plugins/plugin-helper1/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\plugins\\plugin-helper1\\manifest.json",
+      "schema_valid": false,
+      "error": "not-unified-manifest-schema"
+    },
+    {
+      "id": "altar_modes-root",
+      "path": "symbolic/altar_modes/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\symbolic\\altar_modes\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": "altar.neon_observatory",
+      "path": "symbolic/altar_modes/neon_observatory/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\symbolic\\altar_modes\\neon_observatory\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": "archive.ancient_astronaut.codex_01",
+      "path": "symbolic/archives/ancient_astronaut/codex_01/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\symbolic\\archives\\ancient_astronaut\\codex_01\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": "archive.cosmic_mind.model_01",
+      "path": "symbolic/archives/cosmic_mind/model_01/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\symbolic\\archives\\cosmic_mind\\model_01\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": "archive.hidden.vault_01",
+      "path": "symbolic/archives/hidden/vault_01/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\symbolic\\archives\\hidden\\vault_01\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": "archives-root",
+      "path": "symbolic/archives/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\symbolic\\archives\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": "archive.time_echoes.echo_alpha",
+      "path": "symbolic/archives/time_echoes/echo_alpha/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\symbolic\\archives\\time_echoes\\echo_alpha\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": "calendar.interfaith_cycle",
+      "path": "symbolic/calendars/interfaith_cycle/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\symbolic\\calendars\\interfaith_cycle\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": "calendars-root",
+      "path": "symbolic/calendars/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\symbolic\\calendars\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": "cryptids-root",
+      "path": "symbolic/cryptids/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\symbolic\\cryptids\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": "cryptid.mothman_signal",
+      "path": "symbolic/cryptids/mothman_signal/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\symbolic\\cryptids\\mothman_signal\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": "federation-root",
+      "path": "symbolic/federation/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\symbolic\\federation\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": "federation.star_nation_alpha",
+      "path": "symbolic/federation/star_nation_alpha/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\symbolic\\federation\\star_nation_alpha\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": "grimoire.ars_notoria",
+      "path": "symbolic/grimoires/ars_notoria/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\symbolic\\grimoires\\ars_notoria\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": "grimoires-root",
+      "path": "symbolic/grimoires/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\symbolic\\grimoires\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": "grimoire.operator_codex",
+      "path": "symbolic/grimoires/operator_codex/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\symbolic\\grimoires\\operator_codex\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": "lineage.ancestral_shards",
+      "path": "symbolic/lineage/ancestral_shards/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\symbolic\\lineage\\ancestral_shards\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": "lineage-root",
+      "path": "symbolic/lineage/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\symbolic\\lineage\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": "lost_civ.atlantis_framework",
+      "path": "symbolic/lost_civilizations/atlantis_framework/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\symbolic\\lost_civilizations\\atlantis_framework\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": "lost_civilizations-root",
+      "path": "symbolic/lost_civilizations/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\symbolic\\lost_civilizations\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": "multiverse.fork_alpha",
+      "path": "symbolic/multiverse/fork_alpha/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\symbolic\\multiverse\\fork_alpha\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": "multiverse-root",
+      "path": "symbolic/multiverse/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\symbolic\\multiverse\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": "pantheon.helios_court",
+      "path": "symbolic/pantheons/helios_court/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\symbolic\\pantheons\\helios_court\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": "pantheons-root",
+      "path": "symbolic/pantheons/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\symbolic\\pantheons\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": "pantheon.norse.odin",
+      "path": "symbolic/pantheons/odin/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\symbolic\\pantheons\\odin\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": "quantum-root",
+      "path": "symbolic/quantum/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\symbolic\\quantum\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": "quantum.metaphor_router",
+      "path": "symbolic/quantum/metaphor_router/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\symbolic\\quantum\\metaphor_router\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": "reconciliation.harmonic_bridge",
+      "path": "symbolic/reconciliation/harmonic_bridge/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\symbolic\\reconciliation\\harmonic_bridge\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": "reconciliation-root",
+      "path": "symbolic/reconciliation/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\symbolic\\reconciliation\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": "relics-root",
+      "path": "symbolic/relics/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\symbolic\\relics\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": "relic.operator_compass",
+      "path": "symbolic/relics/operator_compass/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\symbolic\\relics\\operator_compass\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": "sigils-root",
+      "path": "symbolic/sigils/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\symbolic\\sigils\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": "sigil.triadic_seed",
+      "path": "symbolic/sigils/triadic_seed/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\symbolic\\sigils\\triadic_seed\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": "synchronicity-root",
+      "path": "symbolic/synchronicity/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\symbolic\\synchronicity\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": "trance_modes-root",
+      "path": "symbolic/trance_modes/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\symbolic\\trance_modes\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": "trance.reflective_wave",
+      "path": "symbolic/trance_modes/reflective_wave/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\symbolic\\trance_modes\\reflective_wave\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": "xenolinguistics.decoder_alpha",
+      "path": "symbolic/xenolinguistics/decoder_alpha/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\symbolic\\xenolinguistics\\decoder_alpha\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": "xenolinguistics-root",
+      "path": "symbolic/xenolinguistics/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\symbolic\\xenolinguistics\\manifest.json",
+      "schema_valid": true,
+      "error": null
+    },
+    {
+      "id": null,
+      "path": "web_ui/manifest.json",
+      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\web_ui\\manifest.json",
+      "schema_valid": false,
+      "error": "not-unified-manifest-schema"
+    }
+  ]
+}

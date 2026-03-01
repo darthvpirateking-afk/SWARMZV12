@@ -1,0 +1,10 @@
+﻿{
+    "dag":  [
+                "prepare",
+                "invoke",
+                "review"
+            ],
+    "id":  "procedure.alpha",
+    "symbolic_only":  true
+}
+

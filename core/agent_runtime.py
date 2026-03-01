@@ -35,6 +35,16 @@ from typing import Any, Callable, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
+try:
+    from core.feature_flags.file_provider import FileFeatureFlagProvider
+    from core.manifest_audit import ManifestAuditLogger
+
+    _FEATURE_FLAG_PROVIDER = FileFeatureFlagProvider()
+    _MANIFEST_AUDIT = ManifestAuditLogger(path="artifacts/manifest-runtime-audit.jsonl")
+except Exception:
+    _FEATURE_FLAG_PROVIDER = None
+    _MANIFEST_AUDIT = None
+
 
 # ---------------------------------------------------------------------------
 # SimpleEventBus — in-process pub/sub, feeds the cockpit event stream
@@ -315,6 +325,32 @@ class AgentRuntime:
     def think(self, input_data: Any) -> Optional[Any]:
         self.call_count += 1
         try:
+            manifest_flags = {}
+            payload = getattr(self.manifest, "payload", None)
+            if isinstance(payload, dict):
+                manifest_flags = payload.get("feature_flags", {}) or {}
+
+            enabled = True
+            if _FEATURE_FLAG_PROVIDER is not None:
+                resolved = _FEATURE_FLAG_PROVIDER.get_value(
+                    "enabled",
+                    {"manifest_feature_flags": manifest_flags},
+                )
+                if resolved is not None:
+                    enabled = bool(resolved)
+                if _MANIFEST_AUDIT is not None:
+                    _MANIFEST_AUDIT.log_flag_evaluation(
+                        actor="agent_runtime",
+                        manifest_id=self.id,
+                        flag_id="enabled",
+                        old_value=True,
+                        new_value=enabled,
+                        trace_id=f"runtime-{self.id}-{self.call_count}",
+                    )
+            if not enabled:
+                self.emit("flag_blocked", {"flag_id": "enabled", "agent": self.id})
+                return None
+
             output = self._cognition_fn(input_data)
             self.last_output = output
 

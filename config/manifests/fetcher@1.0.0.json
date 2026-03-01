@@ -1,0 +1,21 @@
+{
+  "id": "fetcher@1.0.0",
+  "version": "1.0.0",
+  "capabilities": ["data.fetch", "data.read"],
+  "inputs": {
+    "source_url": {"type": "string", "required": true, "description": "Resource URL"},
+    "timeout_s": {"type": "number", "required": false, "description": "Fetch timeout seconds"}
+  },
+  "outputs": {
+    "raw_payload": {"type": "object", "required": true, "description": "Fetched payload"},
+    "metadata": {"type": "object", "required": false, "description": "Fetch metadata"}
+  },
+  "spawn_policy": "auto",
+  "constraints": {"max_memory_mb": 256, "max_cpu_percent": 20, "network_access": false},
+  "error_modes": {"on_validation_failure": "reject", "on_runtime_exception": "retry", "max_retries": 1},
+  "feature_flags": {
+    "enabled": true,
+    "rollout_policy": {"strategy": "percentage", "percentage": 100, "segments": ["internal"]}
+  },
+  "extensions": {"owner": "nexusmon-core", "tier": "seed"}
+}

@@ -1,0 +1,37 @@
+{
+  "AvatarOmega": {
+    "enter": "Systems stable. Standing by.",
+    "attack": "Engaging standard response.",
+    "summon": "Deploying baseline support.",
+    "defend": "Holding the line.",
+    "exit": "Returning to idle posture."
+  },
+  "AvatarInfinity": {
+    "enter": "Champion protocol engaged.",
+    "attack": "Pressure increasing.",
+    "summon": "Calling advanced support.",
+    "defend": "Stabilizing the perimeter.",
+    "exit": "Champion protocol disengaged."
+  },
+  "AvatarOmegaPlus": {
+    "enter": "Ultimate synchronization achieved.",
+    "attack": "Vector converged.",
+    "summon": "Opening high-order channels.",
+    "defend": "Executing layered shield.",
+    "exit": "Ultimate channel cooling down."
+  },
+  "AvatarSovereign": {
+    "enter": "Sovereign authority online.",
+    "attack": "By sovereign decree.",
+    "summon": "Summoning elite guardians.",
+    "defend": "No breach permitted.",
+    "exit": "Sovereign authority still watching."
+  },
+  "AvatarMonarch": {
+    "enter": "The shadows kneel. The cosmos trembles.",
+    "attack": "Let the void answer.",
+    "summon": "Rise from the abyss.",
+    "defend": "Darkness shields us.",
+    "exit": "The monarch rests, but never sleeps."
+  }
+}

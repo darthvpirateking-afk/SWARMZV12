@@ -1,0 +1,40 @@
+﻿{
+    "id":  "calendar.interfaith_cycle",
+    "name":  "Interfaith Cycle",
+    "origin":  "comparative calendar systems",
+    "symbolic_role":  "timing metadata engine",
+    "domains":  [
+                    "timing",
+                    "ritual"
+                ],
+    "entities":  [
+                     "cycle.q1"
+                 ],
+    "correspondences":  {
+                            "cadence":  "seasonal",
+                            "timezone":  "symbolic"
+                        },
+    "geometry":  {
+                     "points":  [
+
+                                ],
+                     "lines":  [
+
+                               ]
+                 },
+    "runtime_hooks":  {
+                          "on_invoke":  true,
+                          "on_consult":  true,
+                          "on_symbolic_interpretation":  true,
+                          "on_generate_geometry":  true,
+                          "on_trigger_anomaly":  true,
+                          "on_resolve_correspondence":  true,
+                          "on_render_altar_mode":  true,
+                          "on_simulate_branch":  true
+                      },
+    "cockpit_modes":  [
+                          "calendar-view"
+                      ],
+    "operator_approval_required":  true
+}
+

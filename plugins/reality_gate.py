@@ -16,7 +16,14 @@ External signals:
 - manual_confirmation
 """
 
-from typing import Dict, Any
+from __future__ import annotations
+
+from dataclasses import dataclass
+from typing import Any, Dict
+
+from core.agent_manifest import AgentManifest
+from core.observability import AgentEvent, ObservabilityEmitter
+from core.spawn_context import SpawnContext
 
 # Valid external signals
 VALID_EXTERNAL_SIGNALS = {
@@ -42,7 +49,6 @@ def reality_gate(mission: Dict[str, Any]) -> Dict[str, Any]:
         - reason: str - explanation of decision
         - signal: str or None - detected external signal if valid
     """
-    # Check if mission has reality signal
     signal = mission.get("reality_signal")
 
     if not signal:
@@ -52,7 +58,6 @@ def reality_gate(mission: Dict[str, Any]) -> Dict[str, Any]:
             "signal": None,
         }
 
-    # Validate signal is from approved external sources
     if signal not in VALID_EXTERNAL_SIGNALS:
         return {
             "valid": False,
@@ -61,7 +66,6 @@ def reality_gate(mission: Dict[str, Any]) -> Dict[str, Any]:
             "signal": None,
         }
 
-    # Check for prohibited internal signals
     prohibited_patterns = [
         "self_eval",
         "internal_log",
@@ -82,12 +86,9 @@ def reality_gate(mission: Dict[str, Any]) -> Dict[str, Any]:
                 "signal": None,
             }
 
-    # Validate signal has required metadata
     signal_data = mission.get("signal_data", {})
-
     required_fields = ["timestamp", "source", "verified"]
     missing_fields = [f for f in required_fields if f not in signal_data]
-
     if missing_fields:
         return {
             "valid": False,
@@ -95,7 +96,6 @@ def reality_gate(mission: Dict[str, Any]) -> Dict[str, Any]:
             "signal": signal,
         }
 
-    # Check if signal is verified
     if not signal_data.get("verified"):
         return {
             "valid": False,
@@ -103,7 +103,6 @@ def reality_gate(mission: Dict[str, Any]) -> Dict[str, Any]:
             "signal": signal,
         }
 
-    # All checks passed
     return {
         "valid": True,
         "reason": f"Mission validated with external signal: {VALID_EXTERNAL_SIGNALS[signal]}",
@@ -112,18 +111,8 @@ def reality_gate(mission: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def validate_learning_source(source: Dict[str, Any]) -> Dict[str, bool]:
-    """
-    Validate that a learning source is external, not internal reflection.
-
-    Args:
-        source: Learning source descriptor
-
-    Returns:
-        Dictionary with validation results
-    """
+    """Validate that a learning source is external, not internal reflection."""
     source_type = source.get("type", "")
-
-    # Prohibited internal sources
     internal_sources = [
         "log",
         "metric",
@@ -135,7 +124,6 @@ def validate_learning_source(source: Dict[str, Any]) -> Dict[str, bool]:
     ]
 
     is_internal = any(internal in source_type.lower() for internal in internal_sources)
-
     if is_internal:
         return {
             "valid": False,
@@ -144,7 +132,6 @@ def validate_learning_source(source: Dict[str, Any]) -> Dict[str, bool]:
             "Learning must be based on external signals only.",
         }
 
-    # Must have external verification
     if not source.get("external_verified"):
         return {
             "valid": False,
@@ -160,31 +147,22 @@ def validate_learning_source(source: Dict[str, Any]) -> Dict[str, bool]:
 
 
 def register(executor):
-    """Register Reality Gate tasks with SWARMZ executor."""
+    """Register legacy reality gate tasks with SWARMZ executor."""
 
     def check_reality_gate(mission: Dict[str, Any]) -> Dict[str, Any]:
-        """Check if mission passes reality gate validation."""
         return reality_gate(mission)
 
-    def validate_signal(
-        signal_name: str, signal_data: Dict[str, Any]
-    ) -> Dict[str, Any]:
-        """Validate a specific external signal."""
+    def validate_signal(signal_name: str, signal_data: Dict[str, Any]) -> Dict[str, Any]:
         mission = {"reality_signal": signal_name, "signal_data": signal_data}
         return reality_gate(mission)
 
     def list_valid_signals() -> Dict[str, str]:
-        """List all valid external signals."""
         return VALID_EXTERNAL_SIGNALS.copy()
 
-    def check_learning_source(
-        source_type: str, external_verified: bool = False
-    ) -> Dict[str, Any]:
-        """Check if a learning source is valid (external)."""
+    def check_learning_source(source_type: str, external_verified: bool = False) -> Dict[str, Any]:
         source = {"type": source_type, "external_verified": external_verified}
         return validate_learning_source(source)
 
-    # Register tasks
     executor.register_task(
         "reality_gate_check",
         check_reality_gate,
@@ -194,7 +172,6 @@ def register(executor):
             "category": "reality_gate",
         },
     )
-
     executor.register_task(
         "reality_gate_validate_signal",
         validate_signal,
@@ -204,7 +181,6 @@ def register(executor):
             "category": "reality_gate",
         },
     )
-
     executor.register_task(
         "reality_gate_list_signals",
         list_valid_signals,
@@ -214,7 +190,6 @@ def register(executor):
             "category": "reality_gate",
         },
     )
-
     executor.register_task(
         "reality_gate_check_learning_source",
         check_learning_source,
@@ -224,3 +199,104 @@ def register(executor):
             "category": "reality_gate",
         },
     )
+
+
+emitter = ObservabilityEmitter(success_sample_rate=1.0)
+
+
+@dataclass
+class RealityGateConfig:
+    version: str = "0.1.0"
+
+
+class RealityGatePlugin:
+    """Canonical v0.1 kernel-lane plugin surface (additive, legacy-safe)."""
+
+    def __init__(self) -> None:
+        self.config: RealityGateConfig | None = None
+        self.manifest: AgentManifest | None = None
+        self._active: bool = False
+        self._trace_id: str = ""
+
+    async def on_init(self, manifest: AgentManifest, context: SpawnContext) -> None:
+        self.manifest = manifest
+        self.config = RealityGateConfig()
+        self._trace_id = context.trace_id
+        emitter.emit(
+            AgentEvent(
+                agent_id=manifest.id,
+                trace_id=self._trace_id,
+                session_id=context.session_id,
+                event="plugin.reality_gate.init",
+                decision="initialized",
+                inputs_hash="",
+                outcome="success",
+                payload={"version": self.config.version},
+            )
+        )
+
+    async def on_activate(self, context: SpawnContext) -> None:
+        if self._active:
+            return
+        self._active = True
+        emitter.emit(
+            AgentEvent(
+                agent_id=self.manifest.id if self.manifest else "reality_gate@0.1.0",
+                trace_id=self._trace_id,
+                session_id=context.session_id,
+                event="plugin.reality_gate.activate",
+                decision="activated",
+                inputs_hash="",
+                outcome="success",
+                payload={"sandbox": "process", "ephemeral": True},
+            )
+        )
+
+    async def run(self, command: str, payload: dict[str, Any] | None = None) -> dict[str, Any]:
+        if not self._active:
+            raise RuntimeError("reality_gate not activated")
+
+        if command == "validate":
+            result = {"valid": True, "payload": payload or {}}
+            outcome = "success"
+        elif command == "transform":
+            result = {"transformed": payload or {}, "source": "reality_gate"}
+            outcome = "success"
+        elif command == "echo":
+            result = {"echo": payload or {}}
+            outcome = "success"
+        else:
+            result = {"error": "unknown_command"}
+            outcome = "failure"
+
+        emitter.emit(
+            AgentEvent(
+                agent_id=self.manifest.id if self.manifest else "reality_gate@0.1.0",
+                trace_id=self._trace_id,
+                event="plugin.reality_gate.run",
+                decision=command,
+                inputs_hash="",
+                outcome=outcome,
+                payload={"command": command},
+            )
+        )
+        return result
+
+    async def on_deactivate(self, context: SpawnContext) -> None:
+        if not self._active:
+            return
+        self._active = False
+        emitter.emit(
+            AgentEvent(
+                agent_id=self.manifest.id if self.manifest else "reality_gate@0.1.0",
+                trace_id=self._trace_id,
+                session_id=context.session_id,
+                event="plugin.reality_gate.deactivate",
+                decision="deactivated",
+                inputs_hash="",
+                outcome="success",
+            )
+        )
+
+    def unload(self) -> None:
+        return None

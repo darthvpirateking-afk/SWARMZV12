@@ -1,0 +1,40 @@
+﻿{
+    "id":  "life.voice",
+    "name":  "Voice of the Organism",
+    "origin":  "internal life systems",
+    "symbolic_role":  "symbolic voice renderer",
+    "domains":  [
+                    "voice",
+                    "reflection"
+                ],
+    "entities":  [
+                     "voice_profiles"
+                 ],
+    "correspondences":  {
+                            "output":  "symbolic_tts",
+                            "tradition":  "profile"
+                        },
+    "geometry":  {
+                     "points":  [
+
+                                ],
+                     "lines":  [
+
+                               ]
+                 },
+    "runtime_hooks":  {
+                          "on_render_altar_mode":  false,
+                          "on_resolve_correspondence":  false,
+                          "on_simulate_branch":  false,
+                          "on_generate_geometry":  false,
+                          "on_consult":  true,
+                          "on_invoke":  false,
+                          "on_symbolic_interpretation":  true,
+                          "on_trigger_anomaly":  false
+                      },
+    "cockpit_modes":  [
+                          "voice-panel"
+                      ],
+    "operator_approval_required":  true
+}
+

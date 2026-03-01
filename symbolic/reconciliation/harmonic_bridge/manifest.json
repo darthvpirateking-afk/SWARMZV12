@@ -1,0 +1,40 @@
+﻿{
+    "id":  "reconciliation.harmonic_bridge",
+    "name":  "Harmonic Bridge",
+    "origin":  "comparative mythology methods",
+    "symbolic_role":  "cross-tradition harmonizer",
+    "domains":  [
+                    "dialogue",
+                    "reconciliation"
+                ],
+    "entities":  [
+                     "bridge.agent"
+                 ],
+    "correspondences":  {
+                            "bias":  "none",
+                            "principle":  "parallelism"
+                        },
+    "geometry":  {
+                     "points":  [
+
+                                ],
+                     "lines":  [
+
+                               ]
+                 },
+    "runtime_hooks":  {
+                          "on_invoke":  true,
+                          "on_consult":  true,
+                          "on_symbolic_interpretation":  true,
+                          "on_generate_geometry":  true,
+                          "on_trigger_anomaly":  true,
+                          "on_resolve_correspondence":  true,
+                          "on_render_altar_mode":  true,
+                          "on_simulate_branch":  true
+                      },
+    "cockpit_modes":  [
+                          "reconciliation-view"
+                      ],
+    "operator_approval_required":  true
+}
+

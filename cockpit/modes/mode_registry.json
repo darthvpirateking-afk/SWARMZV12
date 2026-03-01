@@ -1,0 +1,74 @@
+{
+  "routes": [
+    {
+      "button_id": "activate-pantheon",
+      "mode_id": "pantheon_browser",
+      "hook": "on_invoke",
+      "endpoint": "/v1/nexusmon/symbolic/activate/{id}",
+      "system_id": "pantheon.norse.odin"
+    },
+    {
+      "button_id": "consult-grimoire",
+      "mode_id": "grimoire_viewer",
+      "hook": "on_consult",
+      "endpoint": "/v1/nexusmon/symbolic/consult",
+      "system_id": "grimoire.ars_notoria"
+    },
+    {
+      "button_id": "render-sigil",
+      "mode_id": "sigil_renderer",
+      "hook": "on_generate_geometry",
+      "endpoint": "/v1/nexusmon/symbolic/geometry",
+      "system_id": "sigil.triadic_seed"
+    },
+    {
+      "button_id": "invoke-relic",
+      "mode_id": "relic_inventory",
+      "hook": "on_invoke",
+      "endpoint": "/v1/nexusmon/symbolic/invoke",
+      "system_id": "relic.operator_compass"
+    },
+    {
+      "button_id": "consult-cosmic",
+      "mode_id": "cosmic_hud",
+      "hook": "on_consult",
+      "endpoint": "/v1/nexusmon/symbolic/consult",
+      "system_id": "archive.cosmic_mind.model_01"
+    },
+    {
+      "button_id": "simulate-branch",
+      "mode_id": "multiverse_viewer",
+      "hook": "on_simulate_branch",
+      "endpoint": "/v1/nexusmon/symbolic/branch",
+      "system_id": "multiverse.fork_alpha"
+    },
+    {
+      "button_id": "trigger-synchronicity",
+      "mode_id": "synchronicity_web",
+      "hook": "on_trigger_anomaly",
+      "endpoint": "/v1/nexusmon/symbolic/anomaly",
+      "system_id": "synchronicity.core"
+    },
+    {
+      "button_id": "render-altar-mode",
+      "mode_id": "altar_modes",
+      "hook": "on_render_altar_mode",
+      "endpoint": "/v1/nexusmon/symbolic/altar",
+      "system_id": "altar.neon_observatory"
+    },
+    {
+      "button_id": "mirror-reflect",
+      "mode_id": "sovereign_mirror_panel",
+      "hook": "on_consult",
+      "endpoint": "/v1/nexusmon/life/sovereign_mirror/reflect",
+      "system_id": "life.sovereign_mirror"
+    },
+    {
+      "button_id": "build-memory-room",
+      "mode_id": "memory_palace_explorer",
+      "hook": "on_symbolic_interpretation",
+      "endpoint": "/v1/nexusmon/life/memory_palace/build",
+      "system_id": "life.memory_palace"
+    }
+  ]
+}

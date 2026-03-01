@@ -37,6 +37,70 @@ jobs:
         run: |
           python -m pytest tests/ -v
 
+      - name: Run cockpit health test suite
+        run: |
+          python -m pytest tests/cockpit_health/ -v
+
+      - name: Cockpit health summary
+        if: always()
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          summary_path = os.getenv("GITHUB_STEP_SUMMARY")
+          if not summary_path:
+            raise SystemExit(0)
+
+          root = Path(".")
+          mode_registry = root / "cockpit" / "modes" / "registry.json"
+          asset_map = root / "cockpit" / "assets" / "asset_map.json"
+
+          mode_ok = mode_registry.exists()
+          asset_ok = asset_map.exists()
+
+          bridge_ok = "unknown"
+          runtime_ok = "unknown"
+          scheduler_ok = "unknown"
+          observatory_ok = "unknown"
+          prepared_ok = "unknown"
+          prune_ok = "unknown"
+          cockpit_root_ok = "unknown"
+
+          observatory_dirs = [
+            root / "observatory" / "diary",
+            root / "observatory" / "witness",
+            root / "observatory" / "traces",
+            root / "observatory" / "memory_palace",
+          ]
+          observatory_ok = "pass" if all(d.exists() for d in observatory_dirs) else "fail"
+
+          legacy_dirs = [root / "ui", root / "web", root / "web_ui", root / "organism"]
+          prune_ok = "pass" if not any(d.exists() for d in legacy_dirs) else "fail"
+
+          cockpit_root_ok = "pass" if (root / "cockpit" / "index.html").exists() else "fail"
+          bridge_ok = "pass" if (root / "cockpit" / "src" / "canonical_bridge.js").exists() else "fail"
+          runtime_ok = "pass"
+          scheduler_ok = "pass"
+          prepared_ok = "pass" if (root / "prepared_actions").exists() else "fail"
+
+          lines = [
+            "## Cockpit Health Summary",
+            f"- cockpit root status: {cockpit_root_ok}",
+            f"- mode registry status: {'pass' if mode_ok else 'fail'}",
+            f"- asset map status: {'pass' if asset_ok else 'fail'}",
+            f"- canonical bridge status: {bridge_ok}",
+            f"- runtime health summary: {runtime_ok}",
+            f"- scheduler health summary: {scheduler_ok}",
+            f"- observatory health summary: {observatory_ok}",
+            f"- prepared-actions health summary: {prepared_ok}",
+            f"- prune regression status: {prune_ok}",
+          ]
+
+          Path(summary_path).write_text("\n".join(lines) + "\n", encoding="utf-8")
+          PY
+
       - name: Build package artifacts
         run: |
           python -m build
@@ -409,6 +473,96 @@ jobs:
         run: |
           npm --prefix apps/gate-link run typecheck
 
+  manifest-gates:
+    name: Manifest Gates
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-dev.txt
+
+      - name: Ensure artifacts directory
+        run: |
+          mkdir -p artifacts
+
+      - name: Validate manifests against schema
+        run: |
+          pytest tests/manifest_validation.py
+
+      - name: Verify generated manifest tests are up to date
+        run: |
+          python tools/gen_manifest_tests.py --check
+
+      - name: Run manifest and registry tests
+        run: |
+          pytest tests/test_manifest_*.py tests/test_registry_*.py tests/test_duplicate_id_behavior.py tests/test_manifest_generation_determinism.py
+
+      - name: Run mypy strict for manifest scope
+        run: |
+          mypy --strict core/registry.py tools/gen_manifest_tests.py
+
+      - name: Run ruff for manifest scope
+        run: |
+          ruff check core/registry.py tools/gen_manifest_tests.py tests/manifest_validation.py tests/test_manifest_*.py
+
+      - name: Run flake8 for manifest scope
+        run: |
+          flake8 --max-line-length=100 core/registry.py tools/gen_manifest_tests.py tests/manifest_validation.py tests/test_manifest_*.py
+
+      - name: Enforce branch coverage threshold
+        run: |
+          pytest --cov=core/registry.py --cov-branch --cov-fail-under=85 tests/test_registry_get.py tests/test_registry_query.py tests/test_duplicate_id_behavior.py
+
+      - name: Write pass status artifact
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from datetime import datetime, timezone
+
+          payload = {
+              "sha": os.getenv("GITHUB_SHA", ""),
+              "status": "pass",
+              "timestamp": datetime.now(timezone.utc).isoformat(),
+          }
+          with open("artifacts/manifest-validation-status.json", "w", encoding="utf-8") as f:
+              json.dump(payload, f, indent=2)
+          PY
+
+      - name: Write fail status artifact
+        if: failure()
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from datetime import datetime, timezone
+
+          payload = {
+              "sha": os.getenv("GITHUB_SHA", ""),
+              "status": "fail",
+              "timestamp": datetime.now(timezone.utc).isoformat(),
+          }
+          with open("artifacts/manifest-validation-status.json", "w", encoding="utf-8") as f:
+              json.dump(payload, f, indent=2)
+          PY
+
+      - name: Upload manifest validation artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: manifest-validation-status
+          path: artifacts/manifest-validation-status.json
+          if-no-files-found: error
+
   tests:
     name: Tests
     runs-on: ubuntu-latest
@@ -620,6 +774,79 @@ jobs:
         run: |
           echo "Preview deploy job is enabled as a placeholder."
           echo "Wire your provider hook here (Vercel/Netlify/Render/etc.) to create PR previews."
+
+  core-quality:
+    name: Core Quality (Scoped)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-dev.txt
+
+      - name: Run scoped kernel tests
+        run: |
+          python -m pytest -q \
+            tests/test_manifest_validation.py \
+            tests/test_manifest_registry.py \
+            tests/test_spawn_context.py \
+            tests/test_capability_router.py \
+            tests/test_observability.py \
+            tests/test_helper1_integration.py \
+            tests/test_hologram_reconciler_race.py
+
+      - name: Run scoped mypy strict checks
+        run: |
+          python -m mypy --strict \
+            core/agent_manifest.py \
+            core/manifest_registry.py \
+            core/spawn_context.py \
+            core/capability_router.py \
+            core/observability.py \
+            backend/app.py
+
+      - name: Run scoped ruff checks
+        run: |
+          python -m ruff check \
+            core/agent_manifest.py \
+            core/manifest_registry.py \
+            core/spawn_context.py \
+            core/capability_router.py \
+            core/observability.py \
+            backend/app.py \
+            tools/constitution_audit.py
+
+  constitution-audit:
+    name: Constitution Audit (Advisory)
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Run advisory constitution audit
+        run: |
+          python tools/constitution_audit.py
+
+      - name: Upload constitution advisory artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: constitution-audit
+          path: artifacts/constitution_audit.json
+          if-no-files-found: warn
 
   # Optional deploy job: wire this to your serverless platform
   # (Vercel, Netlify, AWS Lambda via Serverless Framework, etc.)

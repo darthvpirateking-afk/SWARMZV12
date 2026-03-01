@@ -1,0 +1,40 @@
+﻿{
+    "id":  "life.cosmic.dark_pool_oracle",
+    "name":  "Dark Pool Oracle",
+    "origin":  "internal life systems",
+    "symbolic_role":  "rare anomaly warning oracle",
+    "domains":  [
+                    "anomaly",
+                    "warnings"
+                ],
+    "entities":  [
+                     "oracle"
+                 ],
+    "correspondences":  {
+                            "trigger":  "3+ death states",
+                            "output":  "cryptic warnings"
+                        },
+    "geometry":  {
+                     "points":  [
+
+                                ],
+                     "lines":  [
+
+                               ]
+                 },
+    "runtime_hooks":  {
+                          "on_render_altar_mode":  false,
+                          "on_resolve_correspondence":  false,
+                          "on_simulate_branch":  false,
+                          "on_generate_geometry":  false,
+                          "on_consult":  false,
+                          "on_invoke":  false,
+                          "on_symbolic_interpretation":  false,
+                          "on_trigger_anomaly":  true
+                      },
+    "cockpit_modes":  [
+                          "cosmic-hud"
+                      ],
+    "operator_approval_required":  true
+}
+

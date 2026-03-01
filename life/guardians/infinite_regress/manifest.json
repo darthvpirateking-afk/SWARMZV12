@@ -1,0 +1,40 @@
+﻿{
+    "id":  "life.guardians.infinite_regress",
+    "name":  "Infinite Regress Guardian",
+    "origin":  "internal life systems",
+    "symbolic_role":  "loop termination guardian",
+    "domains":  [
+                    "safety",
+                    "recursion"
+                ],
+    "entities":  [
+                     "loop_guard"
+                 ],
+    "correspondences":  {
+                            "ledger":  "witness",
+                            "action":  "terminate_and_log"
+                        },
+    "geometry":  {
+                     "points":  [
+
+                                ],
+                     "lines":  [
+
+                               ]
+                 },
+    "runtime_hooks":  {
+                          "on_render_altar_mode":  false,
+                          "on_resolve_correspondence":  false,
+                          "on_simulate_branch":  false,
+                          "on_generate_geometry":  false,
+                          "on_consult":  false,
+                          "on_invoke":  false,
+                          "on_symbolic_interpretation":  false,
+                          "on_trigger_anomaly":  true
+                      },
+    "cockpit_modes":  [
+                          "guardian-panel"
+                      ],
+    "operator_approval_required":  true
+}
+

@@ -164,8 +164,9 @@ def main():
         print(f"[SWARM RUNNER] WARNING: Could not start runner — {exc}")
 
     # ── Serve ──────────────────────────────────────────────────────
+    print("[STARTUP] Runtime surface: canonical (backend.app:app)")
     uvicorn.run(
-        "swarmz_server:app",
+        "backend.app:app",
         host=args.host,
         port=args.port,
         reload=False,

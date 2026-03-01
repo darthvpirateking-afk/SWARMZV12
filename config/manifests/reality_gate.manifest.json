@@ -1,0 +1,50 @@
+{
+  "id": "reality_gate@0.1.0",
+  "version": "0.1.0",
+  "description": "Canonical kernel-lane agent for controlled external I/O, validation, and transformation.",
+  "capabilities": [
+    "io.read",
+    "io.write",
+    "validate",
+    "transform"
+  ],
+  "inputs": {
+    "command": {
+      "type": "string",
+      "required": true,
+      "description": "Operation to execute"
+    },
+    "payload": {
+      "type": "object",
+      "required": false,
+      "description": "Optional operation payload"
+    }
+  },
+  "outputs": {
+    "result": {
+      "type": "object",
+      "required": true,
+      "description": "Reality gate operation result"
+    }
+  },
+  "spawn_policy": "restricted",
+  "constraints": {
+    "deterministic": true,
+    "side_effects": "bounded",
+    "allow_network": false,
+    "allow_filesystem": false,
+    "max_spawn_depth": 2
+  },
+  "limits": {
+    "max_depth": 2,
+    "max_children": 3
+  },
+  "error_modes": {
+    "invalid_input": "fail",
+    "capability_violation": "fail",
+    "depth_violation": "fail"
+  },
+  "extensions": {
+    "legacy_alias": "reality_gate"
+  }
+}

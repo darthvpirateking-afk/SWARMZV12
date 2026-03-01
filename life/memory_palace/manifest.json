@@ -1,0 +1,40 @@
+﻿{
+    "id":  "life.memory_palace",
+    "name":  "Memory Palace Builder",
+    "origin":  "internal life systems",
+    "symbolic_role":  "spatialized mission memory",
+    "domains":  [
+                    "memory",
+                    "spatial"
+                ],
+    "entities":  [
+                     "room_builder"
+                 ],
+    "correspondences":  {
+                            "archetype":  "statue",
+                            "mission":  "room"
+                        },
+    "geometry":  {
+                     "points":  [
+
+                                ],
+                     "lines":  [
+
+                               ]
+                 },
+    "runtime_hooks":  {
+                          "on_render_altar_mode":  false,
+                          "on_resolve_correspondence":  false,
+                          "on_simulate_branch":  false,
+                          "on_generate_geometry":  false,
+                          "on_consult":  true,
+                          "on_invoke":  false,
+                          "on_symbolic_interpretation":  true,
+                          "on_trigger_anomaly":  false
+                      },
+    "cockpit_modes":  [
+                          "memory-palace-explorer"
+                      ],
+    "operator_approval_required":  true
+}
+

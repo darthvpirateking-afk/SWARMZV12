@@ -1,0 +1,50 @@
+{
+  "id": "mission_engine@0.1.0",
+  "version": "0.1.0",
+  "description": "Canonical kernel-lane mission executor for deterministic template runs.",
+  "capabilities": [
+    "mission.execute",
+    "mission.validate",
+    "agent.spawn"
+  ],
+  "inputs": {
+    "template_id": {
+      "type": "string",
+      "required": true,
+      "description": "Canonical mission template identifier"
+    },
+    "payload": {
+      "type": "object",
+      "required": false,
+      "description": "Mission input payload"
+    }
+  },
+  "outputs": {
+    "result": {
+      "type": "object",
+      "required": true,
+      "description": "Mission execution result envelope"
+    }
+  },
+  "spawn_policy": "restricted",
+  "constraints": {
+    "deterministic": true,
+    "side_effects": "bounded",
+    "allow_network": false,
+    "allow_filesystem": false,
+    "max_spawn_depth": 2
+  },
+  "limits": {
+    "max_depth": 2,
+    "max_children": 3
+  },
+  "error_modes": {
+    "invalid_input": "fail",
+    "capability_violation": "fail",
+    "depth_violation": "fail",
+    "execution_failure": "fail"
+  },
+  "extensions": {
+    "legacy_alias": "mission_engine"
+  }
+}

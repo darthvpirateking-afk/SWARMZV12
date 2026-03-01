@@ -18,9 +18,7 @@ export function OperatorIdentityPanel({
   return (
     <section style={styles.card}>
       <div style={styles.avatar}>
-        <span style={styles.avatarText}>
-          {operatorName.charAt(0).toUpperCase()}
-        </span>
+        <img src="/assets/my-avatar.png" alt="Operator Avatar" style={styles.avatarImage} />
       </div>
       <div style={styles.info}>
         <span style={styles.name}>{operatorName}</span>
@@ -51,12 +49,12 @@ const styles: Record<string, CSSProperties> = {
     alignItems: "center",
     justifyContent: "center",
     flexShrink: 0,
+    overflow: "hidden",
   },
-  avatarText: {
-    color: colors.primaryAccent,
-    fontSize: "1.2rem",
-    fontWeight: typography.fontWeightBold,
-    fontFamily: typography.fontFamily,
+  avatarImage: {
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
   },
   info: {
     display: "flex",

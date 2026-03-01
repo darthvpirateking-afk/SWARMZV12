@@ -4770,8 +4770,8 @@
       "error": null
     },
     {
-      "path": "swarmz/backend/core/avatar/avatar.py",
-      "module": "swarmz.backend.core.avatar.avatar",
+      "path": "swarmz/backend/core/avatar_legacy/avatar.py",
+      "module": "swarmz.backend.core.avatar_legacy.avatar",
       "functions": [],
       "classes": [
         "AvatarBrain",
@@ -4784,8 +4784,8 @@
       "error": null
     },
     {
-      "path": "swarmz/backend/core/avatar/brain.py",
-      "module": "swarmz.backend.core.avatar.brain",
+      "path": "swarmz/backend/core/avatar_legacy/brain.py",
+      "module": "swarmz.backend.core.avatar_legacy.brain",
       "functions": [],
       "classes": [
         "AvatarBrain"
@@ -4796,8 +4796,8 @@
       "error": null
     },
     {
-      "path": "swarmz/backend/core/avatar/controller.py",
-      "module": "swarmz.backend.core.avatar.controller",
+      "path": "swarmz/backend/core/avatar_legacy/controller.py",
+      "module": "swarmz.backend.core.avatar_legacy.controller",
       "functions": [],
       "classes": [
         "AvatarController"
@@ -4808,8 +4808,8 @@
       "error": null
     },
     {
-      "path": "swarmz/backend/core/avatar/models.py",
-      "module": "swarmz.backend.core.avatar.models",
+      "path": "swarmz/backend/core/avatar_legacy/models.py",
+      "module": "swarmz.backend.core.avatar_legacy.models",
       "functions": [],
       "classes": [
         "Avatar"
@@ -4820,8 +4820,8 @@
       "error": null
     },
     {
-      "path": "swarmz/backend/core/avatar/presence.py",
-      "module": "swarmz.backend.core.avatar.presence",
+      "path": "swarmz/backend/core/avatar_legacy/presence.py",
+      "module": "swarmz.backend.core.avatar_legacy.presence",
       "functions": [],
       "classes": [
         "AvatarPresence"
@@ -4832,8 +4832,8 @@
       "error": null
     },
     {
-      "path": "swarmz/backend/core/avatar/renderer.py",
-      "module": "swarmz.backend.core.avatar.renderer",
+      "path": "swarmz/backend/core/avatar_legacy/renderer.py",
+      "module": "swarmz.backend.core.avatar_legacy.renderer",
       "functions": [],
       "classes": [
         "AvatarRenderer"
@@ -4844,8 +4844,8 @@
       "error": null
     },
     {
-      "path": "swarmz/backend/core/avatar/state.py",
-      "module": "swarmz.backend.core.avatar.state",
+      "path": "swarmz/backend/core/avatar_legacy/state.py",
+      "module": "swarmz.backend.core.avatar_legacy.state",
       "functions": [],
       "classes": [
         "AvatarState"
@@ -5199,9 +5199,9 @@
       ],
       "constants": [],
       "imports": [
-        "backend.core.avatar.brain:Brain",
-        "backend.core.avatar.presence:Presence",
-        "backend.core.avatar.state:State",
+        "backend.core.avatar_legacy.brain:Brain",
+        "backend.core.avatar_legacy.presence:Presence",
+        "backend.core.avatar_legacy.state:State",
         "backend.core.cosmology.mesh_router:MeshRouter",
         "backend.core.governor.governor:Governor",
         "backend.core.mission.executor:Executor",
