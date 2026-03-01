@@ -1,0 +1,224 @@
+{
+  "chips": [
+    {
+      "id": "Solar Judgement",
+      "category": "Pantheon",
+      "min_form": "AvatarInfinity",
+      "base_damage": 120,
+      "base_speed": 1.0,
+      "base_cost": 45,
+      "evolution_modifiers": {
+        "AvatarInfinity": {"damage_pct": 5},
+        "AvatarOmegaPlus": {"damage_pct": 8, "speed_pct": 3},
+        "AvatarSovereign": {"damage_pct": 12, "speed_pct": 5}
+      },
+      "monarch_modifiers": {"damage_pct": 20, "speed_pct": 8},
+      "visual_effect": "solar_burst"
+    },
+    {
+      "id": "Storm Herald",
+      "category": "Pantheon",
+      "min_form": "AvatarInfinity",
+      "base_damage": 110,
+      "base_speed": 1.15,
+      "base_cost": 38,
+      "evolution_modifiers": {
+        "AvatarInfinity": {"speed_pct": 6},
+        "AvatarOmegaPlus": {"damage_pct": 5, "speed_pct": 10},
+        "AvatarSovereign": {"damage_pct": 9, "speed_pct": 12}
+      },
+      "monarch_modifiers": {"damage_pct": 15, "speed_pct": 15},
+      "visual_effect": "storm_arc"
+    },
+    {
+      "id": "Aether Lance",
+      "category": "Pantheon",
+      "min_form": "AvatarOmegaPlus",
+      "base_damage": 145,
+      "base_speed": 1.05,
+      "base_cost": 52,
+      "evolution_modifiers": {
+        "AvatarOmegaPlus": {"damage_pct": 9},
+        "AvatarSovereign": {"damage_pct": 15, "speed_pct": 5}
+      },
+      "monarch_modifiers": {"damage_pct": 22, "speed_pct": 10},
+      "visual_effect": "aether_pierce"
+    },
+    {
+      "id": "Arcane Spiral",
+      "category": "Grimoire",
+      "min_form": "AvatarOmega",
+      "base_damage": 80,
+      "base_speed": 1.2,
+      "base_cost": 24,
+      "evolution_modifiers": {
+        "AvatarInfinity": {"damage_pct": 4},
+        "AvatarOmegaPlus": {"damage_pct": 7, "speed_pct": 4},
+        "AvatarSovereign": {"damage_pct": 10, "speed_pct": 8}
+      },
+      "monarch_modifiers": {"damage_pct": 18, "speed_pct": 12},
+      "visual_effect": "arcane_spiral"
+    },
+    {
+      "id": "Hex Pulse",
+      "category": "Grimoire",
+      "min_form": "AvatarOmega",
+      "base_damage": 76,
+      "base_speed": 1.3,
+      "base_cost": 22,
+      "evolution_modifiers": {
+        "AvatarInfinity": {"speed_pct": 5},
+        "AvatarOmegaPlus": {"damage_pct": 6, "speed_pct": 7},
+        "AvatarSovereign": {"damage_pct": 11, "speed_pct": 10}
+      },
+      "monarch_modifiers": {"damage_pct": 14, "speed_pct": 14},
+      "visual_effect": "hex_pulse"
+    },
+    {
+      "id": "Sigil Break",
+      "category": "Grimoire",
+      "min_form": "AvatarInfinity",
+      "base_damage": 102,
+      "base_speed": 1.05,
+      "base_cost": 33,
+      "evolution_modifiers": {
+        "AvatarInfinity": {"damage_pct": 6},
+        "AvatarOmegaPlus": {"damage_pct": 10},
+        "AvatarSovereign": {"damage_pct": 14, "speed_pct": 4}
+      },
+      "monarch_modifiers": {"damage_pct": 19, "speed_pct": 9},
+      "visual_effect": "sigil_fracture"
+    },
+    {
+      "id": "Glyph Serpent",
+      "category": "Sigil",
+      "min_form": "AvatarOmega",
+      "base_damage": 84,
+      "base_speed": 1.18,
+      "base_cost": 25,
+      "evolution_modifiers": {
+        "AvatarInfinity": {"damage_pct": 5},
+        "AvatarOmegaPlus": {"damage_pct": 9, "speed_pct": 5},
+        "AvatarSovereign": {"damage_pct": 12, "speed_pct": 7}
+      },
+      "monarch_modifiers": {"damage_pct": 16, "speed_pct": 12},
+      "visual_effect": "glyph_serpent"
+    },
+    {
+      "id": "Rune Wolf",
+      "category": "Sigil",
+      "min_form": "AvatarInfinity",
+      "base_damage": 108,
+      "base_speed": 1.1,
+      "base_cost": 34,
+      "evolution_modifiers": {
+        "AvatarInfinity": {"damage_pct": 7},
+        "AvatarOmegaPlus": {"damage_pct": 10, "speed_pct": 4},
+        "AvatarSovereign": {"damage_pct": 14, "speed_pct": 7}
+      },
+      "monarch_modifiers": {"damage_pct": 18, "speed_pct": 11},
+      "visual_effect": "rune_wolf"
+    },
+    {
+      "id": "Fractal Dragon",
+      "category": "Sigil",
+      "min_form": "AvatarOmegaPlus",
+      "base_damage": 150,
+      "base_speed": 0.96,
+      "base_cost": 56,
+      "evolution_modifiers": {
+        "AvatarOmegaPlus": {"damage_pct": 10},
+        "AvatarSovereign": {"damage_pct": 16, "speed_pct": 3}
+      },
+      "monarch_modifiers": {"damage_pct": 24, "speed_pct": 9},
+      "visual_effect": "fractal_dragon"
+    },
+    {
+      "id": "Aegis Lock",
+      "category": "Relic",
+      "min_form": "AvatarOmega",
+      "base_damage": 62,
+      "base_speed": 0.9,
+      "base_cost": 20,
+      "evolution_modifiers": {
+        "AvatarInfinity": {"damage_pct": 3},
+        "AvatarOmegaPlus": {"damage_pct": 6, "cost_pct": -4},
+        "AvatarSovereign": {"damage_pct": 10, "cost_pct": -7}
+      },
+      "monarch_modifiers": {"damage_pct": 12, "speed_pct": 5, "cost_pct": -8},
+      "visual_effect": "aegis_shell"
+    },
+    {
+      "id": "Chrono Shift",
+      "category": "Relic",
+      "min_form": "AvatarInfinity",
+      "base_damage": 92,
+      "base_speed": 1.28,
+      "base_cost": 36,
+      "evolution_modifiers": {
+        "AvatarInfinity": {"speed_pct": 8},
+        "AvatarOmegaPlus": {"damage_pct": 5, "speed_pct": 12},
+        "AvatarSovereign": {"damage_pct": 9, "speed_pct": 14}
+      },
+      "monarch_modifiers": {"damage_pct": 14, "speed_pct": 18},
+      "visual_effect": "chrono_shift"
+    },
+    {
+      "id": "Prism Burst",
+      "category": "Relic",
+      "min_form": "AvatarOmegaPlus",
+      "base_damage": 138,
+      "base_speed": 1.08,
+      "base_cost": 48,
+      "evolution_modifiers": {
+        "AvatarOmegaPlus": {"damage_pct": 9, "speed_pct": 3},
+        "AvatarSovereign": {"damage_pct": 13, "speed_pct": 7}
+      },
+      "monarch_modifiers": {"damage_pct": 21, "speed_pct": 10},
+      "visual_effect": "prism_burst"
+    },
+    {
+      "id": "Quantum Echo",
+      "category": "Synchronicity",
+      "min_form": "AvatarInfinity",
+      "base_damage": 104,
+      "base_speed": 1.14,
+      "base_cost": 35,
+      "evolution_modifiers": {
+        "AvatarInfinity": {"damage_pct": 5, "speed_pct": 5},
+        "AvatarOmegaPlus": {"damage_pct": 8, "speed_pct": 9},
+        "AvatarSovereign": {"damage_pct": 12, "speed_pct": 11}
+      },
+      "monarch_modifiers": {"damage_pct": 17, "speed_pct": 14},
+      "visual_effect": "quantum_echo"
+    },
+    {
+      "id": "Phase Step",
+      "category": "Synchronicity",
+      "min_form": "AvatarOmega",
+      "base_damage": 70,
+      "base_speed": 1.35,
+      "base_cost": 18,
+      "evolution_modifiers": {
+        "AvatarInfinity": {"speed_pct": 7},
+        "AvatarOmegaPlus": {"damage_pct": 4, "speed_pct": 11},
+        "AvatarSovereign": {"damage_pct": 8, "speed_pct": 15}
+      },
+      "monarch_modifiers": {"damage_pct": 13, "speed_pct": 18},
+      "visual_effect": "phase_step"
+    },
+    {
+      "id": "Dimensional Tear",
+      "category": "Synchronicity",
+      "min_form": "AvatarSovereign",
+      "base_damage": 168,
+      "base_speed": 1.0,
+      "base_cost": 62,
+      "evolution_modifiers": {
+        "AvatarSovereign": {"damage_pct": 18, "speed_pct": 8}
+      },
+      "monarch_modifiers": {"damage_pct": 26, "speed_pct": 12},
+      "visual_effect": "dimensional_tear"
+    }
+  ]
+}

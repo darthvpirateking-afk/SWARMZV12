@@ -40,7 +40,8 @@ class Database:
     def update_mission(self, mission_id: str, updates: Dict[str, Any]):
         missions = self.load_all_missions()
         for mission in missions:
-            if mission["id"] == mission_id:
+            mid = mission.get("id") or mission.get("mission_id")
+            if mid == mission_id:
                 mission.update(updates)
                 mission["updated_at"] = datetime.now().isoformat()
 
@@ -77,13 +78,14 @@ class Database:
     def get_mission(self, mission_id: str) -> Optional[Dict[str, Any]]:
         missions = self.load_all_missions()
         for mission in missions:
-            if mission["id"] == mission_id:
+            mid = mission.get("id") or mission.get("mission_id")
+            if mid == mission_id:
                 return mission
         return None
 
     def get_active_missions(self) -> List[Dict[str, Any]]:
         missions = self.load_all_missions()
-        return [m for m in missions if m["status"] == "active"]
+        return [m for m in missions if m.get("status") == "active"]
 
     def log_audit(self, entry: AuditEntry):
         with open(self.audit_file, "a") as f:

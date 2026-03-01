@@ -1,0 +1,40 @@
+﻿{
+    "id":  "archive.hidden.vault_01",
+    "name":  "Hidden Vault 01",
+    "origin":  "sealed text archive",
+    "symbolic_role":  "restricted symbolic shelf",
+    "domains":  [
+                    "archive",
+                    "governance"
+                ],
+    "entities":  [
+                     "sealed.note"
+                 ],
+    "correspondences":  {
+                            "access":  "operator-approved",
+                            "scope":  "symbolic"
+                        },
+    "geometry":  {
+                     "points":  [
+
+                                ],
+                     "lines":  [
+
+                               ]
+                 },
+    "runtime_hooks":  {
+                          "on_invoke":  true,
+                          "on_consult":  true,
+                          "on_symbolic_interpretation":  true,
+                          "on_generate_geometry":  true,
+                          "on_trigger_anomaly":  true,
+                          "on_resolve_correspondence":  true,
+                          "on_render_altar_mode":  true,
+                          "on_simulate_branch":  true
+                      },
+    "cockpit_modes":  [
+                          "archive-vault"
+                      ],
+    "operator_approval_required":  true
+}
+

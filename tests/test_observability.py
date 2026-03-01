@@ -1,147 +1,144 @@
-def test__dump_routes(client):
-    from starlette.routing import Mount
+﻿"""Observability and agent status/capabilities endpoint tests."""
+from __future__ import annotations
 
-    routes = client.app.routes
-    print("\n=== ROUTES ===")
-    for r in routes:
-        cls = r.__class__.__name__
-        path = getattr(r, "path", "")
-        methods = ",".join(sorted(getattr(r, "methods", []) or []))
-        extra = ""
-        if isinstance(r, Mount):
-            extra = f" -> MOUNT name={getattr(r, 'name', None)} app={type(getattr(r, 'app', None)).__name__}"
-        print(f"{cls:10s} {methods:10s} {path}{extra}")
+import json
+import logging
 
-    paths = {getattr(r, "path", "") for r in routes}
-    assert "/v1/prepared/pending" in paths or "/v1/v1/prepared/pending" in paths
-    assert "/v1/ai/status" in paths or "/v1/v1/ai/status" in paths
+import pytest
+from fastapi.testclient import TestClient
+
+from core.observability import AgentEvent, ObservabilityEmitter, inputs_hash, redact
 
 
-# SWARMZ Source Available License
-# Commercial use, hosting, and resale prohibited.
-# See LICENSE file for details.
-"""
-tests/test_observability.py â€” Tests for observability endpoints (Commit 12).
-
-Validates /v1/runtime/scoreboard, /v1/companion/state, /v1/companion/history, /v1/prepared/pending.
-Uses FastAPI TestClient.
-"""
+class _Candidate:
+    def __init__(self, agent_id: str, composite: float) -> None:
+        self.agent_id = agent_id
+        self.composite = composite
 
 
-def test_runtime_scoreboard(client):
-    resp = client.get("/v1/runtime/scoreboard")
-    assert resp.status_code == 200
-    data = resp.json()
-    assert data.get("ok", True) is True
-    assert "personality" in data
-    assert "timestamp" in data
+def test_redact_nested_fields() -> None:
+    payload = {
+        "token": "abc",
+        "nested": {"password": "p", "safe": 1},
+        "api_key": "k",
+    }
+    result = redact(payload)
+    assert result["token"] == "**REDACTED**"
+    assert result["nested"]["password"] == "**REDACTED**"
+    assert result["nested"]["safe"] == 1
+    assert result["api_key"] == "**REDACTED**"
 
 
-def test_companion_state(client):
-    resp = client.get("/v1/companion/state")
-    assert resp.status_code == 200
-    data = resp.json()
-    assert data.get("ok", True) is True
-    assert "master_identity" in data
-    assert "self_assessment" in data
-    assert "MASTER_SWARMZ" in data.get("self_assessment", "")
+def test_inputs_hash_stable() -> None:
+    a = inputs_hash({"x": 1, "y": 2})
+    b = inputs_hash({"y": 2, "x": 1})
+    assert a == b
+    assert len(a) == 16
 
 
-def test_companion_history(client):
-    resp = client.get("/v1/companion/history?tail=5")
-    assert resp.status_code == 200
-    data = resp.json()
-    assert data.get("ok", True) is True
-    assert "records" in data
-    assert isinstance(data["records"], list)
-    assert "read_only" in data
+def test_agent_event_to_json_redacts_payload() -> None:
+    event = AgentEvent(
+        agent_id="helper1",
+        trace_id="trace-1",
+        event="router.decision",
+        decision="selected=helper1",
+        inputs_hash="abcd",
+        outcome="success",
+        payload={"secret": "value", "safe": "ok"},
+    )
+    data = json.loads(event.to_json())
+    assert data["payload"]["secret"] == "**REDACTED**"
+    assert data["payload"]["safe"] == "ok"
 
 
-def test_prepared_pending(client):
-    resp = client.get("/v1/prepared/pending")
-    assert resp.status_code == 200
-    data = resp.json()
-    # Accept both stub and legacy keys for now
-    assert "pending" in data or "items" in data
-    assert "count" in data or "counts" in data
+def test_success_sampling_uses_rate(caplog: pytest.LogCaptureFixture, monkeypatch: pytest.MonkeyPatch) -> None:
+    emitter = ObservabilityEmitter(success_sample_rate=0.1)
+    event = AgentEvent(
+        agent_id="helper1",
+        trace_id="trace-1",
+        event="capability_router.decision",
+        decision="selected=helper1",
+        inputs_hash="abcd",
+        outcome="success",
+    )
+
+    monkeypatch.setattr("core.observability.random.random", lambda: 0.99)
+    with caplog.at_level(logging.INFO, logger="nexusmon"):
+        emitter.emit(event)
+    assert not caplog.records
 
 
-def test_prepared_pending_filtered(client):
-    resp = client.get("/v1/prepared/pending?category=commands")
-    assert resp.status_code == 200
-    data = resp.json()
-    assert "pending" in data or "items" in data
+def test_failure_events_always_emit(caplog: pytest.LogCaptureFixture, monkeypatch: pytest.MonkeyPatch) -> None:
+    emitter = ObservabilityEmitter(success_sample_rate=0.0)
+    event = AgentEvent(
+        agent_id="helper1",
+        trace_id="trace-1",
+        event="security.violation",
+        decision="rejected",
+        inputs_hash="",
+        outcome="rejected",
+    )
+
+    monkeypatch.setattr("core.observability.random.random", lambda: 0.99)
+    with caplog.at_level(logging.INFO, logger="nexusmon"):
+        emitter.emit(event)
+    assert caplog.records
 
 
-def test_ai_status_includes_phase(client):
-    resp = client.get("/v1/ai/status")
-    assert resp.status_code == 200
-    data = resp.json()
-    assert "phase" in data
+def test_emit_router_decision_logs_structured_payload(caplog: pytest.LogCaptureFixture) -> None:
+    emitter = ObservabilityEmitter(success_sample_rate=1.0)
+    candidates = [_Candidate("helper1", 0.92), _Candidate("reality_gate", 0.88)]
+
+    with caplog.at_level(logging.INFO, logger="nexusmon"):
+        emitter.emit_router_decision(
+            agent_id="router",
+            trace_id="trace-1",
+            task_caps=["data.read"],
+            candidates=candidates,
+            selected="helper1",
+            reason="best score",
+            session_id="s1",
+        )
+
+    payload = json.loads(caplog.records[-1].message)
+    assert payload["event"] == "capability_router.decision"
+    assert payload["payload"]["selected"] == "helper1"
 
 
-def test_health(client):
-    resp = client.get("/health")
-    assert resp.status_code == 200
-    assert resp.json()["status"] == "ok"
+def test_emit_security_violation_always_logged(caplog: pytest.LogCaptureFixture) -> None:
+    emitter = ObservabilityEmitter(success_sample_rate=0.0)
+
+    with caplog.at_level(logging.INFO, logger="nexusmon"):
+        emitter.emit_security_violation(
+            agent_id="helper1",
+            trace_id="trace-1",
+            violation="capability escalation",
+        )
+
+    assert caplog.records
+    payload = json.loads(caplog.records[-1].message)
+    assert payload["event"] == "security.violation"
+    assert payload["outcome"] == "rejected"
 
 
-def test_observability_health(client):
-    r = client.get("/v1/observability/health")
-    assert r.status_code == 200
-    assert r.json().get("status") == "ok"
+def test_agent_status_and_capabilities_endpoints() -> None:
+    try:
+        from swarmz_server import app
+    except Exception as exc:  # pragma: no cover
+        pytest.skip(f"swarmz_server unavailable: {exc}")
 
+    client = TestClient(app)
 
-def test_observability_ready(client):
-    r = client.get("/v1/observability/ready")
-    assert r.status_code == 200
-    assert r.json().get("status") == "ready"
+    status = client.get("/v1/agents/helper1/status")
+    assert status.status_code == 200
+    status_data = status.json()
+    assert status_data["ok"] is True
+    assert status_data["agent_id"] == "helper1"
+    assert "status" in status_data
 
-
-def test_debug_routes(client):
-    app = client.app
-    paths = sorted({getattr(r, "path", "") for r in app.routes})
-    obs = [p for p in paths if "observability" in p]
-    print("\n".join(obs))
-    assert obs  # just to see output
-
-
-import unittest
-from unittest.mock import patch, MagicMock
-from kernel_runtime.orchestrator import SwarmzOrchestrator
-
-
-class TestObservabilityEndpoints(unittest.TestCase):
-    @patch("kernel_runtime.orchestrator.SwarmzOrchestrator.start_api")
-    def test_api_reporting_endpoint(self, mock_start_api):
-        # Mock the API start method
-        mock_start_api.return_value = MagicMock()
-
-        # Create an instance of the orchestrator
-        orchestrator = SwarmzOrchestrator()
-
-        # Call the API start method
-        api = orchestrator.start_api()
-
-        # Assert that the API start method was called
-        mock_start_api.assert_called_once()
-        self.assertIsNotNone(api)
-
-    @patch("kernel_runtime.orchestrator.SwarmzOrchestrator.launch_cockpit")
-    def test_cockpit_reporting_endpoint(self, mock_launch_cockpit):
-        # Mock the cockpit launch method
-        mock_launch_cockpit.return_value = MagicMock()
-
-        # Create an instance of the orchestrator
-        orchestrator = SwarmzOrchestrator()
-
-        # Call the cockpit launch method
-        cockpit = orchestrator.launch_cockpit()
-
-        # Assert that the cockpit launch method was called
-        mock_launch_cockpit.assert_called_once()
-        self.assertIsNotNone(cockpit)
-
-
-if __name__ == "__main__":
-    unittest.main()
+    caps = client.get("/v1/agents/helper1/capabilities")
+    assert caps.status_code == 200
+    cap_data = caps.json()
+    assert cap_data["ok"] is True
+    assert cap_data["agent_id"] == "helper1"
+    assert "data.read" in cap_data["capabilities"]

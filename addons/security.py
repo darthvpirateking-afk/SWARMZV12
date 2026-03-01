@@ -254,14 +254,13 @@ def create_access_token(
 def decode_access_token(token: str) -> TokenData:
     secret = _jwt_secret()
     if not secret:
-        raise HTTPException(status_code=401, detail="JWT auth not configured")
+        raise HTTPException(status_code=401, detail="Authentication required")
     try:
         payload = jwt.decode(token, secret, algorithms=[_jwt_algorithm()])
         return TokenData(**payload)
-    except ExpiredSignatureError:
-        raise HTTPException(status_code=401, detail="Token expired")
-    except (DecodeError, InvalidTokenError, ValueError):
-        raise HTTPException(status_code=401, detail="Invalid token")
+    except (DecodeError, ExpiredSignatureError, InvalidTokenError, ValueError):
+        # Use generic error message to prevent timing attacks
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
 
 
 def get_current_user(request: Request) -> Optional[TokenData]:

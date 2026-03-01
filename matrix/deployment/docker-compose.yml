@@ -34,12 +34,5 @@ services:
     ports:
       - "8000:8000"
 
-  ui:
-    build: ./ui
-    ports:
-      - "5173:5173"
-    depends_on:
-      - backend
-
 volumes:
   postgres_data:

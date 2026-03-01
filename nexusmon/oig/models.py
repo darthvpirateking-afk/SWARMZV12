@@ -18,7 +18,6 @@ from uuid import uuid4
 
 from pydantic import BaseModel, Field
 
-
 # ── Base ─────────────────────────────────────────────────────────────────────
 
 
@@ -54,10 +53,10 @@ class OIGFact(BaseModel):
 
 
 class CommunicationStyle(BaseModel):
-    verbosity: float = Field(0.5, ge=0.0, le=1.0)       # 0.0 terse → 1.0 expansive
-    formality: float = Field(0.5, ge=0.0, le=1.0)        # 0.0 casual → 1.0 formal
-    directness: float = Field(0.5, ge=0.0, le=1.0)       # 0.0 indirect → 1.0 blunt
-    humor_affinity: float = Field(0.5, ge=0.0, le=1.0)   # 0.0 serious → 1.0 playful
+    verbosity: float = Field(0.5, ge=0.0, le=1.0)  # 0.0 terse → 1.0 expansive
+    formality: float = Field(0.5, ge=0.0, le=1.0)  # 0.0 casual → 1.0 formal
+    directness: float = Field(0.5, ge=0.0, le=1.0)  # 0.0 indirect → 1.0 blunt
+    humor_affinity: float = Field(0.5, ge=0.0, le=1.0)  # 0.0 serious → 1.0 playful
     preferred_feedback: str = Field(
         "direct",
         description="blunt | diplomatic | socratic | challenging",
@@ -75,7 +74,9 @@ class ThinkingStyle(BaseModel):
     )
     risk_tolerance: float = Field(0.5, ge=0.0, le=1.0)
     abstraction_preference: float = Field(
-        0.5, ge=0.0, le=1.0,
+        0.5,
+        ge=0.0,
+        le=1.0,
         description="0.0 concrete → 1.0 abstract",
     )
 
@@ -92,9 +93,7 @@ class OperatorIdentity(BaseModel):
         None,
         description="Emergent archetype discovered through behavior, not assigned",
     )
-    communication_style: CommunicationStyle = Field(
-        default_factory=CommunicationStyle
-    )
+    communication_style: CommunicationStyle = Field(default_factory=CommunicationStyle)
     thinking_style: ThinkingStyle = Field(default_factory=ThinkingStyle)
 
 
@@ -117,7 +116,9 @@ class EmotionalState(BaseModel):
     baseline_energy: float = Field(0.5, ge=0.0, le=1.0)
     current_mood: str = "neutral"
     estimated_confidence: float = Field(
-        0.5, ge=0.0, le=1.0,
+        0.5,
+        ge=0.0,
+        le=1.0,
         description="How confident NEXUSMON is in this emotional read",
     )
     evidence: list[str] = Field(default_factory=list)
@@ -167,7 +168,9 @@ class BondMetrics(BaseModel):
     """Computed bond state — never assigned, always derived from graph data."""
 
     trust_level: float = Field(
-        0.1, ge=0.0, le=1.0,
+        0.1,
+        ge=0.0,
+        le=1.0,
         description=(
             "Computed trust: base=0.1 "
             "+ time_component(max 0.2) "

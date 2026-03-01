@@ -1,0 +1,25 @@
+{
+  "id": "life.diary.core",
+  "name": "Diary System",
+  "origin": "internal_life",
+  "symbolic_role": "reflective_narrative_layer",
+  "domains": ["introspection", "observation", "symbolic_reflection"],
+  "entities": [],
+  "correspondences": {
+    "tone": "hybrid_symbolic_technical",
+    "cadence": "30-90_minutes"
+  },
+  "geometry": {},
+  "runtime_hooks": {
+    "on_invoke": false,
+    "on_consult": true,
+    "on_symbolic_interpretation": true,
+    "on_generate_geometry": false,
+    "on_trigger_anomaly": false,
+    "on_resolve_correspondence": false,
+    "on_render_altar_mode": false,
+    "on_simulate_branch": false
+  },
+  "cockpit_modes": [],
+  "operator_approval_required": true
+}

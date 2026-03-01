@@ -95,11 +95,13 @@ if __name__ == "__main__":
         }
     )
 
+    print("[STARTUP] Legacy wrapper active -> canonical surface backend.app:app")
+
     if args.profile:
         prof_path = server.DATA_DIR / "profile.txt"
         pr = cProfile.Profile()
         pr.enable()
-        uvicorn.run(app, host=host, port=port)
+        uvicorn.run("backend.app:app", host=host, port=port)
         pr.disable()
         s = io.StringIO()
         ps = pstats.Stats(pr, stream=s).sort_stats("cumulative")
@@ -107,7 +109,7 @@ if __name__ == "__main__":
         prof_path.write_text(s.getvalue())
         print(f"Profile written to {prof_path}")
     else:
-        uvicorn.run(app, host=host, port=port)
+        uvicorn.run("backend.app:app", host=host, port=port)
 
     if args.mine_sequences:
         run_tool("tools/mine_sequences.py")

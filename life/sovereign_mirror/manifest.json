@@ -1,0 +1,40 @@
+﻿{
+    "id":  "life.sovereign_mirror",
+    "name":  "Sovereign Mirror",
+    "origin":  "internal life systems",
+    "symbolic_role":  "operator influence reflector",
+    "domains":  [
+                    "operator",
+                    "patterns"
+                ],
+    "entities":  [
+                     "approval_tracker"
+                 ],
+    "correspondences":  {
+                            "rejections":  "tracked",
+                            "approvals":  "tracked"
+                        },
+    "geometry":  {
+                     "points":  [
+
+                                ],
+                     "lines":  [
+
+                               ]
+                 },
+    "runtime_hooks":  {
+                          "on_render_altar_mode":  false,
+                          "on_resolve_correspondence":  false,
+                          "on_simulate_branch":  false,
+                          "on_generate_geometry":  false,
+                          "on_consult":  true,
+                          "on_invoke":  false,
+                          "on_symbolic_interpretation":  true,
+                          "on_trigger_anomaly":  false
+                      },
+    "cockpit_modes":  [
+                          "sovereign-mirror"
+                      ],
+    "operator_approval_required":  true
+}
+

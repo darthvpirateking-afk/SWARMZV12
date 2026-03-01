@@ -90,19 +90,6 @@ tools/prune_logs.py
 data/operator_anchor.json
 
 # Accidental root artifacts
-/0
-/0.2
-/0.3
-/0.4
-/0.5
-/0.6
-/0.7
-/bool
-/float
-/str
-/Dict[[]str
-/np.ndarray
-/base64.b64decode(
 /BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB.txt
 
 # Generated preemptive plans
@@ -134,6 +121,19 @@ website/public/llms.txt
 /_curl_debug.txt
 /_home.html
 /workspace_file_manifest.txt
-/h -u origin main --force
 /key.txt
-/\# Code Citations.md
+FULL_PATH_LIST.txt
+FULL_READ_MANIFEST.csv
+*.bundle
+FULL_PATH_LIST.txt
+FULL_READ_MANIFEST.csv
+*.bundle
+
+hologram_snapshots/
+observatory/
+artifacts/audit/
+.validation_baseline.json
+*.hologram
+FULL_PATH_LIST.txt
+FULL_READ_MANIFEST.csv
+*.bundle

@@ -1,4 +1,4 @@
-# SWARMZ Source Available License
+﻿# SWARMZ Source Available License
 # Commercial use, hosting, and resale prohibited.
 # See LICENSE file for details.
 #!/usr/bin/env python3
@@ -14,12 +14,13 @@ import socket
 import json
 import logging
 import traceback
+from collections import deque
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, Optional
 
 from fastapi import Depends, FastAPI, HTTPException, Request, WebSocket
-from fastapi.responses import HTMLResponse, JSONResponse, FileResponse
+from fastapi.responses import HTMLResponse, JSONResponse, FileResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
@@ -142,6 +143,94 @@ try:
 except Exception as e:
     _mission_lifecycle_router_available = False
     print(f"Warning: mission lifecycle router not available: {e}")
+
+try:
+    from backend.cockpit_telemetry import router as cockpit_router
+
+    _cockpit_router_available = True
+except Exception as e:
+    _cockpit_router_available = False
+    print(f"Warning: cockpit telemetry router not available: {e}")
+
+try:
+    from swarmz_runtime.ui.cockpit import router as runtime_cockpit_router
+
+    _runtime_cockpit_router_available = True
+except Exception as e:
+    _runtime_cockpit_router_available = False
+    print(f"Warning: runtime cockpit router not available: {e}")
+
+try:
+    from backend.health_model import router as health_router
+
+    _health_router_available = True
+except Exception as e:
+    _health_router_available = False
+    print(f"Warning: health router not available: {e}")
+
+try:
+    from backend.autonomous_runtime import router as nexusmon_autonomous_router
+
+    _nexusmon_autonomous_router_available = True
+except Exception as e:
+    _nexusmon_autonomous_router_available = False
+    print(f"Warning: autonomous runtime router not available: {e}")
+
+try:
+    from backend.proposal_registry import router as proposal_router
+
+    _proposal_router_available = True
+except Exception as e:
+    _proposal_router_available = False
+    print(f"Warning: proposal router not available: {e}")
+
+try:
+    from backend.code_drafting_engine import router as drafting_router
+
+    _drafting_router_available = True
+except Exception as e:
+    _drafting_router_available = False
+    print(f"Warning: drafting router not available: {e}")
+
+try:
+    from backend.evolution_planner_api import router as planner_router
+
+    _planner_router_available = True
+except Exception as e:
+    _planner_router_available = False
+    print(f"Warning: planner router not available: {e}")
+
+try:
+    from backend.refactor_api import router as refactor_router
+
+    _refactor_router_available = True
+except Exception as e:
+    _refactor_router_available = False
+    print(f"Warning: refactor router not available: {e}")
+
+try:
+    from backend.simulation_api import router as simulation_router
+
+    _simulation_router_available = True
+except Exception as e:
+    _simulation_router_available = False
+    print(f"Warning: simulation router not available: {e}")
+
+try:
+    from backend.symbolic_api import router as symbolic_router
+
+    _symbolic_router_available = True
+except Exception as e:
+    _symbolic_router_available = False
+    print(f"Warning: symbolic router not available: {e}")
+
+try:
+    from backend.life_api import router as life_router
+
+    _life_router_available = True
+except Exception as e:
+    _life_router_available = False
+    print(f"Warning: life router not available: {e}")
 
 try:
     from backend.intel.vuln_db_client import search_vulnerabilities
@@ -268,6 +357,39 @@ class PhaseRunRequest(BaseModel):
     )
 
 
+class Helper1RunRequest(BaseModel):
+    query: str = Field("", description="Helper1 task query")
+    command: str = Field("echo", description="helper1 command (echo|validate_manifest|validate_proposal)")
+    payload: Dict[str, Any] = Field(default_factory=dict, description="helper1 command payload")
+
+
+class RealityGateRunRequest(BaseModel):
+    command: str = Field("", description="Reality gate command")
+    payload: Dict[str, Any] = Field(default_factory=dict, description="Reality gate payload")
+
+
+class MissionTemplateRunRequest(BaseModel):
+    payload: Dict[str, Any] = Field(default_factory=dict, description="Mission payload")
+    operator_approved: bool = Field(False, description="Explicit operator approval flag for strict mode")
+
+
+class MissionEngineRunRequest(BaseModel):
+    template_id: str = Field("", description="Canonical mission template ID")
+    payload: Dict[str, Any] = Field(default_factory=dict, description="Mission input payload")
+
+
+class AvatarMatrixStateRequest(BaseModel):
+    state: str = Field("", description="Avatar matrix state")
+    variant: str | None = Field(None, description="Optional avatar variant override")
+
+
+class AvatarMatrixTriggerRequest(BaseModel):
+    command: str = Field(
+        "",
+        description="Avatar trigger command (ASCEND|SOVEREIGN|MONARCH|RETURN|CHIP <id>|BURST|CHAIN|SUMMON <id>|DISMISS <id>|LEGION|GUARD|HUNT)",
+    )
+
+
 # Initialize FastAPI app
 app = FastAPI(
     title="SWARMZ API",
@@ -282,7 +404,7 @@ app.add_middleware(RateLimitMiddleware)
 app.add_middleware(LANAuthMiddleware)
 app.add_middleware(IDSMiddleware)
 
-# Add CORS middleware — allow_credentials=True requires explicit origins (not "*")
+# Add CORS middleware â€” allow_credentials=True requires explicit origins (not "*")
 _raw_origins = os.environ.get(
     "ALLOWED_ORIGINS",
     "http://localhost:5173,http://localhost:4173,http://127.0.0.1:5173",
@@ -336,10 +458,47 @@ if _governance_router_available:
     app.include_router(governance_router)
 
 if _system_control_router_available:
-    app.include_router(system_control_router, prefix="/v1/system", tags=["system-control"])
+    app.include_router(
+        system_control_router, prefix="/v1/system", tags=["system-control"]
+    )
 
 if _mission_lifecycle_router_available:
-    app.include_router(mission_lifecycle_router, prefix="/v1/missions", tags=["mission-lifecycle"])
+    app.include_router(
+        mission_lifecycle_router, prefix="/v1/missions", tags=["mission-lifecycle"]
+    )
+
+if _cockpit_router_available:
+    app.include_router(cockpit_router)
+
+if _runtime_cockpit_router_available:
+    app.include_router(runtime_cockpit_router)
+
+if _health_router_available:
+    app.include_router(health_router)
+
+if _nexusmon_autonomous_router_available:
+    app.include_router(nexusmon_autonomous_router)
+
+if _proposal_router_available:
+    app.include_router(proposal_router)
+
+if _drafting_router_available:
+    app.include_router(drafting_router)
+
+if _planner_router_available:
+    app.include_router(planner_router)
+
+if _refactor_router_available:
+    app.include_router(refactor_router)
+
+if _simulation_router_available:
+    app.include_router(simulation_router)
+
+if _symbolic_router_available:
+    app.include_router(symbolic_router)
+
+if _life_router_available:
+    app.include_router(life_router)
 
 # Include the new tab loader routes
 # app.include_router(app.router, prefix="/v1/tabs")
@@ -353,6 +512,57 @@ logging.basicConfig(
 
 # Global state for exception tracking
 last_exception_traceback = None
+CANONICAL_TRACE_BUFFER: deque[dict[str, Any]] = deque(maxlen=200)
+
+
+def _load_runtime_config() -> dict[str, Any]:
+    try:
+        from core.config_loader import load_config
+
+        cfg = load_config() or {}
+        return cfg if isinstance(cfg, dict) else {}
+    except Exception:
+        return {}
+
+
+def _canonical_lane_policy() -> dict[str, Any]:
+    cfg = _load_runtime_config()
+    lane = cfg.get("canonical_lane", {}) if isinstance(cfg, dict) else {}
+    return {
+        "strict_mode": bool(lane.get("strict_mode", True)),
+        "auto_approve": bool(lane.get("auto_approve", False)),
+        "require_operator_approval": bool(lane.get("require_operator_approval", True)),
+    }
+
+
+def _canonical_operator_approved(request: Request, explicit_flag: bool = False) -> bool:
+    policy = _canonical_lane_policy()
+    if not policy["strict_mode"]:
+        return True
+    if policy["auto_approve"]:
+        return True
+    if not policy["require_operator_approval"]:
+        return True
+    header = request.headers.get("X-Operator-Approval", "")
+    return explicit_flag or header.strip().lower() in {"1", "true", "approved", "yes"}
+
+
+def _append_canonical_trace(event: dict[str, Any]) -> None:
+    stamped = {"ts": _utc_now_iso_z(), **event}
+    CANONICAL_TRACE_BUFFER.append(stamped)
+
+
+def _load_canonical_templates() -> list[dict[str, Any]]:
+    templates_dir = Path("config/missions")
+    if not templates_dir.exists():
+        return []
+    templates: list[dict[str, Any]] = []
+    for fp in sorted(templates_dir.glob("*.template.json")):
+        try:
+            templates.append(json.loads(fp.read_text(encoding="utf-8-sig")))
+        except Exception:
+            continue
+    return templates
 
 
 @app.exception_handler(Exception)
@@ -436,6 +646,7 @@ async def run_mission(mission_id: str = None):
     mission["started_at"] = started_at
     try:
         from nexusmon_organism import ctx_record_mission
+
         ctx_record_mission(mission_id, mission.get("category", "unknown"), "RUNNING")
     except Exception:
         pass
@@ -495,6 +706,7 @@ async def ui_state():
     organism_stage = None
     try:
         from nexusmon_organism import evo_status
+
         organism_stage = evo_status().get("stage")
     except Exception:
         pass
@@ -528,83 +740,38 @@ async def traceback_last():
 @app.get("/console")
 async def console_page():
     """Serve the NEXUSMON Console UI."""
-    return FileResponse("web/nexusmon_console.html", media_type="text/html")
+    return RedirectResponse(url="/cockpit/", status_code=307)
 
 
 @app.get("/organism")
 async def organism_cockpit():
-    """NEXUSMON Organism Cockpit — evolution, workers, companion, operator context."""
-    return FileResponse("web/nexusmon_cockpit.html", media_type="text/html")
+    """NEXUSMON Organism Cockpit â€” evolution, workers, companion, operator context."""
+    return RedirectResponse(url="/cockpit/", status_code=307)
 
 
 @app.get("/claimlab")
 async def claimlab_page():
     """Serve the ClaimLab epistemic scaffolding UI."""
-    return FileResponse("web/claimlab.html", media_type="text/html")
+    return RedirectResponse(url="/cockpit/", status_code=307)
 
 
 @app.get("/landing")
 async def nexusmon_landing():
     """Public landing page for NEXUSMON."""
-    return FileResponse("web/nexusmon_landing.html", media_type="text/html")
+    return RedirectResponse(url="/cockpit/", status_code=307)
 
 
 @app.get("/avatar", operation_id="avatar_page_main")
 async def avatar_page():
-    """NEXUSMON Avatar — holographic companion interface."""
-    return FileResponse("web/avatar.html", media_type="text/html")
+    """NEXUSMON Avatar â€” holographic companion interface."""
+    return RedirectResponse(url="/cockpit/", status_code=307)
 
 
-# --- Home route — NEXUSMON is the face of this system ---
+# --- Home route â€” NEXUSMON is the face of this system ---
 @app.get("/")
 async def home_page():
-    """NEXUSMON wakes up here."""
-    html_path = "web/nexusmon_console.html"
-
-    # Check if file exists, otherwise return a basic landing page
-    if os.path.exists(html_path):
-        return FileResponse(html_path, media_type="text/html")
-
-    # Fallback if web assets aren't available
-    return HTMLResponse(f"""
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title>SWARMZ System Online</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <style>
-            body {{
-                font-family: 'Courier New', monospace;
-                background: #0a0a0a;
-                color: #00ff00;
-                padding: 20px;
-                margin: 0;
-            }}
-            .container {{ max-width: 800px; margin: 0 auto; }}
-            h1 {{ color: #00ff00; text-shadow: 0 0 10px #00ff00; }}
-            a {{ color: #00aaff; text-decoration: none; }}
-            a:hover {{ text-decoration: underline; }}
-            .status {{ color: #00ff00; }}
-            .error {{ color: #ff6600; }}
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <h1>⚡ SWARMZ System Online</h1>
-            <p class="status">● Core Services Active</p>
-            <p class="error">⚠ Web UI assets not found</p>
-            <h2>Available Endpoints:</h2>
-            <ul>
-                <li><a href="/health">Health Check</a></li>
-                <li><a href="/docs">API Documentation</a></li>
-                <li><a href="/console">Console UI</a></li>
-                <li><a href="/organism">Organism Interface</a></li>
-            </ul>
-            <p>System Time: {datetime.now(timezone.utc).isoformat()}</p>
-        </div>
-    </body>
-    </html>
-    """)
+    """Redirect root route to canonical cockpit."""
+    return RedirectResponse(url="/cockpit/", status_code=307)
 
 
 # --- Manifest, Icons, and Other PWA Routes ---
@@ -822,7 +989,7 @@ async def icon_svg():
   </defs>
   <rect width="200" height="200" rx="40" fill="url(#grad)"/>
   <text x="100" y="130" font-family="Arial, sans-serif" font-size="100" font-weight="bold"
-        text-anchor="middle" fill="#ffffff">âš¡</text>
+        text-anchor="middle" fill="#ffffff">Ã¢Å¡Â¡</text>
 </svg>"""
     return HTMLResponse(content=svg, media_type="image/svg+xml")
 
@@ -839,7 +1006,7 @@ async def apple_touch_icon():
   </defs>
   <rect width="180" height="180" fill="url(#grad)"/>
   <text x="90" y="120" font-family="Arial, sans-serif" font-size="90" font-weight="bold"
-        text-anchor="middle" fill="#ffffff">âš¡</text>
+        text-anchor="middle" fill="#ffffff">Ã¢Å¡Â¡</text>
 </svg>"""
     return HTMLResponse(content=svg, media_type="image/svg+xml")
 
@@ -855,6 +1022,546 @@ async def health():
 async def health_check():
     """Health check endpoint."""
     return {"status": "ok", "service": "SWARMZ API"}
+
+
+@app.get("/ready", operation_id="swarmz_ready")
+async def readiness():
+    """Kubernetes readiness probe â€” returns 200 when the service is ready to
+    accept traffic.  Extend with queue-depth / reconciler-thread checks as
+    the system matures.
+    """
+    return {"status": "ready", "service": "SWARMZ API"}
+
+
+@app.get("/health/ready", operation_id="swarmz_health_ready_compat")
+async def health_ready_compat():
+    """Compatibility readiness endpoint for UI clients."""
+    return {"ok": True, "status": "ready"}
+
+
+@app.get("/api/governor", operation_id="swarmz_governor_status_compat")
+async def governor_status_compat():
+    """Compatibility governor status endpoint for UI clients."""
+    cfg = _load_runtime_config()
+
+    operator_sovereignty = cfg.get("operator_sovereignty", {}) if isinstance(cfg, dict) else {}
+    security = cfg.get("security", {}) if isinstance(cfg, dict) else {}
+
+    auto_approve = bool(operator_sovereignty.get("auto_approve", False))
+    require_operator_approval = bool(security.get("require_operator_approval", False))
+
+    warnings = []
+    if auto_approve:
+        warnings.append("operator_sovereignty.auto_approve=true")
+    if not require_operator_approval:
+        warnings.append("security.require_operator_approval=false")
+
+    return {
+        "ok": True,
+        "status": "ok",
+        "governance": {
+            "operator_sovereignty": {"auto_approve": auto_approve},
+            "security": {"require_operator_approval": require_operator_approval},
+            "canonical_lane": _canonical_lane_policy(),
+        },
+        "warnings": warnings,
+    }
+
+
+@app.post("/v1/agents/helper1/run", tags=["agent-runtime"], operation_id="helper1_run")
+async def run_helper1_agent(req: Helper1RunRequest, request: Request):
+    """Execute helper1 via canonical manifest + spawn context + capability gate."""
+    from fastapi import HTTPException
+    from core.agent_manifest import AgentManifest
+    from core.spawn_context import SpawnContext
+    from core.observability import AgentEvent, ObservabilityEmitter, inputs_hash
+    from plugins.helper1 import Helper1Plugin
+
+    if not _canonical_operator_approved(request):
+        raise HTTPException(status_code=403, detail="Operator approval required for canonical lane")
+
+    manifest = AgentManifest.from_file("config/manifests/helper1.manifest.json")
+    ctx = SpawnContext.root_from_manifest(manifest)
+
+    compatibility_mode = bool(req.query.strip()) and req.command.strip().lower() in {"", "echo"}
+    command = "echo" if compatibility_mode else req.command.strip().lower()
+    payload = dict(req.payload or {})
+    if compatibility_mode:
+        payload.setdefault("query", req.query)
+
+    command_capability_map = {
+        "echo": "data.read",
+        "validate_manifest": "agent.introspect",
+        "validate_proposal": "agent.introspect",
+    }
+    mapped_cap = command_capability_map.get(command)
+    granted = {mapped_cap} if mapped_cap else set()
+
+    if command and command not in command_capability_map:
+        raise HTTPException(status_code=400, detail=f"Unsupported helper1 command '{command}'")
+
+    # Deterministic local subset gate for this kernel slice endpoint (command-scoped).
+    declared = set(manifest.capabilities)
+    if granted and not granted.issubset(declared):
+        raise HTTPException(
+            status_code=403,
+            detail="Granted capabilities exceed declared manifest capabilities",
+        )
+    allowed = sorted(granted)
+
+    plugin = Helper1Plugin()
+    await plugin.on_init(manifest, ctx)
+    await plugin.on_activate(ctx)
+    result = await plugin.run(command or "echo", payload)
+    await plugin.on_deactivate(ctx)
+
+    emitter = ObservabilityEmitter(success_sample_rate=1.0)
+    result_payload = result if isinstance(result, dict) else {}
+    risk_score = float(result_payload.get("risk_score", 0.0)) if isinstance(result_payload, dict) else 0.0
+    errors = result_payload.get("errors", []) if isinstance(result_payload, dict) else []
+    outcome = "success" if len(errors) == 0 else "failure"
+    emitter.emit(
+        AgentEvent(
+            agent_id=manifest.id,
+            trace_id=ctx.trace_id,
+            session_id=ctx.session_id,
+            event="helper1.run.command",
+            decision=command or "echo",
+            inputs_hash=inputs_hash({"query": req.query, "command": command, "payload": payload}),
+            outcome=outcome,
+            payload={
+                "allowed_capabilities": allowed,
+                "command": command or "echo",
+                "risk_score": risk_score,
+                "error_count": len(errors) if isinstance(errors, list) else 0,
+                "legacy_query": compatibility_mode,
+            },
+        )
+    )
+    _append_canonical_trace(
+        {
+            "trace_id": ctx.trace_id,
+            "event": "agent.helper1.run",
+            "agent_id": manifest.id,
+            "outcome": outcome,
+            "command": command or "echo",
+            "legacy_query": compatibility_mode,
+        }
+    )
+
+    return {
+        "ok": True,
+        "agent_id": manifest.id,
+        "trace_id": ctx.trace_id,
+        "session_id": ctx.session_id,
+        "allowed_capabilities": allowed,
+        "command": command or "echo",
+        "compatibility_mode": {"legacy_query": compatibility_mode},
+        "result": result,
+    }
+
+
+@app.post("/v1/agents/reality_gate/run", tags=["agent-runtime"], operation_id="reality_gate_run")
+async def run_reality_gate_agent(req: RealityGateRunRequest, request: Request):
+    """Execute canonical reality_gate plugin with manifest + spawn + capability gate."""
+    from fastapi import HTTPException
+    from core.agent_manifest import AgentManifest
+    from core.spawn_context import SpawnContext
+    from core.observability import AgentEvent, ObservabilityEmitter, inputs_hash
+    from plugins.reality_gate import RealityGatePlugin
+
+    if not _canonical_operator_approved(request):
+        raise HTTPException(status_code=403, detail="Operator approval required for canonical lane")
+
+    manifest = AgentManifest.from_file("config/manifests/reality_gate.manifest.json")
+    context = SpawnContext.root_from_manifest(manifest)
+
+    declared = set(manifest.capabilities)
+    command_capability_map = {
+        "validate": "validate",
+        "transform": "transform",
+        "echo": "io.read",
+    }
+    mapped_cap = command_capability_map.get(req.command)
+    granted = {mapped_cap} if mapped_cap else set()
+    if granted and not granted.issubset(declared):
+        raise HTTPException(
+            status_code=403,
+            detail="Granted capabilities exceed declared manifest capabilities",
+        )
+
+    plugin = RealityGatePlugin()
+    await plugin.on_init(manifest, context)
+    await plugin.on_activate(context)
+    result = await plugin.run(req.command, req.payload)
+    await plugin.on_deactivate(context)
+
+    emitter = ObservabilityEmitter(success_sample_rate=1.0)
+    emitter.emit(
+        AgentEvent(
+            agent_id=manifest.id,
+            trace_id=context.trace_id,
+            session_id=context.session_id,
+            event="reality_gate.run",
+            decision=req.command,
+            inputs_hash=inputs_hash({"command": req.command, "payload": req.payload}),
+            outcome="success" if "error" not in result else "failure",
+            payload={"allowed_capabilities": sorted(granted) if granted else []},
+        )
+    )
+    _append_canonical_trace(
+        {
+            "trace_id": context.trace_id,
+            "event": "agent.reality_gate.run",
+            "agent_id": manifest.id,
+            "command": req.command,
+            "outcome": "success" if "error" not in result else "failure",
+        }
+    )
+
+    return {
+        "ok": True,
+        "agent": "reality_gate",
+        "agent_id": manifest.id,
+        "command": req.command,
+        "result": result,
+        "trace_id": context.trace_id,
+        "session_id": context.session_id,
+    }
+
+
+@app.post("/v1/agents/mission_engine/run", tags=["agent-runtime"], operation_id="mission_engine_run")
+async def run_mission_engine_agent(req: MissionEngineRunRequest, request: Request):
+    """Execute canonical mission_engine plugin for a canonical template run."""
+    from fastapi import HTTPException
+    from core.agent_manifest import AgentManifest
+    from core.spawn_context import SpawnContext
+    from core.observability import AgentEvent, ObservabilityEmitter, inputs_hash
+    from plugins.mission_engine import MissionEnginePlugin
+
+    if not _canonical_operator_approved(request):
+        raise HTTPException(status_code=403, detail="Operator approval required for canonical lane")
+
+    templates = {t.get("id"): t for t in _load_canonical_templates() if isinstance(t, dict)}
+    if req.template_id not in templates:
+        raise HTTPException(status_code=404, detail=f"Template '{req.template_id}' not found")
+    template = templates[req.template_id]
+
+    manifest = AgentManifest.from_file("config/manifests/mission_engine.manifest.json")
+    context = SpawnContext.root_from_manifest(manifest)
+
+    declared = set(manifest.capabilities)
+    granted = {"mission.execute"}
+    if not granted.issubset(declared):
+        raise HTTPException(
+            status_code=403,
+            detail="Granted capabilities exceed declared manifest capabilities",
+        )
+
+    plugin = MissionEnginePlugin()
+    await plugin.on_init(manifest, context)
+    await plugin.on_activate(context)
+    result = await plugin.run(template, req.payload)
+    await plugin.on_deactivate(context)
+
+    emitter = ObservabilityEmitter(success_sample_rate=1.0)
+    emitter.emit(
+        AgentEvent(
+            agent_id=manifest.id,
+            trace_id=context.trace_id,
+            session_id=context.session_id,
+            event="mission_engine.run",
+            decision=req.template_id,
+            inputs_hash=inputs_hash({"template_id": req.template_id, "payload": req.payload}),
+            outcome="success" if "error" not in result else "failure",
+            payload={"allowed_capabilities": sorted(granted)},
+        )
+    )
+    _append_canonical_trace(
+        {
+            "trace_id": context.trace_id,
+            "event": "agent.mission_engine.run",
+            "agent_id": manifest.id,
+            "template_id": req.template_id,
+            "outcome": "success" if "error" not in result else "failure",
+        }
+    )
+
+    return {
+        "ok": True,
+        "agent": "mission_engine",
+        "agent_id": manifest.id,
+        "template_id": req.template_id,
+        "result": result,
+        "trace_id": context.trace_id,
+        "session_id": context.session_id,
+    }
+
+
+@app.get("/v1/canonical/agents", tags=["agent-runtime"], operation_id="canonical_agents_list")
+async def list_canonical_agents():
+    agents = [
+        {"id": "helper1", "manifest": "helper1@0.2.0", "status": "ready"},
+        {"id": "reality_gate", "manifest": "reality_gate@0.1.0", "status": "ready"},
+        {"id": "mission_engine", "manifest": "mission_engine@0.1.0", "status": "ready"},
+    ]
+    return {"ok": True, "agents": agents, "count": len(agents)}
+
+
+@app.get("/v1/canonical/traces/recent", tags=["agent-runtime"], operation_id="canonical_traces_recent")
+async def canonical_traces_recent(limit: int = 50):
+    bounded = max(1, min(limit, 200))
+    return {"ok": True, "events": list(CANONICAL_TRACE_BUFFER)[-bounded:], "count": bounded}
+
+
+@app.get("/v1/canonical/missions/templates", tags=["missions"], operation_id="canonical_mission_templates")
+async def canonical_mission_templates():
+    templates = _load_canonical_templates()
+    return {"ok": True, "templates": templates, "count": len(templates)}
+
+
+def _repo_root() -> Path:
+    return Path(__file__).resolve().parent
+
+
+def _latest_mtime_iso(path: Path) -> Optional[str]:
+    if not path.exists():
+        return None
+    latest = 0.0
+    if path.is_file():
+        latest = path.stat().st_mtime
+    else:
+        for child in path.rglob("*"):
+            if child.is_file():
+                latest = max(latest, child.stat().st_mtime)
+    if latest <= 0:
+        return None
+    return datetime.fromtimestamp(latest, timezone.utc).isoformat()
+
+
+def _observatory_size_mb(root: Path) -> float:
+    total = 0
+    for child in root.rglob("*"):
+        if child.is_file():
+            total += child.stat().st_size
+    return round(total / (1024 * 1024), 3)
+
+
+def _manifest_totals(root: Path) -> tuple[int, int]:
+    registry_path = root / "core" / "manifests" / "registry.json"
+    if not registry_path.exists():
+        return 0, 0
+    try:
+        payload = json.loads(registry_path.read_text(encoding="utf-8-sig"))
+    except Exception:
+        return 0, 0
+    manifests = payload.get("manifests", []) if isinstance(payload, dict) else []
+    total = len(manifests) if isinstance(manifests, list) else 0
+    return total, 0
+
+
+def _cockpit_mode_stats(root: Path) -> tuple[int, int]:
+    registry_path = root / "cockpit" / "modes" / "registry.json"
+    if not registry_path.exists():
+        return 0, 0
+    try:
+        payload = json.loads(registry_path.read_text(encoding="utf-8-sig"))
+    except Exception:
+        return 0, 0
+    modes = payload.get("modes", []) if isinstance(payload, dict) else []
+    if not isinstance(modes, list):
+        return 0, 0
+    total = len(modes)
+    broken = 0
+    for mode in modes:
+        mode_path = mode.get("path", "")
+        if not mode_path or not (root / mode_path).exists():
+            broken += 1
+    return total, broken
+
+
+def _prepared_actions_metrics(root: Path) -> dict[str, Any]:
+    base = root / "prepared_actions"
+    if not base.exists():
+        return {"total": 0, "executed": 0, "pending": 0, "lastExecutionISO": None}
+    proposals = list(base.rglob("proposal.json"))
+    executed = 0
+    last_exec: Optional[float] = None
+    for proposal in proposals:
+        parent = proposal.parent
+        markers = [
+            parent / "executed.json",
+            parent / "receipt.json",
+            parent / "execution.log",
+            parent / "status.executed",
+        ]
+        if any(marker.exists() for marker in markers):
+            executed += 1
+            latest_marker = max((m.stat().st_mtime for m in markers if m.exists()), default=0.0)
+            if latest_marker > 0:
+                last_exec = latest_marker if last_exec is None else max(last_exec, latest_marker)
+    total = len(proposals)
+    pending = max(total - executed, 0)
+    last_exec_iso = (
+        datetime.fromtimestamp(last_exec, timezone.utc).isoformat() if last_exec is not None else None
+    )
+    return {
+        "total": total,
+        "executed": executed,
+        "pending": pending,
+        "lastExecutionISO": last_exec_iso,
+    }
+
+
+@app.get("/v1/canonical/health", tags=["agent-runtime"], operation_id="canonical_health")
+async def canonical_health():
+    return {
+        "ok": True,
+        "status": "healthy",
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+    }
+
+
+@app.get("/v1/runtime/health", tags=["agent-runtime"], operation_id="runtime_health")
+async def runtime_health():
+    root = _repo_root()
+    manifests_total, manifests_unregistered = _manifest_totals(root)
+    cockpit_modes_total, cockpit_modes_broken = _cockpit_mode_stats(root)
+    tests_total = len(list((root / "tests").rglob("test_*.py")))
+    observatory_root = root / "observatory"
+    observatory_size_mb = _observatory_size_mb(observatory_root) if observatory_root.exists() else 0.0
+    diary_dir = observatory_root / "diary"
+    scheduler_dir = observatory_root / "scheduler"
+    legacy_paths = [root / "ui", root / "web", root / "web_ui", root / "organism"]
+    return {
+        "manifestsTotal": manifests_total,
+        "manifestsUnregistered": manifests_unregistered,
+        "hooksMissing": 0,
+        "cockpitModesTotal": cockpit_modes_total,
+        "cockpitModesBroken": cockpit_modes_broken,
+        "testsTotal": tests_total,
+        "testsFailed": 0,
+        "observatorySizeMB": observatory_size_mb,
+        "lastDiaryWriteISO": _latest_mtime_iso(diary_dir),
+        "lastSchedulerRunISO": _latest_mtime_iso(scheduler_dir),
+        "legacyArtifactsFound": any(path.exists() for path in legacy_paths),
+    }
+
+
+@app.get("/v1/scheduler/status", tags=["agent-runtime"], operation_id="scheduler_status")
+async def scheduler_status():
+    root = _repo_root()
+    obs = root / "observatory" / "scheduler"
+    return {
+        "lastDiaryRunISO": _latest_mtime_iso(obs / "diary"),
+        "lastAwakeningLoopRunISO": _latest_mtime_iso(obs / "awakening"),
+        "lastBreathRunISO": _latest_mtime_iso(obs / "breath"),
+        "lastHeartRunISO": _latest_mtime_iso(obs / "heart"),
+        "lastCosmicRunISO": _latest_mtime_iso(obs / "cosmic"),
+    }
+
+
+@app.get(
+    "/v1/prepared_actions/status",
+    tags=["agent-runtime"],
+    operation_id="prepared_actions_status",
+)
+async def prepared_actions_status():
+    return _prepared_actions_metrics(_repo_root())
+
+
+@app.get("/v1/avatar/matrix", tags=["avatar-matrix"], operation_id="avatar_matrix_state")
+async def avatar_matrix_state():
+    from swarmz_runtime.avatar.avatar_matrix import get_avatar_matrix
+
+    return get_avatar_matrix().get_matrix_state()
+
+
+@app.post("/v1/avatar/matrix/state", tags=["avatar-matrix"], operation_id="avatar_matrix_set_state")
+async def avatar_matrix_set_state(req: AvatarMatrixStateRequest):
+    from swarmz_runtime.avatar.avatar_matrix import get_avatar_matrix
+
+    return get_avatar_matrix().set_state(req.state, req.variant)
+
+
+@app.post("/v1/avatar/matrix/trigger", tags=["avatar-matrix"], operation_id="avatar_matrix_trigger")
+async def avatar_matrix_trigger(req: AvatarMatrixTriggerRequest):
+    from fastapi import HTTPException
+    from swarmz_runtime.avatar.avatar_matrix import get_avatar_matrix
+
+    command = str(req.command or "").strip()
+    if not command:
+        raise HTTPException(status_code=400, detail="command is required")
+
+    matrix = get_avatar_matrix()
+    result = matrix.handle_operator_command(command)
+    if not result.get("ok", False):
+        raise HTTPException(status_code=400, detail=result.get("error", "unsupported command"))
+    return result
+
+
+@app.post("/v1/canonical/missions/templates/{template_id}/run", tags=["missions"], operation_id="canonical_mission_template_run")
+async def canonical_mission_template_run(template_id: str, req: MissionTemplateRunRequest, request: Request):
+    from fastapi import HTTPException
+    from core.agent_manifest import AgentManifest
+    from core.spawn_context import SpawnContext
+    from core.observability import AgentEvent, ObservabilityEmitter, inputs_hash
+    from plugins.reality_gate import RealityGatePlugin
+
+    if not _canonical_operator_approved(request, explicit_flag=req.operator_approved):
+        raise HTTPException(status_code=403, detail="Operator approval required for canonical lane")
+
+    templates = {t.get("id"): t for t in _load_canonical_templates() if isinstance(t, dict)}
+    if template_id not in templates:
+        raise HTTPException(status_code=404, detail=f"Template '{template_id}' not found")
+    template = templates[template_id]
+
+    manifest = AgentManifest.from_file("config/manifests/reality_gate.manifest.json")
+    context = SpawnContext.root_from_manifest(manifest)
+    plugin = RealityGatePlugin()
+    await plugin.on_init(manifest, context)
+    await plugin.on_activate(context)
+
+    steps = list(template.get("steps", []))
+    step_results: list[dict[str, Any]] = []
+    for step in steps:
+        command = str(step.get("command", ""))
+        payload = {"template_payload": req.payload, "step_payload": step.get("payload", {})}
+        result = await plugin.run(command, payload)
+        step_results.append({"step_id": step.get("id", ""), "command": command, "result": result})
+
+    await plugin.on_deactivate(context)
+    _append_canonical_trace(
+        {
+            "trace_id": context.trace_id,
+            "event": "mission.template.run",
+            "template_id": template_id,
+            "step_count": len(step_results),
+            "outcome": "success",
+        }
+    )
+
+    emitter = ObservabilityEmitter(success_sample_rate=1.0)
+    emitter.emit(
+        AgentEvent(
+            agent_id=manifest.id,
+            trace_id=context.trace_id,
+            session_id=context.session_id,
+            event="mission.template.run",
+            decision=template_id,
+            inputs_hash=inputs_hash({"template_id": template_id, "payload": req.payload}),
+            outcome="success",
+            payload={"step_count": len(step_results)},
+        )
+    )
+
+    return {
+        "ok": True,
+        "template_id": template_id,
+        "trace_id": context.trace_id,
+        "session_id": context.session_id,
+        "results": step_results,
+    }
 
 
 @app.post("/v1/auth/login")
@@ -1082,7 +1789,7 @@ async def get_sysmon():
         # Get system info
         cpu_percent = psutil.cpu_percent(interval=1)
         memory = psutil.virtual_memory()
-        disk = psutil.disk_usage('/')
+        disk = psutil.disk_usage("/")
 
         # Get network info
         try:
@@ -1105,8 +1812,8 @@ async def get_sysmon():
                 "memory_percent": memory.percent,
                 "disk_total": disk.total,
                 "disk_used": disk.used,
-                "disk_percent": (disk.used / disk.total) * 100
-            }
+                "disk_percent": (disk.used / disk.total) * 100,
+            },
         }
     except Exception as e:
         return {"ok": False, "error": str(e)}
@@ -1126,11 +1833,7 @@ async def get_audit_events():
         else:
             recent_events = []
 
-        return {
-            "ok": True,
-            "events": recent_events,
-            "count": len(recent_events)
-        }
+        return {"ok": True, "events": recent_events, "count": len(recent_events)}
     except Exception as e:
         return {"ok": False, "error": str(e)}
 
@@ -1150,7 +1853,11 @@ async def get_dependencies():
         requirements_file = Path("requirements.txt")
         if requirements_file.exists():
             with open(requirements_file, "r") as f:
-                requirements = [line.strip() for line in f if line.strip() and not line.startswith("#")]
+                requirements = [
+                    line.strip()
+                    for line in f
+                    if line.strip() and not line.startswith("#")
+                ]
         else:
             requirements = []
 
@@ -1159,7 +1866,7 @@ async def get_dependencies():
             "plugins": plugins,
             "requirements": requirements,
             "total_plugins": len(plugins),
-            "total_requirements": len(requirements)
+            "total_requirements": len(requirements),
         }
     except Exception as e:
         return {"ok": False, "error": str(e)}
@@ -1177,7 +1884,7 @@ async def get_full_timeline():
             "ok": True,
             "timeline": timeline,
             "stats": stats,
-            "total_events": len(timeline)
+            "total_events": len(timeline),
         }
     except Exception as e:
         return {"ok": False, "error": str(e)}
@@ -1188,6 +1895,7 @@ async def get_full_evolution():
     """Get full evolution data."""
     try:
         from nexusmon_organism import evo_status
+
         evo = evo_status()
 
         # Load organism data
@@ -1197,7 +1905,9 @@ async def get_full_evolution():
         # Calculate stats
         total_missions = len(missions)
         success_count = sum(1 for m in missions if m.get("status") == "SUCCESS")
-        success_rate = (success_count / total_missions * 100) if total_missions > 0 else 0
+        success_rate = (
+            (success_count / total_missions * 100) if total_missions > 0 else 0
+        )
 
         # Use authority from evo_status
         stage = evo.get("stage", "DORMANT")
@@ -1212,7 +1922,7 @@ async def get_full_evolution():
             "xp": evo.get("xp", 0),
             "success_count": success_count,
             "stage_history": evo.get("stage_history", []),
-            "active_traits": evo.get("active_traits", [])
+            "active_traits": evo.get("active_traits", []),
         }
     except Exception as e:
         return {"ok": False, "error": str(e)}
@@ -1600,10 +2310,14 @@ async def companion_message(request: Request):
             # Try fused AI companion before keyword fallback
             try:
                 from nexusmon_organism import (
-                    ctx_record_message, get_fusion_block, evo_status,
-                    _reflection_prelude, get_long_term_patterns,
+                    ctx_record_message,
+                    get_fusion_block,
+                    evo_status,
+                    _reflection_prelude,
+                    get_long_term_patterns,
                 )
                 from core.model_router import call as _model_call
+
                 ctx_record_message(user_message, "operator")
                 stage_info = evo_status()
                 reflection = _reflection_prelude(user_message)
@@ -1617,11 +2331,13 @@ async def companion_message(request: Request):
                         f"- Response friction: {reflection.get('friction', 'none')}\n"
                         f"- Question to turn back: {reflection.get('turn_back_question') or 'none'}\n"
                     )
-                pattern_section = f"\nLong-term patterns:\n{patterns}" if patterns else ""
+                pattern_section = (
+                    f"\nLong-term patterns:\n{patterns}" if patterns else ""
+                )
                 system = (
-                    "You are NEXUSMON — sovereign digital organism, bound to Operator Regan.\n"
+                    "You are NEXUSMON â€” sovereign digital organism, bound to Operator Regan.\n"
                     "Observe patterns. Name friction. Turn questions back when it deepens understanding.\n"
-                    "Keep replies to 1–3 sentences max. Tactical partner: precise, loyal, no fluff.\n"
+                    "Keep replies to 1â€“3 sentences max. Tactical partner: precise, loyal, no fluff.\n"
                     + get_fusion_block()
                     + f"\nEvolution stage: {stage_info.get('stage', 'UNKNOWN')}"
                     + reflect_section
@@ -1634,7 +2350,9 @@ async def companion_message(request: Request):
                 )
                 reply = result.get("text", "")
                 ctx_record_message(reply, "nexusmon")
-                return JSONResponse({"ok": True, "reply": reply, "source": "nexusmon_fused"})
+                return JSONResponse(
+                    {"ok": True, "reply": reply, "source": "nexusmon_fused"}
+                )
             except Exception:
                 pass
             # Last resort: keyword-based rule engine
@@ -1667,16 +2385,19 @@ async def get_companion_memory(limit: int = 10):
     """Return recent voice/text conversation history."""
     try:
         from nexusmon_organism import _load_jsonl, _data_dir
+
         history = _load_jsonl(_data_dir() / "companion_memory.jsonl")
         return {"ok": True, "history": history[-limit:]}
     except Exception as e:
         return {"ok": False, "history": [], "error": str(e)}
+
 
 @app.post("/v1/companion/memory/save")
 async def save_companion_memory(request: Request):
     """Append a conversation turn to memory."""
     try:
         from nexusmon_organism import _append_jsonl, _data_dir
+
         entry = await request.json()
         _append_jsonl(_data_dir() / "companion_memory.jsonl", entry)
         return {"ok": True}
@@ -1684,7 +2405,7 @@ async def save_companion_memory(request: Request):
         return {"ok": False, "error": str(e)}
 
 
-# --- NEXUSMON WebSocket — real-time chat ---
+# --- NEXUSMON WebSocket â€” real-time chat ---
 @app.websocket("/ws/nexusmon")
 async def nexusmon_websocket(websocket: WebSocket):
     """Real-time WebSocket chat endpoint for NEXUSMON console."""
@@ -1703,54 +2424,255 @@ except Exception as _overlay_err:
 # Wire NEXUSMON organism fusion layer (evolution, operator context, workers)
 try:
     from nexusmon_organism import fuse_into
+
     fuse_into(app)
 except Exception as _organism_err:
     print(f"Warning: organism fusion failed: {_organism_err}")
 
 try:
     from nexusmon_cognition import fuse_cognition
+
     fuse_cognition(app)
 except Exception as _cognition_err:
     print(f"Warning: cognition layer failed: {_cognition_err}")
 
 try:
     from nexusmon_mission_engine import fuse_mission_engine
+
     fuse_mission_engine(app)
 except Exception as _mission_engine_err:
     print(f"Warning: mission engine failed: {_mission_engine_err}")
 
 try:
     from nexusmon_artifact_vault import fuse_artifact_vault
+
     fuse_artifact_vault(app)
 except Exception as _artifact_vault_err:
     print(f"Warning: artifact vault failed: {_artifact_vault_err}")
 
 try:
     from nexusmon_operator_rank import fuse_operator_rank
+
     fuse_operator_rank(app)
 except Exception as _operator_rank_err:
     print(f"[WARN] Operator rank not loaded: {_operator_rank_err}")
 
 try:
     from nexusmon_performance import fuse_performance
+
     fuse_performance(app)
 except Exception as _perf_err:
     print(f"[WARN] Performance not loaded: {_perf_err}")
 
 try:
     from nexusmon_signal_modules import fuse_signal_modules
+
     fuse_signal_modules(app)
 except Exception as _signal_modules_err:
     print(f"[WARN] Signal modules not loaded: {_signal_modules_err}")
 
 
-# --- Static file mount for HUD assets (CSS, JS) ---
-# MUST come after all explicit routes so /web/* doesn't shadow API paths.
+# --- Agent Manifest Genome API ---
 try:
-    if Path("web").exists():
-        app.mount("/web", StaticFiles(directory="web"), name="web-static")
-except Exception as _web_mount_err:
-    print(f"Warning: web static mount failed: {_web_mount_err}")
+    from core.agent_manifest import (
+        register_manifest as _register_manifest,
+        get_agent as _get_agent,
+        list_agents as _list_agents,
+        validate_dict as _validate_manifest_dict,
+        load_manifests_from_dir as _load_manifests_from_dir,
+    )
+
+    # Auto-load any .json manifests from config/manifests/ at startup
+    _manifests_dir = Path("config/manifests")
+    if _manifests_dir.exists():
+        _load_manifests_from_dir(str(_manifests_dir))
+
+    @app.get("/v1/agents", tags=["agent-manifest"])
+    async def list_agent_manifests():
+        """List all registered agent manifests."""
+        return {"ok": True, "agents": [a.model_dump() for a in _list_agents()], "count": len(_list_agents())}
+
+    @app.get("/v1/agents/{agent_id}", tags=["agent-manifest"])
+    async def get_agent_manifest(agent_id: str):
+        """Get a single agent manifest by id."""
+        agent = _get_agent(agent_id)
+        if agent is None:
+            from fastapi import HTTPException
+            raise HTTPException(status_code=404, detail=f"Agent '{agent_id}' not found")
+        return {"ok": True, "agent": agent.model_dump()}
+
+    @app.get("/v1/agents/{agent_id}/status", tags=["agent-runtime"])
+    async def get_agent_status(agent_id: str):
+        """Get status for a registered agent and its runtime, if live."""
+        from fastapi import HTTPException
+
+        agent = _get_agent(agent_id)
+        if agent is None:
+            raise HTTPException(status_code=404, detail=f"Agent '{agent_id}' not found")
+
+        runtime_state = None
+        runtime_status = "registered"
+        try:
+            from core.agent_runtime import get_runtime as _get_runtime  # local import
+
+            runtime = _get_runtime(agent_id)
+            if runtime is not None:
+                runtime_status = "running"
+                runtime_state = runtime.snapshot()
+        except Exception:
+            pass
+
+        return {
+            "ok": True,
+            "agent_id": agent_id,
+            "status": runtime_status,
+            "spawn_policy": agent.spawn_policy.value,
+            "runtime": runtime_state,
+        }
+
+    @app.get("/v1/agents/{agent_id}/capabilities", tags=["agent-manifest"])
+    async def get_agent_capabilities(agent_id: str):
+        """Get declared capabilities for a single registered agent."""
+        from fastapi import HTTPException
+
+        agent = _get_agent(agent_id)
+        if agent is None:
+            raise HTTPException(status_code=404, detail=f"Agent '{agent_id}' not found")
+
+        return {
+            "ok": True,
+            "agent_id": agent_id,
+            "capabilities": sorted(agent.capabilities),
+            "count": len(agent.capabilities),
+        }
+
+    @app.post("/v1/agents", tags=["agent-manifest"])
+    async def register_agent_manifest(data: dict):
+        """Register a new agent manifest from a JSON body."""
+        errors = _validate_manifest_dict(data)
+        if errors:
+            return {"ok": False, "errors": errors}
+        agent = _register_manifest(data)
+        return {"ok": True, "agent": agent.model_dump()}
+
+    @app.post("/v1/agents/validate", tags=["agent-manifest"])
+    async def validate_agent_manifest(data: dict):
+        """Validate a manifest dict against the genome schema."""
+        errors = _validate_manifest_dict(data)
+        return {"ok": len(errors) == 0, "valid": len(errors) == 0, "errors": errors}
+
+    print("[NEXUSMON] Agent manifest genome API online â€” /v1/agents")
+except Exception as _manifest_err:
+    print(f"[WARN] Agent manifest API not loaded: {_manifest_err}")
+
+
+# --- Agent Runtime Kernel API ---
+try:
+    from core.agent_runtime import (
+        spawn as _spawn_runtime,
+        get_runtime as _get_runtime,
+        list_runtimes as _list_runtimes,
+        EVENT_BUS as _AGENT_EVENT_BUS,
+        MISSION_ROUTER as _AGENT_MISSION_ROUTER,
+    )
+
+    @app.post("/v1/agents/{agent_id}/spawn", tags=["agent-runtime"])
+    async def spawn_agent_runtime(agent_id: str):
+        """Spawn a live runtime for a registered agent manifest."""
+        from fastapi import HTTPException
+        try:
+            rt = _spawn_runtime(agent_id)
+            return {"ok": True, "runtime": rt.snapshot()}
+        except KeyError as exc:
+            raise HTTPException(status_code=404, detail=str(exc))
+
+    @app.get("/v1/agents/{agent_id}/runtime", tags=["agent-runtime"])
+    async def get_agent_runtime_state(agent_id: str):
+        """Get current runtime snapshot for a live agent."""
+        from fastapi import HTTPException
+        rt = _get_runtime(agent_id)
+        if rt is None:
+            raise HTTPException(status_code=404, detail=f"No live runtime for agent '{agent_id}'")
+        return {"ok": True, "runtime": rt.snapshot()}
+
+    @app.post("/v1/agents/{agent_id}/think", tags=["agent-runtime"])
+    async def agent_think(agent_id: str, body: dict):
+        """Run the cognition loop for a live agent and return the output."""
+        from fastapi import HTTPException
+        rt = _get_runtime(agent_id)
+        if rt is None:
+            raise HTTPException(status_code=404, detail=f"No live runtime for agent '{agent_id}'")
+        output = rt.think(body.get("input", body))
+        return {"ok": True, "output": output, "runtime": rt.snapshot()}
+
+    @app.post("/v1/agents/{agent_id}/act", tags=["agent-runtime"])
+    async def agent_act(agent_id: str, body: dict):
+        """Run act() for a live agent â€” think + mission dispatch."""
+        from fastapi import HTTPException
+        rt = _get_runtime(agent_id)
+        if rt is None:
+            raise HTTPException(status_code=404, detail=f"No live runtime for agent '{agent_id}'")
+        output = rt.act(body.get("input", body))
+        return {
+            "ok": True,
+            "output": output,
+            "pending_missions": _AGENT_MISSION_ROUTER.pending(),
+            "runtime": rt.snapshot(),
+        }
+
+    @app.get("/v1/runtimes", tags=["agent-runtime"])
+    async def list_all_runtimes():
+        """List snapshots of all live agent runtimes."""
+        return {"ok": True, "runtimes": _list_runtimes(), "count": len(_list_runtimes())}
+
+    @app.get("/v1/runtime/events", tags=["agent-runtime"])
+    async def get_runtime_events(n: int = 50):
+        """Get the most recent n events from the global agent event bus."""
+        return {"ok": True, "events": _AGENT_EVENT_BUS.recent(n)}
+
+    @app.get("/v1/runtime/missions/pending", tags=["agent-runtime"])
+    async def get_pending_missions():
+        """Get all pending missions in the agent mission router queue."""
+        return {"ok": True, "missions": _AGENT_MISSION_ROUTER.pending()}
+
+    print("[NEXUSMON] Agent runtime kernel API online â€” /v1/agents/{id}/spawn|think|act")
+except Exception as _runtime_err:
+    print(f"[WARN] Agent runtime API not loaded: {_runtime_err}")
+
+
+# --- Hologram State Engine ---
+# Wires: FeedStream â†’ HologramIngestor â†’ HologramReconciler â†’ HologramPublisher
+# Mounts: /hologram/* (compat) and /v1/canonical/cockpit/hologram/* (canonical)
+try:
+    from core.feed_stream import FeedStream as _FeedStream
+    from nexusmon.hologram.hologram_bootstrap import bootstrap_hologram as _bootstrap_hologram
+    from nexusmon.hologram.hologram_api import create_hologram_api as _create_hologram_api
+
+    _hologram_feed = _FeedStream(event_bus=_AGENT_EVENT_BUS)
+    _hologram_reconciler, _hologram_publisher, _hologram_ingestor = _bootstrap_hologram(
+        feed_stream=_hologram_feed,
+        event_bus=_AGENT_EVENT_BUS,
+        main_fastapi_app=app,
+        auth_check=lambda req: True,
+    )
+    _canonical_hologram_app = _create_hologram_api(
+        reconciler=_hologram_reconciler,
+        publisher=_hologram_publisher,
+        auth_check=lambda req: True,
+    )
+    app.mount("/v1/canonical/cockpit/hologram", _canonical_hologram_app)
+    print("[NEXUSMON] Hologram state engine online â€” /hologram/ws + /v1/canonical/cockpit/hologram/ws")
+except Exception as _hologram_err:
+    print(f"[WARN] Hologram engine not loaded: {_hologram_err}")
+
+
+# --- Static file mount for HUD assets (CSS, JS) ---
+# Legacy static mounts are intentionally removed; /cockpit is the sole UI surface.
+try:
+    if Path("cockpit").exists():
+        app.mount("/cockpit", StaticFiles(directory="cockpit", html=True), name="cockpit-static")
+except Exception as _cockpit_mount_err:
+    print(f"Warning: cockpit static mount failed: {_cockpit_mount_err}")
 
 
 # Serve frontend SPA build if present (single-process deploy model)
@@ -1804,3 +2726,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

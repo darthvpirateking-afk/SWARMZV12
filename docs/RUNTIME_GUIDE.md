@@ -169,3 +169,81 @@ The runtime tracks repeated event patterns:
 - **Custom metrics**: Register via `tests/test_trials.py::test_register_custom_metric` pattern.
 
 
+
+## Self-Diagnosis: CI & Dev Environment
+
+### Quick health check
+
+```bash
+# 1. Install all dependencies
+pip install -r requirements-dev.txt
+
+# 2. Initialize database
+python scripts/init_db.py
+
+# 3. Run tests (requires pytest-timeout to be installed)
+python -m pytest tests/ -v --tb=short
+
+# 4. Run linter
+ruff check core swarmz_runtime addons api swarmz_server.py run_server.py
+
+# 5. Check formatting
+black --check . --exclude 'tools/vscode-scaffold-bot/templates/'
+
+# 6. Build frontend
+npm --prefix frontend ci && npm --prefix frontend run build
+```
+
+### Key startup log lines
+
+When the server starts successfully via `python run.py` or `python run_server.py`,
+you should see these lines (in order):
+
+```
+[COLD START] data — OK
+[ENGINES] All engines loaded.
+[NEXUSMON] Boot #N — ...
+[DAILY SCHEDULER] Background scheduler started.
+[SWARM RUNNER] Background runner started.
+LOCAL: http://127.0.0.1:8000/
+LAN:   http://<ip>:8000/
+```
+
+If any `WARNING:` lines appear, the component is optional and the server can still
+start. Only fatal import errors or `uvicorn` binding failures prevent startup.
+
+### Common CI failures
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| `unrecognized arguments: --timeout=30` | `pytest-timeout` not installed | `pip install pytest-timeout` or check `requirements-dev.txt` |
+| `E902 No such file or directory` in ruff | File path in CI ruff command is wrong | Verify paths in `.github/workflows/ci.yml` |
+| `123 files would be reformatted` by black | Code not formatted | Run `black . --exclude 'tools/vscode-scaffold-bot/templates/'` |
+| Frontend `tsc` errors | TypeScript types missing | Run `npm --prefix frontend ci` first |
+| `ModuleNotFoundError: No module named 'fastapi'` | Dependencies not installed | Run `pip install -r requirements-dev.txt` |
+
+### Environment variables
+
+| Variable | Purpose | Required |
+|----------|---------|---------|
+| `ALLOWED_ORIGINS` | CORS allowed origins | Production only |
+| `OPERATOR_KEY` | Auth password | Production only |
+| `JWT_SECRET` | JWT signing key | Production only |
+| `PORT` | Server port (default: 8000) | Optional |
+| `HOST` | Server bind address (default: 0.0.0.0) | Optional |
+| `VITE_API_BASE_URL` | Frontend API base URL | Dev/prod if not same-origin |
+
+### Frontend (Vite) proxy setup
+
+During local development, the frontend proxies `/v1` and `/health` to
+`http://localhost:8000`. Start both services:
+
+```bash
+# Terminal 1: backend
+python run.py --port 8000
+
+# Terminal 2: frontend dev server
+npm --prefix frontend run dev
+```
+
+The frontend will be available at `http://localhost:5173`.

@@ -12,9 +12,9 @@ from backend.core.mission.reporter import Reporter
 from backend.core.swarm.registry import Registry
 from backend.core.swarm.behavior import BehaviorEngine
 from backend.core.swarm.formation import FormationEngine
-from backend.core.avatar.brain import Brain
-from backend.core.avatar.state import State
-from backend.core.avatar.presence import Presence
+from swarmz_runtime.avatar.avatar_brain import AvatarBrain
+from swarmz_runtime.avatar.avatar_state import AvatarState
+from swarmz_runtime.avatar.avatar_presence import AvatarPresence
 from backend.core.cosmology.mesh_router import MeshRouter
 
 
@@ -55,4 +55,8 @@ class Engine:
             "behavior": BehaviorEngine(),
             "formation": FormationEngine(),
         }
-        self.avatar = {"brain": Brain(), "state": State(), "presence": Presence()}
+        self.avatar = {
+            "brain": AvatarBrain(),
+            "state": AvatarState(),
+            "presence": AvatarPresence(),
+        }

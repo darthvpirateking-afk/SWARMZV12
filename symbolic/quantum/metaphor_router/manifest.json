@@ -1,0 +1,40 @@
+﻿{
+    "id":  "quantum.metaphor_router",
+    "name":  "Metaphor Router",
+    "origin":  "quantum language metaphors",
+    "symbolic_role":  "symbolic routing vocabulary",
+    "domains":  [
+                    "routing",
+                    "metaphor"
+                ],
+    "entities":  [
+                     "route.superposition"
+                 ],
+    "correspondences":  {
+                            "certainty":  "bounded",
+                            "model":  "symbolic-superposition"
+                        },
+    "geometry":  {
+                     "points":  [
+
+                                ],
+                     "lines":  [
+
+                               ]
+                 },
+    "runtime_hooks":  {
+                          "on_invoke":  true,
+                          "on_consult":  true,
+                          "on_symbolic_interpretation":  true,
+                          "on_generate_geometry":  true,
+                          "on_trigger_anomaly":  true,
+                          "on_resolve_correspondence":  true,
+                          "on_render_altar_mode":  true,
+                          "on_simulate_branch":  true
+                      },
+    "cockpit_modes":  [
+                          "cosmic-hud"
+                      ],
+    "operator_approval_required":  true
+}
+

@@ -3,54 +3,57 @@
 # See LICENSE file for details.
 
 
+import json
 import logging
 import os
-import json
-import socket
 import secrets
-from datetime import datetime, timezone
+import socket
+from contextlib import asynccontextmanager
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import Dict, Any, Optional, List
+from typing import Any
 
-from fastapi import FastAPI, Request, HTTPException, Query
-from fastapi.responses import HTMLResponse, FileResponse, Response
+from fastapi import FastAPI, HTTPException, Query, Request
+from fastapi.responses import FileResponse, HTMLResponse, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
-from contextlib import asynccontextmanager
-
-logger = logging.getLogger("swarmz.server")
-
-from swarmz_runtime.core.engine import SwarmzEngine
-from jsonl_utils import read_jsonl
-from kernel_runtime.orchestrator import SwarmzOrchestrator
-from swarmz_runtime.api import system, admin, ecosystem
-from . import arena as arena_api
-from .missions import router as missions_router
-from .system import router as system_router
-from .admin import router as admin_router
-from .arena import router as arena_router
-from .factory_routes import router as factory_routes_router
-from .meta_routes import router as meta_routes_router
-from .operational_routes import router as operational_routes_router
-from .operator_ecosystem_routes import router as operator_ecosystem_routes_router
-from .federation_routes import router as federation_routes_router
-from .charter_routes import router as charter_routes_router
-from .fusion_routes import router as fusion_routes_router
-from .primal_routes import router as primal_routes_router
-from .template_sync_routes import router as template_sync_routes_router
-from .system_primitives_routes import router as system_primitives_routes_router
-from swarmz_runtime.core.system_primitives import SystemPrimitivesRuntime
 from addons.api.addons_router import router as addons_router
 from addons.api.guardrails_router import router as guardrails_router
+from jsonl_utils import read_jsonl
+from kernel_runtime.orchestrator import SwarmzOrchestrator
+from swarmz_runtime.api import admin, ecosystem, system
+from swarmz_runtime.core.engine import SwarmzEngine
+from swarmz_runtime.core.system_primitives import SystemPrimitivesRuntime
+
+from . import arena as arena_api
+from .admin import router as admin_router
+from .arena import router as arena_router
+from .charter_routes import router as charter_routes_router
+from .ecosystem import router as ecosystem_router
+from .factory_routes import router as factory_routes_router
+from .federation_routes import router as federation_routes_router
+from .fusion_routes import router as fusion_routes_router
+from .infra import router as infra_router
+from .meta_routes import router as meta_routes_router
+from .missions import router as missions_router
+from .operational_routes import router as operational_routes_router
+from .operator_ecosystem_routes import router as operator_ecosystem_routes_router
+from .primal_routes import router as primal_routes_router
+from .system import router as system_router
+from .system_primitives_routes import router as system_primitives_routes_router
+from .template_sync_routes import router as template_sync_routes_router
+
+logger = logging.getLogger("swarmz.server")
 
 # ---- cheap constants only (NO orchestrator creation here) ----
 BASE_DIR = Path(__file__).resolve().parent
 ROOT_DIR = BASE_DIR.parent.parent
 DATA_DIR = ROOT_DIR / "data"
-UI_DIR = ROOT_DIR / "web_ui"
+STATIC_DIR = BASE_DIR / "static"
+UI_DIR = Path(__file__).parent.parent.parent / "cockpit" / "dist"
 DATA_DIR.mkdir(exist_ok=True, parents=True)
-START_TIME = datetime.now(timezone.utc)
+START_TIME = datetime.now(UTC)
 
 
 def build_orchestrator():
@@ -63,6 +66,9 @@ def build_orchestrator():
 async def lifespan(app: FastAPI):
     # startup: attach orchestrator here, not at import time
     app.state.orchestrator = build_orchestrator()
+    mounts = getattr(app.state, "active_mounts", [])
+    active = mounts if mounts else ["none - cockpit offline"]
+    logger.info("[NEXUSMON] Active mounts: %s", active)
     yield
     # shutdown: optional cleanup
 
@@ -86,11 +92,20 @@ def create_app() -> FastAPI:
         allow_methods=["*"],
         allow_headers=["*"],
     )
-    app.mount("/static", StaticFiles(directory=str(UI_DIR)), name="static")
+    active_mounts: list[str] = []
+    if STATIC_DIR.exists():
+        app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
+        active_mounts.append("/static")
+    if UI_DIR.exists():
+        app.mount("/ui", StaticFiles(directory=str(UI_DIR)), name="ui")
+        active_mounts.append("/ui")
+    app.state.active_mounts = active_mounts
+
     app.include_router(missions_router, prefix="/v1/missions", tags=["missions"])
     app.include_router(system_router, prefix="/v1/system", tags=["system"])
     app.include_router(admin_router, prefix="/v1/admin", tags=["admin"])
     app.include_router(arena_router, prefix="/v1/arena", tags=["arena"])
+    app.include_router(ecosystem_router, prefix="/v1/ecosystem", tags=["ecosystem"])
     app.include_router(factory_routes_router, prefix="/v1/factory", tags=["factory"])
     app.include_router(meta_routes_router, prefix="/v1/meta", tags=["meta"])
     app.include_router(operational_routes_router, prefix="/v1", tags=["operational"])
@@ -107,12 +122,13 @@ def create_app() -> FastAPI:
     app.include_router(
         system_primitives_routes_router, prefix="/v1", tags=["system-primitives"]
     )
+    app.include_router(infra_router)
     app.include_router(addons_router, prefix="/v1/addons", tags=["addons"])
     app.include_router(guardrails_router, prefix="/v1/guardrails", tags=["guardrails"])
 
-    from .system_control import router as system_control_router
-    from .mission_lifecycle import router as mission_lifecycle_router
     from .app_store_routes import router as app_store_router
+    from .mission_lifecycle import router as mission_lifecycle_router
+    from .system_control import router as system_control_router
 
     app.include_router(
         system_control_router, prefix="/v1/system", tags=["system-control"]
@@ -142,7 +158,7 @@ class PairRequest(BaseModel):
 class DispatchRequest(BaseModel):
     goal: str
     category: str
-    constraints: Dict[str, Any] = Field(default_factory=dict)
+    constraints: dict[str, Any] = Field(default_factory=dict)
 
 
 class AutonomyDialRequest(BaseModel):
@@ -163,7 +179,7 @@ class MarketplacePublishRequest(BaseModel):
     mission_type: str
     title: str
     reward_points: int = Field(ge=0)
-    tags: List[str] = Field(default_factory=list)
+    tags: list[str] = Field(default_factory=list)
 
 
 class OrganismEvolveRequest(BaseModel):
@@ -174,7 +190,7 @@ class LoopTickRequest(BaseModel):
     cycle_label: str = "default"
 
 
-def _append_jsonl(path: Path, record: Dict[str, Any]) -> None:
+def _append_jsonl(path: Path, record: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with open(path, "a", encoding="utf-8") as fh:
         fh.write(json.dumps(record, default=str) + "\n")
@@ -191,7 +207,7 @@ def _tail_jsonl(path: Path, limit: int) -> list:
         return []
 
 
-def _load_runtime_config() -> Dict[str, Any]:
+def _load_runtime_config() -> dict[str, Any]:
     cfg_path = ROOT_DIR / "config" / "runtime.json"
     if not cfg_path.exists():
         return {}
@@ -201,7 +217,7 @@ def _load_runtime_config() -> Dict[str, Any]:
         return {}
 
     # Normalize legacy keys to the requested schema without breaking older config
-    cfg: Dict[str, Any] = {}
+    cfg: dict[str, Any] = {}
     if isinstance(raw, dict):
         cfg.update(raw)
         api_base = (
@@ -225,7 +241,7 @@ def _command_center_state_path() -> Path:
     return DATA_DIR / "command_center_state.json"
 
 
-def _default_command_center_state() -> Dict[str, Any]:
+def _default_command_center_state() -> dict[str, Any]:
     return {
         "autonomy": {"level": 35, "mode": "assisted"},
         "shadow_mode": {"enabled": False, "lane": "mirror", "last_activation": None},
@@ -279,7 +295,7 @@ def _default_command_center_state() -> Dict[str, Any]:
     }
 
 
-def _read_command_center_state() -> Dict[str, Any]:
+def _read_command_center_state() -> dict[str, Any]:
     path = _command_center_state_path()
     if not path.exists():
         state = _default_command_center_state()
@@ -296,7 +312,7 @@ def _read_command_center_state() -> Dict[str, Any]:
     return state
 
 
-def _write_command_center_state(state: Dict[str, Any]) -> None:
+def _write_command_center_state(state: dict[str, Any]) -> None:
     path = _command_center_state_path()
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(state, indent=2), encoding="utf-8")
@@ -312,15 +328,15 @@ def _autonomy_mode_from_level(level: int) -> str:
     return "sovereign"
 
 
-def _partner_tiers() -> List[str]:
+def _partner_tiers() -> list[str]:
     return ["Egg", "Rookie", "Champion", "Ultimate", "Mega", "Ultra"]
 
 
-def _shadow_tiers() -> List[str]:
+def _shadow_tiers() -> list[str]:
     return ["Dormant", "Shade", "Wraith", "Reaper", "General", "Monarch"]
 
 
-def _cockpit_feed(state: Dict[str, Any]) -> Dict[str, Any]:
+def _cockpit_feed(state: dict[str, Any]) -> dict[str, Any]:
     missions_file = DATA_DIR / "missions.jsonl"
     runs_file = DATA_DIR / "runs.jsonl"
     missions_result = read_jsonl(missions_file)
@@ -352,7 +368,7 @@ def _cockpit_feed(state: Dict[str, Any]) -> Dict[str, Any]:
     )
 
     return {
-        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "timestamp": datetime.now(UTC).isoformat(),
         "queue_depth": queued,
         "completed_count": completed,
         "recent_runs": runs[-5:],
@@ -382,7 +398,7 @@ def _lan_ip() -> str:
         return "127.0.0.1"
 
 
-def _resolve_offline_mode(cfg: Dict[str, Any]) -> bool:
+def _resolve_offline_mode(cfg: dict[str, Any]) -> bool:
     env_val = os.getenv("OFFLINE_MODE")
     if env_val is not None and env_val not in {"", "0", "false", "False"}:
         return True
@@ -391,7 +407,7 @@ def _resolve_offline_mode(cfg: Dict[str, Any]) -> bool:
     return bool(cfg.get("offlineMode"))
 
 
-def _load_operator_pin() -> Dict[str, Any]:
+def _load_operator_pin() -> dict[str, Any]:
     """Resolve operator PIN, preferring env, then config, otherwise generate."""
     pin_source = "env"
     pin = os.getenv("SWARMZ_OPERATOR_PIN")
@@ -482,7 +498,7 @@ def arena_page():
 
 @app.get("/v1/health")
 def health_v1():
-    uptime = (datetime.now(timezone.utc) - START_TIME).total_seconds()
+    uptime = (datetime.now(UTC) - START_TIME).total_seconds()
     return {
         "ok": True,
         "status": "ok",
@@ -526,7 +542,7 @@ def runtime_scoreboard_view():
     }
     return {
         "ok": True,
-        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "timestamp": datetime.now(UTC).isoformat(),
         "personality": dict(deterministic_traits),
         "partner_traits": deterministic_traits,
         "traits_mode": "deterministic_static",
@@ -539,10 +555,10 @@ def companion_history(tail: int = 10):
 
 
 @app.get("/v1/prepared/pending")
-def prepared_pending(category: Optional[str] = None):
+def prepared_pending(category: str | None = None):
     base = ROOT_DIR / "prepared_actions"
     items = []
-    counts: Dict[str, int] = {}
+    counts: dict[str, int] = {}
 
     if base.exists():
         for category_dir in base.iterdir():
@@ -674,7 +690,7 @@ def set_autonomy_dial(payload: AutonomyDialRequest):
     state["autonomy"] = {
         "level": bounded_level,
         "mode": _autonomy_mode_from_level(bounded_level),
-        "updated_at": datetime.now(timezone.utc).isoformat(),
+        "updated_at": datetime.now(UTC).isoformat(),
         "requested_level": level,
     }
     _write_command_center_state(state)
@@ -688,7 +704,7 @@ def set_shadow_mode(payload: ShadowModeRequest):
         "enabled": bool(payload.enabled),
         "lane": payload.lane,
         "last_activation": (
-            datetime.now(timezone.utc).isoformat() if payload.enabled else None
+            datetime.now(UTC).isoformat() if payload.enabled else None
         ),
     }
     _write_command_center_state(state)
@@ -715,7 +731,7 @@ def evolve_partner(payload: OrganismEvolveRequest):
     history = state.setdefault("evolution_tree", {}).setdefault("history", [])
     history.append(
         {
-            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "timestamp": datetime.now(UTC).isoformat(),
             "entity": "partner",
             "from": current_tier,
             "to": partner["tier"],
@@ -746,7 +762,7 @@ def evolve_shadow(payload: OrganismEvolveRequest):
     history = state.setdefault("evolution_tree", {}).setdefault("history", [])
     history.append(
         {
-            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "timestamp": datetime.now(UTC).isoformat(),
             "entity": "shadow",
             "from": current_tier,
             "to": shadow["tier"],
@@ -764,7 +780,7 @@ def tick_autonomy_loop(payload: LoopTickRequest):
         "autonomy_loop", _default_command_center_state()["autonomy_loop"]
     )
     loop["tick_count"] = int(loop.get("tick_count", 0)) + 1
-    loop["last_tick"] = datetime.now(timezone.utc).isoformat()
+    loop["last_tick"] = datetime.now(UTC).isoformat()
     loop["last_cycle_label"] = payload.cycle_label
     loop["last_summary"] = {
         "brain": "mission_plan_updated",
@@ -802,7 +818,7 @@ def promote_partner(payload: EvolutionPromoteRequest):
     history = evo.setdefault("history", [])
     history.append(
         {
-            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "timestamp": datetime.now(UTC).isoformat(),
             "partner_id": payload.partner_id,
             "from": current_tier,
             "to": partner["tier"],
@@ -815,7 +831,7 @@ def promote_partner(payload: EvolutionPromoteRequest):
 
 
 @app.get("/v1/command-center/marketplace/list")
-def marketplace_list(status: Optional[str] = Query(default=None)):
+def marketplace_list(status: str | None = Query(default=None)):
     state = _read_command_center_state()
     marketplace = state.setdefault("marketplace", {"missions": []})
     missions = marketplace.setdefault("missions", [])
@@ -838,7 +854,7 @@ def marketplace_publish(payload: MarketplacePublishRequest):
         "reward_points": int(payload.reward_points),
         "tags": payload.tags,
         "status": "open",
-        "created_at": datetime.now(timezone.utc).isoformat(),
+        "created_at": datetime.now(UTC).isoformat(),
     }
     missions.append(listing)
     _write_command_center_state(state)
@@ -954,7 +970,8 @@ footer{margin-top:2rem;font-size:.75rem;color:#484f58}
 <h1>&#x1F41D; SWARMZ</h1>
 <p class="tag">Operator-Sovereign Mission Engine &middot; v1.0.0</p>
 <div class="cards">
- <a class="card" href="/ui"><h2>Operator Console</h2><p>Interactive UI &mdash; execute tasks, browse capabilities</p></a>
+ <a class="card" href="/ui"><h2>Operator Console</h2><p>Interactive UI &mdash; execute tasks,
+browse capabilities</p></a>
  <a class="card" href="/dashboard"><h2>Dashboard</h2><p>Mission monitoring &amp; status</p></a>
  <a class="card" href="/docs"><h2>API Docs</h2><p>Interactive Swagger UI</p></a>
  <a class="card" href="/health"><h2>Health</h2><p>Service health check</p></a>
@@ -962,7 +979,8 @@ footer{margin-top:2rem;font-size:.75rem;color:#484f58}
  <a class="card" href="/v1/system/omens"><h2>System Omens</h2><p>Current system signals</p></a>
  <a class="card" href="/v1/system/predictions"><h2>Predictions</h2><p>Engine forecasts</p></a>
 </div>
-<footer>Tip&nbsp;&bull; Open this page on your phone and tap <em>Add to Home Screen</em> for an app icon.</footer>
+<footer>Tip&nbsp;&bull; Open this page on your phone and tap
+<em>Add to Home Screen</em> for an app icon.</footer>
 <script>
 if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js');}
 </script>
@@ -1072,7 +1090,7 @@ def sovereign_dispatch(body: SovereignDispatch):
             },
         )
 
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     ts = now.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
     mission_id = f"M-{now.strftime('%Y%m%d-%H%M%S')}-{secrets.token_hex(4)}"
     mission = {

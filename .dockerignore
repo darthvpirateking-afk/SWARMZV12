@@ -19,3 +19,26 @@ node_modules/
 
 # Explicitly exclude Play Store game app from SWARMZ backend image
 apps/gate-link/
+
+# Python virtual environment
+venv/
+.venv/
+
+# Secrets / local config
+.env
+*.env
+
+# Logs
+*.log
+logs/
+
+# Hologram snapshots are written at runtime — not needed in the image
+hologram_snapshots/
+
+# Runtime data
+data/
+
+# Test suite and coverage
+tests/
+.coverage
+htmlcov/

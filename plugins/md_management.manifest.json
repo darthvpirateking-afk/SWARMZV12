@@ -1,0 +1,21 @@
+{
+  "name": "claude-md-management",
+  "version": "1.0.0",
+  "description": "Markdown file management capabilities including read, write, heading extraction, section management, and table of contents generation.",
+  "entry_point": "md_management.py",
+  "capabilities": [
+    "read_markdown",
+    "write_markdown",
+    "list_markdown_files",
+    "extract_headings",
+    "generate_toc",
+    "extract_section",
+    "insert_section",
+    "replace_section",
+    "markdown_summary"
+  ],
+  "category": "documentation",
+  "author": "claude-plugins-official",
+  "license": "SWARMZ-SAL",
+  "source": "claude-md-management@claude-plugins-official"
+}

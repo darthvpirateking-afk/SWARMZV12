@@ -1,0 +1,40 @@
+﻿{
+    "id":  "life.species.akashic_fork_resolver",
+    "name":  "Akashic Fork Resolver",
+    "origin":  "internal life systems",
+    "symbolic_role":  "conflict path coherence resolver",
+    "domains":  [
+                    "forks",
+                    "coherence"
+                ],
+    "entities":  [
+                     "fork_resolver"
+                 ],
+    "correspondences":  {
+                            "branch":  "parallel",
+                            "strategy":  "highest_coherence"
+                        },
+    "geometry":  {
+                     "points":  [
+
+                                ],
+                     "lines":  [
+
+                               ]
+                 },
+    "runtime_hooks":  {
+                          "on_render_altar_mode":  false,
+                          "on_resolve_correspondence":  false,
+                          "on_simulate_branch":  true,
+                          "on_generate_geometry":  false,
+                          "on_consult":  false,
+                          "on_invoke":  false,
+                          "on_symbolic_interpretation":  true,
+                          "on_trigger_anomaly":  false
+                      },
+    "cockpit_modes":  [
+                          "multiverse-view"
+                      ],
+    "operator_approval_required":  true
+}
+

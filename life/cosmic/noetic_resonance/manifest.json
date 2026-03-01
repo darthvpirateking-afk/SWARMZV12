@@ -1,0 +1,40 @@
+﻿{
+    "id":  "life.cosmic.noetic_resonance",
+    "name":  "Noetic Resonance Detector",
+    "origin":  "internal life systems",
+    "symbolic_role":  "operator pattern spike detector",
+    "domains":  [
+                    "patterns",
+                    "resonance"
+                ],
+    "entities":  [
+                     "resonance_detector"
+                 ],
+    "correspondences":  {
+                            "spike":  "amplify",
+                            "baseline":  "normal"
+                        },
+    "geometry":  {
+                     "points":  [
+
+                                ],
+                     "lines":  [
+
+                               ]
+                 },
+    "runtime_hooks":  {
+                          "on_render_altar_mode":  false,
+                          "on_resolve_correspondence":  false,
+                          "on_simulate_branch":  false,
+                          "on_generate_geometry":  false,
+                          "on_consult":  true,
+                          "on_invoke":  false,
+                          "on_symbolic_interpretation":  true,
+                          "on_trigger_anomaly":  false
+                      },
+    "cockpit_modes":  [
+                          "cosmic-hud"
+                      ],
+    "operator_approval_required":  true
+}
+

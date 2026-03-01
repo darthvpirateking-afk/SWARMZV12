@@ -1,0 +1,33 @@
+{
+  "id": "plugin-helper1",
+  "type": "worker",
+  "version": "1.0.0",
+  "trust": "internal",
+  "sandbox": "subprocess",
+  "granted_caps": [
+    "artifact.read",
+    "artifact.write",
+    "bus.emit"
+  ],
+  "state": "active",
+  "manifest": {
+    "description": "Unified engineering worker for NEXUSMON. Additive-only, operator-bound."
+  },
+  "name": "plugin-helper1",
+  "roles": [
+    "plugin-generator",
+    "mission-engine-worker",
+    "cockpit-ui-builder",
+    "schema-engineer",
+    "self-coding-support"
+  ],
+  "entrypoint": "../../nexusmon/plugins/plugin-helper1/index.js",
+  "schema": "../../nexusmon/plugins/plugin-helper1/schema.json",
+  "handlers": {
+    "generate": "../../nexusmon/plugins/plugin-helper1/handlers/generate.js",
+    "mission": "../../nexusmon/plugins/plugin-helper1/handlers/mission.js",
+    "schema": "../../nexusmon/plugins/plugin-helper1/handlers/schema.js",
+    "ui": "../../nexusmon/plugins/plugin-helper1/handlers/ui.js",
+    "patchpack": "../../nexusmon/plugins/plugin-helper1/handlers/patchpack.js"
+  }
+}

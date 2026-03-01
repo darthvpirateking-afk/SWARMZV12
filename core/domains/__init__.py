@@ -40,18 +40,19 @@ DOMAIN_UNLOCK_REQUIREMENTS = {
     "research": {"rank": "A", "xp_min": 1000},  # Unlocks at A rank
 }
 
+
 def get_available_domains(rank: str, xp: float) -> list:
     """Get domains available at current rank/XP level."""
     rank_order = ["E", "D", "C", "B", "A", "S", "N"]
     current_rank_index = rank_order.index(rank) if rank in rank_order else 0
-    
+
     available = []
     for domain, reqs in DOMAIN_UNLOCK_REQUIREMENTS.items():
         req_rank = reqs["rank"]
         req_xp = reqs["xp_min"]
         req_rank_index = rank_order.index(req_rank)
-        
+
         if current_rank_index >= req_rank_index and xp >= req_xp:
             available.append(domain)
-    
+
     return available

@@ -15,15 +15,18 @@ from typing import Dict, List, Any, Optional
 import json
 from pathlib import Path
 
+
 class Governor:
     """Enforces rate limits and concurrency controls."""
 
-    def __init__(self, config_path: Optional[Path] = None, state_path: Optional[Path] = None):
+    def __init__(
+        self, config_path: Optional[Path] = None, state_path: Optional[Path] = None
+    ):
         self.rate_limits: Dict[str, Dict[str, int]] = {
-            "default": {"limit": 10, "period": 60} # Default: 10 actions per minute
+            "default": {"limit": 10, "period": 60}  # Default: 10 actions per minute
         }
         self.concurrency_limit: int = 5
-        
+
         # In-memory state
         self.action_timestamps: Dict[str, List[float]] = {}
         self.running_missions: int = 0
@@ -39,7 +42,9 @@ class Governor:
         try:
             config = json.loads(path.read_text())
             self.rate_limits.update(config.get("rate_limits", {}))
-            self.concurrency_limit = config.get("concurrency_limit", self.concurrency_limit)
+            self.concurrency_limit = config.get(
+                "concurrency_limit", self.concurrency_limit
+            )
         except (json.JSONDecodeError, FileNotFoundError):
             # Use defaults if config is invalid or not found
             pass
@@ -68,7 +73,7 @@ class Governor:
     def admit_action(self, action: Dict[str, Any]) -> bool:
         """
         Check if an action is allowed based on rate limits.
-        
+
         Args:
             action: The action dictionary, which should have a 'type' key.
 
@@ -79,15 +84,15 @@ class Governor:
         rule = self.rate_limits.get(action_type, self.rate_limits["default"])
         limit = rule["limit"]
         period = rule["period"]
-        
+
         current_time = time.monotonic()
-        
+
         # Get timestamps for this action type, creating entry if it doesn't exist
         timestamps = self.action_timestamps.setdefault(action_type, [])
-        
+
         # Remove timestamps older than the defined period
         timestamps = [t for t in timestamps if current_time - t < period]
-        
+
         # Check if the number of recent actions is below the limit
         if len(timestamps) < limit:
             timestamps.append(current_time)
@@ -116,6 +121,7 @@ class Governor:
     def mission_finished(self):
         """Placeholder for more complex concurrency tracking if needed."""
         pass
+
 
 # Global instance for easy access, can be configured on startup.
 governor = Governor()

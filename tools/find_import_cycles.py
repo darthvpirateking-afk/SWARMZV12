@@ -122,7 +122,9 @@ def collect_imports(file: Path, root: Path, modname: str) -> Set[str]:
                         if alias.name:
                             imports.add(alias.name)
                 elif isinstance(child, ast.ImportFrom):
-                    resolved = resolve_from_import(modname, child.module, child.level or 0)
+                    resolved = resolve_from_import(
+                        modname, child.module, child.level or 0
+                    )
                     if resolved:
                         imports.add(resolved)
     return imports

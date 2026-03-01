@@ -33,6 +33,7 @@ logger = logging.getLogger(__name__)
 # STORAGE HELPERS  (mirror nexusmon_organism.py exactly)
 # ══════════════════════════════════════════════════════════════
 
+
 def _data_dir() -> Path:
     db = os.environ.get("DATABASE_URL", "data/nexusmon.db")
     d = Path(db).parent
@@ -77,13 +78,14 @@ def _rewrite_jsonl(path: Path, records: List[Dict]) -> None:
 
 _ARTIFACTS_FILE = "artifacts.jsonl"
 
-VALID_TYPES    = {"TEXT", "CODE", "DATA", "REPORT", "ANALYSIS", "DECISION", "LOG"}
+VALID_TYPES = {"TEXT", "CODE", "DATA", "REPORT", "ANALYSIS", "DECISION", "LOG"}
 VALID_STATUSES = {"PENDING_REVIEW", "APPROVED", "REJECTED", "ARCHIVED"}
 
 
 # ══════════════════════════════════════════════════════════════
 # ARTIFACT CRUD
 # ══════════════════════════════════════════════════════════════
+
 
 def _artifacts_path() -> Path:
     return _data_dir() / _ARTIFACTS_FILE
@@ -107,6 +109,7 @@ def _save_artifact(artifact: Dict) -> None:
 # PUBLIC FUNCTIONS
 # ══════════════════════════════════════════════════════════════
 
+
 def store_artifact(
     mission_id: str,
     task_id: str,
@@ -122,7 +125,8 @@ def store_artifact(
 
     # Check for existing artifact with same title+mission to version it
     existing = [
-        a for a in _load_artifacts()
+        a
+        for a in _load_artifacts()
         if a.get("mission_id") == mission_id and a.get("title") == title
     ]
     version = len(existing) + 1
@@ -145,7 +149,9 @@ def store_artifact(
         "previous_version_id": prev_id,
     }
     _append_jsonl(_artifacts_path(), artifact)
-    logger.debug("Artifact stored: %s (v%d) type=%s", artifact["id"], version, artifact_type)
+    logger.debug(
+        "Artifact stored: %s (v%d) type=%s", artifact["id"], version, artifact_type
+    )
     return artifact
 
 
@@ -160,6 +166,7 @@ def approve_artifact(artifact_id: str, notes: str = "") -> Dict:
     _save_artifact(artifact)
     try:
         from nexusmon_operator_rank import award_xp as _rank_xp
+
         _rank_xp("approve_artifact", detail=artifact_id)
     except Exception:
         pass
@@ -177,6 +184,7 @@ def reject_artifact(artifact_id: str, notes: str = "") -> Dict:
     _save_artifact(artifact)
     try:
         from nexusmon_operator_rank import award_xp as _rank_xp
+
         _rank_xp("reject_artifact", detail=artifact_id)
     except Exception:
         pass
@@ -213,7 +221,8 @@ def get_artifact_history(artifact_id: str) -> List[Dict]:
     title = target.get("title")
 
     return [
-        a for a in _load_artifacts()
+        a
+        for a in _load_artifacts()
         if a.get("mission_id") == mission_id and a.get("title") == title
     ]
 
@@ -221,6 +230,7 @@ def get_artifact_history(artifact_id: str) -> List[Dict]:
 # ══════════════════════════════════════════════════════════════
 # PYDANTIC MODELS
 # ══════════════════════════════════════════════════════════════
+
 
 class ArtifactCreate(BaseModel):
     mission_id: str
@@ -286,7 +296,9 @@ def list_artifacts_endpoint(
     type: Optional[str] = None,
     limit: int = 100,
 ):
-    artifacts = list_artifacts(mission_id=mission_id, status=status, type=type, limit=limit)
+    artifacts = list_artifacts(
+        mission_id=mission_id, status=status, type=type, limit=limit
+    )
     return {"ok": True, "artifacts": artifacts, "count": len(artifacts)}
 
 
@@ -334,9 +346,12 @@ def get_mission_artifacts(mission_id: str):
 # FUSE
 # ══════════════════════════════════════════════════════════════
 
+
 def fuse_artifact_vault(app: FastAPI) -> None:
     """Wire artifact vault routes into the FastAPI app."""
     app.include_router(router)
     total = len(_load_artifacts())
     pending = sum(1 for a in _load_artifacts() if a.get("status") == "PENDING_REVIEW")
-    logger.info("Artifact vault fused. %d artifacts on disk (%d pending review)", total, pending)
+    logger.info(
+        "Artifact vault fused. %d artifacts on disk (%d pending review)", total, pending
+    )

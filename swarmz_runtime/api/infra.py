@@ -46,7 +46,7 @@ def ingest_metrics(sample: InfraMetricSample):
     if not _infra_enabled():
         raise HTTPException(status_code=404, detail="infra orchestrator disabled")
 
-    payload = sample.dict()
+    payload = sample.model_dump()
     # Flatten extra into the top-level sample for storage, but keep
     # reserved keys intact.
     extra = payload.pop("extra", {}) or {}

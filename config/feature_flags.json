@@ -1,0 +1,7 @@
+{
+  "flags": {
+    "manifest_hot_reload": true,
+    "manifest_chain_enhanced_report": true,
+    "manifest_registry_ci_gate": true
+  }
+}

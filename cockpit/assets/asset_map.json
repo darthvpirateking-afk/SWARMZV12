@@ -1,0 +1,49 @@
+﻿{
+    "js_bundles":  [
+                       "/cockpit/modes/altar_modes.tsx",
+                       "/cockpit/modes/cosmic_hud.tsx",
+                       "/cockpit/modes/cryptid_radar.tsx",
+                       "/cockpit/modes/federation_council.tsx",
+                       "/cockpit/modes/grimoire_viewer.tsx",
+                       "/cockpit/modes/index.ts",
+                       "/cockpit/modes/lineage_tree.tsx",
+                       "/cockpit/modes/lost_civilization_scanner.tsx",
+                       "/cockpit/modes/memory_palace_explorer.tsx",
+                       "/cockpit/modes/mode_registry.ts",
+                       "/cockpit/modes/multiverse_viewer.tsx",
+                       "/cockpit/modes/pantheon_browser.tsx",
+                       "/cockpit/modes/relic_inventory.tsx",
+                       "/cockpit/modes/sigil_renderer.tsx",
+                       "/cockpit/modes/sovereign_mirror_panel.tsx",
+                       "/cockpit/modes/synchronicity_web.tsx",
+                       "/cockpit/modes/time_echo_viewer.tsx",
+                       "/cockpit/src/canonical_bridge.js",
+                       "/cockpit/src/hologram-client.esm.js",
+                       "/cockpit/src/HologramPreact.jsx",
+                       "/cockpit/src/main.jsx",
+                       "/cockpit/vite.config.js"
+                   ],
+    "css_bundles":  [
+                        "/cockpit/src/styles.css"
+                    ],
+    "images":  [
+
+               ],
+    "mode_components":  [
+                            "/cockpit/modes/altar_modes.tsx",
+                            "/cockpit/modes/cosmic_hud.tsx",
+                            "/cockpit/modes/cryptid_radar.tsx",
+                            "/cockpit/modes/federation_council.tsx",
+                            "/cockpit/modes/grimoire_viewer.tsx",
+                            "/cockpit/modes/lineage_tree.tsx",
+                            "/cockpit/modes/lost_civilization_scanner.tsx",
+                            "/cockpit/modes/memory_palace_explorer.tsx",
+                            "/cockpit/modes/multiverse_viewer.tsx",
+                            "/cockpit/modes/pantheon_browser.tsx",
+                            "/cockpit/modes/relic_inventory.tsx",
+                            "/cockpit/modes/sigil_renderer.tsx",
+                            "/cockpit/modes/sovereign_mirror_panel.tsx",
+                            "/cockpit/modes/synchronicity_web.tsx",
+                            "/cockpit/modes/time_echo_viewer.tsx"
+                        ]
+}

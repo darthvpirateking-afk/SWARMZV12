@@ -1,0 +1,40 @@
+﻿{
+    "id":  "life.witness.codex_lock",
+    "name":  "Legacy Codex Immutability Lock",
+    "origin":  "internal life systems",
+    "symbolic_role":  "immutable codex query ritual",
+    "domains":  [
+                    "codex",
+                    "immutability"
+                ],
+    "entities":  [
+                     "codex_lock"
+                 ],
+    "correspondences":  {
+                            "query":  "allowed",
+                            "mutable":  "false"
+                        },
+    "geometry":  {
+                     "points":  [
+
+                                ],
+                     "lines":  [
+
+                               ]
+                 },
+    "runtime_hooks":  {
+                          "on_render_altar_mode":  false,
+                          "on_resolve_correspondence":  false,
+                          "on_simulate_branch":  false,
+                          "on_generate_geometry":  false,
+                          "on_consult":  true,
+                          "on_invoke":  false,
+                          "on_symbolic_interpretation":  true,
+                          "on_trigger_anomaly":  false
+                      },
+    "cockpit_modes":  [
+                          "codex-lock"
+                      ],
+    "operator_approval_required":  true
+}
+

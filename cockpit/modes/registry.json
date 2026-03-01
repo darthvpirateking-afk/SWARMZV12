@@ -1,0 +1,68 @@
+﻿{
+    "modes":  [
+                  {
+                      "id":  "altar_modes",
+                      "path":  "cockpit/modes/altar_modes.tsx"
+                  },
+                  {
+                      "id":  "avatar",
+                      "path":  "cockpit/modes/avatar.tsx"
+                  },
+                  {
+                      "id":  "cosmic_hud",
+                      "path":  "cockpit/modes/cosmic_hud.tsx"
+                  },
+                  {
+                      "id":  "cryptid_radar",
+                      "path":  "cockpit/modes/cryptid_radar.tsx"
+                  },
+                  {
+                      "id":  "federation_council",
+                      "path":  "cockpit/modes/federation_council.tsx"
+                  },
+                  {
+                      "id":  "grimoire_viewer",
+                      "path":  "cockpit/modes/grimoire_viewer.tsx"
+                  },
+                  {
+                      "id":  "lineage_tree",
+                      "path":  "cockpit/modes/lineage_tree.tsx"
+                  },
+                  {
+                      "id":  "lost_civilization_scanner",
+                      "path":  "cockpit/modes/lost_civilization_scanner.tsx"
+                  },
+                  {
+                      "id":  "memory_palace_explorer",
+                      "path":  "cockpit/modes/memory_palace_explorer.tsx"
+                  },
+                  {
+                      "id":  "multiverse_viewer",
+                      "path":  "cockpit/modes/multiverse_viewer.tsx"
+                  },
+                  {
+                      "id":  "pantheon_browser",
+                      "path":  "cockpit/modes/pantheon_browser.tsx"
+                  },
+                  {
+                      "id":  "relic_inventory",
+                      "path":  "cockpit/modes/relic_inventory.tsx"
+                  },
+                  {
+                      "id":  "sigil_renderer",
+                      "path":  "cockpit/modes/sigil_renderer.tsx"
+                  },
+                  {
+                      "id":  "sovereign_mirror_panel",
+                      "path":  "cockpit/modes/sovereign_mirror_panel.tsx"
+                  },
+                  {
+                      "id":  "synchronicity_web",
+                      "path":  "cockpit/modes/synchronicity_web.tsx"
+                  },
+                  {
+                      "id":  "time_echo_viewer",
+                      "path":  "cockpit/modes/time_echo_viewer.tsx"
+                  }
+              ]
+}

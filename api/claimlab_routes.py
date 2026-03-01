@@ -30,7 +30,9 @@ logger = logging.getLogger(__name__)
 # Storage helpers
 # ---------------------------------------------------------------------------
 
-BELIEFS_FILE = Path(os.environ.get("DATABASE_URL", "data/nexusmon.db")).parent / "beliefs.jsonl"
+BELIEFS_FILE = (
+    Path(os.environ.get("DATABASE_URL", "data/nexusmon.db")).parent / "beliefs.jsonl"
+)
 
 
 def _utc_now() -> str:
@@ -70,9 +72,12 @@ def _rewrite_beliefs(beliefs: List[Dict]) -> None:
 # Pydantic models
 # ---------------------------------------------------------------------------
 
+
 class AnalyzeRequest(BaseModel):
     claim: str = Field(..., min_length=5, description="The claim to analyze")
-    context: Optional[str] = Field(None, description="Optional surrounding context (article, conversation)")
+    context: Optional[str] = Field(
+        None, description="Optional surrounding context (article, conversation)"
+    )
 
 
 class AnalyzeResponse(BaseModel):
@@ -84,14 +89,20 @@ class AnalyzeResponse(BaseModel):
 
 class BeliefCreateRequest(BaseModel):
     claim: str = Field(..., min_length=5)
-    confidence: float = Field(..., ge=0.0, le=1.0, description="Initial confidence 0.0–1.0")
+    confidence: float = Field(
+        ..., ge=0.0, le=1.0, description="Initial confidence 0.0–1.0"
+    )
     rationale: Optional[str] = Field(None, description="Why you hold this belief")
     tags: List[str] = Field(default_factory=list)
 
 
 class BeliefReviseRequest(BaseModel):
-    confidence: float = Field(..., ge=0.0, le=1.0, description="Updated confidence after new evidence")
-    evidence: str = Field(..., min_length=3, description="What evidence triggered this revision")
+    confidence: float = Field(
+        ..., ge=0.0, le=1.0, description="Updated confidence after new evidence"
+    )
+    evidence: str = Field(
+        ..., min_length=3, description="What evidence triggered this revision"
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -151,7 +162,17 @@ def _analyze_with_ai(claim: str, context: Optional[str]) -> Dict[str, Any]:
 def _analyze_fallback(claim: str) -> Dict[str, Any]:
     """Minimal structural fallback when AI is unavailable."""
     words = claim.lower().split()
-    normative_markers = {"should", "must", "ought", "better", "worse", "good", "bad", "right", "wrong"}
+    normative_markers = {
+        "should",
+        "must",
+        "ought",
+        "better",
+        "worse",
+        "good",
+        "bad",
+        "right",
+        "wrong",
+    }
     is_normative = bool(normative_markers & set(words))
     return {
         "exact_claim": claim,
@@ -174,6 +195,7 @@ def _analyze_fallback(claim: str) -> Dict[str, Any]:
 # Routes
 # ---------------------------------------------------------------------------
 
+
 @router.post("/analyze", response_model=AnalyzeResponse)
 async def analyze_claim(payload: AnalyzeRequest):
     """
@@ -192,11 +214,14 @@ async def analyze_claim(payload: AnalyzeRequest):
 
     try:
         from nexusmon_organism import ctx_record_message
+
         ctx_record_message(payload.claim, "operator")
     except Exception:
         pass
 
-    return AnalyzeResponse(ok=True, claim=payload.claim, analysis=analysis, source=source)
+    return AnalyzeResponse(
+        ok=True, claim=payload.claim, analysis=analysis, source=source
+    )
 
 
 @router.post("/beliefs", status_code=201)
@@ -288,6 +313,7 @@ async def revise_belief(belief_id: str, payload: BeliefReviseRequest):
 
     try:
         from nexusmon_organism import ctx_record_belief_revision
+
         ctx_record_belief_revision(old_confidence, payload.confidence)
     except Exception:
         pass
@@ -305,6 +331,7 @@ async def claimlab_health():
     """ClaimLab subsystem health check."""
     try:
         import anthropic  # noqa
+
         ai_available = True
     except ImportError:
         ai_available = False

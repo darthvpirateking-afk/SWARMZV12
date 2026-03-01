@@ -1,0 +1,41 @@
+﻿{
+    "id":  "archive.time_echoes.echo_alpha",
+    "name":  "Time Echo Alpha",
+    "origin":  "narrative timeline modeling",
+    "symbolic_role":  "past/future symbolic echo chamber",
+    "domains":  [
+                    "timeline",
+                    "reflection"
+                ],
+    "entities":  [
+                     "past_self",
+                     "future_self"
+                 ],
+    "correspondences":  {
+                            "travel":  "symbolic-only",
+                            "mechanism":  "narrative"
+                        },
+    "geometry":  {
+                     "points":  [
+
+                                ],
+                     "lines":  [
+
+                               ]
+                 },
+    "runtime_hooks":  {
+                          "on_invoke":  true,
+                          "on_consult":  true,
+                          "on_symbolic_interpretation":  true,
+                          "on_generate_geometry":  true,
+                          "on_trigger_anomaly":  true,
+                          "on_resolve_correspondence":  true,
+                          "on_render_altar_mode":  true,
+                          "on_simulate_branch":  true
+                      },
+    "cockpit_modes":  [
+                          "timeline-view"
+                      ],
+    "operator_approval_required":  true
+}
+

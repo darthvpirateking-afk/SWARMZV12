@@ -1,0 +1,41 @@
+﻿{
+    "id":  "archive.cosmic_mind.model_01",
+    "name":  "Cosmic Mind Model 01",
+    "origin":  "philosophical model library",
+    "symbolic_role":  "philosophical framing layer",
+    "domains":  [
+                    "philosophy",
+                    "ontology"
+                ],
+    "entities":  [
+                     "akashic_model",
+                     "panpsychism_model"
+                 ],
+    "correspondences":  {
+                            "truth":  "unresolved",
+                            "claim":  "model-only"
+                        },
+    "geometry":  {
+                     "points":  [
+
+                                ],
+                     "lines":  [
+
+                               ]
+                 },
+    "runtime_hooks":  {
+                          "on_invoke":  true,
+                          "on_consult":  true,
+                          "on_symbolic_interpretation":  true,
+                          "on_generate_geometry":  true,
+                          "on_trigger_anomaly":  true,
+                          "on_resolve_correspondence":  true,
+                          "on_render_altar_mode":  true,
+                          "on_simulate_branch":  true
+                      },
+    "cockpit_modes":  [
+                          "cosmic-hud"
+                      ],
+    "operator_approval_required":  true
+}
+

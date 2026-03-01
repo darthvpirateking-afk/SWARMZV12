@@ -460,5 +460,10 @@ def test_cockpit_status_endpoint(client):
     assert "swarm_tiers" in data
     assert "mission_ranks" in data
     assert "panels" in data
+    assert "evolution" in data
+    assert "monarch_mode" in data
+    assert "active_summons" in data
+    assert "abilities" in data
+    assert "chip_state" in data
     assert isinstance(data["panels"], list)
     assert data["realms"]["total"] >= 8

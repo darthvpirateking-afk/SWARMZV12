@@ -1,0 +1,29 @@
+{
+  "id": "reality_gate_linear_v1",
+  "version": "0.1.0",
+  "type": "linear",
+  "description": "Minimal deterministic canonical mission using reality_gate.",
+  "steps": [
+    {
+      "id": "step_validate",
+      "agent": "reality_gate",
+      "command": "validate",
+      "payload": {
+        "input_kind": "mission_payload"
+      }
+    },
+    {
+      "id": "step_transform",
+      "agent": "reality_gate",
+      "command": "transform",
+      "payload": {
+        "mode": "identity_plus_source"
+      }
+    }
+  ],
+  "constraints": {
+    "deterministic": true,
+    "allow_network": false,
+    "allow_filesystem": false
+  }
+}

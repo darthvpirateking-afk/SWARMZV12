@@ -24,6 +24,7 @@ import { BuildMilestonesPage } from "./pages/BuildMilestonesPage";
 import { DatabaseLayerPage } from "./pages/DatabaseLayerPage";
 import { OperatorAuthPage } from "./pages/OperatorAuthPage";
 import { ApiFoundationPage } from "./pages/ApiFoundationPage";
+import { NexusmonConsolePage } from "./pages/NexusmonConsolePage";
 import { systemApi } from "./api/system";
 import { colors, spacing, radii, typography, shadows } from "./theme/cosmicTokens";
 
@@ -47,7 +48,8 @@ type PageId =
   | "api"
   | "vault"
   | "appstore"
-  | "chat";
+  | "chat"
+  | "console";
 
 interface NavItem {
   id: PageId;
@@ -69,6 +71,7 @@ const NAV_ITEMS: NavItem[] = [
   { id: "api",       icon: "🌐", label: "API" },
   { id: "appstore",  icon: "📦", label: "App Store" },
   { id: "chat",      icon: "💬", label: "Chat" },
+  { id: "console",   icon: "⬡",  label: "Console" },
 ];
 
 export default function App() {
@@ -220,6 +223,8 @@ function PageContent({ activePage }: { activePage: PageId }) {
       return <AppStoreTracker />;
     case "chat":
       return <ChatPanel />;
+    case "console":
+      return <NexusmonConsolePage />;
     default:
       return <NexusmonEntityPanel />;
   }

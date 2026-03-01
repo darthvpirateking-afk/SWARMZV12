@@ -30,6 +30,7 @@ router = APIRouter()
 # Data Models
 # ─────────────────────────────────────────────────────────────
 
+
 class PluginRecord(BaseModel):
     id: str
     type: str
@@ -52,6 +53,7 @@ class UnlockRequest(BaseModel):
 # GET /v1/plugins — Installed + Unlockable
 # ─────────────────────────────────────────────────────────────
 
+
 @router.get("/v1/plugins")
 async def list_plugins() -> Dict[str, Any]:
     """
@@ -68,7 +70,7 @@ async def list_plugins() -> Dict[str, Any]:
             "trust": "community",
             "sandbox": "subprocess",
             "granted_caps": ["artifact.read", "bus.emit"],
-            "state": "active"
+            "state": "active",
         },
         {
             "id": "cosmic-skin",
@@ -77,8 +79,8 @@ async def list_plugins() -> Dict[str, Any]:
             "trust": "community",
             "sandbox": "none",
             "granted_caps": ["artifact.read"],
-            "state": "active"
-        }
+            "state": "active",
+        },
     ]
 
     # Unlockable: gated by rank/XP
@@ -88,31 +90,23 @@ async def list_plugins() -> Dict[str, Any]:
             "id": "parallel-node-v2",
             "type": "worker",
             "version": "2.0.0",
-            "requires": {
-                "rank": "C",
-                "xp": 500
-            }
+            "requires": {"rank": "C", "xp": 500},
         },
         {
             "id": "evolution-burst",
             "type": "mission",
             "version": "1.5.0",
-            "requires": {
-                "rank": "B",
-                "xp": 1200
-            }
-        }
+            "requires": {"rank": "B", "xp": 1200},
+        },
     ]
 
-    return {
-        "installed": installed,
-        "unlockable": unlockable
-    }
+    return {"installed": installed, "unlockable": unlockable}
 
 
 # ─────────────────────────────────────────────────────────────
 # GET /v1/plugins/community — Community Registry
 # ─────────────────────────────────────────────────────────────
+
 
 @router.get("/v1/plugins/community")
 async def get_community_registry() -> Dict[str, Any]:
@@ -125,7 +119,7 @@ async def get_community_registry() -> Dict[str, Any]:
     registry = {
         "registry_version": "1.0.0",
         "last_updated": datetime.utcnow().isoformat() + "Z",
-        "plugins": []
+        "plugins": [],
     }
 
     # Scan plugins/ for manifest.json files
@@ -138,16 +132,22 @@ async def get_community_registry() -> Dict[str, Any]:
                     with open(manifest_path, "r") as f:
                         manifest = json.load(f)
 
-                    registry["plugins"].append({
-                        "id": manifest.get("id"),
-                        "type": manifest.get("type"),
-                        "version": manifest.get("version"),
-                        "trust": manifest.get("trust", "unsigned"),
-                        "description": manifest.get("manifest", {}).get("description", ""),
-                        "dependencies": [d.get("id") for d in manifest.get("dependencies", [])],
-                        "sandbox": manifest.get("sandbox", "subprocess"),
-                        "repo": f"file://{os.path.abspath(manifest_path)}"
-                    })
+                    registry["plugins"].append(
+                        {
+                            "id": manifest.get("id"),
+                            "type": manifest.get("type"),
+                            "version": manifest.get("version"),
+                            "trust": manifest.get("trust", "unsigned"),
+                            "description": manifest.get("manifest", {}).get(
+                                "description", ""
+                            ),
+                            "dependencies": [
+                                d.get("id") for d in manifest.get("dependencies", [])
+                            ],
+                            "sandbox": manifest.get("sandbox", "subprocess"),
+                            "repo": f"file://{os.path.abspath(manifest_path)}",
+                        }
+                    )
                 except Exception as e:
                     # Skip malformed manifests
                     pass
@@ -158,6 +158,7 @@ async def get_community_registry() -> Dict[str, Any]:
 # ─────────────────────────────────────────────────────────────
 # POST /v1/plugins/install — Install from URL
 # ─────────────────────────────────────────────────────────────
+
 
 @router.post("/v1/plugins/install")
 async def install_plugin(payload: InstallRequest) -> Dict[str, Any]:
@@ -180,10 +181,7 @@ async def install_plugin(payload: InstallRequest) -> Dict[str, Any]:
     try:
         # Clone repo
         subprocess.run(
-            ["git", "clone", url, tmp_dir],
-            check=True,
-            capture_output=True,
-            timeout=30
+            ["git", "clone", url, tmp_dir], check=True, capture_output=True, timeout=30
         )
 
         # Validate manifest.json exists
@@ -212,7 +210,7 @@ async def install_plugin(payload: InstallRequest) -> Dict[str, Any]:
             "status": "ok",
             "plugin_id": plugin_id,
             "version": manifest.get("version"),
-            "message": f"Installed {plugin_id} successfully"
+            "message": f"Installed {plugin_id} successfully",
         }
 
     except subprocess.TimeoutExpired:
@@ -233,6 +231,7 @@ async def install_plugin(payload: InstallRequest) -> Dict[str, Any]:
 # POST /v1/plugins/unlock — Unlock Gated Plugin
 # ─────────────────────────────────────────────────────────────
 
+
 @router.post("/v1/plugins/unlock")
 async def unlock_plugin(payload: UnlockRequest) -> Dict[str, Any]:
     """
@@ -252,17 +251,11 @@ async def unlock_plugin(payload: UnlockRequest) -> Dict[str, Any]:
     # - operator_approval_required(plugin_id)
 
     operator_rank = "C"  # Mock
-    operator_xp = 600   # Mock
+    operator_xp = 600  # Mock
 
-    requirement_rank = {
-        "parallel-node-v2": "C",
-        "evolution-burst": "B"
-    }.get(plugin_id)
+    requirement_rank = {"parallel-node-v2": "C", "evolution-burst": "B"}.get(plugin_id)
 
-    requirement_xp = {
-        "parallel-node-v2": 500,
-        "evolution-burst": 1200
-    }.get(plugin_id)
+    requirement_xp = {"parallel-node-v2": 500, "evolution-burst": 1200}.get(plugin_id)
 
     if not requirement_rank:
         raise HTTPException(404, f"Plugin {plugin_id} not found in unlockable list")
@@ -272,35 +265,31 @@ async def unlock_plugin(payload: UnlockRequest) -> Dict[str, Any]:
     if rank_order.get(operator_rank, 99) > rank_order.get(requirement_rank, 99):
         raise HTTPException(
             403,
-            f"Rank requirement not met: need {requirement_rank}, have {operator_rank}"
+            f"Rank requirement not met: need {requirement_rank}, have {operator_rank}",
         )
 
     # Check XP
     if operator_xp < requirement_xp:
         raise HTTPException(
-            403,
-            f"XP requirement not met: need {requirement_xp}, have {operator_xp}"
+            403, f"XP requirement not met: need {requirement_xp}, have {operator_xp}"
         )
 
     # Fire event hook — logs to timeline + notification buffer
     on_plugin_unlocked(plugin_id, operator_rank, operator_xp)
 
-    return {
-        "status": "ok",
-        "plugin_id": plugin_id,
-        "message": f"Unlocked {plugin_id}"
-    }
+    return {"status": "ok", "plugin_id": plugin_id, "message": f"Unlocked {plugin_id}"}
 
 
 # ─────────────────────────────────────────────────────────────
 # GET /v1/timeline — Evolution Timeline
 # ─────────────────────────────────────────────────────────────
 
+
 @router.get("/v1/timeline")
 async def get_timeline(
     limit: int = Query(100, ge=1, le=1000),
     offset: int = Query(0, ge=0),
-    event_type: Optional[str] = Query(None)
+    event_type: Optional[str] = Query(None),
 ) -> Dict[str, Any]:
     """
     Retrieve organism evolution timeline.
@@ -322,13 +311,14 @@ async def get_timeline(
         "total": len(timeline),
         "limit": limit,
         "offset": offset,
-        "stats": get_stats()
+        "stats": get_stats(),
     }
 
 
 # ─────────────────────────────────────────────────────────────
 # GET /v1/timeline/stats — Quick organism stats
 # ─────────────────────────────────────────────────────────────
+
 
 @router.get("/v1/timeline/stats")
 async def timeline_stats() -> Dict[str, Any]:
@@ -337,9 +327,11 @@ async def timeline_stats() -> Dict[str, Any]:
     """
     return get_stats()
 
+
 # ─────────────────────────────────────────────────────────────
 # GET /v1/notifications — Real-time notification feed
 # ─────────────────────────────────────────────────────────────
+
 
 @router.get("/v1/notifications")
 async def get_notifications(limit: int = Query(20, ge=1, le=100)) -> Dict[str, Any]:
@@ -353,5 +345,5 @@ async def get_notifications(limit: int = Query(20, ge=1, le=100)) -> Dict[str, A
     return {
         "events": recent,
         "total": len(buffer),
-        "timestamp": datetime.utcnow().isoformat() + "Z"
+        "timestamp": datetime.utcnow().isoformat() + "Z",
     }

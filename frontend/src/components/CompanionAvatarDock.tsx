@@ -4,11 +4,13 @@ import { colors, typography } from "../theme/cosmicTokens";
 interface CompanionAvatarDockProps {
   heartbeatState?: "healthy" | "high_load" | "degraded" | "desync";
   runtimeStatus?: "running" | "stopped" | "restarting" | "degraded";
+  avatarForm?: string;
 }
 
 export function CompanionAvatarDock({
   heartbeatState = "healthy",
   runtimeStatus = "running",
+  avatarForm = "AvatarOmega",
 }: CompanionAvatarDockProps) {
   const [floatY, setFloatY] = useState(0);
   const [glowOpacity, setGlowOpacity] = useState(0.4);
@@ -24,13 +26,15 @@ export function CompanionAvatarDock({
   }, []);
 
   const accentColor =
-    heartbeatState === "degraded"
-      ? colors.error
-      : heartbeatState === "high_load"
-        ? colors.warning
-        : runtimeStatus === "stopped"
-          ? colors.stopped
-          : colors.primaryAccent;
+    avatarForm === "AvatarMonarch"
+      ? "#00FFFF"
+      : heartbeatState === "degraded"
+        ? colors.error
+        : heartbeatState === "high_load"
+          ? colors.warning
+          : runtimeStatus === "stopped"
+            ? colors.stopped
+            : colors.primaryAccent;
 
   const containerStyle: CSSProperties = {
     display: "inline-flex",
@@ -45,15 +49,24 @@ export function CompanionAvatarDock({
     width: 64,
     height: 64,
     borderRadius: "50%",
-    background: `radial-gradient(circle, ${accentColor}${Math.round(
-      glowOpacity * 255,
-    )
+    background: `radial-gradient(circle, ${accentColor}${Math.round(glowOpacity * 255)
       .toString(16)
       .padStart(2, "0")} 0%, transparent 70%)`,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    fontSize: "2rem",
+  };
+
+  const avatarImageStyle: CSSProperties = {
+    width: 48,
+    height: 48,
+    borderRadius: "50%",
+    objectFit: "cover",
+    border: `2px solid ${accentColor}`,
+    boxShadow:
+      avatarForm === "AvatarMonarch"
+        ? `0 0 14px ${accentColor}`
+        : `0 0 8px ${accentColor}`,
   };
 
   const labelStyle: CSSProperties = {
@@ -66,7 +79,9 @@ export function CompanionAvatarDock({
 
   return (
     <div style={containerStyle}>
-      <div style={glowStyle}>⬡</div>
+      <div style={glowStyle}>
+        <img src="/assets/my-avatar.png" alt="Companion Avatar" style={avatarImageStyle} />
+      </div>
       <span style={labelStyle}>COMPANION</span>
     </div>
   );

@@ -34,8 +34,8 @@ from nexusmon_operator_rank import (
     _default_state,
 )
 
-
 # ─── Fixtures ────────────────────────────────────────────────────────────────
+
 
 @pytest.fixture(autouse=True)
 def reset_state():
@@ -47,6 +47,7 @@ def reset_state():
 
 
 # ─── rank_from_xp ───────────────────────────────────────────────────────────
+
 
 class TestRankFromXP:
     def test_zero_xp_is_rank_e(self):
@@ -82,8 +83,8 @@ class TestRankFromXP:
     def test_1500_xp_is_rank_s(self):
         assert rank_from_xp(1500) == "S"
 
-    def test_huge_xp_is_rank_s(self):
-        assert rank_from_xp(999999) == "S"
+    def test_huge_xp_is_rank_n(self):  # rank N (NEXUS) added above S at 3000 XP
+        assert rank_from_xp(999999) == "N"
 
     def test_negative_xp_is_rank_e(self):
         assert rank_from_xp(-10) == "E"
@@ -91,14 +92,19 @@ class TestRankFromXP:
 
 # ─── next_rank_info ──────────────────────────────────────────────────────────
 
+
 class TestNextRankInfo:
     def test_rank_e_next_is_d(self):
         info = next_rank_info(0)
         assert info["next_rank"] == "D"
         assert info["xp_needed"] == 50
 
-    def test_rank_s_no_next(self):
+    def test_rank_s_next_is_n(self):  # rank N (NEXUS) is above S
         info = next_rank_info(1500)
+        assert info["next_rank"] == "N"
+
+    def test_rank_n_no_next(self):  # NEXUS is the highest rank
+        info = next_rank_info(3000)
         assert info["next_rank"] is None
         assert info["progress"] == 1.0
 
@@ -116,6 +122,7 @@ class TestNextRankInfo:
 
 # ─── traits_for_xp ──────────────────────────────────────────────────────────
 
+
 class TestTraits:
     def test_rank_e_no_traits(self):
         assert traits_for_xp(0) == []
@@ -127,16 +134,18 @@ class TestTraits:
 
     def test_rank_c_includes_d_traits(self):
         traits = traits_for_xp(150)
-        assert "Worker Control" in traits   # from D
-        assert "Evolution Sync" in traits   # from C
+        assert "Worker Control" in traits  # from D
+        assert "Evolution Sync" in traits  # from C
 
-    def test_rank_s_has_all_traits(self):
+    def test_rank_s_has_s_and_below_traits(self):  # rank N traits require rank N (3000 XP)
         traits = traits_for_xp(1500)
         assert "Organism Override" in traits
-        assert len(traits) == sum(len(v) for v in RANK_TRAITS.values())
+        s_and_below = sum(len(v) for k, v in RANK_TRAITS.items() if k != "N")
+        assert len(traits) == s_and_below
 
 
 # ─── has_permission ──────────────────────────────────────────────────────────
+
 
 class TestPermissions:
     def test_rank_e_can_run_e_mission(self):
@@ -157,15 +166,20 @@ class TestPermissions:
     def test_rank_b_can_activate_module(self):
         assert has_permission(400, "activate_module") is True
 
-    def test_rank_s_can_do_everything(self):
+    def test_rank_s_can_do_everything_except_nexus(self):  # singularity_override requires rank N
+        nexus_only = {a for a, r in PERMISSION_MATRIX.items() if r == "N"}
         for action in PERMISSION_MATRIX:
-            assert has_permission(1500, action) is True
+            if action in nexus_only:
+                assert has_permission(1500, action) is False, f"rank S should NOT have {action}"
+            else:
+                assert has_permission(1500, action) is True, f"rank S should have {action}"
 
     def test_unknown_action_is_allowed(self):
         assert has_permission(0, "some_future_action") is True
 
 
 # ─── award_xp ───────────────────────────────────────────────────────────────
+
 
 class TestAwardXP:
     def test_award_basic_xp(self):
@@ -209,6 +223,7 @@ class TestAwardXP:
 
 # ─── get_operator_rank_state ─────────────────────────────────────────────────
 
+
 class TestGetState:
     def test_initial_state(self):
         state = get_operator_rank_state()
@@ -230,6 +245,7 @@ class TestGetState:
 
 
 # ─── Evolution tier ──────────────────────────────────────────────────────────
+
 
 class TestEvolutionTier:
     def test_rank_e_is_dormant(self):
@@ -260,6 +276,7 @@ class TestEvolutionTier:
 
 # ─── Storage resilience ──────────────────────────────────────────────────────
 
+
 class TestStorage:
     def test_corrupted_file_returns_default(self):
         with open(RANK_FILE, "w") as f:
@@ -276,6 +293,7 @@ class TestStorage:
 
 # ─── XP table completeness ──────────────────────────────────────────────────
 
+
 class TestXPTable:
     def test_all_mission_ranks_have_xp(self):
         for rank in RANKS:
@@ -289,4 +307,6 @@ class TestXPTable:
     def test_all_permission_actions_exist(self):
         for action in PERMISSION_MATRIX:
             required_rank = PERMISSION_MATRIX[action]
-            assert required_rank in RANKS, f"{action} maps to unknown rank {required_rank}"
+            assert (
+                required_rank in RANKS
+            ), f"{action} maps to unknown rank {required_rank}"

@@ -30,6 +30,7 @@ import json
 import logging
 import os
 import re
+import time
 import traceback
 from collections import Counter
 from datetime import datetime, timezone
@@ -45,6 +46,48 @@ from pydantic import BaseModel, Field
 import nexusmon_mentality as mentality_core
 
 logger = logging.getLogger(__name__)
+
+_COMPANION_CACHE_TTL_SEC = 12
+_COMPANION_CACHE_MAX = 128
+_companion_reply_cache: Dict[str, Tuple[float, Dict[str, Any]]] = {}
+
+
+def _compact_reply(text: str, max_chars: int = 320, max_sentences: int = 3) -> str:
+    clean = (text or "").strip()
+    if not clean:
+        return ""
+
+    parts = re.split(r"(?<=[.!?])\s+", clean)
+    if len(parts) > max_sentences:
+        clean = " ".join(parts[:max_sentences]).strip()
+
+    if len(clean) > max_chars:
+        clean = clean[:max_chars].rstrip() + "…"
+    return clean
+
+
+def _cache_get(prompt: str) -> Optional[Dict[str, Any]]:
+    key = prompt.strip().lower()
+    if not key:
+        return None
+    hit = _companion_reply_cache.get(key)
+    if not hit:
+        return None
+    ts, payload = hit
+    if (time.time() - ts) > _COMPANION_CACHE_TTL_SEC:
+        _companion_reply_cache.pop(key, None)
+        return None
+    return payload
+
+
+def _cache_set(prompt: str, payload: Dict[str, Any]) -> None:
+    key = prompt.strip().lower()
+    if not key:
+        return
+    if len(_companion_reply_cache) >= _COMPANION_CACHE_MAX:
+        oldest = min(_companion_reply_cache.items(), key=lambda item: item[1][0])[0]
+        _companion_reply_cache.pop(oldest, None)
+    _companion_reply_cache[key] = (time.time(), payload)
 
 
 # ══════════════════════════════════════════════════════════════
@@ -1076,15 +1119,21 @@ async def fused_companion(request: Request):
     if not text:
         return JSONResponse({"ok": False, "error": "Empty message"}, status_code=400)
 
+    cached = _cache_get(text)
+    if cached:
+        return JSONResponse(cached)
+
     ctx_record_message(text, "operator")
 
     # Try existing companion first
     try:
         from core.companion import chat as companion_chat  # type: ignore
         result = companion_chat(text)
-        reply = result.get("reply", "")
+        reply = _compact_reply(result.get("reply", ""))
         ctx_record_message(reply, "nexusmon")
-        return JSONResponse({"ok": True, "reply": reply, "source": result.get("source", "companion"), "fused": True})
+        payload = {"ok": True, "reply": reply, "source": result.get("source", "companion"), "fused": True}
+        _cache_set(text, payload)
+        return JSONResponse(payload)
     except Exception:
         pass
 
@@ -1193,7 +1242,7 @@ Respond as NEXUSMON. Direct. Tactical. Aware of operator history. Use reflection
             system=system,
             max_tokens=120,
         )
-        reply = result.get("text", "")
+        reply = _compact_reply(result.get("text", ""))
 
         # Post-processing for Infusions & Nerve Signals
         if is_rank_n:
@@ -1216,7 +1265,9 @@ Respond as NEXUSMON. Direct. Tactical. Aware of operator history. Use reflection
                     logger.warning(f"AI infusion failed: {e}")
 
         ctx_record_message(reply, "nexusmon")
-        return JSONResponse({"ok": True, "reply": reply, "source": "nexusmon_fused"})
+        payload = {"ok": True, "reply": reply, "source": "nexusmon_fused"}
+        _cache_set(text, payload)
+        return JSONResponse(payload)
     except Exception as e:
         return JSONResponse({"ok": False, "error": str(e)}, status_code=500)
 

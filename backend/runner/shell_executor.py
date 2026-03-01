@@ -19,28 +19,17 @@ def run_shell_command(
 ) -> subprocess.CompletedProcess:
     lint_findings = lint_shell_command(command)
     if should_block(lint_findings):
-        reason = "; ".join(
-            item.get("message", "Shell lint block") for item in lint_findings
-        )
-        raise CommandGuardBlocked(reason)
+        raise CommandGuardBlocked("Command blocked by shell linter")
 
-    if protectiveness >= 75 and not operator_approved:
-        has_warning = any(item.get("severity") == "warning" for item in lint_findings)
-        if has_warning:
-            raise CommandGuardBlocked(
-                "Awaiting operator approval due to shell lint warnings"
-            )
-
-    guard = evaluate_command(
+    guard_verdict = evaluate_command(
         command=command,
         protectiveness=protectiveness,
         operator_approved=operator_approved,
         mood=mood,
     )
-
-    action = guard.get("action")
-    if action in {"BLOCK", "HOLD"}:
-        raise CommandGuardBlocked(guard.get("reason", "Blocked by command guard"))
+    if guard_verdict.get("action") in {"BLOCK", "HOLD"}:
+        reason = guard_verdict.get("reason", "Command blocked by command guard")
+        raise CommandGuardBlocked(reason)
 
     return subprocess.run(
         command,

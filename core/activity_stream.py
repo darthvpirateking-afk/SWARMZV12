@@ -65,9 +65,14 @@ def record_event(*args, **kwargs):
         telemetry.record_event(
             "event", payload if isinstance(payload, dict) else {"payload": payload}
         )
-    except Exception:
+    except Exception as e:
         # Fail silent to avoid crashing callers that treat telemetry as best-effort
-        pass
+        # But log the error for debugging purposes
+        try:
+            telemetry.record_failure("activity_stream_error", str(e))
+        except Exception:
+            # If telemetry logging fails, truly fail silent
+            pass
 
 
 def initialize_activity_stream():

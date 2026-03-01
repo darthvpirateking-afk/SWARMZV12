@@ -84,7 +84,11 @@ def _transition(mission_id: str, new_state: str) -> Dict[str, Any]:
         snapshot = dict(m)
 
     # Store an artifact when a mission reaches a terminal state
-    if new_state in ("COMPLETED", "FAILED", "ABORTED") and _VAULT_AVAILABLE and _vault_store_artifact is not None:
+    if (
+        new_state in ("COMPLETED", "FAILED", "ABORTED")
+        and _VAULT_AVAILABLE
+        and _vault_store_artifact is not None
+    ):
         try:
             artifact_type = "REPORT" if new_state == "COMPLETED" else "LOG"
             _vault_store_artifact(
@@ -101,7 +105,9 @@ def _transition(mission_id: str, new_state: str) -> Dict[str, Any]:
                 input_snapshot={"constraints": snapshot.get("constraints", {})},
             )
         except Exception as exc:
-            logger.warning("Failed to store mission artifact for %s: %s", mission_id, exc)
+            logger.warning(
+                "Failed to store mission artifact for %s: %s", mission_id, exc
+            )
 
     return snapshot
 

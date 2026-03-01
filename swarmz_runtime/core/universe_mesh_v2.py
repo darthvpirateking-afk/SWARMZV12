@@ -31,7 +31,9 @@ class CosmicRouter:
         if link.validate():
             self.links.append(link)
 
-    def route_mission(self, mission: Dict[str, Any], constraints: Dict[str, Any]) -> Dict[str, Any]:
+    def route_mission(
+        self, mission: Dict[str, Any], constraints: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """Route a mission across cosmologies.
 
         Selects valid inter-cosmic links that satisfy the supplied constraints
@@ -56,8 +58,7 @@ class CosmicRouter:
         max_hops = int(constraints.get("max_hops", 10))
 
         candidates = [
-            link for link in self.links
-            if (not require_validated or link.validated)
+            link for link in self.links if (not require_validated or link.validated)
         ]
 
         # Build hop path: any link whose source cosmology name matches source
@@ -72,15 +73,19 @@ class CosmicRouter:
             hops.append(hop)
 
         # Check whether the path actually connects source → target
-        connected = any(
-            h["from"] == source or h["to"] == target for h in hops
-        ) if hops else (source == target)
+        connected = (
+            any(h["from"] == source or h["to"] == target for h in hops)
+            if hops
+            else (source == target)
+        )
 
         return {
             "ok": connected,
             "hops": hops,
             "total_links": len(self.links),
-            "reason": "path found" if connected else f"no route from {source!r} to {target!r}",
+            "reason": (
+                "path found" if connected else f"no route from {source!r} to {target!r}"
+            ),
         }
 
 

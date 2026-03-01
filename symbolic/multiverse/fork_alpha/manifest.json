@@ -1,0 +1,41 @@
+﻿{
+    "id":  "multiverse.fork_alpha",
+    "name":  "Fork Alpha",
+    "origin":  "what-if scenario engine",
+    "symbolic_role":  "multiversal branch simulator",
+    "domains":  [
+                    "branching",
+                    "simulation"
+                ],
+    "entities":  [
+                     "fork.a",
+                     "fork.b"
+                 ],
+    "correspondences":  {
+                            "timeline":  "simulated",
+                            "outcome":  "comparative"
+                        },
+    "geometry":  {
+                     "points":  [
+
+                                ],
+                     "lines":  [
+
+                               ]
+                 },
+    "runtime_hooks":  {
+                          "on_invoke":  true,
+                          "on_consult":  true,
+                          "on_symbolic_interpretation":  true,
+                          "on_generate_geometry":  true,
+                          "on_trigger_anomaly":  true,
+                          "on_resolve_correspondence":  true,
+                          "on_render_altar_mode":  true,
+                          "on_simulate_branch":  true
+                      },
+    "cockpit_modes":  [
+                          "multiverse-view"
+                      ],
+    "operator_approval_required":  true
+}
+

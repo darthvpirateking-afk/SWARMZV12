@@ -13,10 +13,12 @@ export function parseAGUIEvent(data: string): AGUIEvent | null {
       event.payload !== null &&
       !Array.isArray(event.payload)
     ) {
+    if (event && typeof event.type === "string" && typeof event.payload === "object") {
       return event as AGUIEvent;
     }
     return null;
   } catch {
     return null;
   }
+}
 }

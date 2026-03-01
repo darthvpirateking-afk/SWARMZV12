@@ -14,9 +14,9 @@ def test_check_cyclic_dependency_none():
     """Action with no dependencies should pass."""
     layer = IntegrityLayer()
     action = {"id": "action_1", "dependencies": []}
-    
+
     result = layer.check_cyclic_dependency(action)
-    
+
     assert result.passed
     assert result.layer == "integrity"
 
@@ -25,9 +25,9 @@ def test_check_cyclic_dependency_self_reference():
     """Self-dependency should fail."""
     layer = IntegrityLayer()
     action = {"id": "action_1", "dependencies": ["action_1"]}
-    
+
     result = layer.check_cyclic_dependency(action)
-    
+
     assert not result.passed
     assert "self-dependency" in result.reason.lower()
 
@@ -40,9 +40,9 @@ def test_check_cross_domain_mutation_same_domain():
         "target_domain": "core",
         "type": "write",
     }
-    
+
     result = layer.check_cross_domain_mutation(action)
-    
+
     assert result.passed
     assert "same-domain" in result.reason.lower()
 
@@ -56,9 +56,9 @@ def test_check_cross_domain_mutation_no_interface():
         "type": "write",
         "has_interface_contract": False,
     }
-    
+
     result = layer.check_cross_domain_mutation(action)
-    
+
     assert not result.passed
     assert "without interface" in result.reason.lower()
 
@@ -72,9 +72,9 @@ def test_check_cross_domain_mutation_with_interface():
         "type": "write",
         "has_interface_contract": True,
     }
-    
+
     result = layer.check_cross_domain_mutation(action)
-    
+
     assert result.passed
 
 
@@ -85,9 +85,9 @@ def test_check_stub_exposure_internal():
         "code": "pass  # TODO: implement later",
         "is_public_api": False,
     }
-    
+
     result = layer.check_stub_exposure(action)
-    
+
     assert result.passed
 
 
@@ -99,9 +99,9 @@ def test_check_stub_exposure_public_api():
         "description": "This is a stub implementation for now",
         "is_public_api": True,
     }
-    
+
     result = layer.check_stub_exposure(action)
-    
+
     assert not result.passed
     assert "stub" in result.reason.lower()
 
@@ -117,9 +117,9 @@ def test_enforce_constraint_all_pass():
         "type": "read",
         "is_public_api": False,
     }
-    
+
     result = layer.enforce_constraint(action)
-    
+
     assert result.passed
     assert result.metadata["total_checks"] == 3
 
@@ -136,9 +136,9 @@ def test_enforce_constraint_with_violation():
         "has_interface_contract": False,
         "is_public_api": False,
     }
-    
+
     result = layer.enforce_constraint(action)
-    
+
     assert not result.passed
     assert result.metadata["violations"] >= 1
 
@@ -154,8 +154,8 @@ def test_evaluate_wrapper():
         "is_public_api": False,
     }
     context = {}
-    
+
     result = evaluate(action, context)
-    
+
     assert result.layer == "integrity"
     assert result.passed

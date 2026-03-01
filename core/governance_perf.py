@@ -22,18 +22,18 @@ from contextlib import contextmanager
 from dataclasses import dataclass, field
 from typing import Dict, Optional
 
-
 # How many recent samples to keep per layer (ring buffer)
 _WINDOW = 200
 
 # Alert threshold in milliseconds
-SLOW_LAYER_THRESHOLD_MS = 50.0   # single layer
+SLOW_LAYER_THRESHOLD_MS = 50.0  # single layer
 SLOW_PIPELINE_THRESHOLD_MS = 100.0  # full pipeline
 
 
 @dataclass
 class LayerPerf:
     """Rolling performance metrics for a single governance layer."""
+
     name: str
     latencies_ms: deque = field(default_factory=lambda: deque(maxlen=_WINDOW))
     pass_count: int = 0
@@ -130,7 +130,9 @@ class GovernancePerfLedger:
         }
         self._alerts: deque = deque(maxlen=100)  # recent slow-layer alerts
 
-    def record(self, layer: str, elapsed_ms: float, passed: Optional[bool] = None) -> None:
+    def record(
+        self, layer: str, elapsed_ms: float, passed: Optional[bool] = None
+    ) -> None:
         """Record a single layer evaluation result."""
         if layer not in self._layers:
             self._layers[layer] = LayerPerf(layer)
@@ -138,17 +140,23 @@ class GovernancePerfLedger:
         lp.record(elapsed_ms, passed)
 
         # Emit alert if layer is slow
-        threshold = SLOW_PIPELINE_THRESHOLD_MS if layer == "_pipeline" else SLOW_LAYER_THRESHOLD_MS
+        threshold = (
+            SLOW_PIPELINE_THRESHOLD_MS
+            if layer == "_pipeline"
+            else SLOW_LAYER_THRESHOLD_MS
+        )
         now = time.time()
         if elapsed_ms > threshold and (now - lp._last_alert) > 60:
             lp._last_alert = now
-            self._alerts.append({
-                "ts": now,
-                "layer": layer,
-                "elapsed_ms": round(elapsed_ms, 2),
-                "threshold_ms": threshold,
-                "msg": f"[GOVERNANCE PERF] {layer} took {elapsed_ms:.1f}ms (>{threshold}ms threshold)",
-            })
+            self._alerts.append(
+                {
+                    "ts": now,
+                    "layer": layer,
+                    "elapsed_ms": round(elapsed_ms, 2),
+                    "threshold_ms": threshold,
+                    "msg": f"[GOVERNANCE PERF] {layer} took {elapsed_ms:.1f}ms (>{threshold}ms threshold)",
+                }
+            )
 
     def summary(self) -> dict:
         """Return full performance summary suitable for the dashboard API."""

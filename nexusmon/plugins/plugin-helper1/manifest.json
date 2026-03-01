@@ -1,0 +1,21 @@
+{
+  "name": "plugin-helper1",
+  "version": "1.0.0",
+  "description": "Unified engineering worker for NEXUSMON. Additive-only, operator-bound.",
+  "roles": [
+    "plugin-generator",
+    "mission-engine-worker",
+    "cockpit-ui-builder",
+    "schema-engineer",
+    "self-coding-support"
+  ],
+  "entrypoint": "index.js",
+  "schema": "./schema.json",
+  "handlers": {
+    "generate": "./handlers/generate.js",
+    "mission": "./handlers/mission.js",
+    "schema": "./handlers/schema.js",
+    "ui": "./handlers/ui.js",
+    "patchpack": "./handlers/patchpack.js"
+  }
+}

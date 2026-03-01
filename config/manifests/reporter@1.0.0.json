@@ -1,0 +1,21 @@
+{
+  "id": "reporter@1.0.0",
+  "version": "1.0.0",
+  "capabilities": ["report.generate", "data.read"],
+  "inputs": {
+    "normalized_payload": {"type": "object", "required": true, "description": "Transformed payload"},
+    "format": {"type": "string", "required": false, "description": "Report format"}
+  },
+  "outputs": {
+    "report": {"type": "object", "required": true, "description": "Final report"},
+    "status": {"type": "string", "required": true, "description": "Execution status"}
+  },
+  "spawn_policy": "manual",
+  "constraints": {"max_memory_mb": 192, "max_cpu_percent": 15, "network_access": false},
+  "error_modes": {"on_validation_failure": "reject", "on_runtime_exception": "fallback", "fallback": "transformer@1.0.0"},
+  "feature_flags": {
+    "enabled": true,
+    "rollout_policy": {"strategy": "percentage", "percentage": 100, "segments": ["internal"]}
+  },
+  "extensions": {"owner": "nexusmon-core", "tier": "seed"}
+}

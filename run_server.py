@@ -139,8 +139,9 @@ def main():
     except Exception as exc:
         print(f"[SWARM RUNNER] WARNING: Could not start runner â€” {exc}")
 
+    print("[STARTUP] Legacy wrapper active -> canonical surface backend.app:app")
     uvicorn.run(
-        "swarmz_server:app",
+        "backend.app:app",
         host=args.host,
         port=args.port,
         reload=False,

@@ -16,6 +16,11 @@
     "allow_code_execution": true,
     "require_operator_approval": false
   },
+  "canonical_lane": {
+    "strict_mode": true,
+    "auto_approve": false,
+    "require_operator_approval": true
+  },
   "brain_mapping": {
     "auto_mode": false,
     "brains": {

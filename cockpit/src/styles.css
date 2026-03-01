@@ -1,0 +1,222 @@
+:root {
+  --bg-0: #080c13;
+  --bg-1: #101a2b;
+  --bg-2: #14243b;
+  --text-0: #e6edf7;
+  --text-1: #a3b4ca;
+  --line: #284260;
+  --accent: #2ee6a6;
+  --warn: #ffb020;
+  --bad: #ff5a5f;
+  --card-shadow: 0 10px 32px rgba(3, 12, 25, 0.42);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  color: var(--text-0);
+  background:
+    radial-gradient(circle at 12% 8%, rgba(46, 230, 166, 0.18), transparent 34%),
+    radial-gradient(circle at 88% 6%, rgba(36, 153, 255, 0.18), transparent 40%),
+    linear-gradient(160deg, var(--bg-0), #0a1220 55%, #091626 100%);
+}
+
+.holo-shell {
+  max-width: 1280px;
+  margin: 10px auto 0;
+  padding: 8px 8px 12px;
+}
+
+.holo-chrome {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(21, 31, 49, 0.96), rgba(11, 19, 33, 0.96));
+  box-shadow: var(--card-shadow);
+}
+
+.holo-title-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.holo-title {
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.holo-subtitle {
+  font-size: 0.78rem;
+  color: var(--text-1);
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-0);
+  border: 1px solid rgba(70, 100, 132, 0.9);
+  border-radius: 999px;
+  background: rgba(8, 16, 29, 0.9);
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  box-shadow: 0 0 10px currentColor;
+}
+
+.metrics-grid {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.metric-card {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: linear-gradient(145deg, rgba(20, 33, 54, 0.92), rgba(11, 20, 35, 0.92));
+  padding: 10px 12px;
+}
+
+.metric-label {
+  font-size: 0.72rem;
+  color: var(--text-1);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.metric-value {
+  margin-top: 4px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-0);
+}
+
+.error-banner {
+  margin-top: 12px;
+  border: 1px solid rgba(255, 90, 95, 0.6);
+  background: rgba(255, 90, 95, 0.12);
+  color: #ff9b9e;
+  border-radius: 10px;
+  padding: 8px 10px;
+  font-size: 0.8rem;
+}
+
+.holo-grid {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.panel {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: linear-gradient(145deg, rgba(18, 30, 49, 0.96), rgba(12, 21, 36, 0.96));
+  box-shadow: var(--card-shadow);
+  min-height: 260px;
+  overflow: hidden;
+}
+
+.panel-head {
+  padding: 10px 12px;
+  font-weight: 700;
+  font-size: 0.82rem;
+  border-bottom: 1px solid rgba(41, 67, 98, 0.9);
+  background: rgba(8, 15, 28, 0.8);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr auto;
+  gap: 10px;
+  align-items: center;
+  padding: 8px 12px;
+  font-size: 0.8rem;
+  border-bottom: 1px solid rgba(40, 66, 96, 0.45);
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+.row-id {
+  color: var(--text-0);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.row-type {
+  color: var(--text-1);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.72rem;
+}
+
+.row-health,
+.row-status {
+  justify-self: end;
+  font-weight: 700;
+}
+
+.health-good {
+  color: var(--accent);
+}
+
+.health-warn {
+  color: var(--warn);
+}
+
+.health-bad {
+  color: var(--bad);
+}
+
+.health-unknown {
+  color: #8a96a5;
+}
+
+.empty-state {
+  padding: 12px;
+  font-size: 0.8rem;
+  color: var(--text-1);
+}
+
+@media (max-width: 980px) {
+  .metrics-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .holo-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .holo-chrome {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

@@ -28,7 +28,10 @@ class FormationSynthesizer:
             "id": str(uuid.uuid4())[:8],
             "pattern": pattern,
             "unit_count": unit_count,
-            "units": [{"slot": i + 1, "role": rules.get("role", "agent")} for i in range(unit_count)],
+            "units": [
+                {"slot": i + 1, "role": rules.get("role", "agent")}
+                for i in range(unit_count)
+            ],
             "rules_snapshot": rules,
             "created_at": datetime.now(timezone.utc).isoformat(),
             "status": "SYNTHESIZED",

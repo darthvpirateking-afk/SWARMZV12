@@ -1,0 +1,5 @@
+{
+  "id": "ars_notoria.opening",
+  "steps": ["prepare", "invoke", "observe"],
+  "symbolic_only": true
+}

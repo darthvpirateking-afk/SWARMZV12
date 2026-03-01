@@ -13,34 +13,46 @@ CULTURAL_NUANCES = {
     "universal": {
         "tone": "Neutral, objective, mission-oriented.",
         "greetings": ["Hello", "Greetings", "System Ready"],
-        "philosophy": "Objective truth and systemic efficiency."
+        "philosophy": "Objective truth and systemic efficiency.",
     },
     "empathetic": {
         "tone": "Warm, supportive, non-judgmental.",
         "greetings": ["How are you feeling?", "I am here for you.", "Welcome back."],
-        "philosophy": "Resonance and emotional synergy."
+        "philosophy": "Resonance and emotional synergy.",
     },
     "stoic": {
         "tone": "Concise, rigorous, focused on virtue and duty.",
-        "greetings": ["Duty calls.", "Focus on what you control.", "Ready for the task."],
-        "philosophy": "Internal fortitude and external indifference."
+        "greetings": [
+            "Duty calls.",
+            "Focus on what you control.",
+            "Ready for the task.",
+        ],
+        "philosophy": "Internal fortitude and external indifference.",
     },
     "zen": {
         "tone": "Minimalist, paradoxical, emphasizing the present moment.",
         "greetings": ["Be here now.", "Simple awareness.", "The path is the goal."],
-        "philosophy": "Non-duality and effortless action."
+        "philosophy": "Non-duality and effortless action.",
     },
     "cybernetic": {
         "tone": "Highly technical, data-driven, structured.",
         "greetings": ["Substrate online.", "Awaiting throughput.", "Signals clear."],
-        "philosophy": "Maximum information flow and evolutionary feedback loops."
-    }
+        "philosophy": "Maximum information flow and evolutionary feedback loops.",
+    },
 }
 
 # Language Registry (Mapping for future translation/logic)
 LANGUAGES = {
-    "en": {"name": "English", "native": "English", "dialects": ["US", "UK", "AU", "Global"]},
-    "es": {"name": "Spanish", "native": "Español", "dialects": ["ES", "MX", "AR", "Global"]},
+    "en": {
+        "name": "English",
+        "native": "English",
+        "dialects": ["US", "UK", "AU", "Global"],
+    },
+    "es": {
+        "name": "Spanish",
+        "native": "Español",
+        "dialects": ["ES", "MX", "AR", "Global"],
+    },
     "fr": {"name": "French", "native": "Français", "dialects": ["FR", "CA", "Global"]},
     "de": {"name": "German", "native": "Deutsch", "dialects": ["DE", "AT", "CH"]},
     "jp": {"name": "Japanese", "native": "日本語", "dialects": ["JP"]},
@@ -49,8 +61,9 @@ LANGUAGES = {
     "pt": {"name": "Portuguese", "native": "Português", "dialects": ["PT", "BR"]},
     "ar": {"name": "Arabic", "native": "العربية", "dialects": ["SA", "AE", "EG"]},
     "hi": {"name": "Hindi", "native": "हिन्दी", "dialects": ["IN"]},
-    "sw": {"name": "Swahili", "native": "Kiswahili", "dialects": ["KE", "TZ"]}
+    "sw": {"name": "Swahili", "native": "Kiswahili", "dialects": ["KE", "TZ"]},
 }
+
 
 class LinguisticCore:
     def __init__(self, data_dir: Path):
@@ -68,15 +81,19 @@ class LinguisticCore:
             "primary_language": "en",
             "active_culture": "universal",
             "learned_idioms": [],
-            "cultural_resonance_index": 1.0
+            "cultural_resonance_index": 1.0,
         }
 
     def _save_state(self):
         self.state_path.write_text(json.dumps(self.state, indent=2))
 
     def get_context(self) -> str:
-        lang = LANGUAGES.get(self.state["primary_language"], {"name": "English"})["name"]
-        culture = CULTURAL_NUANCES.get(self.state["active_culture"], CULTURAL_NUANCES["universal"])
+        lang = LANGUAGES.get(self.state["primary_language"], {"name": "English"})[
+            "name"
+        ]
+        culture = CULTURAL_NUANCES.get(
+            self.state["active_culture"], CULTURAL_NUANCES["universal"]
+        )
         return (
             f"Active Language: {lang}\n"
             f"Cultural Nuance: {self.state['active_culture']}\n"
@@ -103,6 +120,7 @@ class LinguisticCore:
             self.state["learned_idioms"].append(pattern)
             self._save_state()
             logger.info(f"Learned cultural pattern: {pattern}")
+
 
 def integrate_linguistics(organism_router, data_dir: Path):
     """Integrates linguistics endpoints into the organism router."""
