@@ -127,6 +127,12 @@ FULL_READ_MANIFEST.csv
 FULL_PATH_LIST.txt
 FULL_READ_MANIFEST.csv
 *.bundle
+
+hologram_snapshots/
+observatory/
+artifacts/audit/
+.validation_baseline.json
+*.hologram
 FULL_PATH_LIST.txt
 FULL_READ_MANIFEST.csv
 *.bundle
