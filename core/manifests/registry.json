@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-02-28T16:17:19.907888Z",
+  "generated_at": "2026-03-01T05:25:18.308692Z",
   "project_root": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154",
-  "count": 61,
+  "count": 60,
   "entries": [
     {
       "id": "life.awakening_loop.core",
@@ -422,13 +422,6 @@
       "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\symbolic\\xenolinguistics\\manifest.json",
       "schema_valid": true,
       "error": null
-    },
-    {
-      "id": null,
-      "path": "web_ui/manifest.json",
-      "absolute_path": "E:\\NEXUSMON-main\\NEXUSMON-main-backup-20260227-224154\\web_ui\\manifest.json",
-      "schema_valid": false,
-      "error": "not-unified-manifest-schema"
     }
   ]
 }

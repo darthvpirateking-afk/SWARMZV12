@@ -3,6 +3,30 @@
   "uiBaseUrl": "http://localhost:8012/app",
   "bind": "0.0.0.0",
   "port": 8012,
+  "config_version": 2,
+  "llm": {
+    "cortex": {
+      "provider": "openai",
+      "model": "gpt-4o",
+      "purpose": "deep reasoning, codegen, mission engine, evolution"
+    },
+    "reflex": {
+      "provider": "groq",
+      "model": "llama-3.1-70b-versatile",
+      "purpose": "swarm routing, planning, fast ops, agent chatter"
+    },
+    "fallback": {
+      "provider": "vllm",
+      "enabled": false,
+      "base_url": "http://localhost:8000/v1",
+      "purpose": "sovereign / air-gapped / community deployments"
+    }
+  },
+  "routing": {
+    "default_tier": "cortex",
+    "swarm_tier": "reflex",
+    "offline_tier": "fallback"
+  },
   "offlineMode": false,
   "models": {
     "provider": "ollama",

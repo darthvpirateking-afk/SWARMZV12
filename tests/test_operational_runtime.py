@@ -1,4 +1,7 @@
+import hashlib
+import hmac
 import importlib
+import json
 from pathlib import Path
 
 
@@ -26,6 +29,7 @@ def test_blueprint_to_fulfillment_pipeline(client, tmp_path, monkeypatch):
     runtime._ledger_file = ops_dir / "ledger.jsonl"
 
     monkeypatch.setattr(module, "_runtime", runtime)
+    monkeypatch.setenv("PAYMENT_WEBHOOK_SECRET", "test_secret")
 
     bp = client.post(
         "/v1/blueprints",
@@ -68,9 +72,19 @@ def test_blueprint_to_fulfillment_pipeline(client, tmp_path, monkeypatch):
     assert checkout.status_code == 200
     order_id = checkout.json()["order"]["order_id"]
 
+    webhook_payload = json.dumps(
+        {"order_id": order_id, "event": "payment_succeeded"}
+    ).encode("utf-8")
+    webhook_sig = "sha256=" + hmac.new(
+        b"test_secret", webhook_payload, hashlib.sha256
+    ).hexdigest()
     paid = client.post(
         "/v1/store/payment-webhook",
-        json={"order_id": order_id, "event": "payment_succeeded"},
+        content=webhook_payload,
+        headers={
+            "X-Webhook-Signature": webhook_sig,
+            "Content-Type": "application/json",
+        },
     )
     assert paid.status_code == 200
     assert paid.json()["ok"] is True
